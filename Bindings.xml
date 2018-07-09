@@ -1,0 +1,12 @@
+<Bindings>
+	<Binding 
+		name="VENDORALWAYSSELL" 
+		description="BINDING_DESC_VENDORALWAYSSELL" header="VENDORQUICKLIST" category="BINDING_CATEGORY_VENDOR">
+		Vendor:AddToolTipItemToAlwaysSellList()
+	</Binding>
+	<Binding 
+		name="VENDORNEVERSELL" 
+		description="BINDING_DESC_VENDORNEVERSELL" category="BINDING_CATEGORY_VENDOR">
+		Vendor:AddToolTipItemToNeverSellList()
+	</Binding>
+</Bindings>

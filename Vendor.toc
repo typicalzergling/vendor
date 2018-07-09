@@ -1,0 +1,23 @@
+## Interface: 80100
+## Title: Vendor
+## Notes: Vendors junk you don't want and auto-repairs.
+## Version: 1.3.0
+## SavedVariables: VendorDB
+## Author: Malvir / Severin of Windrunner
+
+libs\libs.xml
+
+loc\enUS.lua
+
+init.lua
+utils.lua
+threads.lua
+blocklists.lua
+tooltipscan.lua
+itemproperties.lua
+evaluate.lua
+merchant.lua
+tooltip.lua
+cmds.lua
+core.lua
+config.lua
