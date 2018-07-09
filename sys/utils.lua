@@ -1,4 +1,73 @@
--- Debug utilities and misc dumping ground for useful functions.
+-- Yeah I know util is bad naming, but it fits. If something fits better elsewhere I'll move it out before this gets into a steaming pile.
+local L = Vendor:GetLocalizedStrings()
+
+-- Gets item ID from an itemstring or item link
+-- If a number is passed in it assumes that is the ID
+function Vendor:GetItemId(str)
+	-- extract the id
+	if type(str) == "number" or tonumber(str) then
+		return tonumber(str)
+	elseif type(str) == "string" then
+		return tonumber(string.match(str, "item:(%d+):"))
+	else
+		return nil
+	end
+end
+
+-- Assumes link
+function Vendor:GetLinkString(link)
+	if link and type(link) == "string" then
+		local _, _, lstr = link:find('|H(.-)|h')
+		return lstr
+	else
+		return nil
+	end
+end
+
+-- Returns table of link properties
+function Vendor:GetLinkProperties(link)
+	local lstr = self:GetLinkString(link)
+	if lstr then
+		return {strsplit(':', lstr)}
+	else
+		return {}
+	end
+end
+
+-- dumps the contents of the table
+function Vendor:DumpTable(t)
+	for k, v in pairs(t) do
+		self:Debug("K = "..tostring(k).."   V = "..tostring(v))
+		--if type(v) == "table" and v ~= t then
+		--	self:DumpTable(v)
+		--end
+	end
+end
+
+-- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 9 lines. Thanks AceConsole for the inspiriation and color code.
+-- Assume if multiple arguments it is a format string.
+local printPrefix = string.format("%s%s%s", "|cff33ff99", L["ADDON_NAME"], "|r:")
+function Vendor:Print(msg, ...)
+	msg = printPrefix..msg
+    if (table.getn({...}) ~= 0) then
+        DEFAULT_CHAT_FRAME:AddMessage(string.format(msg, ...))
+    else
+        DEFAULT_CHAT_FRAME:AddMessage(msg)
+    end
+end
+
+-- Debug print
+function Vendor:Debug(msg, ...)
+	if not self.db.profile.debug then return end
+	self:Print(msg, ...)
+end
+
+-- Counts size of the table
+function Vendor:TableSize(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
 
 -- Convert price to a pretty string
 -- Gold:	FFFFFF00
@@ -54,65 +123,3 @@ function Vendor:GetPriceString(price)
 	return table.concat(str)
 end
 
--- Gets item ID from an itemstring or item link
--- If a number is passed in it assumes that is the ID
-function Vendor:GetItemId(str)
-	-- extract the id
-	if type(str) == "number" or tonumber(str) then
-		return tonumber(str)
-	elseif type(str) == "string" then
-		return tonumber(string.match(str, "item:(%d+):"))
-	else
-		return nil
-	end
-end
-
--- Assumes link
-function Vendor:GetLinkString(link)
-	if link and type(link) == "string" then
-		local _, _, lstr = link:find('|H(.-)|h')
-		return lstr
-	else
-		return nil
-	end
-end
-
--- Returns table of link properties
-function Vendor:GetLinkProperties(link)
-	local lstr = self:GetLinkString(link)
-	if lstr then
-		return {strsplit(':', lstr)}
-	else
-		return {}
-	end
-end
-
--- dumps the contents of the table
-function Vendor:DumpTable(t)
-	for k, v in pairs(t) do
-		self:Debug("K = "..tostring(k).."   V = "..tostring(v))
-		--if type(v) == "table" and v ~= t then
-		--	self:DumpTable(v)
-		--end
-	end
-end
-
--- Print function
---function Vendor:Print(msg)
-
--- Debug print function
-function Vendor:Debug(msg, ...)
-	if not self.db.profile.debug then return end
-    if (table.getn({...}) ~= 0) then
-        self:Print(string.format(msg, ...))
-    else
-        self:Print(msg) 
-    end
-end
-
--- Counts size of the table
-function Vendor:TableSize(T)
-  local count = 0
-  for _ in pairs(T) do count = count + 1 end
-  return count
-end

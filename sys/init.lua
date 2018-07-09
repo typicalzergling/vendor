@@ -1,5 +1,5 @@
 -- Msut be loaded AFTER all the localization files have been loaded.
-Vendor = LibStub("AceAddon-3.0"):NewAddon(Vendor, "Vendor", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
+Vendor = LibStub("AceAddon-3.0"):NewAddon(Vendor, "Vendor", "AceEvent-3.0", "AceHook-3.0")
 local L = Vendor:GetLocalizedStrings()
 
 -- Strings for the binding XML
