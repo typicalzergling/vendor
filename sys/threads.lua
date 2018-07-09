@@ -1,5 +1,3 @@
-Vendor = Vendor or {}
-
 -- Thread processor.
 -- This allows the addon to queue up work and then do it later in the background without cuasing a perf hit.
 -- This is also useful for avoiding throttling by Blizzard.

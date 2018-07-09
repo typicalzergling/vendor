@@ -1,6 +1,3 @@
--- Evaluating items for selling.
-Vendor = Vendor or {}
-
 -- Rules for determining if an item should be sold.
 -- TODO: Make this a dynamic system with default rules and allow user-supplied rules.
 function Vendor:EvaluateItemForSelling(item)

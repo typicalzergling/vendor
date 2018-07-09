@@ -1,5 +1,4 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("Vendor")
-Vendor = Vendor or {}
+local L = Vendor:GetLocalizedStrings()
 
 Vendor.defaults = {
 	profile = {

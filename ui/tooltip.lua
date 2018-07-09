@@ -1,5 +1,4 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("Vendor")
-Vendor = Vendor or {}
+local L = Vendor:GetLocalizedStrings()
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
 function Vendor:AddToolTipItemToSellList(list)

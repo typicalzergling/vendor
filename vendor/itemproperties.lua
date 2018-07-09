@@ -1,6 +1,3 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("Vendor")
-Vendor = Vendor or {}
-
 -- Gets information about an item 
 -- Here is the list of captured item properties.
 --     Name

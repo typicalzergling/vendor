@@ -1,6 +1,6 @@
--- Called before anything else in the addon.
-Vendor = LibStub("AceAddon-3.0"):NewAddon("Vendor", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("Vendor")
+-- Msut be loaded AFTER all the localization files have been loaded.
+Vendor = LibStub("AceAddon-3.0"):NewAddon(Vendor, "Vendor", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
+local L = Vendor:GetLocalizedStrings()
 
 -- Strings for the binding XML
 BINDING_CATEGORY_VENDOR = L["ADDON_NAME"]
@@ -9,7 +9,6 @@ BINDING_NAME_VENDORALWAYSSELL = L["BINDING_NAME_VENDORALWAYSSELL"]
 BINDING_DESC_VENDORALWAYSSELL = L["BINDING_DESC_VENDORALWAYSSELL"]
 BINDING_NAME_VENDORNEVERSELL = L["BINDING_NAME_VENDORNEVERSELL"]
 BINDING_DESC_VENDORNEVERSELL = L["BINDING_DESC_VENDORNEVERSELL"]
-
 
 -- Constants 
 Vendor.c_AlwaysSellList = "always"

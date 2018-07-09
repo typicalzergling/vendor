@@ -1,5 +1,4 @@
 -- Manages the always-sell and never-sell blocklists.
-Vendor = Vendor or {}
 
 -- Returns 1 if item was added to the list.
 -- Returns 2 if item was removed from the list.

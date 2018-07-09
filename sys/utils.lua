@@ -1,5 +1,4 @@
 -- Debug utilities and misc dumping ground for useful functions.
-Vendor = Vendor or {}
 
 -- Convert price to a pretty string
 -- Gold:	FFFFFF00
@@ -98,9 +97,17 @@ function Vendor:DumpTable(t)
 	end
 end
 
+-- Print function
+--function Vendor:Print(msg)
+
 -- Debug print function
-function Vendor:Debug(msg)
-	if self.db.profile.debug then self:Print(msg) end
+function Vendor:Debug(msg, ...)
+	if not self.db.profile.debug then return end
+    if (table.getn({...}) ~= 0) then
+        self:Print(string.format(msg, ...))
+    else
+        self:Print(msg) 
+    end
 end
 
 -- Counts size of the table

@@ -1,5 +1,4 @@
 -- Tooltip scanning for item information. This is necessary because not all information is available via item info API.
-Vendor = Vendor or {}
 
 -- Create tooltip used for scanning items for properties not available normally.
 -- Following wowwiki's example here.

@@ -1,6 +1,5 @@
 -- Vendor core. Handles enable/disable of the addon and setting up configuration. Generally loaded 2nd to last, just before config.
-local L = LibStub("AceLocale-3.0"):GetLocale("Vendor")
-Vendor = Vendor or {}
+local L = Vendor:GetLocalizedStrings()
 
 -- Initialize
 function Vendor:OnInitialize()

@@ -1,5 +1,4 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("Vendor")
-Vendor = Vendor or {}
+local L = Vendor:GetLocalizedStrings()
 
 -- Add or remove items from the blacklist or whitelist.
 function Vendor:SellItem_Cmd(info)

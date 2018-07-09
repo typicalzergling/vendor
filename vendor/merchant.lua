@@ -1,6 +1,5 @@
 -- Merchant event handling.
-local L = LibStub("AceLocale-3.0"):GetLocale("Vendor")
-Vendor = Vendor or {}
+local L = Vendor:GetLocalizedStrings()
 
 -- When the merchant window is opened, we will attempt to auto repair and sell.
 function Vendor:OnMerchantShow()
