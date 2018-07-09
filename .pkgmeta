@@ -13,5 +13,6 @@ package-as: Vendor
 	
 ignore:
 	- README.md
+	- CHANGES.txt
+	- LICENSE.txt
 
-license-output: LICENSE.txt
