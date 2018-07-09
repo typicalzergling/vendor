@@ -1,7 +1,7 @@
 ## Interface: 80100
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
-## Version: 1.4.0
+## Version: @project-version@
 ## SavedVariables: VendorDB
 ## Author: Malvir / Severin of Windrunner
 

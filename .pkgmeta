@@ -1,17 +1,17 @@
 package-as: Vendor
 
-externals:
-    #libs/LibDialog:
-    #    url: https://github.com/wildstarnasa/LibDialog.git
-    #    tag: latest # if this line is left out, the latest version (even if it's not a tag) is assumed
-    #libs/GeminiAddon:
-    #    url: https://github.com/wildstarnasa/GeminiAddon.git
-    #    tag: 1337.0.10 # This is an example. Please use an actual tag if you are targeting a specific version.
-
-ignore: # Files and directories beginning with a dot (such as .git) are automatically ignored, as is the pgkmeta file itself.
-    #- Scripts
-    #- Some/File.txt
-
-#manual-changelog: CHANGELOG.txt
+# Leaving out externals for now because I don't trust that they will work with 8.0 and I like stability.
+# Slowly removing these dependencies entirely, so this won't be a problem for long.
+#externals:
+    #libs/LibStub: https://repos.wowace.com/wow/libstub/trunk/LibStub
+    #libs/AceAddon-3.0: https://repos.wowace.com/wow/ace3/trunk/AceAddon-3.0
+    #libs/AceConfig-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0	
+	#libs/AceConsole-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
+    #libs/AceDB-3.0: https://repos.wowace.com/wow/ace3/trunk/AceDB-3.0
+	#libs/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
+	#libs/AceHook-3.0: https://repos.wowace.com/wow/ace3/trunk/AceHook-3.0
+	
+ignore:
+	- README.md
 
 license-output: LICENSE.txt
