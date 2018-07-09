@@ -1,0 +1,2 @@
+# vendor
+Vendor WoW Addon
