@@ -27,7 +27,6 @@ function Vendor:AddTooltipItemToNeverSellList()
 	self:AddTooltipItemToSellList(self.c_NeverSellList)
 end
 
-
 -- Hooks for item tooltips
 function Vendor:OnTooltipSetItem(tooltip, ...)
 	local name, link = tooltip:GetItem()
@@ -36,14 +35,32 @@ function Vendor:OnTooltipSetItem(tooltip, ...)
 	end
 end
 
+
+-- Item Tooltip Cache, so we don't re-evaluate on every scanned
+local itemLink = nil
+local blockList = nil
+local willBeSold = nil
+
 function Vendor:AddItemTooltipLines(tooltip, link)
-	-- Evaluate the item for sell
-	local item = self:GetItemPropertiesFromTooltip(tooltip, link)
-	local willBeSold = self:EvaluateItemForSelling(item)
+
+	-- Check Cache if we already have data for this item from a previous update.
+	-- If it isn't in the cache, we need to evaluate this item/link.
+	-- If it is in the cache, then we already have our answer, so don't waste perf re-evaluating.
+	if not (itemLink == link) then
+		-- Get blocklist ifnormation
+		list = self:GetBlocklistForItem(link)
+		
+		-- Evaluate the item for sell
+		local item = self:GetItemPropertiesFromTooltip(tooltip, link)
+		willBeSold = self:EvaluateItemForSelling(item)
+		
+		-- Mark it as the current cached item.
+		itemLink = link
+		self:Debug("Cached item for tooltip: "..link)
+	end
 	
 	-- Add lines to the tooltip we are scanning after we've scanned it.
 	-- Check if the item is in the Always or Never sell lists
-	local list = self:GetBlocklistForItem(link)
 	if list then
 		-- Add Vendor state to the tooltip.
 		if list == self.c_AlwaysSellList then 
