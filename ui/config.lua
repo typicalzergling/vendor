@@ -202,23 +202,24 @@ Vendor.config = {
 			guiHidden = true,
 			type = 'execute',
 			func = 'OpenSettings_Cmd',
-		},	
+		},
+		--@do-not-package@
 		link = {
 			name = "Dump Link",
 			guiHidden = true,
-			cmdHidden = true,
+			cmdHidden = false,
 			type = 'execute',		
 			func = 'DumpLink_Cmd',
 		},
-		--[[-- Testing function.
 		test = {
 			name = 'Test Function',
 			desc = "Runs the test function! It could do anything! Or nothing. Or break the addon. Use at own risk.",
 			guiHidden = true,
-			cmdHidden = true,
+			cmdHidden = false,
 			type = 'execute',
 			func = 'Test_Cmd',
-		},--]]
+		},
+		--@end-do-not-package@
 	},
 }
 

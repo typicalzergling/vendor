@@ -102,9 +102,7 @@ function Vendor:OpenSettings_Cmd(info)
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
 end
 
-local pack = function (...)
-    return { ... }, select("#", ...)
-end
+--@do-not-package@
 
 -- Debugging command. Hidden and not localized.
 function Vendor:DumpLink_Cmd(info)
@@ -117,14 +115,13 @@ function Vendor:DumpLink_Cmd(info)
 		self:Print("["..tostring(i).."] "..tostring(v))	
 	end
 	self:Print("ItemInfo:")
-	local itemInfo = pack(GetItemInfo(tostring(arg)))
+	local itemInfo = {GetItemInfo(tostring(arg))}
 	for i, v in pairs(itemInfo) do
 		self:Print("["..tostring(i).."] "..tostring(v))	
 	end
 end
 
 -- Just used to test specific things.
---[[
 function Vendor:Test_Cmd(info)
 	-- split arg from command line
 	local _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
@@ -135,4 +132,5 @@ function Vendor:Test_Cmd(info)
 		self:Print(string.format("   SB=%s BOE=%s BOU=%s AP=%s XMOG=%s Value=%s", tostring(v.IsSoulbound), tostring(v.IsBindOnEquip), tostring(v.IsBindOnUse), tostring(v.IsArtifactPower), tostring(v.IsUnknownAppearance), tostring(v.UnitValue)))
 	end
 end
---]]
+
+--@end-do-not-package@
