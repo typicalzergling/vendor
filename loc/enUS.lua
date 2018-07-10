@@ -26,7 +26,7 @@ Vendor.Locales["enUS"] =
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
-["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Item will be auto-sold by Vendor",
+["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be auto-sold by Vendor",
 
 -- Options
 ["OPTIONS_TITLE_ADDON"] = "These settings are for configuring Vendor behavior.\n\n",

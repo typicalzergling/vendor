@@ -175,8 +175,9 @@ end
 
 function Vendor:DumpTooltipItemProperties()
 	local props = self:GetItemProperties(GameTooltip)
+    self:Print("Properties for "..props["Link"])
 	for i, v in pairs(props) do
-		self:Debug("["..tostring(i).."] "..tostring(v))	
+		self:Print("    ["..tostring(i).."] "..tostring(v))	
 	end
 end
 

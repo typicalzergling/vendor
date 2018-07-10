@@ -20,25 +20,28 @@ function Vendor:EvaluateItemForSelling(item)
 		return false
 	end
 
+    -- Sell gray garbage.
+    if item.Quality == 0 then
+        return true
+    end
+    
+    -- Sell Legion AP Items if you are max level in Legion.
+    if self.db.profile.sellartifactpower and item.IsArtifactPower and item.ExpansionPackId == 6 and tonumber(UnitLevel("player")) >= 110 then
+        return true
+    end
+    
 	-- We don't sell anything epic or higher or white items, which usually have special meaning or crafting materials.
 	if item.Quality > 3 or item.Quality == 1 then 
 		return false
 	end
 	
-	-- Sell gray garbage.
-	if item.Quality == 0 then
-		return true
-	end
+
 	
 	-- Don't sell uncollected transmogs.
 	if item.IsUnknownAppearance then
 		return false
 	end
 	
-	-- Sell Legion AP Items if you are max level in Legion.
-	if self.db.profile.sellartifactpower and item.IsArtifactPower and item.ExpansionPackId == 6 and tonumber(UnitLevel("player")) >= 110 then
-		return true
-	end
 	
 	-- From here on out we don't sell soulbound.
 	-- TODO: This should be an option, but it is dangerous to allow it.
