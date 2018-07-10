@@ -41,10 +41,14 @@ function Vendor:Print(msg, ...)
     DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
 end
 
+function Vendor:IsDebug()
+    return self.db.profile.debug
+end
+
 -- Debug print
 function Vendor:Debug(msg, ...)
-	if not self.db.profile.debug then return end
-	self:Print(msg, ...)
+    if not self:IsDebug() then return end
+    self:Print(msg, ...)
 end
 
 -- Debug print function for rules

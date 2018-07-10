@@ -26,7 +26,7 @@ Vendor.Locales["enUS"] =
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
-["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Item will be auto-sold by Vendor",
+["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be auto-sold by Vendor",
 
 -- Options
 ["OPTIONS_TITLE_ADDON"] = "These settings are for configuring Vendor behavior.\n\n",
@@ -42,7 +42,7 @@ Vendor.Locales["enUS"] =
 ["OPTIONS_HEADER_SELLING"] = "Selling",
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Soulbound gear, white quality items, level 1 items, uncollected transmog appearances, and epic quality gear is never sold unless it is on the always-sell list.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
-["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per settings. By default this includes grey items and items marked to be always sold.",
+["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per settings. By default this includes grey items and items marked to be always sold.\n\nDisabling this will also hide Vendor tooltip lines.",
 ["OPTIONS_SETTINGNAME_SELLGREENS"] = "Sell Green Gear",
 ["OPTIONS_SETTINGDESC_SELLGREENS"] = "Automatically sell BOE green weapons and armor.",
 ["OPTIONS_SETTINGNAME_SELLGREENSILVL"] = "Itemlevel",
