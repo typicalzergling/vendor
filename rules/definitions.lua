@@ -1,6 +1,5 @@
 
 Vendor = Vendor or {}
-Vendor.VendorRuleFunctions = {}
 local L = Vendor:GetLocalizedStrings()
 
 Vendor.SystemRules = 
@@ -73,65 +72,72 @@ Vendor.SystemRules =
 	{
 		neversell =
 		{
-			Name = "Never sell item",
-			Description = "Matches the item ID against the never sell list",
+			Name = L["SYSRULE_KEEP_NEVERSELL"],
+			Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
 			Script = "IsNeverSellItem()"
 		},	
 
 		common =
 		{
-			Name = "Common (white) items",
-			Description = "Matches any common (white) item",
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_COMMON].hex .. L["SYSRULE_KEEP_COMMON"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_COMMON_DESC"],
 			Script = "Quality() == 1",
 		},
 
 		uncommon =
 		{
-			Name = "Uncommon (green) items",
-			Description = "Matches any uncommon (green) item",
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_UNCOMMON].hex .. L["SYSRULE_KEEP_UNCOMMON"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_UNCOMMON_DESC"],
 			Script = "Quality() == 2",
 		},
 
 		rare =
 		{
-			Name = "Rare (blue) items",
-			Description = "Matches any rare (blue) item",
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_RARE].hex .. L["SYSRULE_KEEP_RARE"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_RARE_DESC"],
 			Script = "Quality() == 3",
 		},
 
 		epic =
 		{
-			Name = "Epic (purple) items",
-			Description = "Matches any epic (purple) item",
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_EPIC].hex .. L["SYSRULE_KEEP_EPIC"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_EPIC_DESC"],
 			Script = "Quality() == 4",
 		},
 
 		legendary =
 		{
-			Name = "Legendary items",
-			Description = "Matches any legenedary item",
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_LEGENDARY].hex .. L["SYSRULE_KEEP_LEGENDARY"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_LEGENDARY_DESC"],
 			Script = "Quality() == 5",
 		},
 
 		artifact =
 		{
-			Name = "Artifact items",
-			Description = "Matches any artifact item",
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_ARTIFACT].hex .. L["SYSRULE_KEEP_ARTIFACT"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_ARTIFACT_DESC"],
 			Script = "Quality() == 6",
 		},
 
 		heirloom =
 		{
-			Name = "Heirloom items",
-			Description = "Matches any heirloom item",
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_HEIRLOOM].hex .. L["SYSRULE_KEEP_HEIRLOOM"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_HEIRLOOM_DESC"],
 			Script = "Quality() == 7",
+		},
+
+		token =
+		{
+			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_WOW_TOKEN].hex .. L["SYSRULE_KEEP_TOKEN"] .. FONT_COLOR_CODE_CLOSE,
+			Description = L["SYSRULE_KEEP_TOKEN_DESC"],			
+			Script = "Quality() == 8",
 		},
 
 		unknownapperence =
 		{
-			Name = "Unknown apperance",
-			Description = "Matches any item which is non-soulbound which is appearence which is unknown to you",
-			Script = "not IsSoulbound() and IsUnknownAppearance()",	
+			Name = L["SYSRULE_KEEP_UNKNOWNAPPERANCE"],
+			Description = L["SYSRULE_KEEP_UNKNOWNAPPERANCE_DESC"],
+			Script = "IsBindOnEquip() and IsUnknownAppearance()",	
 		},
 	}
 }
@@ -201,153 +207,4 @@ function Vendor:GetSystemRuleDefinition(ruleType, ruleId, insets)
 		end
 	end
 	return nil
-end
-
---*****************************************************************************
--- Mapping of numeric representation to possible names (strings) which would identify 
--- the quality of an item, for example, 4, epic, purple are all the same.
---*****************************************************************************
-Vendor.VendorRuleFunctions.QualityMap = {
-	[0] = { "poor", "junk", "gray" },
-	[1] = { "common", "white" },
-	[2] = { "uncommon", "green" },
-	[3] = { "rare", "blue" },
-	[4] = { "epic", "purple" },
-	[5] = { "legendary", "orange" },
-	[6] = { "artifact" },
-	[7] = { "heirloom" },
-}
-
---*****************************************************************************
--- Mapping of the numeric item type to non-locasized strings which represent 
--- the type of the item.
---*****************************************************************************
-Vendor.VendorRuleFunctions.TypeMap = 
-{
-	[2] = { "weapon" },
-	[4] = { "armor" },
-}
-
---*****************************************************************************
--- Mapping of the numeric expansion id to non-localized and friendly name
--- for the given expansion.
---*****************************************************************************
-Vendor.VendorRuleFunctions.ExpansionMap =
-{
-	[1] = { "tbc", "burningcrusade" },
-	[2] = { "wrath", "lich king" },
-	[3] = { "cata" },
-	[4] = { "panda", "mists" },
-	[5] = { "wod", "dreanor" },
-	[6] = { "legion" },
-}
-
---*****************************************************************************
--- Simple helper function which searches for the presence of the given string
--- in the provided list.
---*****************************************************************************
-local function isStringInList(list, key)
-	key = string.lower(key)
-	if (list ~= nil) then
-		for _, value in pairs(list) do
-			if (key == string.lower(value)) then return true end
-		end
-	end
-end
-
---*****************************************************************************
--- Matches the item quality (or item qualities) this accepts multiple arguments
--- which can be either strings or numbers.
---*****************************************************************************
-function Vendor.VendorRuleFunctions.ItemQuality(...)
-	local itemQuality = Quality()
-	assert(itemQuality >= 0 and itemQuality <= 7, "Item quality is out of range")
-	
-	for _, test in ipairs({...}) do		
-		if (type(test) == "string") then
-			-- Check our table of qualities for the index and see if it matches
-			-- one the strings for this quality level.
-			if (isStringInList(Vendor.VendorRuleFunctions.QualityMap[itemQuality], test)) then 
-				return true 
-			end
-		elseif (type(test) == "number") then
-			-- numeric compare
-			if (test == itemQuality) then
-				return true
-			end
-		end	
-	end
-end
-
---*****************************************************************************
--- Rule function which match the item type against the list of arguments
--- which can either be numeric or strings which are mapped with the table
--- above.
---*****************************************************************************
-function Vendor.VendorRuleFunctions.ItemType(...)
-	local itemType = TypeId()
-
-	for _, test in ipairs({...}) do
-		if (type(test) == "number") then
-			-- numeric compare
-			if (test == itemType) then
-				return true
-			end
-		elseif (type(test) == "string") then
-			-- check if it is in the list of strings
-			if (isStringInList(Vendor.TypeMap[itemType], test)) then
-				return true
-			end
-		end
-	end
-end
-
---*****************************************************************************
--- Rule function which matches of the item is from a particular expansion
--- these can either be numeric or you can use a value from the table above
---*****************************************************************************
-function Vendor.VendorRuleFunctions.IsFromExpansion(...)
-	local expansionId = ExpansionPackId()
-	if (expansionId ~= 0) then
-		for _, test in ipairs({...}) do
-			if (type(test) == "number") then
-				-- numeric compare
-				if test == expansionId then 
-					return true 
-				end
-			elseif (type(test) == "string") then
-				-- list check
-				if isStringInList(Vendor.VendorRuleFunctions.ExpansionMap[expansionId], test) then
-					return true
-				end
-			end
-		end
-	end		
-end
-
---*****************************************************************************
--- Rule function which checks if the specified item is present in the 
--- list of items which should never be sold.
---*****************************************************************************
-function Vendor.VendorRuleFunctions.IsNeverSellItem()
-	if Vendor:IsItemIdInNeverSellList(Id()) then
-		return true
-	end
-end	
-
---*****************************************************************************
--- Rule function which chceks if the item is in the list of items which 
--- should always be sold.
---*****************************************************************************
-function Vendor.VendorRuleFunctions.IsAlwaysSellItem()
-	if Vendor:IsItemIdInAlwaysSellList(Id()) then
-		return true
-	end
-end
-
---*****************************************************************************
--- Rule function which returns the level of the player.
---*****************************************************************************
-function Vendor.VendorRuleFunctions.PlayerLevel()
-	return tonumber(UnitLevel("player"))
 end

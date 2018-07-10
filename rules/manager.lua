@@ -36,6 +36,7 @@ end
 --*****************************************************************************
 function Vendor.RuleManager.Rule:Run(environment)
 	if self.Script then
+		print("running rule: ", self.Id)
 		setfenv(self.Script, environment)
 		local status, result = pcall(self.Script)
 		if status and result then
@@ -75,9 +76,10 @@ function Vendor.RuleManager:Create(functions)
 	-- If the caller gave us functions which should be available then
 	-- important them into our environment along with certain globals
 	Vendor.RuleManager.importGlobals(instance, "string", "math", "tonumber", "tostring")
-	if (type(functions) == "table") then
+	if (functions and (type(functions) == "table")) then
 		for name, value in pairs(functions) do
 			if (type(value) == "function") then
+				Vendor:DebugRules("Adding rule function '%s'", name)
 				Vendor.RuleManager.AddFunction(instance, name, value)
 			end
 		end

@@ -38,7 +38,7 @@ function Vendor:EvaluateItemForSelling(item)
 	-- If have not yet initialized, or the config has changed we need to build our list of "keep" rules
 	-- we always add the check against the neversell list no matter what the options says
 	if (not self.keepRules) then
-		self.keepRules = Vendor.RuleManager:Create(Vendor.VendorRuleFunctions);
+		self.keepRules = Vendor.RuleManager:Create(Vendor.RuleFunctions);
 		self:AddSystemRule(self.keepRules, Vendor.c_RuleType_Keep, "neversell")
 		self:ApplyRuleConfig(self.keepRules, Vendor.c_RuleType_Keep, self.db.profile.rules.keep)
 
@@ -51,7 +51,7 @@ function Vendor:EvaluateItemForSelling(item)
 	-- If we have not yet initialized, or the settings have changed build our list of selling rules.
 	-- We always add the always sell rule, no mater what our config says
 	if (not self.sellRules) then
-		self.sellRules = Vendor.RuleManager:Create(Vendor.VendorRuleFunctions);
+		self.sellRules = Vendor.RuleManager:Create(Vendor.RuleFunctions);
 		self:AddSystemRule(self.sellRules, Vendor.c_RuleType_Sell, "alwayssell")
 		self:ApplyRuleConfig(self.sellRules, Vendor.c_RuleType_Sell, self.db.profile.rules.sell)
 
