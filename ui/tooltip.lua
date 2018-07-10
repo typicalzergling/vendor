@@ -39,7 +39,7 @@ end
 function Vendor:AddItemTooltipLines(tooltip, link)
 	-- Evaluate the item for sell
 	local item = self:GetItemPropertiesFromTooltip(tooltip, link)
-	local willBeSold = self:EvaluateItemForSelling(item)
+	local willBeSold, ruleId = self:EvaluateItemForSelling(item)
 	
 	-- Add lines to the tooltip we are scanning after we've scanned it.
 	-- Check if the item is in the Always or Never sell lists
@@ -55,7 +55,11 @@ function Vendor:AddItemTooltipLines(tooltip, link)
 	
 	-- Add a warning that this item will be auto-sold on next vendor trip.
 	if willBeSold then
-		tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+ 		local debugInfo = ""
+ 		if (ruleId) then
+ 			debugInfo = string.format(" %s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE)
+ 		end
+ 		tooltip:AddLine(string.format("%s%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE, debugInfo))
 	end
 end
 
