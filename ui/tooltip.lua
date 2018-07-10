@@ -41,6 +41,15 @@ end
 -- Result cache
 local itemLink = nil
 local willBeSold = nil
+local blocklist = nil
+
+-- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
+function Vendor:ClearTooltipResultCache()
+    itemLink = nil
+    willBeSold = nil
+    blocklist = nil
+end
+
 function Vendor:AddItemTooltipLines(tooltip, link)
     -- Check Cache if we already have data for this item from a previous update.
     -- If it isn't in the cache, we need to evaluate this item/link.
@@ -51,17 +60,18 @@ function Vendor:AddItemTooltipLines(tooltip, link)
         local item = self:GetItemPropertiesFromTooltip(tooltip, link)
         willBeSold = self:EvaluateItemForSelling(item)
 
+        -- Check if the item is in the Always or Never sell lists
+        blocklist = self:GetBlocklistForItem(link)
+        
         -- Mark it as the current cached item.
         itemLink = link
         --self:Debug("Cached item for tooltip: "..link)
     end
     
     -- Add lines to the tooltip we are scanning after we've scanned it.
-    -- Check if the item is in the Always or Never sell lists
-    local list = self:GetBlocklistForItem(link)
-    if list then
+    if blocklist then
         -- Add Vendor state to the tooltip.
-        if list == self.c_AlwaysSellList then 
+        if blocklist == self.c_AlwaysSellList then 
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
         else
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"])
