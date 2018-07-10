@@ -56,10 +56,14 @@ function Vendor:Print(msg, ...)
     end
 end
 
+function Vendor:IsDebug()
+    return self.db.profile.debug
+end
+
 -- Debug print
 function Vendor:Debug(msg, ...)
-	if not self.db.profile.debug then return end
-	self:Print(msg, ...)
+    if not IsDebug() then return end
+    self:Print(msg, ...)
 end
 
 -- Counts size of the table
