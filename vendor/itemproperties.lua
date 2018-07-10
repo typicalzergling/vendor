@@ -147,8 +147,9 @@ function Vendor:GetItemProperties(arg1, arg2)
     -- Pet collection items appear to be type 15, subtype 2 (Miscellaneous - Companion Pets)
     
     -- Determine if this is a toy.
-    -- Toys are type 15, subtype 4 (Miscellaneous - Other), but have "Toy" in their tooltip.
-    if item.TypeId == 15 and item.SubTypeId == 4 then
+    -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
+    -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
+    if item.TypeId == 15 or item.TypeId == 0 then
         if self:IsItemToyInTooltip(tooltip, bag, slot) then
             item.IsToy = true
         end
