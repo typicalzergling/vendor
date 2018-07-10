@@ -1,7 +1,7 @@
 local L = Vendor:GetLocalizedStrings()
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
-function Vendor:AddToolTipItemToSellList(list)
+function Vendor:AddTooltipItemToSellList(list)
 	-- Get the item from 
 	name, link = GameTooltip:GetItem();
 	if not link then
@@ -19,13 +19,14 @@ function Vendor:AddToolTipItemToSellList(list)
 end
 
 -- Called by keybinds to direct-add items to the blocklists
-function Vendor:AddToolTipItemToAlwaysSellList()
-	self:AddToolTipItemToSellList(self.c_AlwaysSellList)
+function Vendor:AddTooltipItemToAlwaysSellList()
+	self:AddTooltipItemToSellList(self.c_AlwaysSellList)
 end
 
-function Vendor:AddToolTipItemToNeverSellList()
-	self:AddToolTipItemToSellList(self.c_NeverSellList)
+function Vendor:AddTooltipItemToNeverSellList()
+	self:AddTooltipItemToSellList(self.c_NeverSellList)
 end
+
 
 -- Hooks for item tooltips
 function Vendor:OnTooltipSetItem(tooltip, ...)
@@ -36,6 +37,11 @@ function Vendor:OnTooltipSetItem(tooltip, ...)
 end
 
 function Vendor:AddItemTooltipLines(tooltip, link)
+	-- Evaluate the item for sell
+	local item = self:GetItemPropertiesFromTooltip(tooltip, link)
+	local willBeSold = self:EvaluateItemForSelling(item)
+	
+	-- Add lines to the tooltip we are scanning after we've scanned it.
 	-- Check if the item is in the Always or Never sell lists
 	local list = self:GetBlocklistForItem(link)
 	if list then
@@ -47,16 +53,16 @@ function Vendor:AddItemTooltipLines(tooltip, link)
 		end
 	end
 	
-	-- Evaluate the item for sell
-	local item = self:GetItemPropertiesFromLink(link)
-	local willBeSold, ruleId = self:EvaluateItemForSelling(item)
-	
 	-- Add a warning that this item will be auto-sold on next vendor trip.
 	if willBeSold then
-		local debugInfo = ""
-		if (ruleId) then
-			debugInfo = string.format(" %s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE)
-		end
-		tooltip:AddLine(string.format("%s%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE, debugInfo))
+		tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
 	end
 end
+
+--@do-not-package@
+
+function Vendor:DumpItemPropertiesFromTooltip()
+	Vendor:DumpTooltipItemProperties()
+end
+
+--@end-do-not-package@

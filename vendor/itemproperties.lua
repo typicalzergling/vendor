@@ -28,17 +28,38 @@
 -- Gets information about the item in the specified slot.
 -- If we pass in a link, use the link. If link is nil, use bag and slot.
 -- We do this so we can evaluate based purely on a link, or on item container if we have it.
-function Vendor:GetItemProperties(link, bag, slot)
-	local item = {}
-	
-	-- Use bag and slot if we have it so we get an accurate item count and exact link on the item.
-	if bag and slot then
-		_, item.Count, _, _, _, _, item.Link = GetContainerItemInfo(bag, slot)
-	else 
-		item.Link = link
-		item.Count = 1
-	end
+-- Argument combinations
+-- 		tooltip, nil - we will get the item link from the tooltip and use the tooltip for scanning
+--		tooltip, link - we will use the link and the tooltip for scanning
+--		bag, slot		- we will get link from the containerinfo and use the scanning tip for scanning
 
+function Vendor:GetItemProperties(arg1, arg2)
+	local item = {}
+	local tooltip = nil
+	local bag = nil
+	local slot = nil
+	
+	-- Tooltip passed in. Use the link if provided, otherwise get it from the tooltip.
+	if type(arg1) == "table" then
+		tooltip = arg1
+		if type(arg2) == "string" then
+			item.Link = arg2
+		else
+			_, item.Link = tooltip:GetItem()
+		end
+		item.Count = 1
+		
+	-- Bag and Slot passed in
+	elseif type(arg1) == "number" and type(arg2) == "number" then
+		bag = arg1
+		slot = arg2
+		_, item.Count, _, _, _, _, item.Link = GetContainerItemInfo(bag, slot)
+
+	else
+		self:Debug("Invalid arguments to GetItemProperties")
+		return nil
+	end
+	
 	-- No name or quantity means there is no item in that slot. Nil denotes no item.
 	if not item.Link then return nil end
 
@@ -87,7 +108,7 @@ function Vendor:GetItemProperties(link, bag, slot)
 		item.IsSoulbound = true
 	elseif item.BindType == 2 then
 		-- BOE, may be soulbound
-		if self:IsItemSoulboundInTooltip(link, bag, slot) then
+		if self:IsItemSoulboundInTooltip(tooltip, bag, slot) then
 			item.IsSoulbound = true
 		else
 			-- If it is BoE and isn't soulbound, it must still be BOE
@@ -95,7 +116,7 @@ function Vendor:GetItemProperties(link, bag, slot)
 		end
 	elseif item.BindType == 3 then
 		-- Bind on Use, may be soulbound
-		if self:IsItemSoulboundInTooltip(link, bag, slot) then
+		if self:IsItemSoulboundInTooltip(tooltip, bag, slot) then
 			item.IsSoulbound = true
 		else
 			item.IsBindOnUse = true
@@ -108,7 +129,7 @@ function Vendor:GetItemProperties(link, bag, slot)
 	-- AP items are type Consumable - Other, and have Artifact Power in the tooltip. 
 	-- Avoid scanning the tooltip if it isn't that type.
 	if item.TypeId == 0 and item.SubTypeId == 8 then
-		if self:IsItemArtifactPowerInTooltip(link, bag, slot) then
+		if self:IsItemArtifactPowerInTooltip(tooltip, bag, slot) then
 			item.IsArtifactPower = true
 		end
 	end
@@ -116,7 +137,7 @@ function Vendor:GetItemProperties(link, bag, slot)
 	-- Determine if this item is an uncollected transmog appearance
 	-- We can save the scan by skipping if it is Soulbound (would already have it) or not equippable
 	if not item.IsSoulbound and item.IsEquippable then
-		if self:IsItemUnknownAppearanceInTooltip(link, bag, slot) then
+		if self:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot) then
 			item.IsUnknownAppearance = true
 		end
 	end
@@ -124,16 +145,19 @@ function Vendor:GetItemProperties(link, bag, slot)
 	return item
 end
 
--- Wrapper methods for getting item properties based on source.
+-- Both bag and slot must be numbers and both passed in.
 function Vendor:GetItemPropertiesFromBag(bag, slot)
-	return self:GetItemProperties(nil, bag, slot)
+	return self:GetItemProperties(bag, slot)
 end
 
-function Vendor:GetItemPropertiesFromLink(link)
-	return self:GetItemProperties(link, nil, nil)
+-- Link is optional, will be gotten from the tooltip if not provided.
+function Vendor:GetItemPropertiesFromTooltip(tooltip, link)
+	return self:GetItemProperties(tooltip, link)
 end
 
--- Used for testing.
+--@do-not-package@
+-- TEST code only. From here on down will not be packaged with the official addon.
+
 function Vendor:GetAllBagItemInformation()
 	local items = {}
 	for bag=0, NUM_BAG_SLOTS do
@@ -149,3 +173,11 @@ function Vendor:GetAllBagItemInformation()
 	return items
 end
 
+function Vendor:DumpTooltipItemProperties()
+	local props = self:GetItemProperties(GameTooltip)
+	for i, v in pairs(props) do
+		self:Debug("["..tostring(i).."] "..tostring(v))	
+	end
+end
+
+--@end-do-not-package@
