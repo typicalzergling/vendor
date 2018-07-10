@@ -99,4 +99,23 @@ Vendor.Locales["enUS"] =
 ["CMD_LISTDATA_LISTITEM"] = "  %s - %s",
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
+-- Rules
+
+-- System rules
+["SYSRULE_SELL_JUNK"] = "Junk",
+["SYSRULE_SELL_JUNK_DESC"] = "Matches all gray items",
+["SYSRULE_SELL_ALWAYSSELL"] = "Always sell item",
+["SYSRULE_SELL_ALWAYSSELL_DESC"] = "Matches the item ID against the always sell list",
+["SYSRULE_SELL_ARTIFACTPOWER"] = "Artifact Power (Legion)",
+["SYSRULE_SELL_ARTIFACTPOWER_DESC"] =  "Matches any artifact power items fron which belong to the legion expansion which can be vendored",
+["SYSRULE_SELL_KNOWNAPPERANCE"] = "Known Apperance",
+["SYSRULE_SELL_KNOWNAPPERANCE_DESC"] = "Matches items which have an apperance you already know with an item level less than {itemlevel}",
+["SYSRULE_SELL_UNCOMMON_ITEMS"] = "Uncommon Items",
+["SYSRULE_SELL_UNCOMMON_ITEMS_DESC"] = "Matches souldbound uncommon (green) weapons and armor with an item level less than {itemlevel}",
+["SYSRULE_SELL_RARE_ITEMS"] = "Rare Items",
+["SYSRULE_SELL_RARE_ITEMS_DESC"] = "Matches souldbound rare (rate) weapons and armor with an item level less than {itemlevel}",
+["SYSRULE_SELL_EPIC_ITEMS"] = "Epic Items",
+["SYSRULE_SELL_EPIC_ITEMS_DESC"] = "Matches souldbound epic (purple) weapons and armor with an item level less than {itemlevel}",
+
+
 } -- END OF LOCALIZATION TABLE

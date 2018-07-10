@@ -26,6 +26,8 @@ vendor\merchant.lua
 
 # Rules
 rules\evaluate.lua
+rules\definitions.lua
+rules\manager.lua
 
 # User Interface
 ui\tooltip.lua

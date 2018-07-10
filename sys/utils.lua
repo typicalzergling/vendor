@@ -34,26 +34,11 @@ function Vendor:GetLinkProperties(link)
 	end
 end
 
--- dumps the contents of the table
-function Vendor:DumpTable(t)
-	for k, v in pairs(t) do
-		self:Debug("K = "..tostring(k).."   V = "..tostring(v))
-		--if type(v) == "table" and v ~= t then
-		--	self:DumpTable(v)
-		--end
-	end
-end
-
 -- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 9 lines. Thanks AceConsole for the inspiriation and color code.
 -- Assume if multiple arguments it is a format string.
 local printPrefix = string.format("%s%s%s", "|cff33ff99", L["ADDON_NAME"], "|r:")
 function Vendor:Print(msg, ...)
-	msg = printPrefix..msg
-    if (table.getn({...}) ~= 0) then
-        DEFAULT_CHAT_FRAME:AddMessage(string.format(msg, ...))
-    else
-        DEFAULT_CHAT_FRAME:AddMessage(msg)
-    end
+    DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
 end
 
 -- Debug print
@@ -62,11 +47,11 @@ function Vendor:Debug(msg, ...)
 	self:Print(msg, ...)
 end
 
--- Counts size of the table
-function Vendor:TableSize(T)
-  local count = 0
-  for _ in pairs(T) do count = count + 1 end
-  return count
+-- Debug print function for rules
+function Vendor:DebugRules(msg, ...)
+	if (self.db.profile.debugrules) then		
+		self:Print(" %s[Rules]%s " .. msg, ACHIEVEMENT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, ...)
+	end	
 end
 
 -- Convert price to a pretty string
@@ -123,3 +108,30 @@ function Vendor:GetPriceString(price)
 	return table.concat(str)
 end
 
+-- dumps the contents of the table
+function Vendor:DumpTable(t)
+	for k, v in pairs(t) do
+		self:Debug("K = "..tostring(k).."   V = "..tostring(v))
+		--if type(v) == "table" and v ~= t then
+		--	self:DumpTable(v)
+		--end
+	end
+end
+
+-- Counts size of the table
+function Vendor:TableSize(T)	
+  local count = 0
+  if (T ~= nil) then
+	  for _ in pairs(T) do count = count + 1 end
+  end
+  return count
+end
+
+-- Merges the contents of source into dest, source can be nil
+function Vendor:MergeTable(dest, source) 
+	if source then
+		for key, value in pairs(source) do 
+			rawset(dest, key, value)
+		end
+	end
+end

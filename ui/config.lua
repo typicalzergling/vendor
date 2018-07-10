@@ -3,19 +3,48 @@ local L = Vendor:GetLocalizedStrings()
 Vendor.defaults = {
 	profile = {
 		debug = false,
+		debugrules = true,
+		
 		showcopper = false,
 		throttle_time = .5,
 		autosell = true,
 		autorepair = true,
 		guildrepair = true,
+
+		-- to be removed
 		sellgreens = false,
 		sellblues = false,
 		sellgreensilvl = 190,
 		sellbluesilvl = 190,
 		sellartifactpower = true,
+		-- end to be remvoed
+		
 		sell_throttle = 3,
 		sell_never = {},
 		sell_always = {},
+
+		-- Rules configuration
+		rules =
+		{
+			-- The default rules to enable which cause items to be kept
+			keep = { "unknownapperence", "legendary", "heirloom", "artifact", "common"  },
+
+			-- The default rules to enable which cause items to be sold.
+			sell = 
+			{
+				"artifactpower", "junk", 
+				{ rule = "rare", itemlevel = 900 }, -- blues soulbound <900
+				{ rule = "epic", itemlevel = 900 }, -- epics souldbound <900
+			},
+
+			-- Custom rules provied by the user
+			custom =
+			{
+				sell = { },
+				buy = { },
+			}
+		},
+		
 	},
 }
 
@@ -38,6 +67,14 @@ Vendor.config = {
 			get = function(info) return info.handler.db.profile.debug end,
 			order = 10,
 		},
+		debugrules = {
+			name = L["OPTIONS_SETTINGNAME_DEBUG"] .. " Rules",
+			desc = L["OPTIONS_SETTINGDESC_DEBUG"] .. " Rules",
+			type = 'toggle',
+			set = function(info,val) info.handler.db.profile.debugrules = val end,
+			get = function(info) return info.handler.db.profile.debugrules end,
+			order = 10,
+		},		
 		showcopper = {
 			name = L["OPTIONS_SETTINGNAME_SHOWCOPPER"],
 			desc = L["OPTIONS_SETTINGDESC_SHOWCOPPER"],
