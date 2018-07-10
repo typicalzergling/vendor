@@ -40,6 +40,7 @@ end
 local itemLink = nil
 local blockList = nil
 local willBeSold = nil
+local ruleId = nil
 
 function Vendor:AddItemTooltipLines(tooltip, link)
 
@@ -52,7 +53,7 @@ function Vendor:AddItemTooltipLines(tooltip, link)
 		
 		-- Evaluate the item for sell
 		local item = self:GetItemPropertiesFromTooltip(tooltip, link)
-		willBeSold = self:EvaluateItemForSelling(item)
+		willBeSold, ruleId  = self:EvaluateItemForSelling(item)
 		
 		-- Mark it as the current cached item.
 		itemLink = link
@@ -72,7 +73,11 @@ function Vendor:AddItemTooltipLines(tooltip, link)
 	
 	-- Add a warning that this item will be auto-sold on next vendor trip.
 	if willBeSold then
-		tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+		local debugInfo = ""
+		if (ruleId) then
+			debugInfo = string.format(" %s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE)
+		end
+		tooltip:AddLine(string.format("%s%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE, debugInfo))
 	end
 end
 
