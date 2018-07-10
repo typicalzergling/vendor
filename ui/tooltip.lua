@@ -29,6 +29,9 @@ end
 
 -- Hooks for item tooltips
 function Vendor:OnTooltipSetItem(tooltip, ...)
+	-- If we are not auto-selling, do nothing.
+	if not self.db.profile.autosell then return end
+	
 	local name, link = tooltip:GetItem()
 	if name then
 		self:AddItemTooltipLines(tooltip, link)
@@ -46,8 +49,9 @@ function Vendor:AddItemTooltipLines(tooltip, link)
 	-- Check Cache if we already have data for this item from a previous update.
 	-- If it isn't in the cache, we need to evaluate this item/link.
 	-- If it is in the cache, then we already have our answer, so don't waste perf re-evaluating.
+	-- TODO: We could keep a larger cache so we don't re-evaluate an item unless inventory changed, the rules changed, or the blocklist changed.
 	if not (itemLink == link) then
-		-- Get blocklist ifnormation
+		-- Get blocklist information
 		list = self:GetBlocklistForItem(link)
 		
 		-- Evaluate the item for sell
@@ -56,7 +60,7 @@ function Vendor:AddItemTooltipLines(tooltip, link)
 		
 		-- Mark it as the current cached item.
 		itemLink = link
-		self:Debug("Cached item for tooltip: "..link)
+		--self:Debug("Cached item for tooltip: "..link)
 	end
 	
 	-- Add lines to the tooltip we are scanning after we've scanned it.
