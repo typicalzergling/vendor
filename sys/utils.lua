@@ -62,7 +62,7 @@ end
 
 -- Debug print
 function Vendor:Debug(msg, ...)
-    if not IsDebug() then return end
+    if not self:IsDebug() then return end
     self:Print(msg, ...)
 end
 
