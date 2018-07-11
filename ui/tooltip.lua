@@ -81,13 +81,13 @@ function Vendor:AddItemTooltipLines(tooltip, link)
     end
     
     -- Add a warning that this item will be auto-sold on next vendor trip.
-	if willBeSold then
-		local debugInfo = ""
-		if (ruleId) then
-			debugInfo = string.format(" %s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE)
-		end
-		tooltip:AddLine(string.format("%s%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE, debugInfo))
-	end
+    if willBeSold then
+        local debugInfo = ""
+        if (ruleId) then
+            debugInfo = string.format(" %s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE)
+        end
+        tooltip:AddLine(string.format("%s%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE, debugInfo))
+    end
 end
 
 --@do-not-package@

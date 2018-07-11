@@ -4,11 +4,6 @@ local bagItemCache = {}
 
 -- Clears either a specific bag slot, an entire bag, or the entire cache
 function Vendor:ClearBagItemCache(bag, slot)
-    --@debug@
-    -- 0 is backpack
-    -- 1 to NUM_BAG_SLOTS are bags on character. Bank slots are higher than that, but should be safe...
-    if bag then assert(tonumber(bag) and bag >= 0 and bag <= NUM_BAG_SLOTS) end
-    --@end-debug@
     bag = tonumber(bag)
     slot = tonumber(slot)
     if not bag and not slot then

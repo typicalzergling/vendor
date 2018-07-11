@@ -6,12 +6,12 @@ function Vendor:GetLocalizedStrings()
     if not self.LocalizedStrings then
         self.LocalizedStrings = {}
 
-		-- Import the Default Locale
+        -- Import the Default Locale
         for k, v in pairs(self.Locales[self.c_DefaultLocale]) do
             self.LocalizedStrings[k] = v
         end
 
-		-- Get current locale strings if available and merge.
+        -- Get current locale strings if available and merge.
         local locale = self.Locales[GetLocale()]
         if locale then
             for k, v in pairs(locale) do
