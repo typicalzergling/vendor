@@ -24,6 +24,8 @@
 --     IsBindOnUse
 --     IsArtifactPower
 --     IsUnknownAppearance
+--     IsToy = false
+--     IsAlreadyKnown = false
 
 -- Gets information about the item in the specified slot.
 -- If we pass in a link, use the link. If link is nil, use bag and slot.
@@ -38,7 +40,7 @@ function Vendor:GetItemProperties(arg1, arg2)
     local tooltip = nil
     local bag = nil
     local slot = nil
-    
+
     -- Tooltip passed in. Use the link if provided, otherwise get it from the tooltip.
     if type(arg1) == "table" then
         tooltip = arg1
@@ -79,10 +81,10 @@ function Vendor:GetItemProperties(arg1, arg2)
     item.IsUnknownAppearance = false
     item.IsToy = false
     item.IsAlreadyKnown = false
-    
+
     -- Get the effective item level.
     item.Level = GetDetailedItemLevelInfo(item.Link)
-    
+
     -- Rip out properties from GetItemInfo
     item.Id = self:GetItemId(item.Link)
     item.Name = getItemInfo[1]
@@ -96,13 +98,13 @@ function Vendor:GetItemProperties(arg1, arg2)
     item.StackSize = getItemInfo[8]
     item.UnitValue = getItemInfo[11]
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
-    
+
     -- Net Value is net value including quantity.
     item.NetValue = (item.UnitValue or 0) * item.Count
-    
+
     -- Save string compares later.
     item.IsEquippable = item.EquipLoc ~= ""
-    
+
     -- For additional bind information we can be smart and only check the tooltip if necessary. This saves us string compares.
     -- 0 = none, 1 = on pickup, 2 = on equip, 3 = on use, 4 = quest
     if item.BindType == 1 or item.BindType == 4 then
@@ -126,7 +128,7 @@ function Vendor:GetItemProperties(arg1, arg2)
     else
         -- None, leave nil
     end
-    
+
     -- Determine if this is Artifact Power.
     -- AP items are type Consumable - Other, and have Artifact Power in the tooltip. 
     -- Avoid scanning the tooltip if it isn't that type.
@@ -135,7 +137,7 @@ function Vendor:GetItemProperties(arg1, arg2)
             item.IsArtifactPower = true
         end
     end
-    
+
     -- Determine if this item is an uncollected transmog appearance
     -- We can save the scan by skipping if it is Soulbound (would already have it) or not equippable
     if not item.IsSoulbound and item.IsEquippable then
@@ -143,9 +145,9 @@ function Vendor:GetItemProperties(arg1, arg2)
             item.IsUnknownAppearance = true
         end
     end
-    
+
     -- Pet collection items appear to be type 15, subtype 2 (Miscellaneous - Companion Pets)
-    
+
     -- Determine if this is a toy.
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
     -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
@@ -154,7 +156,7 @@ function Vendor:GetItemProperties(arg1, arg2)
             item.IsToy = true
         end
     end
-    
+
     -- Determine if this is an already-collected item
     -- For now limit to toys, but it could be other types, like Recipes
     if item.IsToy then
@@ -162,7 +164,7 @@ function Vendor:GetItemProperties(arg1, arg2)
             item.IsAlreadyKnown = true
         end
     end
-    
+
     return item
 end
 
@@ -183,14 +185,14 @@ function Vendor:GetAllBagItemInformation()
     local items = {}
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, GetContainerNumSlots(bag) do            
-            local item = self:GetItemPropertiesFromBag(bag, slot)
+            local item = self:GetBagItemFromCache(bag, slot)
             if item then
                 table.insert(items, item)
             end
         end
     end
 
-    self:Debug("Items count: "..tostring(self:TableSize(items)));
+    self:Print("Items count: "..tostring(self:TableSize(items)));
     return items
 end
 

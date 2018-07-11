@@ -46,7 +46,7 @@ end
 
 -- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 9 lines. Thanks AceConsole for the inspiriation and color code.
 -- Assume if multiple arguments it is a format string.
-local printPrefix = string.format("%s%s%s", "|cff33ff99", L["ADDON_NAME"], "|r:")
+local printPrefix = string.format("%s%s%s", "|cff33ff99", L["ADDON_NAME"], "|r: ")
 function Vendor:Print(msg, ...)
 	msg = printPrefix..msg
     if (table.getn({...}) ~= 0) then
@@ -68,9 +68,9 @@ end
 
 -- Counts size of the table
 function Vendor:TableSize(T)
-  local count = 0
-  for _ in pairs(T) do count = count + 1 end
-  return count
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
 end
 
 -- Convert price to a pretty string

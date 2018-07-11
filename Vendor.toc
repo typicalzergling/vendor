@@ -22,6 +22,7 @@ sys\core.lua
 vendor\blocklists.lua
 vendor\tooltipscan.lua
 vendor\itemproperties.lua
+vendor\bagitemcache.lua
 vendor\merchant.lua
 
 # Rules

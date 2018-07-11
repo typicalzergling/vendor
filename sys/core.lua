@@ -28,6 +28,7 @@ end
 function Vendor:OnEnable()
 	-- Set up events
 	self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
+    self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
 	
 	-- Tooltip hooks
 	self:HookScript(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")

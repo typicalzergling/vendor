@@ -127,7 +127,8 @@ function Vendor:Test_Cmd(info)
 	local _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
 
 	local iteminfo = self:GetAllBagItemInformation()
-	for k, v in pairs(iteminfo) do
+	for k, item in pairs(iteminfo) do
+        local v = item.Properties
 		self:Print(string.format("Item %s [%s] %s - %s (%s) / %s (%s)  Xpac=%s", tostring(v.Link), tostring(v.Level),tostring(v.Quality), tostring(v.Type), tostring(v.TypeId), tostring(v.SubType), tostring(v.SubTypeId), tostring(v.ExpansionPackId)))
 		self:Print(string.format("   SB=%s BOE=%s BOU=%s AP=%s XMOG=%s Value=%s", tostring(v.IsSoulbound), tostring(v.IsBindOnEquip), tostring(v.IsBindOnUse), tostring(v.IsArtifactPower), tostring(v.IsUnknownAppearance), tostring(v.UnitValue)))
 	end
