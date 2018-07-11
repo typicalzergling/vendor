@@ -46,8 +46,7 @@ end
 -- these can either be numeric or you can use a value from the table above
 --*****************************************************************************
 function Vendor.RuleFunctions.IsFromExpansion(...)
-print("check xpack: ", ...)
-	return checkMap(Vendor.Map.Expansion, ExpansionPackId(), {...})
+	return checkMap(Vendor.Maps.Expansion, ExpansionPackId(), {...})
 end
 
 --*****************************************************************************
