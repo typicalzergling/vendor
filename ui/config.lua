@@ -60,8 +60,8 @@ Vendor.config = {
 			order = 10,
 		},
 		debugrules = {
-			name = L["OPTIONS_SETTINGNAME_DEBUG"] .. " Rules",
-			desc = L["OPTIONS_SETTINGDESC_DEBUG"] .. " Rules",
+			name = L["OPTIONS_SETTINGNAME_DEBUGRULES"],
+			desc = L["OPTIONS_SETTINGDESC_DEBUGRULES"],
 			type = 'toggle',
 			set = function(info,val) info.handler.db.profile.debugrules = val end,
 			get = function(info) return info.handler.db.profile.debugrules end,
