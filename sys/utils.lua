@@ -66,11 +66,29 @@ function Vendor:Debug(msg, ...)
     self:Print(msg, ...)
 end
 
+-- Debug print function for rules
+function Vendor:DebugRules(msg, ...)
+	if (self.db.profile.debugrules) then		
+		self:Print(" %s[Rules]%s " .. msg, ACHIEVEMENT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, ...)
+	end	
+end
+
 -- Counts size of the table
 function Vendor:TableSize(T)
-    local count = 0
-    for _ in pairs(T) do count = count + 1 end
-    return count
+	local count = 0
+  	if (T) then
+  		for _ in pairs(T) do count = count + 1 end
+  	end
+  	return count
+end
+
+-- Merges the contents of source into dest, source can be nil
+function Vendor:MergeTable(dest, source) 
+	if source then
+		for key, value in pairs(source) do 
+			rawset(dest, key, value)
+		end
+	end
 end
 
 -- Convert price to a pretty string

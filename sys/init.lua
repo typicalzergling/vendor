@@ -13,3 +13,5 @@ BINDING_DESC_VENDORNEVERSELL = L["BINDING_DESC_VENDORNEVERSELL"]
 -- Constants 
 Vendor.c_AlwaysSellList = "always"
 Vendor.c_NeverSellList = "never"
+Vendor.c_RuleType_Sell = "Sell"
+Vendor.c_RuleType_Keep = "Keep"

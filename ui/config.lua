@@ -3,19 +3,40 @@ local L = Vendor:GetLocalizedStrings()
 Vendor.defaults = {
 	profile = {
 		debug = false,
+		debugrules = true,
+		
 		showcopper = false,
 		throttle_time = .5,
 		autosell = true,
 		autorepair = true,
 		guildrepair = true,
-		sellgreens = false,
-		sellblues = false,
-		sellgreensilvl = 190,
-		sellbluesilvl = 190,
-		sellartifactpower = true,
+		
 		sell_throttle = 3,
 		sell_never = {},
 		sell_always = {},
+
+		-- Rules configuration
+		rules =
+		{
+			-- The default rules to enable which cause items to be kept
+			keep = { "unknownapperence", "legendary", "heirloom", "artifact", "common"  },
+
+			-- The default rules to enable which cause items to be sold.
+			sell = 
+			{
+				"artifactpower", "junk", 
+				{ rule = "rare", itemlevel = 900 }, -- blues soulbound <900
+				{ rule = "epic", itemlevel = 900 }, -- epics souldbound <900
+			},
+
+			-- Custom rules provied by the user
+			custom =
+			{
+				sell = { },
+				buy = { },
+			}
+		},
+		
 	},
 }
 
@@ -38,6 +59,14 @@ Vendor.config = {
 			get = function(info) return info.handler.db.profile.debug end,
 			order = 10,
 		},
+		debugrules = {
+			name = L["OPTIONS_SETTINGNAME_DEBUGRULES"],
+			desc = L["OPTIONS_SETTINGDESC_DEBUGRULES"],
+			type = 'toggle',
+			set = function(info,val) info.handler.db.profile.debugrules = val end,
+			get = function(info) return info.handler.db.profile.debugrules end,
+			order = 10,
+		},		
 		showcopper = {
 			name = L["OPTIONS_SETTINGNAME_SHOWCOPPER"],
 			desc = L["OPTIONS_SETTINGDESC_SHOWCOPPER"],
@@ -64,6 +93,25 @@ Vendor.config = {
 			type = 'description',
 			order = 110,
 		},
+
+        showSellDialog = {
+            name = 'Sell Rules',
+            desc = 'Shows the dialog which allows you to edit the system sell rules.',
+            type = 'execute',
+            order = 115,
+            confirm = false,
+            func = 'ShowSystemRuleSellDialog',
+        },
+        
+        showKeepDialog = {
+            name = 'Keep Rules',
+            desc = 'Shows the dialog which allows you to edit the system keep rules.',
+            type = 'execute',
+            order = 116,
+            confirm = false,
+            func = 'ShowSystemRuleKeepDialog',
+        },
+        
 		autosell = {
 			name = L["OPTIONS_SETTINGNAME_AUTOSELL"],
 			desc = L["OPTIONS_SETTINGDESC_AUTOSELL"],
@@ -73,72 +121,6 @@ Vendor.config = {
 			width = 'full',
 			set = function(info,val) info.handler.db.profile.autosell = val end,
 			get = function(info) return info.handler.db.profile.autosell end,
-		},
-		sellgreens = {
-			name = L["OPTIONS_SETTINGNAME_SELLGREENS"],
-			desc = L["OPTIONS_SETTINGDESC_SELLGREENS"],
-			type = 'toggle',
-			cmdHidden = true,
-			order = 121,
-			disabled = function(info) return (not info.handler.db.profile.autosell) end,
-			set = function(info, val) info.handler.db.profile.sellgreens = val end,
-			get = function(info) return info.handler.db.profile.sellgreens end,
-		},
-		sellgreensilvl = {
-			name = L["OPTIONS_SETTINGNAME_SELLGREENSILVL"],
-			desc = L["OPTIONS_SETTINGDESC_SELLGREENSILVL"],
-			type = 'input',
-			cmdHidden = true,
-			order = 122,
-			width = 'half',
-			pattern = '%d+',
-			disabled = function(info) return (not info.handler.db.profile.autosell or not info.handler.db.profile.sellgreens) end,
-			validate = function(info, val) if not tonumber(val) or tonumber(val) < 1 then return L["OPTIONS_SETTINGINVALID_SELLGREENSILVL"] end return true end,
-			set = function(info, val) info.handler.db.profile.sellgreensilvl = tonumber(val) end,
-			get = function(info) return tostring(info.handler.db.profile.sellgreensilvl) end,
-		},
-		b12 = {
-			name = "",
-			type = 'description',
-			order = 130,
-		},
-		sellblues = {
-			name = L["OPTIONS_SETTINGNAME_SELLBLUES"],
-			desc = L["OPTIONS_SETTINGDESC_SELLBLUES"],
-			type = 'toggle',
-			cmdHidden = true,
-			order = 131,
-			disabled = function(info) return (not info.handler.db.profile.autosell) end,
-			set = function(info, val) info.handler.db.profile.sellblues = val end,
-			get = function(info) return info.handler.db.profile.sellblues end,
-		},
-		sellbluesilvl = {
-			name = L["OPTIONS_SETTINGNAME_SELLBLUESILVL"],
-			desc = L["OPTIONS_SETTINGDESC_SELLBLUESILVL"],
-			type = 'input',
-			cmdHidden = true,
-			order = 132,
-			width = 'half',
-			pattern = '%d+',
-			disabled = function(info) return (not info.handler.db.profile.autosell or not info.handler.db.profile.sellblues) end,
-			validate = function(info, val) if not tonumber(val) or tonumber(val) < 1 then return L["OPTIONS_SETTINGINVALID_SELLBLUESILVL"] end return true end,
-			set = function(info, val) info.handler.db.profile.sellbluesilvl = tonumber(val) end,
-			get = function(info) return tostring(info.handler.db.profile.sellbluesilvl) end,
-		},
-		b13 = {
-			name = "",
-			type = 'description',
-			order = 140,
-		},
-		sellartifactpower = {
-			name = L["OPTIONS_SETTINGNAME_SELLARTIFACTPOWER"],
-			desc = L["OPTIONS_SETTINGDESC_SELLARTIFACTPOWER"],
-			type = 'toggle',
-			cmdHidden = true,
-			order = 141,
-			disabled = function(info) return (not info.handler.db.profile.autosell) end,
-			set = function(info, val) info.handler.db.profile.sellartifactpower = val end,
-			get = function(info) return info.handler.db.profile.sellartifactpower end,
 		},
 		
 		-- REPAIR
