@@ -10,7 +10,14 @@ function Vendor:OnInitialize()
     -- Register config options
     LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor", Vendor.config, {"ven", "vendor"})
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor", L["ADDON_NAME"])
-    
+
+    --@do-not-package@
+    -- Create sub table for debug options.
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor Debug", Vendor.debugconfig, {"vend", "vendord"})
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor Debug", "Debug", "Vendor")
+    Vendor.debugconfig = nil
+    --@end-do-not-package@
+
     -- Create sub table for perf options
     LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor.perfconfig", Vendor.perfconfig)
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor.perfconfig", L["OPTIONS_CATEGORY_PERFORMANCE"], "Vendor")
@@ -19,7 +26,7 @@ function Vendor:OnInitialize()
     local profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
     LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor.profiles", profiles)
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor.profiles", L["OPTIONS_CATEGORY_PROFILES"], "Vendor")
-    
+
     -- Free up memory of no-longer used vars
     Vendor.config = nil
     Vendor.defaults = nil
@@ -34,13 +41,13 @@ function Vendor:OnEnable()
     self:HookScript(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
     self:HookScript(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem") 
     
-    self:Debug(L["ENABLED"])
+    self:Debug("Enabled")
 end
 
 function Vendor:OnDisable()
     -- ACE handles deregistration of events
     self:UnhookAll()
-    self:Debug(L["DISABLED"])
+    self:Debug("Disabled")
 end
 
 

@@ -15,6 +15,7 @@ loc\enUS.lua
 # Base
 sys\init.lua
 sys\utils.lua
+sys\debug.lua
 sys\threads.lua
 sys\core.lua
 
@@ -39,3 +40,7 @@ ui\cmds.lua
 ui\config.lua
 rules\rulelist.xml
 
+#@do-not-package@
+# Debug
+ui\debugconfig.lua
+#@end-do-not-package@

@@ -10,13 +10,6 @@ Vendor.SystemRules =
     --*****************************************************************************
     Sell = 
     {
-        junk = 
-        {
-            Name = L["SYSRULE_SELL_JUNK"],
-            Description = L["SYSRULE_SELL_JUNK_DESC"],
-            Script = "Quality() == 0",
-        },
-
         alwayssell = 
         {
             Name = L["SYSRULE_SELL_ALWAYSSELL"],
@@ -25,35 +18,49 @@ Vendor.SystemRules =
             Locked = true,
         },
 
+        poor = 
+        {
+            Name = L["SYSRULE_SELL_POORITEMS"],
+            Description = L["SYSRULE_SELL_POORITEMS_DESC"],
+            Script = "Quality() == 0",
+        },
+
         artifactpower =
         {
             Name = L["SYSRULE_SELL_ARTIFACTPOWER"],
             Description = L["SYSRULE_SELL_ARTIFACTPOWER_DESC"],
             Script = "IsArtifactPower() and IsFromExpansion(6) and (PlayerLevel() >= 110)",
         },      
-                
-        uncommon =
+
+        uncommongear =
         {
-            Name = L["SYSRULE_SELL_UNCOMMON_ITEMS"],
-            Description = L["SYSRULE_SELL_UNCOMMON_ITEMS_DESC"],
-            Script = "IsSoulbound() and ItemType(2, 4) and Quality() == 2 and Level() < {itemlevel}",
+            Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
+            Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
+            Script = "IsEquipment() and Quality() == 2 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
         },
         
-        rare =
+        raregear =
         {
-            Name = L["SYSRULE_SELL_RARE_ITEMS"],
-            Description = L["SYSRULE_SELL_RARE_ITEMS_DESC"],
-            Script = "IsSoulbound() and ItemType(2, 4) and Quality() == 3 and Level() < {itemlevel}",
+            Name = L["SYSRULE_SELL_RAREGEAR"],
+            Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
+            Script = "IsEquipment() and Quality() == 3 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
         },
 
-        epic =
+        epicgear =
         {
-            Name = L["SYSRULE_SELL_EPIC_ITEMS"],
-            Description = L["SYSRULE_SELL_EPIC_ITEMS_DESC"],
-            Script = "IsSoulbound() and ItemType(2, 4) and Quality() == 4 and Level() < {itemlevel}",
+            Name = L["SYSRULE_SELL_EPICGEAR"],
+            Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
+            Script = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
+        },
+        
+        knowntoys =
+        {
+            Name = L["SYSRULE_SELL_KNOWNTOYS"],
+            Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
+            Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
         },
     },
 
@@ -63,14 +70,25 @@ Vendor.SystemRules =
     --*****************************************************************************
     Keep =
     {
+        -- Item is in the Never Sell list.
         neversell =
         {
             Name = L["SYSRULE_KEEP_NEVERSELL"],
             Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
             Script = "IsNeverSellItem()",
             Locked = true,
-        },  
+        },
+        
+        -- This is an unsellable item if value is 0
+        unsellable =
+        {
+            Name = L["SYSRULE_KEEP_UNSELLABLE"],
+            Description = L["SYSRULE_KEEP_UNSELLABLE_DESC"],
+            Script = "UnitValue() == 0",
+            Locked = true,
+        },
 
+        -- Safeguard rule - Common items are usually important and useful.
         common =
         {
             Name = L["SYSRULE_KEEP_COMMON"],
@@ -78,60 +96,52 @@ Vendor.SystemRules =
             Script = "Quality() == 1",
         },
 
-        uncommon =
+        -- Safeguard rule - Keep soulbound equipment.
+        soulboundgear =
         {
-            Name = L["SYSRULE_KEEP_UNCOMMON"],
-            Description = L["SYSRULE_KEEP_UNCOMMON_DESC"],
-            Script = "Quality() == 2",
+            Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
+            Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
+            Script = "IsEquipment() and IsSoulbound()",
         },
 
-        rare =
+        -- Safeguard rule - Protect those transmogs!
+        unknownappearance =
         {
-            Name = L["SYSRULE_KEEP_RARE"],
-            Description = L["SYSRULE_KEEP_RARE_DESC"],
-            Script = "Quality() == 3",
+            Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
+            Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
+            Script = "IsUnknownAppearance()",
         },
 
-        epic =
+        -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
+        legendaryandup =
         {
-            Name = L["SYSRULE_KEEP_EPIC"],
-            Description = L["SYSRULE_KEEP_EPIC_DESC"],
-            Script = "Quality() == 4",
+            Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
+            Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
+            Script = "Quality() >= 5",
         },
 
-        legendary =
+        -- Optional Safeguard - Might be useful for leveling.
+        uncommongear =
         {
-            Name = L["SYSRULE_KEEP_LEGENDARY"],
-            Description = L["SYSRULE_KEEP_LEGENDARY_DESC"],
-            Script = "Quality() == 5",
+            Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
+            Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
+            Script = "IsEquipment() and Quality() == 2",
         },
 
-        artifact =
+        -- Optional Safeguard - Might be useful for leveling or early max-level.
+        raregear =
         {
-            Name = L["SYSRULE_KEEP_ARTIFACT"],
-            Description = L["SYSRULE_KEEP_ARTIFACT_DESC"],
-            Script = "Quality() == 6",
+            Name = L["SYSRULE_KEEP_RAREGEAR"],
+            Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
+            Script = "IsEquipment() and Quality() == 3",
         },
 
-        heirloom =
+        -- Optional Safeguard - If you're a bit paranoid.
+        epicgear =
         {
-            Name = L["SYSRULE_KEEP_HEIRLOOM"],
-            Description = L["SYSRULE_KEEP_HEIRLOOM_DESC"],
-            Script = "Quality() == 7",
-        },
-
-        token =
-        {
-            Name = L["SYSRULE_KEEP_TOKEN"],
-            Description = L["SYSRULE_KEEP_TOKEN_DESC"],         
-            Script = "Quality() == 8",
-        },
-
-        unknownapperence =
-        {
-            Name = L["SYSRULE_KEEP_UNKNOWNAPPERANCE"],
-            Description = L["SYSRULE_KEEP_UNKNOWNAPPERANCE_DESC"],
-            Script = "IsBindOnEquip() and IsUnknownAppearance()",   
+            Name = L["SYSRULE_KEEP_EPICGEAR"],
+            Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
+            Script = "IsEquipment() and Quality() == 4",
         },
     }
 }

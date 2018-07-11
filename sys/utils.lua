@@ -44,33 +44,11 @@ function Vendor:DumpTable(t)
     end
 end
 
--- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 9 lines. Thanks AceConsole for the inspiriation and color code.
+-- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 4 lines. Thanks AceConsole for the inspiriation and color code.
 -- Assume if multiple arguments it is a format string.
 local printPrefix = string.format("%s%s%s", "|cff33ff99", L["ADDON_NAME"], "|r: ")
 function Vendor:Print(msg, ...)
-    msg = printPrefix..msg
-    if (table.getn({...}) ~= 0) then
-        DEFAULT_CHAT_FRAME:AddMessage(string.format(msg, ...))
-    else
-        DEFAULT_CHAT_FRAME:AddMessage(msg)
-    end
-end
-
-function Vendor:IsDebug()
-    return self.db.profile.debug
-end
-
--- Debug print
-function Vendor:Debug(msg, ...)
-    if not self:IsDebug() then return end
-    self:Print(msg, ...)
-end
-
--- Debug print function for rules
-function Vendor:DebugRules(msg, ...)
-    if (self.db.profile.debugrules) then        
-        self:Print(" %s[Rules]%s " .. msg, ACHIEVEMENT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, ...)
-    end 
+    DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
 end
 
 -- Counts size of the table
@@ -92,6 +70,7 @@ function Vendor:MergeTable(dest, source)
 end
 
 -- Convert price to a pretty string
+-- To reduce spam we don't show copper unless it is the only unit of measurement (i.e. < 1 silver)
 -- Gold:    FFFFFF00
 -- Silver:  FFFFFFFF
 -- Copper:  FFAE6938
@@ -117,23 +96,12 @@ function Vendor:GetPriceString(price)
         table.insert(str, "|cFFE6E6E6")
         table.insert(str, string.format("%02d", silver))
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
-        
-        if self.db.profile.showcopper then
-            table.insert(str, "|cFFC8602C")
-            table.insert(str, string.format("%02d", copper))
-            table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
-        end
-        
+
     elseif silver > 0 or not self.db.profile.showcopper then
         table.insert(str, "|cFFE6E6E6")
         table.insert(str, silver)
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
         
-        if self.db.profile.showcopper then
-            table.insert(str, "|cFFC8602C")
-            table.insert(str, string.format("%02d", copper))
-            table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
-        end
     else
         -- Show copper if that is the only unit of measurement.
         table.insert(str, "|cFFC8602C")
@@ -145,51 +113,3 @@ function Vendor:GetPriceString(price)
     return table.concat(str)
 end
 
---@do-not-package@
--- Sorted Pairs from Lua-Users.org. We use this for pretty-printing tables for debugging purposes.
-
-function Vendor.__genOrderedIndex( t )
-    local orderedIndex = {}
-    for key in pairs(t) do
-        table.insert( orderedIndex, key )
-    end
-    table.sort( orderedIndex )
-    return orderedIndex
-end
-
-function Vendor.orderedNext(t, state)
-    -- Equivalent of the next function, but returns the keys in the alphabetic
-    -- order. We use a temporary ordered key table that is stored in the
-    -- table being iterated.
-
-    local key = nil
-    --print("orderedNext: state = "..tostring(state) )
-    if state == nil then
-        -- the first time, generate the index
-        t.__orderedIndex = Vendor.__genOrderedIndex( t )
-        key = t.__orderedIndex[1]
-    else
-        -- fetch the next value
-        for i = 1,table.getn(t.__orderedIndex) do
-            if t.__orderedIndex[i] == state then
-                key = t.__orderedIndex[i+1]
-            end
-        end
-    end
-
-    if key then
-        return key, t[key]
-    end
-
-    -- no more value to return, cleanup
-    t.__orderedIndex = nil
-    return
-end
-
-function Vendor.orderedPairs(t)
-    -- Equivalent of the pairs() function on tables. Allows to iterate
-    -- in order
-    return Vendor.orderedNext, t, nil
-end
-
---@end-do-not-package@

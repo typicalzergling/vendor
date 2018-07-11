@@ -18,7 +18,7 @@
 --     ExpansionPackId   6=Legion, everything else appears to be 0, including some legion things (Dalaran Hearthstone)
 
 -- Boolean Properties that may be nil if false (more efficient). 
---     IsEquippable
+--     IsEquipment
 --     IsSoulbound
 --     IsBindOnEquip
 --     IsBindOnUse
@@ -73,7 +73,7 @@ function Vendor:GetItemProperties(arg1, arg2)
     if #getItemInfo == 0 then return nil end
     
     -- Initialize properties to boolean false for easier rule ingestion.
-    item.IsEquippable = false
+    item.IsEquipment = false
     item.IsSoulbound = false
     item.IsBindOnEquip = false
     item.IsBindOnUse = false
@@ -103,7 +103,7 @@ function Vendor:GetItemProperties(arg1, arg2)
     item.NetValue = (item.UnitValue or 0) * item.Count
 
     -- Save string compares later.
-    item.IsEquippable = item.EquipLoc ~= ""
+    item.IsEquipment = item.EquipLoc ~= ""
 
     -- For additional bind information we can be smart and only check the tooltip if necessary. This saves us string compares.
     -- 0 = none, 1 = on pickup, 2 = on equip, 3 = on use, 4 = quest
@@ -140,7 +140,7 @@ function Vendor:GetItemProperties(arg1, arg2)
 
     -- Determine if this item is an uncollected transmog appearance
     -- We can save the scan by skipping if it is Soulbound (would already have it) or not equippable
-    if not item.IsSoulbound and item.IsEquippable then
+    if not item.IsSoulbound and item.IsEquipment then
         if self:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot) then
             item.IsUnknownAppearance = true
         end
@@ -177,42 +177,3 @@ end
 function Vendor:GetItemPropertiesFromTooltip(tooltip, link)
     return self:GetItemProperties(tooltip, link)
 end
-
---@do-not-package@
--- TEST code only. From here on down will not be packaged with the official addon.
-
-function Vendor:GetAllBagItemInformation()
-    local items = {}
-    for bag=0, NUM_BAG_SLOTS do
-        for slot=1, GetContainerNumSlots(bag) do            
-            local item = self:GetBagItemFromCache(bag, slot)
-            if item then
-                table.insert(items, item)
-            end
-        end
-    end
-
-    self:Print("Items count: "..tostring(self:TableSize(items)));
-    return items
-end
-
-function Vendor:DumpTooltipItemProperties()
-    local props = self:GetItemProperties(GameTooltip)
-    self:Print("Properties for "..props["Link"])
-
-    -- Print non-derived properties first.
-    for i, v in Vendor.orderedPairs(props) do
-        if not string.find(i, "^Is") then
-            self:Print("    ["..tostring(i).."] "..tostring(v)) 
-        end
-    end
-
-    -- Print all the derived properties ("Is*") together.
-    for i, v in Vendor.orderedPairs(props) do
-        if string.find(i, "^Is") then
-            self:Print("    ["..tostring(i).."] "..tostring(v)) 
-        end
-    end
-end
-
---@end-do-not-package@

@@ -45,8 +45,8 @@ function Vendor:EvaluateItemForSelling(item)
     -- Check some cases where we know we should never ever sell the item
     --    1 - The item is nil, well we can't sell nothing
     --    2 - It's got no value to the vendor, so we can't sell it
-    if (not item) or (item.UnitValue == 0) then 
-        return false 
+    if not item then
+        return false
     end
 
     -- If have not yet initialized, or the config has changed we need to build our list of "keep" rules

@@ -15,4 +15,4 @@ ignore:
     - README.md
     - CHANGES.txt
     - LICENSE.txt
-
+    - ui\debugconfig.lua

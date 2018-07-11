@@ -101,37 +101,3 @@ function Vendor:OpenSettings_Cmd(info)
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
 end
-
---@do-not-package@
-
--- Debugging command. Hidden and not localized.
-function Vendor:DumpLink_Cmd(info)
-    local _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
-    self:Print("Link: "..tostring(arg))
-    self:Print("Raw: "..gsub(arg, "\124", "\124\124"))
-    self:Print("ItemString: "..tostring(self:GetLinkString(arg)))
-    local props = self:GetLinkProperties(arg)
-    for i, v in pairs(props) do
-        self:Print("["..tostring(i).."] "..tostring(v)) 
-    end
-    self:Print("ItemInfo:")
-    local itemInfo = {GetItemInfo(tostring(arg))}
-    for i, v in pairs(itemInfo) do
-        self:Print("["..tostring(i).."] "..tostring(v)) 
-    end
-end
-
--- Just used to test specific things.
-function Vendor:Test_Cmd(info)
-    -- split arg from command line
-    local _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
-
-    local iteminfo = self:GetAllBagItemInformation()
-    for k, item in pairs(iteminfo) do
-        local v = item.Properties
-        self:Print(string.format("Item %s [%s] %s - %s (%s) / %s (%s)  Xpac=%s", tostring(v.Link), tostring(v.Level),tostring(v.Quality), tostring(v.Type), tostring(v.TypeId), tostring(v.SubType), tostring(v.SubTypeId), tostring(v.ExpansionPackId)))
-        self:Print(string.format("   SB=%s BOE=%s BOU=%s AP=%s XMOG=%s Value=%s", tostring(v.IsSoulbound), tostring(v.IsBindOnEquip), tostring(v.IsBindOnUse), tostring(v.IsArtifactPower), tostring(v.IsUnknownAppearance), tostring(v.UnitValue)))
-    end
-end
-
---@end-do-not-package@

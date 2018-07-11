@@ -2,15 +2,10 @@ local L = Vendor:GetLocalizedStrings()
 
 Vendor.defaults = {
     profile = {
-        debug = false,
-        debugrules = true,
-        
-        showcopper = false,
         throttle_time = .5,
         autosell = true,
         autorepair = true,
         guildrepair = true,
-        
         sell_throttle = 3,
         sell_never = {},
         sell_always = {},
@@ -19,14 +14,23 @@ Vendor.defaults = {
         rules =
         {
             -- The default rules to enable which cause items to be kept
-            keep = { "unknownapperence", "legendary", "heirloom", "artifact", "common"  },
+            keep = {
+                "neversell",
+                "unsellable",
+                "common",
+                "soulboundgear",
+                "unknownappearance",
+                "legendaryandup",
+            },
 
             -- The default rules to enable which cause items to be sold.
             sell = 
             {
-                "artifactpower", "junk", 
-                { rule = "rare", itemlevel = 900 }, -- blues soulbound <900
-                { rule = "epic", itemlevel = 900 }, -- epics souldbound <900
+                "artifactpower",
+                "poor",
+                "knowntoys",
+                { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
+                { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
             },
 
             -- Custom rules provied by the user
@@ -34,9 +38,8 @@ Vendor.defaults = {
             {
                 sell = { },
                 buy = { },
-            }
+            },
         },
-        
     },
 }
 
@@ -46,100 +49,30 @@ Vendor.config = {
     type = 'group',
     args = {
         -- CORE
+        --[[ Removing for now until we have something meaningful to put here.
         titledesc = {
             name= L["OPTIONS_TITLE_ADDON"],
             type = 'description',
             order = 0,
-        },
-        debug = {
-            name = L["OPTIONS_SETTINGNAME_DEBUG"],
-            desc = L["OPTIONS_SETTINGDESC_DEBUG"],
-            type = 'toggle',
-            set = function(info,val) info.handler.db.profile.debug = val end,
-            get = function(info) return info.handler.db.profile.debug end,
-            order = 10,
-        },
-        debugrules = {
-            name = L["OPTIONS_SETTINGNAME_DEBUGRULES"],
-            desc = L["OPTIONS_SETTINGDESC_DEBUGRULES"],
-            type = 'toggle',
-            set = function(info,val) info.handler.db.profile.debugrules = val end,
-            get = function(info) return info.handler.db.profile.debugrules end,
-            order = 10,
-        },      
-        showcopper = {
-            name = L["OPTIONS_SETTINGNAME_SHOWCOPPER"],
-            desc = L["OPTIONS_SETTINGDESC_SHOWCOPPER"],
-            type = 'toggle',
-            cmdHidden = true,
-            set = function(info,val) info.handler.db.profile.showcopper = val end,
-            get = function(info) return info.handler.db.profile.showcopper end,
-            order = 20,
-        },
-        b1 = {
-            name = "\n\n",
-            type = 'description',
-            order = 99,
-        },
+        },]]
         
-        -- SELLING
-        h1 = {
-            name = L["OPTIONS_HEADER_SELLING"],
+        -- REPAIR
+        repairheader = {
+            name = L["OPTIONS_HEADER_REPAIR"],
             type = 'header',
             order = 100,
         },
-        d1 = {
-            name = L["OPTIONS_DESC_SELLING"],
-            type = 'description',
-            order = 110,
-        },
-
-        showSellDialog = {
-            name = 'Sell Rules',
-            desc = 'Shows the dialog which allows you to edit the system sell rules.',
-            type = 'execute',
-            order = 115,
-            confirm = false,
-            func = 'ShowSystemRuleSellDialog',
-        },
-        
-        showKeepDialog = {
-            name = 'Keep Rules',
-            desc = 'Shows the dialog which allows you to edit the system keep rules.',
-            type = 'execute',
-            order = 116,
-            confirm = false,
-            func = 'ShowSystemRuleKeepDialog',
-        },
-        
-        autosell = {
-            name = L["OPTIONS_SETTINGNAME_AUTOSELL"],
-            desc = L["OPTIONS_SETTINGDESC_AUTOSELL"],
-            type = 'toggle',
-            cmdHidden = true,
-            order = 120,
-            width = 'full',
-            set = function(info,val) info.handler.db.profile.autosell = val end,
-            get = function(info) return info.handler.db.profile.autosell end,
-        },
-        
-        -- REPAIR
-        h2 = {
-            name = L["OPTIONS_HEADER_REPAIR"],
-            type = 'header',
-            order = 200,
-        },
-        d2 = {
+        repairdesc = {
             name = L["OPTIONS_DESC_REPAIR"],
             type = 'description',
-            order = 210,
+            order = 110,
         },
         autorepair = {
             name = L["OPTIONS_SETTINGNAME_AUTOREPAIR"],
             desc = L["OPTIONS_SETTINGDESC_AUTOREPAIR"],
             type = 'toggle',
             cmdHidden = true,
-            order = 220,
+            order = 120,
             width = 'full',
             set = function(info,val) info.handler.db.profile.autorepair = val end,
             get = function(info) return info.handler.db.profile.autorepair end,
@@ -149,13 +82,53 @@ Vendor.config = {
             desc = L["OPTIONS_SETTINGDESC_GUILDREPAIR"],
             type = 'toggle',
             cmdHidden = true,
-            order = 221,
+            order = 121,
             width = 'full',
             disabled = function(info) return (not info.handler.db.profile.autorepair) end,
             set = function(info, val) info.handler.db.profile.guildrepair = val end,
             get = function(info) return info.handler.db.profile.guildrepair end,
         },
         
+        -- SELLING
+        sellheader = {
+            name = L["OPTIONS_HEADER_SELLING"],
+            type = 'header',
+            order = 200,
+        },
+        selldesc = {
+            name = L["OPTIONS_DESC_SELLING"],
+            type = 'description',
+            order = 210,
+        },
+
+        autosell = {
+            name = L["OPTIONS_SETTINGNAME_AUTOSELL"],
+            desc = L["OPTIONS_SETTINGDESC_AUTOSELL"],
+            type = 'toggle',
+            cmdHidden = true,
+            order = 220,
+            width = 'full',
+            set = function(info,val) info.handler.db.profile.autosell = val end,
+            get = function(info) return info.handler.db.profile.autosell end,
+        },
+        sellrules = {
+            name = L["OPTIONS_SETTINGNAME_SELLRULES"],
+            desc = L["OPTIONS_SETTINGDESC_SELLRULES"],
+            type = 'execute',
+            order = 230,
+            confirm = false,
+            func = 'ShowSystemRuleSellDialog',
+        },
+
+        keeprules = {
+            name = L["OPTIONS_SETTINGNAME_KEEPRULES"],
+            desc = L["OPTIONS_SETTINGDESC_KEEPRULES"],
+            type = 'execute',
+            order = 240,
+            confirm = false,
+            func = 'ShowSystemRuleKeepDialog',
+        },
+
         -- Console only commands
         sell = {
             name = L["CMD_SELLITEM_NAME"],
@@ -185,23 +158,6 @@ Vendor.config = {
             type = 'execute',
             func = 'OpenSettings_Cmd',
         },
-        --@do-not-package@
-        link = {
-            name = "Dump Link",
-            guiHidden = true,
-            cmdHidden = false,
-            type = 'execute',       
-            func = 'DumpLink_Cmd',
-        },
-        test = {
-            name = 'Test Function',
-            desc = "Runs the test function! It could do anything! Or nothing. Or break the addon. Use at own risk.",
-            guiHidden = true,
-            cmdHidden = false,
-            type = 'execute',
-            func = 'Test_Cmd',
-        },
-        --@end-do-not-package@
     },
 }
 
