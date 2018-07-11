@@ -49,3 +49,13 @@ end
 function Vendor:IsItemArtifactPowerInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ARTIFACT_POWER"])
 end
+
+-- Toy
+function Vendor:IsItemToyInTooltip(tooltip, bag, slot)
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["TOY"])
+end
+
+-- Already known
+function Vendor:IsItemAlreadyKnownInTooltip(tooltip, bag, slot)
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ITEM_SPELL_KNOWN"])
+end

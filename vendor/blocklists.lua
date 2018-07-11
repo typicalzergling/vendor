@@ -15,23 +15,27 @@ function Vendor:ToggleItemInBlocklist(list, item)
     if list == self.c_AlwaysSellList then
         if self.db.profile.sell_always[id] then
             self.db.profile.sell_always[id] = nil
+            self:ClearTooltipResultCache()
             return 2
         else
             -- Add to the list.
             self.db.profile.sell_always[id] = true
             -- Remove from other list.
             self.db.profile.sell_never[id] = nil
+            self:ClearTooltipResultCache()
             return 1
         end
     elseif list == self.c_NeverSellList then
         if self.db.profile.sell_never[id] then
             self.db.profile.sell_never[id] = nil
+            self:ClearTooltipResultCache()
             return 2
         else
             -- Add to the list.
             self.db.profile.sell_never[id] = true
             -- Remove from the other list.
             self.db.profile.sell_always[id] = nil
+            self:ClearTooltipResultCache()
             return 1
         end
     else
@@ -88,4 +92,7 @@ function Vendor:ClearBlocklist(list)
     elseif list == self.c_NeverSellList then
         self.db.profile.sell_never = {}
     end
+    
+    -- Blocklist changed, so clear the Tooltip cache.
+    self:ClearTooltipResultCache()
 end
