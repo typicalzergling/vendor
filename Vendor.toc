@@ -25,9 +25,16 @@ vendor\itemproperties.lua
 vendor\merchant.lua
 
 # Rules
+rules\maps.lua
+rules\functions.lua
+rules\definitions.lua
+rules\manager.lua
 rules\evaluate.lua
+rules\rulelist.lua
 
 # User Interface
 ui\tooltip.lua
 ui\cmds.lua
 ui\config.lua
+rules\rulelist.xml
+
