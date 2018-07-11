@@ -18,6 +18,11 @@ end
 --*****************************************************************************
 local function updateRuleEnabledState(ruleFrame, ruleConfig)
 	ruleFrame.Enabled:SetChecked(false)
+	if (ruleFrame.ItemLevel) then
+		ruleFrame.ItemLevel:SetNumber(0)
+		ruleFrame.ItemLevel:Disable()
+	end
+	
 	for _, entry in pairs(ruleConfig) do
 		if (type(entry) == "string") then
 			if (entry == ruleFrame.RuleId) then
@@ -26,6 +31,7 @@ local function updateRuleEnabledState(ruleFrame, ruleConfig)
 				if (ruleFrame.ItemLevel) then
 					ruleFrame.ItemLevel:SetNumber(0)
 					ruleFrame.Enabled:SetChecked(false)
+					ruleFrame.ItemLevel:Disable()
 				end
 			end
 		elseif (type(entry) == "table") then
@@ -39,11 +45,12 @@ local function updateRuleEnabledState(ruleFrame, ruleConfig)
 					else
 						ruleFrame.ItemLevel:SetNumber(0)
 						ruleFrame.Enabled:SetChecked(false)
+						ruleFrame.ItemLevel:Disable()
 					end
 				end				
 			end
 		end
-	end
+	end	
 	
 	toggleRuleWithItemLevel(ruleFrame)
 end
@@ -138,15 +145,17 @@ end
 -- Called when a rules list is loaded in order to populate the list of 
 -- frames which represent the rules contained in the list.
 --*****************************************************************************
-function Vendor.RulesUI.InitRuleList(frame, ruleList, ruleConfig)
+function Vendor.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
 	frame.RuleFrameSize = 0
 	frame.NumVisible = 0
 	frame.GetRuleConfig = getRuleConfigFromList
 	frame.SetRuleConfig = setRuleConfigFromList
 	frame.RuleConfig = ruleConfig or {}
 	frame.RuleList = ruleList
+	frame.RuleType = ruleType
 
 	assert(frame.RuleList, "Rule List frame needs to have the rule list set")
+	assert(frame.RuleType, "Rule List frame needs to have the rule type set")
 	
 	-- Create the frame for each of our rules.
 	for id, rule in pairs(frame.RuleList) do
@@ -175,7 +184,7 @@ function Vendor.RulesUI.UpdateRuleList(frame)
 		local startIndex = (1 + offset)
 		local endIndex = math.min(totalItems, offset + frame.NumVisible)
 
-		FauxScrollFrame_Update(frame.View,totalItems, frame.NumVisible, frame.RuleFrameSize);
+		FauxScrollFrame_Update(frame.View, totalItems, frame.NumVisible, frame.RuleFrameSize, nil, nil, nil, nil, nil, nil, true)
 		for ruleIndex=1,#frame.Rules do
 			local ruleFrame = frame.Rules[ruleIndex]
 			if ((ruleIndex < startIndex) or (ruleIndex > endIndex)) then
@@ -193,5 +202,20 @@ function Vendor.RulesUI.UpdateRuleList(frame)
 			end
 		end
 	end
+end
+
+function Vendor.RulesUI.ApplySystemRuleConfig(frame)
+	Vendor:DebugRules("Applying config for rule type '%s'", frame.RuleType)
+	Vendor.db.profile.rules[string.lower(frame.RuleType)] = getRuleConfigFromList(frame)
+	Vendor:OnRuleConfigUpdated()
+end
+
+function Vendor:ShowSystemRuleSellDialog()
+	VendorSellSystemRulesRulesDialog.SellList:SetRuleConfig(self.db.profile.rules.sell)
+	VendorSellSystemRulesRulesDialog:Show()
+end
+function Vendor:ShowSystemRuleKeepDialog()
+	VendorKeepSystemRulesRulesDialog.KeepList:SetRuleConfig(self.db.profile.rules.keep)
+	VendorKeepSystemRulesRulesDialog:Show()
 end
 

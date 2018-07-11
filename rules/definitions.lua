@@ -22,6 +22,7 @@ Vendor.SystemRules =
 			Name = L["SYSRULE_SELL_ALWAYSSELL"],
 			Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
 			Script = "IsAlwaysSellItem()",
+			Locked = true,
 		},
 
 		artifactpower =
@@ -30,14 +31,6 @@ Vendor.SystemRules =
 			Description = L["SYSRULE_SELL_ARTIFACTPOWER_DESC"],
 			Script = "IsArtifactPower() and IsFromExpansion(6) and (PlayerLevel() >= 110)",
 		},		
-
-		knownapperance =
-		{
-			Name = L["SYSRULE_SELL_KNOWNAPPERANCE"],
-			Description = L["SYSRULE_SELL_KNOWNAPPERANCE_DESC"],
-			Script = "not IsUnknownAppearance() and Level() < {itemlevel}",	
-			InsetsNeeded = { "itemlevel" },
-		},
 				
 		uncommon =
 		{
@@ -74,61 +67,62 @@ Vendor.SystemRules =
 		{
 			Name = L["SYSRULE_KEEP_NEVERSELL"],
 			Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
-			Script = "IsNeverSellItem()"
+			Script = "IsNeverSellItem()",
+			Locked = true,
 		},	
 
 		common =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_COMMON].hex .. L["SYSRULE_KEEP_COMMON"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_COMMON"],
 			Description = L["SYSRULE_KEEP_COMMON_DESC"],
 			Script = "Quality() == 1",
 		},
 
 		uncommon =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_UNCOMMON].hex .. L["SYSRULE_KEEP_UNCOMMON"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_UNCOMMON"],
 			Description = L["SYSRULE_KEEP_UNCOMMON_DESC"],
 			Script = "Quality() == 2",
 		},
 
 		rare =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_RARE].hex .. L["SYSRULE_KEEP_RARE"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_RARE"],
 			Description = L["SYSRULE_KEEP_RARE_DESC"],
 			Script = "Quality() == 3",
 		},
 
 		epic =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_EPIC].hex .. L["SYSRULE_KEEP_EPIC"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_EPIC"],
 			Description = L["SYSRULE_KEEP_EPIC_DESC"],
 			Script = "Quality() == 4",
 		},
 
 		legendary =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_LEGENDARY].hex .. L["SYSRULE_KEEP_LEGENDARY"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_LEGENDARY"],
 			Description = L["SYSRULE_KEEP_LEGENDARY_DESC"],
 			Script = "Quality() == 5",
 		},
 
 		artifact =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_ARTIFACT].hex .. L["SYSRULE_KEEP_ARTIFACT"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_ARTIFACT"],
 			Description = L["SYSRULE_KEEP_ARTIFACT_DESC"],
 			Script = "Quality() == 6",
 		},
 
 		heirloom =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_HEIRLOOM].hex .. L["SYSRULE_KEEP_HEIRLOOM"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_HEIRLOOM"],
 			Description = L["SYSRULE_KEEP_HEIRLOOM_DESC"],
 			Script = "Quality() == 7",
 		},
 
 		token =
 		{
-			Name = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_WOW_TOKEN].hex .. L["SYSRULE_KEEP_TOKEN"] .. FONT_COLOR_CODE_CLOSE,
+			Name = L["SYSRULE_KEEP_TOKEN"],
 			Description = L["SYSRULE_KEEP_TOKEN_DESC"],			
 			Script = "Quality() == 8",
 		},
@@ -141,6 +135,14 @@ Vendor.SystemRules =
 		},
 	}
 }
+
+--*****************************************************************************
+-- Gets the rule definitions of the specified type,or returns an empty 
+-- table if there aren't any available.
+--*****************************************************************************
+local function getSystemRuleDefinitons(ruleType)
+	return Vendor.SystemRules[ruleType] or {}
+end
 
 --*****************************************************************************
 -- Subsitutes every instance of "{inset}" with the value specified by 
@@ -185,6 +187,20 @@ local function makeRuleId(ruleType, ruleId, insets)
 end
 
 --*****************************************************************************
+-- Creates an instance of the rule from the specified definition
+--*****************************************************************************
+local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
+	return {
+				Id = makeRuleId(ruleType, ruleId, insets),
+				Name =  ruleDef.Name,
+				Description = ruleDef.Description,
+				Script = replaceInsets(ruleDef.Script, insets),
+				InsetsNeeded = ruleDef.InsetsNeeded,
+				Locked = ruleDef.Locked,
+			}
+end
+
+--*****************************************************************************
 -- Gets the definition of the specified rule checking the tables of rules 
 -- returns the id and the script of the rule. this will format the item level
 -- into the rule of needed.
@@ -193,18 +209,23 @@ end
 -- be formated into both the ruleId and script.
 --*****************************************************************************
 function Vendor:GetSystemRuleDefinition(ruleType, ruleId, insets)
-	local typeTable = Vendor.SystemRules[ruleType]
-	if (typeTable ~= nil) then
-		local ruleDef = typeTable[string.lower(ruleId)]
-		if (ruleDef ~= nil) then
-			return {
-						Id = makeRuleId(ruleType, ruleId, insets),
-						Name =  replaceInsets(ruleDef.Name, insets),
-						Description = replaceInsets(ruleDef.Description, insets),
-						Script = replaceInsets(ruleDef.Script, insets),
-						InsetsNeeded = ruleDef.InsetsNeeded
-					}
-		end
+	local ruleDef = getSystemRuleDefinitons(ruleType)[string.lower(ruleId)]
+	if (ruleDef ~= nil) then
+		return createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
 	end
 	return nil
+end
+
+--*****************************************************************************
+--  Gets the list of system rules which are considered locked, meaning they
+-- cannot be added/removed by the user as part of the config.
+--*****************************************************************************
+function Vendor:GetLockedSystemRules(ruleType, insets)
+	lockedRules = {}
+	for ruleId, ruleDef in pairs(getSystemRuleDefinitons(ruleType)) do
+		if (ruleDef.Locked) then
+			table.insert(lockedRules, createRuleFromDefinition(ruleType, ruleId, ruleDef, insets))
+		end
+	end
+	return lockedRules
 end

@@ -36,7 +36,6 @@ end
 --*****************************************************************************
 function Vendor.RuleManager.Rule:Run(environment)
 	if self.Script then
-		print("running rule: ", self.Id)
 		setfenv(self.Script, environment)
 		local status, result = pcall(self.Script)
 		if status and result then

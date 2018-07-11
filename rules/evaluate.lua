@@ -24,6 +24,20 @@ function Vendor:ApplyRuleConfig(ruleManager, ruleType, config)
 	end
 end
 
+-- Adds all of the locked system rules of a given type to the rules
+function Vendor:ApplyLockedSystemRules(ruleManager, ruleType)
+	for _, ruleInfo in ipairs(Vendor:GetLockedSystemRules(ruleType)) do
+		Vendor:DebugRules("Adding locked system rule '%s' to the '%s' list", ruleInfo.Id, ruleType)
+		ruleManager:AddRule(ruleInfo.Id, ruleInfo.Script)
+	end
+end
+
+-- Called when our rule configuration has changed
+function Vendor:OnRuleConfigUpdated()
+	self.keepRules = nil
+	self.sellRules = nil
+end
+
 -- Rules for determining if an item should be sold.
 -- TODO: Make this a dynamic system with default rules and allow user-supplied rules.
 function Vendor:EvaluateItemForSelling(item)
@@ -39,7 +53,7 @@ function Vendor:EvaluateItemForSelling(item)
 	-- we always add the check against the neversell list no matter what the options says
 	if (not self.keepRules) then
 		self.keepRules = Vendor.RuleManager:Create(Vendor.RuleFunctions);
-		self:AddSystemRule(self.keepRules, Vendor.c_RuleType_Keep, "neversell")
+		self:ApplyLockedSystemRules(self.keepRules, Vendor.c_RuleType_Keep)
 		self:ApplyRuleConfig(self.keepRules, Vendor.c_RuleType_Keep, self.db.profile.rules.keep)
 
 		local customKeep = self.db.profile.rules.custom.keep;
@@ -52,7 +66,7 @@ function Vendor:EvaluateItemForSelling(item)
 	-- We always add the always sell rule, no mater what our config says
 	if (not self.sellRules) then
 		self.sellRules = Vendor.RuleManager:Create(Vendor.RuleFunctions);
-		self:AddSystemRule(self.sellRules, Vendor.c_RuleType_Sell, "alwayssell")
+		self:ApplyLockedSystemRules(self.sellRules, Vendor.c_RuleType_Sell)
 		self:ApplyRuleConfig(self.sellRules, Vendor.c_RuleType_Sell, self.db.profile.rules.sell)
 
 		local customSell = self.db.profile.rules.custom.sell;

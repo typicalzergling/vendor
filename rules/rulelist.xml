@@ -23,7 +23,7 @@
 		<Frames>
 			<CheckButton name="$parentEnabled" parentKey="Enabled" inherits="OptionsBaseCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="0" y="-0"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="2" y="0"/>
 				</Anchors>	
 				<Scripts>
 					<OnClick>if (self:GetParent().ToggleRuleState) then self:GetParent():ToggleRuleState() end</OnClick>
@@ -77,7 +77,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<EditBox name="$parentItemLevel" parentKey="ItemLevel" inherits="InputBoxTemplate" letters="4" numeric="true" autoFocus="false" multiLne="false">
+			<EditBox name="$parentItemLevel" parentKey="ItemLevel" inherits="InputBoxTemplate" letters="4" numeric="true" autoFocus="false" multiLne="false" enabled="false">
 				<Size x="58" y="18"/>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="8"/>
@@ -93,7 +93,7 @@
 					</Layer>				
 				</Layers>
 				<Scripts>
-					<OnShow>self.Label:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)</OnShow>
+					<OnShow>self.Label:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)</OnShow>
 					<OnDisable>
 						self:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
 						self.Label:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
@@ -108,21 +108,22 @@
 	</Frame>
 
 	<Frame name="VendorSystemRuleList" virtual="true" enableMouse="true">
-		<Size>
-			<AbsDimension x="350" y="500"/>
-		</Size>
 	    <Scripts>
 		</Scripts>
-	    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true">
-			<TileSize><AbsValue val="16" /> </TileSize>
-	    </Backdrop>
 	    <Frames>
-			<ScrollFrame name="$parentView" parentKey="View" inherits="FauxScrollFrameTemplate">
-				<Size x="10" y="384"/>
-	        	<Anchors>
-	        		<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="0"/>
-	        		<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="0" y="0"/>
-	        	</Anchors>
+			<ScrollFrame name="$parentView" parentKey="View" inherits="FauxScrollFrameTemplate" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture>
+							<Size x="20" y="20"/>
+							<Color r="0" g="0" b="0" a="0.5"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="2" y="-2"/>
+								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="2"/>
+							</Anchors>
+						</Texture>				
+					</Layer>		
+				</Layers>			
 	        	<Scripts>
 	          		<OnVerticalScroll>
 	          			local parent = self:GetParent()
@@ -136,25 +137,113 @@
 		</Frames>
 	</Frame>
 
-	<Frame name="VendorSellSystemRuleList" inherits="VendorSystemRuleList" parent="UIParent">
+	<Frame name="VendorSellSystemRuleList" inherits="VendorSystemRuleList" virtual="true">
 		<Scripts>
 			<OnLoad>
-				Vendor.RulesUI.InitRuleList(self, Vendor.SystemRules.Sell)
+				Vendor.RulesUI.InitRuleList(self, Vendor.c_RuleType_Sell, Vendor.SystemRules.Sell)
 			</OnLoad>
 		</Scripts>
-	    <Anchors>
-			<Anchor point="CENTER" x="200"/>
-	    </Anchors>
 	</Frame>
 
-	<Frame name="VendorKeepSystemRuleList" inherits="VendorSystemRuleList" parent="UIParent">
+	<Frame name="VendorKeepSystemRuleList" inherits="VendorSystemRuleList" virtual="true">
 		<Scripts>
 			<OnLoad>
-				Vendor.RulesUI.InitRuleList(self, Vendor.SystemRules.Keep)
+				Vendor.RulesUI.InitRuleList(self, Vendor.c_RuleType_Keep, Vendor.SystemRules.Keep)
 			</OnLoad>
 		</Scripts>
-	    <Anchors>
-			<Anchor point="CENTER" x="-200"/>
-	    </Anchors>
 	</Frame>	
+
+	<Frame name="VendorSellSystemRulesRulesDialog" inherits="ButtonFrameTemplate" parent="UIParent" enableMouse="true" movable="true" toplevel="true" hidden="true" frameStrata="DIALOG">
+		<Size x="350" y="512"/>
+	    <Anchors>
+			<Anchor point="CENTER"/>
+	    </Anchors>		
+	    <Frames>
+	    	<Frame parentKey="SellList" inherits="VendorSellSystemRuleList">
+	    		<Anchors>
+	    			<Anchor point="TOPLEFT" x="10" y="-30"/>
+	    			<Anchor point="BOTTOMRIGHT" x="-34" y="28"/>
+	    		</Anchors>
+	    	</Frame>
+	    	<Button name="$parentCancelButton" parentKey="Cancel" inherits="MagicButtonTemplate" text="CANCEL">
+	    		<Size x="80" y="22"/>
+	    		<Anchors>
+	    			<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+	    		</Anchors>
+				<Scripts>
+					<OnClick function="PortraitFrameCloseButton_OnClick"/>
+				</Scripts>
+	    	</Button>
+			<Button name="$parentOkayButton" inherits="MagicButtonTemplate" parentKey="Okay" text="OKAY">
+				<Size x="80" y="22"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentCancelButton" relativePoint="TOPLEFT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Vendor.RulesUI.ApplySystemRuleConfig(self:GetParent().SellList)
+						HideParentPanel(self)
+					</OnClick>
+				</Scripts>
+			</Button>    	
+	    </Frames>
+	    <Scripts>
+	    	<OnLoad>
+				tinsert(UISpecialFrames, self:GetName());
+				ButtonFrameTemplate_ShowButtonBar(self)
+				ButtonFrameTemplate_HidePortrait(self)
+				ButtonFrameTemplate_HideAttic(self)
+	    		self.TitleText:SetText(Vendor:GetLocalizedStrings()["RULEUI_SYSRULE_SELL_DIALOG_TITLE"])
+	    	</OnLoad>
+			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
+			<OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>	    	
+	    </Scripts>
+	</Frame>
+	
+	<Frame name="VendorKeepSystemRulesRulesDialog" inherits="ButtonFrameTemplate" parent="UIParent" enableMouse="true" movable="true" toplevel="true" hidden="true" frameStrata="DIALOG">
+		<Size x="350" y="512"/>
+	    <Anchors>
+			<Anchor point="CENTER"/>
+	    </Anchors>		
+	    <Frames>
+	    	<Frame parentKey="KeepList" inherits="VendorKeepSystemRuleList">
+	    		<Anchors>
+	    			<Anchor point="TOPLEFT" x="10" y="-30"/>
+	    			<Anchor point="BOTTOMRIGHT" x="-34" y="28"/>
+	    		</Anchors>
+	    	</Frame>
+	    	<Button name="$parentCancelButton" parentKey="Cancel" inherits="MagicButtonTemplate" text="CANCEL">
+	    		<Size x="80" y="22"/>
+	    		<Anchors>
+	    			<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+	    		</Anchors>
+				<Scripts>
+					<OnClick function="PortraitFrameCloseButton_OnClick"/>
+				</Scripts>
+	    	</Button>
+			<Button name="$parentOkayButton" inherits="MagicButtonTemplate" parentKey="Okay" text="OKAY">
+				<Size x="80" y="22"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentCancelButton" relativePoint="TOPLEFT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Vendor.RulesUI.ApplySystemRuleConfig(self:GetParent().KeepList)
+						HideParentPanel(self)						
+					</OnClick>
+				</Scripts>
+			</Button>    	
+	    </Frames>
+	    <Scripts>
+	    	<OnLoad>
+				tinsert(UISpecialFrames, self:GetName());
+				ButtonFrameTemplate_ShowButtonBar(self)
+				ButtonFrameTemplate_HidePortrait(self)
+				ButtonFrameTemplate_HideAttic(self)
+	    		self.TitleText:SetText(Vendor:GetLocalizedStrings()["RULEUI_SYSRULE_KEEP_DIALOG_TITLE"])
+	    	</OnLoad>
+			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
+			<OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>	    	
+	    </Scripts>
+	</Frame>
 </Ui>

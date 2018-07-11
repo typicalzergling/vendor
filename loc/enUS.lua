@@ -103,6 +103,9 @@ Vendor.Locales["enUS"] =
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
 -- Rules
+["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
+["RULEUI_SYSRULE_SELL_DIALOG_TITLE"] = "Vendor: Built-In Sell Rules",
+["RULEUI_SYSRULE_KEEP_DIALOG_TITLE"] = "Vendor: Built-In Keep Rules",
 
 -- System rules
 ["SYSRULE_SELL_JUNK"] = "Junk",
@@ -111,8 +114,6 @@ Vendor.Locales["enUS"] =
 ["SYSRULE_SELL_ALWAYSSELL_DESC"] = "Matches the item ID against the always sell list",
 ["SYSRULE_SELL_ARTIFACTPOWER"] = "Artifact Power (Legion)",
 ["SYSRULE_SELL_ARTIFACTPOWER_DESC"] =  "Matches any artifact power items fron which belong to the legion expansion which can be sold",
-["SYSRULE_SELL_KNOWNAPPERANCE"] = "Known Apperance",
-["SYSRULE_SELL_KNOWNAPPERANCE_DESC"] = "Matches items which have an apperance you already know with an item level less than specified item level",
 ["SYSRULE_SELL_UNCOMMON_ITEMS"] = "Uncommon Items",
 ["SYSRULE_SELL_UNCOMMON_ITEMS_DESC"] = "Matches souldbound uncommon (green) weapons and armor with an item level less than specified item level",
 ["SYSRULE_SELL_RARE_ITEMS"] = "Rare Items",
