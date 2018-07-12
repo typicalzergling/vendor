@@ -43,6 +43,7 @@ local itemLink = nil
 local willBeSold = nil
 local blocklist = nil
 local ruleId = nil
+local ruleName = nil
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Vendor:ClearTooltipResultCache()
@@ -50,6 +51,7 @@ function Vendor:ClearTooltipResultCache()
     willBeSold = nil
     blocklist = nil
     ruleId = nil
+    ruleName = nil
 end
 
 function Vendor:AddItemTooltipLines(tooltip, link)
@@ -60,7 +62,7 @@ function Vendor:AddItemTooltipLines(tooltip, link)
     if not (itemLink == link) then
         -- Evaluate the item for sell
         local item = self:GetItemPropertiesFromTooltip(tooltip, link)
-        willBeSold, ruleId = self:EvaluateItemForSelling(item)
+        willBeSold, ruleId, ruleName  = self:EvaluateItemForSelling(item)
 
         -- Check if the item is in the Always or Never sell lists
         blocklist = self:GetBlocklistForItem(link)
@@ -83,14 +85,17 @@ function Vendor:AddItemTooltipLines(tooltip, link)
     -- Add a warning that this item will be auto-sold on next vendor trip.
     if willBeSold then
         tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+        if (ruleName) then
+	        tooltip:AddLine(string.format(L["RULEMATCH_TOOLTIP"], ruleName))
+	  	end
     end
 
-    -- Print the rule that was used to evaluate this item.
     --@debug@
-    if (not ruleId) then
-        ruleId = "keep.nomatches"
-    end
-    tooltip:AddLine(string.format("%s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
+    if (ruleId) then
+		-- If we had a rule match (make a choice) then add it to the tooltip, if we didn't get a match then
+		-- no line means we didn't match anything.
+	    tooltip:AddLine(string.format("Vendor RuleId: %s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
+	end
     --@end-debug@
     
 end

@@ -87,9 +87,15 @@ Vendor.Locales["enUS"] =
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
 -- Rules
+["RULEMATCH_TOOLTIP"] = "Vendor Rule: \"%s\"",
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
-["RULEUI_SYSRULE_SELL_DIALOG_TITLE"] = "Vendor: Built-In Sell Rules",
-["RULEUI_SYSRULE_KEEP_DIALOG_TITLE"] = "Vendor: Built-In Keep Rules",
+["CONFIG_DIALOG_CAPTION"] = "Vendor Setting",
+["CONFIG_DIALOG_KEEPRULES_TAB"] = "Keep Rules",
+["CONFIG_DIALOG_KEEPRULES_TEXT"] = "These are the built-in rules which Vendor uses to determine if hte item should be kept or sold",
+["CONFIG_DIALOG_SELLRULES_TAB"] = "Sell Rules",
+["CONFIG_DIALOG_SELLRULES_TEXT"] = "These are the built-in rules which Vendor using for selling your items",
+["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Rules",
+["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "Custom rules are not yet implement but are are comming soon(tm)",
 
 -- System rules
 

@@ -13,6 +13,8 @@ Vendor.defaults = {
         -- Rules configuration
         rules =
         {
+        	version = 2,
+        	
             -- The default rules to enable which cause items to be kept
             keep = {
                 "neversell",
@@ -34,11 +36,8 @@ Vendor.defaults = {
             },
 
             -- Custom rules provied by the user
-            custom =
-            {
-                sell = { },
-                buy = { },
-            },
+            custom = {},
+            customDefinitions = {},
         },
     },
 }

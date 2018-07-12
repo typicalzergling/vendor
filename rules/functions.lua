@@ -2,6 +2,11 @@
 Vendor = Vendor or {}
 Vendor.RuleFunctions = {}
 
+Vendor.RuleFunctions.NO_ACTION = 1
+Vendor.RuleFunctions.KEEP = 2
+Vendor.RuleFunctions.SELL = 3
+Vendor.RuleFunctions.SELL_WITH_PROMPT = 4
+
 --*****************************************************************************
 -- Given a set of values this searches for them in the map to see if they map
 -- the expected value which is passed in.
