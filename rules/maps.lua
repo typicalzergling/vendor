@@ -7,7 +7,7 @@ local L = Vendor:GetLocalizedStrings()
 -- Mapping of numeric representation to possible names (strings) which would identify 
 -- the quality of an item, for example, 4, epic, purple are all the same.
 --*****************************************************************************
-Vendor.Maps.Qualit = {
+Vendor.Maps.Quality = {
     ["poor"] = LE_ITEM_QUALITY_POOR,
     ["junk"] = LE_ITEM_QUALITY_POOR,
     ["gray"] = LE_ITEM_QUALITY_POOR,
@@ -56,4 +56,5 @@ Vendor.Maps.Expansion =
     ["draenor"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["legion"] = LE_EXPANSION_LEGION,
     ["bfa"] = LE_EXPANSION_8_0, 
+    ["bofa"] = LE_EXPANSION_8_0,
 }

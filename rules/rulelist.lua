@@ -56,11 +56,9 @@ local function updateRuleEnabledState(ruleFrame, ruleConfig)
 end
 
 local function ruleNeeds(rule, inset)
-    print("ruleNeeds:", rule, inset)
     inset = string.lower(inset)
     if (rule.InsetsNeeded) then
         for _, needed in ipairs(rule.InsetsNeeded) do
-            print("needed", needed)
             if (string.lower(needed) == inset) then
                 return true
             end
@@ -77,7 +75,6 @@ end
 local function createRuleItem(parent, ruleId, rule)
     local template = "VendorSimpleRuleTemplate"
     if ruleNeeds(rule, "itemlevel") then
-        print("rule", ruleId, "need item level")
         template = "VendorRuleTemplateWithItemLevel"
     end
 
@@ -87,9 +84,9 @@ local function createRuleItem(parent, ruleId, rule)
     frame.RuleName:SetText(rule.Name)
     frame.RuleDescription:SetText(rule.Description)
 
-    if (parent.Rules and ((#parent.Rules % 2) ~= 0)) then
-        frame.OddBackground:Show()
-    end
+   -- if (parent.Rules and ((#parent.Rules % 2) ~= 0)) then
+   --   frame.OddBackground:Show()
+   --  end
 
     if (frame.ItemLevel) then
         frame.ItemLevel.Label:SetText(L["RULEUI_LABEL_ITEMLEVEL"])
@@ -166,7 +163,6 @@ function Vendor.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
     end
 
     -- Give an initial update of the view
-    frame.NumVisible = math.floor(frame.View:GetHeight() / frame.RuleFrameSize)
     Vendor.RulesUI.UpdateRuleList(frame)
 end
 
@@ -181,10 +177,11 @@ function Vendor.RulesUI.UpdateRuleList(frame)
         local ruleHeight = frame.RuleFrameSize
         local previousFrame = nil
         local totalItems = #frame.Rules
+        local numVisible = math.floor(frame.View:GetHeight() / frame.RuleFrameSize)
         local startIndex = (1 + offset)
-        local endIndex = math.min(totalItems, offset + frame.NumVisible)
+        local endIndex = math.min(totalItems, offset + numVisible)
 
-        FauxScrollFrame_Update(frame.View, totalItems, frame.NumVisible, frame.RuleFrameSize, nil, nil, nil, nil, nil, nil, true)
+        FauxScrollFrame_Update(frame.View, totalItems, numVisible, frame.RuleFrameSize, nil, nil, nil, nil, nil, nil, true)
         for ruleIndex=1,#frame.Rules do
             local ruleFrame = frame.Rules[ruleIndex]
             if ((ruleIndex < startIndex) or (ruleIndex > endIndex)) then
@@ -206,16 +203,106 @@ end
 
 function Vendor.RulesUI.ApplySystemRuleConfig(frame)
     Vendor:DebugRules("Applying config for rule type '%s'", frame.RuleType)
-    Vendor.db.profile.rules[string.lower(frame.RuleType)] = getRuleConfigFromList(frame)
+	local config = Vendor:GetRulesConfig()
+    config[string.lower(frame.RuleType)] = getRuleConfigFromList(frame)
+end
+
+--************************************--
+
+local function showHideFrame(frameName, show)
+	local frame = _G[frameName]
+	if (frame) then
+		if (show) then 		
+			frame:Show()
+		else
+			frame:Hide()
+		end
+	end
+end
+
+function Vendor.RulesUI.RuleDialog_OnLoad(self)
+    --tinsert(UISpecialFrames, self:GetName());
+	self.Caption:SetText(L["CONFIG_DIALOG_CAPTION"])
+	
+	-- Setup the sell Panel
+	self.SellTab:SetText(L["CONFIG_DIALOG_SELLRULES_TAB"])
+	PanelTemplates_TabResize(self.SellTab, 0)
+	self.SellPanel.TopText:SetText(L["CONFIG_DIALOG_SELLRULES_TEXT"])
+	self.SellPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
+	self.SellPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.10)
+
+	-- Setup the keep panel
+	self.KeepTab:SetText(L["CONFIG_DIALOG_KEEPRULES_TAB"])
+	PanelTemplates_TabResize(self.KeepTab, 0)
+	self.KeepPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
+	self.KeepPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.10)
+	self.KeepPanel.TopText:SetText(L["CONFIG_DIALOG_KEEPRULES_TEXT"])
+
+	-- Setup the custom rules panel
+	--self.CustomPanel.List:SetBackdropBorderColor(.6, .6, .6, 1);
+	self.CustomTab:SetText(L["CONFIG_DIALOG_CUSTOMRULES_TAB"])
+	PanelTemplates_TabResize(self.CustomTab, 0)
+	self.CustomPanel.TopText:SetText(L["CONFIG_DIALOG_CUSTOMRULES_TEXT"])
+
+	-- Initialize the tabs
+	PanelTemplates_SetNumTabs(self, 3)
+	self.selectedTab = 2
+	PanelTemplates_UpdateTabs(self)
+	Vendor.RulesUI.RuleDialog_ShowTab(self, self.selectedTab)
+end
+
+function Vendor.RulesUI.RuleDialog_ShowTab(self, tabId)
+	local tabName1 = (self:GetName() .. "Tab1")
+	local tabName2 = (self:GetName() .. "Tab2")
+	local tabName3 = (self:GetName() .. "Tab3")
+	
+	if (tabId == 1) then
+		showHideFrame(tabName1 .. "Spacer1", true)		
+		showHideFrame(tabName2 .. "Spacer1", false)
+		showHideFrame(tabName2 .. "Spacer2", false)
+		showHideFrame(tabName3 .. "Spacer1", false)
+		showHideFrame(tabName3 .. "Spacer2", false)
+		self.SellPanel:Hide()
+		self.KeepPanel:Show()
+		self.CustomPanel:Hide()		
+	elseif (tabId == 2) then
+		showHideFrame(tabName1 .. "Spacer1", false)		
+		showHideFrame(tabName2 .. "Spacer1", true)
+		showHideFrame(tabName2 .. "Spacer2", true)
+		showHideFrame(tabName3 .. "Spacer1", false)
+		showHideFrame(tabName3 .. "Spacer2", false)
+		self.SellPanel:Show()		
+		self.KeepPanel:Hide()
+		self.CustomPanel:Hide()		
+	elseif (tabId == 3) then
+		showHideFrame(tabName1 .. "Spacer1", false)		
+		showHideFrame(tabName2 .. "Spacer1", false)
+		showHideFrame(tabName2 .. "Spacer2", false)
+		showHideFrame(tabName3 .. "Spacer1", true)
+		showHideFrame(tabName3 .. "Spacer2", true)
+		self.SellPanel:Hide()
+		self.KeepPanel:Hide()
+		self.CustomPanel:Show()
+	end
+end
+
+function Vendor.RulesUI.RulesDialog_SetDefaults(self)
+	Vendor:DebugRules("Restoring rule configuration to the default")
+	self.SellPanel.List:SetRuleConfig(Vendor.DefaultRulesConfig.sell)
+	self.KeepPanel.List:SetRuleConfig(Vendor.DefaultRulesConfig..keep)
+end
+
+function Vendor.RulesUI.RulesDialog_OnOk(self)	
+	Vendor:DebugRules("Applying new rule configuration")
+	HideParentPanel(self.Container)	
+	Vendor.RulesUI.ApplySystemRuleConfig(self.SellPanel.List)
+    Vendor.RulesUI.ApplySystemRuleConfig(self.KeepPanel.List)
     Vendor:OnRuleConfigUpdated()
 end
 
-function Vendor:ShowSystemRuleSellDialog()
-    VendorSellSystemRulesRulesDialog.SellList:SetRuleConfig(self.db.profile.rules.sell)
-    VendorSellSystemRulesRulesDialog:Show()
-end
-function Vendor:ShowSystemRuleKeepDialog()
-    VendorKeepSystemRulesRulesDialog.KeepList:SetRuleConfig(self.db.profile.rules.keep)
-    VendorKeepSystemRulesRulesDialog:Show()
+function Vendor:ShowRulesDialog()
+	VendorRulesDialog.SellPanel.List:SetRuleConfig(Vendor:GetRulesConfig().sell)
+	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Vendor:GetRulesConfig().keep)
+	VendorRulesDialog:Show()
 end
 

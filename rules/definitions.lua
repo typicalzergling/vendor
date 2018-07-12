@@ -14,8 +14,14 @@ Vendor.SystemRules =
         {
             Name = L["SYSRULE_SELL_ALWAYSSELL"],
             Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
-            Script = "IsAlwaysSellItem()",
+            Script = 
+            	function() 
+            		if IsAlwaysSellItem() then
+            			return SELL
+            		end
+            	end,
             Locked = true,
+            Order = -2000,
         },
 
         poor = 
@@ -75,8 +81,14 @@ Vendor.SystemRules =
         {
             Name = L["SYSRULE_KEEP_NEVERSELL"],
             Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
-            Script = "IsNeverSellItem()",
+            Script = 
+            	function()
+    				if IsNeverSellItem() then
+				        return KEEP
+				    end
+            	end,
             Locked = true,
+            Order = -1000,
         },
         
         -- This is an unsellable item if value is 0
@@ -86,6 +98,7 @@ Vendor.SystemRules =
             Description = L["SYSRULE_KEEP_UNSELLABLE_DESC"],
             Script = "UnitValue() == 0",
             Locked = true,
+            Order = -9999,
         },
 
         -- Safeguard rule - Common items are usually important and useful.
@@ -201,12 +214,15 @@ end
 --*****************************************************************************
 local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
     return {
+    			RawId = ruleId,
                 Id = makeRuleId(ruleType, ruleId, insets),
                 Name =  ruleDef.Name,
                 Description = ruleDef.Description,
                 Script = replaceInsets(ruleDef.Script, insets),
                 InsetsNeeded = ruleDef.InsetsNeeded,
                 Locked = ruleDef.Locked,
+                Type = ruleType,
+                Order = ruleDef.Order,
             }
 end
 
@@ -218,7 +234,7 @@ end
 -- insets is an optional parameter which is a table of items which shuold
 -- be formated into both the ruleId and script.
 --*****************************************************************************
-function Vendor:GetSystemRuleDefinition(ruleType, ruleId, insets)
+function Vendor.SystemRules.GetDefinition(ruleType, ruleId, insets)
     local ruleDef = getSystemRuleDefinitons(ruleType)[string.lower(ruleId)]
     if (ruleDef ~= nil) then
         return createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
@@ -230,11 +246,18 @@ end
 --  Gets the list of system rules which are considered locked, meaning they
 -- cannot be added/removed by the user as part of the config.
 --*****************************************************************************
-function Vendor:GetLockedSystemRules(ruleType, insets)
+function Vendor.SystemRules.GetLockedRules()
     lockedRules = {}
-    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(ruleType)) do
+    -- Handle sell rules
+    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Vendor.c_RuleType_Sell)) do
         if (ruleDef.Locked) then
-            table.insert(lockedRules, createRuleFromDefinition(ruleType, ruleId, ruleDef, insets))
+            table.insert(lockedRules, createRuleFromDefinition(Vendor.c_RuleType_Sell, ruleId, ruleDef))
+        end
+    end
+    -- Handle keep rules
+    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Vendor.c_RuleType_Keep)) do
+        if (ruleDef.Locked) then
+            table.insert(lockedRules, createRuleFromDefinition(Vendor.c_RuleType_Keep, ruleId, ruleDef))
         end
     end
     return lockedRules
