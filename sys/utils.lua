@@ -77,7 +77,7 @@ function Vendor.DeepTableCopy(obj, seen)
     local s = seen or {}
     local res = setmetatable({}, getmetatable(obj))
     s[obj] = res
-    for k, v in pairs(obj) do res[ImpTracker.DeepTableCopy(k, s)] = ImpTracker.DeepTableCopy(v, s) end
+    for k, v in pairs(obj) do res[Vendor.DeepTableCopy(k, s)] = Vendor.DeepTableCopy(v, s) end
     return res
 end
 
