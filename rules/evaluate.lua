@@ -28,6 +28,12 @@ function Vendor:EvaluateItemForSelling(item)
     -- we always add the check against the neversell list no matter what the options says
     if (not self.ruleManager) then
         self.ruleManager = Vendor.RuleManager:Create(Vendor.RuleFunctions);
+        local _, _, _, version = GetBuildInfo()
+        if (version < 80000) then
+	        self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_LEGION)
+	   	else
+	        self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_8_0)	   	
+	   	end
         self:OnRuleConfigUpdated()
     end
     
