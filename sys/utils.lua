@@ -69,6 +69,18 @@ function Vendor:MergeTable(dest, source)
     end
 end
 
+-- Table deep copy, as seen on StackOverflow
+-- https://stackoverflow.com/questions/640642/how-do-you-copy-a-lua-table-by-value
+function Vendor.DeepTableCopy(obj, seen)
+    if type(obj) ~= 'table' then return obj end
+    if seen and seen[obj] then return seen[obj] end
+    local s = seen or {}
+    local res = setmetatable({}, getmetatable(obj))
+    s[obj] = res
+    for k, v in pairs(obj) do res[ImpTracker.DeepTableCopy(k, s)] = ImpTracker.DeepTableCopy(v, s) end
+    return res
+end
+
 -- Convert price to a pretty string
 -- To reduce spam we don't show copper unless it is the only unit of measurement (i.e. < 1 silver)
 -- Gold:    FFFFFF00
