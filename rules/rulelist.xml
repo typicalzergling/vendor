@@ -69,7 +69,7 @@
                 </FontString>
                 <FontString parentKey="RuleDescription" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativeKey="$parent.RuleName" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.RuleName" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
                         <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-72" y="4"/>
                     </Anchors>
                 </FontString>

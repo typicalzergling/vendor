@@ -203,7 +203,7 @@ end
 
 function Vendor.RulesUI.ApplySystemRuleConfig(frame)
     Vendor:DebugRules("Applying config for rule type '%s'", frame.RuleType)
-	local config = Vendor:GetRuleConfig()
+	local config = Vendor:GetRulesConfig()
     config[string.lower(frame.RuleType)] = getRuleConfigFromList(frame)
 end
 
@@ -288,8 +288,8 @@ end
 
 function Vendor.RulesUI.RulesDialog_SetDefaults(self)
 	Vendor:DebugRules("Restoring rule configuration to the default")
-	self.SellPanel.List:SetRuleConfig(Vendor.db.defaults.profile.rules.sell)
-	self.KeepPanel.List:SetRuleConfig(Vendor.db.defaults.profile.rules.keep)
+	self.SellPanel.List:SetRuleConfig(Vendor.DefaultRulesConfig.sell)
+	self.KeepPanel.List:SetRuleConfig(Vendor.DefaultRulesConfig..keep)
 end
 
 function Vendor.RulesUI.RulesDialog_OnOk(self)	
@@ -301,8 +301,8 @@ function Vendor.RulesUI.RulesDialog_OnOk(self)
 end
 
 function Vendor:ShowRulesDialog()
-	VendorRulesDialog.SellPanel.List:SetRuleConfig(Vendor:GetRuleConfig().sell)
-	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Vendor:GetRuleConfig().keep)
+	VendorRulesDialog.SellPanel.List:SetRuleConfig(Vendor:GetRulesConfig().sell)
+	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Vendor:GetRulesConfig().keep)
 	VendorRulesDialog:Show()
 end
 

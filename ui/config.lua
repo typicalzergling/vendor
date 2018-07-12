@@ -1,5 +1,34 @@
 local L = Vendor:GetLocalizedStrings()
 
+Vendor.DefaultRulesConfig = 
+{
+	version = 2,
+	
+    -- The default rules to enable which cause items to be kept
+    keep = {
+        "neversell",
+        "unsellable",
+        "common",
+        "soulboundgear",
+        "unknownappearance",
+        "legendaryandup",
+    },
+
+    -- The default rules to enable which cause items to be sold.
+    sell = 
+    {
+        "artifactpower",
+        "poor",
+        "knowntoys",
+        { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
+        { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
+    },
+
+    -- Custom rules provied by the user
+    custom = {},
+    customDefinitions = {},
+}
+
 Vendor.defaults = {
     profile = {
         throttle_time = .5,

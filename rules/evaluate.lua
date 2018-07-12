@@ -2,9 +2,9 @@
 -- Evaluating items for selling.
 Vendor = Vendor or {}
 
-function Vendor:GetRuleConfig()
+function Vendor:GetRulesConfig()
 	if (not Vendor_RulesConfig) then
-		Vendor_RulesConfig = Vendor:DeepTableCopy(self.db.defaults.rule)
+		Vendor_RulesConfig = Vendor.DeepTableCopy(Vendor.DefaultRulesConfig)
 	end	
 	return Vendor_RulesConfig
 end
@@ -12,14 +12,13 @@ end
 -- Called when our rule configuration has changed
 function Vendor:OnRuleConfigUpdated()
 	if (self.ruleManager) then
-		self.ruleManager:UpdateConfig(self:GetRuleConfig())
+		self.ruleManager:UpdateConfig(self:GetRulesConfig())
 	end
 end
 
 -- Rules for determining if an item should be sold.
 -- TODO: Make this a dynamic system with default rules and allow user-supplied rules.
 function Vendor:EvaluateItemForSelling(item)
-
     -- Check some cases where we know we should never ever sell the item
     if not item then
         return false
