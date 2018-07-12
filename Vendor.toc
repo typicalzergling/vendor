@@ -33,13 +33,13 @@ rules\functions.lua
 rules\definitions.lua
 rules\manager.lua
 rules\evaluate.lua
-rules\rulelist.lua
 
 # User Interface
 ui\tooltip.lua
 ui\cmds.lua
 ui\config.lua
-rules\rulelist.xml
+ui\rulelist.lua
+ui\rulelist.xml
 
 #@do-not-package@
 # Debug

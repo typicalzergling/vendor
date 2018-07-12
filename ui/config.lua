@@ -20,6 +20,7 @@ Vendor.DefaultRulesConfig =
         "artifactpower",
         "poor",
         "knowntoys",
+		"oldfood",
         { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
         { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
     },
@@ -60,6 +61,7 @@ Vendor.defaults = {
                 "artifactpower",
                 "poor",
                 "knowntoys",
+				"oldfood",
                 { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
                 { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
             },
@@ -139,22 +141,13 @@ Vendor.config = {
             set = function(info,val) info.handler.db.profile.autosell = val end,
             get = function(info) return info.handler.db.profile.autosell end,
         },
-        sellrules = {
-            name = L["OPTIONS_SETTINGNAME_SELLRULES"],
-            desc = L["OPTIONS_SETTINGDESC_SELLRULES"],
+        config = {
+            name = L["OPTIONS_SETTINGNAME_CONFIG"],
+            desc = L["OPTIONS_SETTINGDESC_CONFIG"],
             type = 'execute',
             order = 230,
             confirm = false,
-            func = 'ShowSystemRuleSellDialog',
-        },
-
-        keeprules = {
-            name = L["OPTIONS_SETTINGNAME_KEEPRULES"],
-            desc = L["OPTIONS_SETTINGDESC_KEEPRULES"],
-            type = 'execute',
-            order = 240,
-            confirm = false,
-            func = 'ShowSystemRuleKeepDialog',
+            func = 'OpenConfigDialog_Cmd',
         },
 
         -- Console only commands
