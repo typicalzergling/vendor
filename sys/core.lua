@@ -4,32 +4,6 @@ local L = Vendor:GetLocalizedStrings()
 -- Initialize
 function Vendor:OnInitialize()
 
-    -- Load the db
-    self.db = LibStub("AceDB-3.0"):New("VendorDB", Vendor.defaults)
-
-    -- Register config options
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor", Vendor.config, {"ven", "vendor"})
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor", L["ADDON_NAME"])
-
-    --@do-not-package@
-    -- Create sub table for debug options.
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor Debug", Vendor.debugconfig, {"vend", "vendord"})
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor Debug", "Debug", "Vendor")
-    Vendor.debugconfig = nil
-    --@end-do-not-package@
-
-    -- Create sub table for perf options
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor.perfconfig", Vendor.perfconfig)
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor.perfconfig", L["OPTIONS_CATEGORY_PERFORMANCE"], "Vendor")
-    
-    -- Create sub table in options for profile management
-    local profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("Vendor.profiles", profiles)
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Vendor.profiles", L["OPTIONS_CATEGORY_PROFILES"], "Vendor")
-
-    -- Free up memory of no-longer used vars
-    Vendor.config = nil
-    Vendor.defaults = nil
 end
 
 function Vendor:OnEnable()
@@ -37,11 +11,11 @@ function Vendor:OnEnable()
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
 	self:RegisterEvent("END_BOUND_TRADEABLE", "OnEndBoundTradeable")
-    
+
     -- Tooltip hooks
     self:HookScript(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
-    self:HookScript(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem") 
-    
+    self:HookScript(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
+
     self:Debug("Enabled")
 end
 

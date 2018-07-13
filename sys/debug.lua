@@ -2,9 +2,41 @@
 -- This file will exist on a release build so Debug related code in the other files is defined.
 Vendor = Vendor or {}
 
+--@debug@
+local debugEanbled = nil
+local debugRuledEnabled = nil
+
 function Vendor:IsDebug()
-    return self.db.profile.debug
+    local function update(config)
+        debugEnabled = false
+        if (config:GetValue("debug")) then
+            debugEnabled = true
+        end
+    end
+    if (debugEnabled == nil) then
+        local config = Vendor:GetConfig()
+        config:AddOnChanged(update)
+        update(config)
+    end
+    return debugEnabled
 end
+
+function Vendor:IsDebugRules()
+    local function update(config)
+        print("update-debugrules")
+        debugRulesEnabled = false
+        if (config:GetValue("debugrules")) then
+            debugRulesEnabled = true
+        end
+    end
+    if (debugRulesEnabled == nil) then
+        local config = Vendor:GetConfig()
+        config:AddOnChanged(update)
+        update(config)
+    end
+    return debugRulesEnabled
+end
+--@end-debug@
 
 -- Debug print. On a release build this does nothing.
 function Vendor:Debug(msg, ...)
@@ -17,9 +49,9 @@ end
 -- Debug print function for rules
 function Vendor:DebugRules(msg, ...)
     --@debug@
-    if (self.db.profile.debugrules) then
+    if (self:IsDebugRules()) then
         self:Print(" %s[Rules]%s " .. msg, ACHIEVEMENT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, ...)
-    end 
+    end
     --@end-debug@
 end
 
@@ -36,14 +68,14 @@ function Vendor:DumpTooltipItemProperties()
     -- Print non-derived properties first.
     for i, v in Vendor.orderedPairs(props) do
         if not string.find(i, "^Is") then
-            self:Print("    ["..tostring(i).."] "..tostring(v)) 
+            self:Print("    ["..tostring(i).."] "..tostring(v))
         end
     end
 
     -- Print all the derived properties ("Is*") together.
     for i, v in Vendor.orderedPairs(props) do
         if string.find(i, "^Is") then
-            self:Print("    ["..tostring(i).."] "..tostring(v)) 
+            self:Print("    ["..tostring(i).."] "..tostring(v))
         end
     end
 end

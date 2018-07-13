@@ -2,8 +2,8 @@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: VendorDB, Vendor_CustomRuleDefintions
-## SavedVariablesPerCharacter: Vendor_RulesConfig
+## SavedVariables: VendorDB, Vendor_CustomRuleDefintions, Vendor_Settings
+## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_SettingsPerCharacter
 ## Author: Malvir / Severin of Windrunner
 
 # Load libraries first.

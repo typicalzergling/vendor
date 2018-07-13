@@ -5,14 +5,16 @@ Vendor = Vendor or {}
 function Vendor:GetRulesConfig()
 	if (not Vendor_RulesConfig) then
 		Vendor_RulesConfig = Vendor.DeepTableCopy(Vendor.DefaultRulesConfig)
-	end	
+	end
 	return Vendor_RulesConfig
 end
 
 -- Called when our rule configuration has changed
-function Vendor:OnRuleConfigUpdated()
-	if (self.ruleManager) then
-		self.ruleManager:UpdateConfig(self:GetRulesConfig())
+local function onRulesConfigUpdated(ruleManager, config)
+    print("---- onRulesConfigUpdated", ruleManager, config)
+    if (ruleManager) then
+        print("---- UPDATING RULES MANAGER")
+		ruleManager:UpdateConfig(config:GetRulesConfig())
 	end
 end
 
@@ -32,14 +34,17 @@ function Vendor:EvaluateItemForSelling(item)
         if (version < 80000) then
 	        self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_LEGION)
 	   	else
-	        self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_8_0)	   	
+	        self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_8_0)
 	   	end
-        self:OnRuleConfigUpdated()
+
+        local config = self:GetConfig()
+	   	config:AddOnChanged(function (c) onRulesConfigUpdated(self.ruleManager, c) end)
+	   	onRulesConfigUpdated(self.ruleManager, config)
     end
-    
+
     -- Determine if we should keep this item or not
     local result, fromRule, _, ruleName = self.ruleManager:Run(item)
-    if (result == Vendor.RULE_ACTION_SELL) then    
+    if (result == Vendor.RULE_ACTION_SELL) then
         Vendor:DebugRules("Selling '%s' due to rule '%s'", item.Name, fromRule)
     	return true, fromRule, ruleName
     elseif (result == Vendor.RULE_ACTION_KEEP) then

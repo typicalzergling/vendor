@@ -61,9 +61,9 @@ function Vendor:TableSize(T)
 end
 
 -- Merges the contents of source into dest, source can be nil
-function Vendor:MergeTable(dest, source) 
+function Vendor:MergeTable(dest, source)
     if source then
-        for key, value in pairs(source) do 
+        for key, value in pairs(source) do
             rawset(dest, key, value)
         end
     end
@@ -96,7 +96,7 @@ function Vendor:GetPriceString(price)
     price = math.floor(price / 100)
     silver = price % 100
     gold = math.floor(price / 100)
-    
+
     -- Absolutely avoiding concatenating the same string, huge memory waste. Building a table and concat it at the end.
     str = {}
     -- use highest currency present
@@ -109,18 +109,18 @@ function Vendor:GetPriceString(price)
         table.insert(str, string.format("%02d", silver))
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
 
-    elseif silver > 0 or not self.db.profile.showcopper then
+    elseif silver > 0 or not self:GetConfig():GetValue("showcopper") then
         table.insert(str, "|cFFE6E6E6")
         table.insert(str, silver)
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
-        
+
     else
         -- Show copper if that is the only unit of measurement.
         table.insert(str, "|cFFC8602C")
         table.insert(str, copper)
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
     end
-    
+
     -- Return the concatenated string using the efficient function for it
     return table.concat(str)
 end

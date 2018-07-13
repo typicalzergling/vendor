@@ -1,43 +1,40 @@
+Vendor = Vendor or {}
+
 -- Manages the always-sell and never-sell blocklists.
+-- Consider - adding "toggle" as a method on config can (and should) fire a config change.
 
 -- Returns 1 if item was added to the list.
 -- Returns 2 if item was removed from the list.
 -- Returns nil if no action taken.
 function Vendor:ToggleItemInBlocklist(list, item)
-    
+    local function toggle(l, o, i)
+        if (l[i]) then
+            l[i] = nil
+            return 2
+        else
+            l[i] = true
+            o[i] = nil
+            return 1
+        end
+    end
+
     if not item then return nil end
 
     local id = self:GetItemId(item)
     if not id then return nil end
-    
+
+    local config = self:GetConfig()
+
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
     if list == self.c_AlwaysSellList then
-        if self.db.profile.sell_always[id] then
-            self.db.profile.sell_always[id] = nil
-            self:ClearTooltipResultCache()
-            return 2
-        else
-            -- Add to the list.
-            self.db.profile.sell_always[id] = true
-            -- Remove from other list.
-            self.db.profile.sell_never[id] = nil
-            self:ClearTooltipResultCache()
-            return 1
-        end
+        local ret = toggle(config:GetValue("sell_always"), config:GetValue("sell_never"), id)
+        if (ret) then self:ClearTooltipResultCache() end
+        return ret
     elseif list == self.c_NeverSellList then
-        if self.db.profile.sell_never[id] then
-            self.db.profile.sell_never[id] = nil
-            self:ClearTooltipResultCache()
-            return 2
-        else
-            -- Add to the list.
-            self.db.profile.sell_never[id] = true
-            -- Remove from the other list.
-            self.db.profile.sell_always[id] = nil
-            self:ClearTooltipResultCache()
-            return 1
-        end
+        local ret = toggle(config:GetValue("sell_never"), config:GetValue("sell_always"), id)
+        if (ret) then  self:ClearTooltipResultCache() end
+        return ret
     else
         return nil
     end
@@ -45,16 +42,18 @@ end
 
 -- Quick direct accessor for Never Sell List
 function Vendor:IsItemIdInNeverSellList(id)
-    if id then
-        return self.db.profile.sell_never[id]
+    local list = self:GetConfig():GetValue("sell_never")
+    if id and list then
+        return list[id]
     end
     return false
 end
 
 -- Quick direct accessor for Always Sell List
 function Vendor:IsItemIdInAlwaysSellList(id)
-    if id then
-        return self.db.profile.sell_always[id]
+    local list = self:GetConfig():GetValue("sell_always")
+    if id and list then
+        return list[id]
     end
     return false
 end
@@ -63,9 +62,9 @@ end
 function Vendor:GetBlocklistForItem(item)
     local id = self:GetItemId(item)
     if id then
-        if self.db.profile.sell_never[id] then
+        if self:IsItemIdInNeverSellList(id) then
             return self.c_NeverSellList
-        elseif self.db.profile.sell_always[id] then
+        elseif self:IsItemIdInAlwaysSellList(id) then
             return self.c_AlwaysSellList
         else
             return nil
@@ -78,9 +77,9 @@ end
 function Vendor:GetBlocklist(list)
     local vlist = {}
     if list == self.c_AlwaysSellList then
-        vlist = self.db.profile.sell_always
+        vlist = self:GetConfig():GetValue("sell_always")
     elseif list == self.c_NeverSellList then
-        vlist = self.db.profile.sell_never
+        vlist = self:GetConfig():GetValue("sell_never")
     end
     return vlist
 end
@@ -88,11 +87,11 @@ end
 -- Permanently deletes the associated blocklist.
 function Vendor:ClearBlocklist(list)
     if list == self.c_AlwaysSellList then
-        self.db.profile.sell_always = {}
+        self:GetConfig():SetValue("sell_always", {})
     elseif list == self.c_NeverSellList then
-        self.db.profile.sell_never = {}
+        self:GetConfig():SetValue("sell_never", {})
     end
-    
+
     -- Blocklist changed, so clear the Tooltip cache.
     self:ClearTooltipResultCache()
 end

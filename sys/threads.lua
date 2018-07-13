@@ -16,8 +16,8 @@ local processingFrame = CreateFrame("Frame")
 processingFrame:Hide()
 processingFrame:SetScript("OnUpdate", function(self, elapsed)
     counter = counter + elapsed
-    if counter >= Vendor.db.profile.throttle_time then
-        counter = counter - Vendor.db.profile.throttle_time
+    if counter >= Vendor:GetConfig():GetValue("throttle_time") then
+        counter = counter - Vendor:GetConfig():GetValue("throttle_time")
 
         -- Do some processing on the next thread.
         Vendor:DoSomeWork()
@@ -63,7 +63,7 @@ function Vendor:AddThread(thread, name)
     obj.name = name
     table.insert(threads, obj)
     self:Debug("Added thread: "..tostring(name))
-    
+
     -- "wake up" the listener
     processingFrame:Show()
 end
