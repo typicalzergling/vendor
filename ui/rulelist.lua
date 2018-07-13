@@ -22,7 +22,7 @@ local function updateRuleEnabledState(ruleFrame, ruleConfig)
         ruleFrame.ItemLevel:SetNumber(0)
         ruleFrame.ItemLevel:Disable()
     end
-    
+
     for _, entry in pairs(ruleConfig) do
         if (type(entry) == "string") then
             if (entry == ruleFrame.RuleId) then
@@ -38,7 +38,7 @@ local function updateRuleEnabledState(ruleFrame, ruleConfig)
             local ruleId = entry["rule"]
             if (ruleId and (ruleId == ruleFrame.RuleId)) then
                 ruleFrame.Enabled:SetChecked(true)
-                
+
                 if (ruleFrame.ItemLevel) then
                     if (type(entry["itemlevel"]) == "number") then
                         ruleFrame.ItemLevel:SetNumber(entry["itemlevel"])
@@ -47,11 +47,11 @@ local function updateRuleEnabledState(ruleFrame, ruleConfig)
                         ruleFrame.Enabled:SetChecked(false)
                         ruleFrame.ItemLevel:Disable()
                     end
-                end             
+                end
             end
         end
-    end 
-    
+    end
+
     toggleRuleWithItemLevel(ruleFrame)
 end
 
@@ -68,7 +68,7 @@ end
 
 --*****************************************************************************
 -- Create a new frame for a rule item in the provided list. This will setup
--- the item for all of the proeprties of the rule 
+-- the item for all of the proeprties of the rule
 --
 -- TODO: handle insets here.
 --*****************************************************************************
@@ -139,7 +139,7 @@ local function setRuleConfigFromList(frame, config)
 end
 
 --*****************************************************************************
--- Called when a rules list is loaded in order to populate the list of 
+-- Called when a rules list is loaded in order to populate the list of
 -- frames which represent the rules contained in the list.
 --*****************************************************************************
 function Vendor.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
@@ -153,7 +153,7 @@ function Vendor.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
 
     assert(frame.RuleList, "Rule List frame needs to have the rule list set")
     assert(frame.RuleType, "Rule List frame needs to have the rule type set")
-    
+
     -- Create the frame for each of our rules.
     for id, rule in pairs(frame.RuleList) do
         if (not rule.Locked) then
@@ -168,7 +168,7 @@ end
 
 --*****************************************************************************
 -- Called when the list is scrolled/created and will iterate through our list
--- of frames an then show/hide and position the frames which should be 
+-- of frames an then show/hide and position the frames which should be
 -- currently visibile.
 --*****************************************************************************
 function Vendor.RulesUI.UpdateRuleList(frame)
@@ -203,8 +203,7 @@ end
 
 function Vendor.RulesUI.ApplySystemRuleConfig(frame)
     Vendor:DebugRules("Applying config for rule type '%s'", frame.RuleType)
-	local config = Vendor:GetRulesConfig()
-    config[string.lower(frame.RuleType)] = getRuleConfigFromList(frame)
+    Vendor:GetConfig():SetRulesConfig(frame.RuleType, getRuleConfigFromList(frame))
 end
 
 --************************************--
@@ -212,7 +211,7 @@ end
 local function showHideFrame(frameName, show)
 	local frame = _G[frameName]
 	if (frame) then
-		if (show) then 		
+		if (show) then
 			frame:Show()
 		else
 			frame:Hide()
@@ -223,7 +222,7 @@ end
 function Vendor.RulesUI.RuleDialog_OnLoad(self)
     --tinsert(UISpecialFrames, self:GetName());
 	self.Caption:SetText(L["CONFIG_DIALOG_CAPTION"])
-	
+
 	-- Setup the sell Panel
 	self.SellTab:SetText(L["CONFIG_DIALOG_SELLRULES_TAB"])
 	PanelTemplates_TabResize(self.SellTab, 0)
@@ -255,27 +254,27 @@ function Vendor.RulesUI.RuleDialog_ShowTab(self, tabId)
 	local tabName1 = (self:GetName() .. "Tab1")
 	local tabName2 = (self:GetName() .. "Tab2")
 	local tabName3 = (self:GetName() .. "Tab3")
-	
+
 	if (tabId == 1) then
-		showHideFrame(tabName1 .. "Spacer1", true)		
+		showHideFrame(tabName1 .. "Spacer1", true)
 		showHideFrame(tabName2 .. "Spacer1", false)
 		showHideFrame(tabName2 .. "Spacer2", false)
 		showHideFrame(tabName3 .. "Spacer1", false)
 		showHideFrame(tabName3 .. "Spacer2", false)
 		self.SellPanel:Hide()
 		self.KeepPanel:Show()
-		self.CustomPanel:Hide()		
+		self.CustomPanel:Hide()
 	elseif (tabId == 2) then
-		showHideFrame(tabName1 .. "Spacer1", false)		
+		showHideFrame(tabName1 .. "Spacer1", false)
 		showHideFrame(tabName2 .. "Spacer1", true)
 		showHideFrame(tabName2 .. "Spacer2", true)
 		showHideFrame(tabName3 .. "Spacer1", false)
 		showHideFrame(tabName3 .. "Spacer2", false)
-		self.SellPanel:Show()		
+		self.SellPanel:Show()
 		self.KeepPanel:Hide()
-		self.CustomPanel:Hide()		
+		self.CustomPanel:Hide()
 	elseif (tabId == 3) then
-		showHideFrame(tabName1 .. "Spacer1", false)		
+		showHideFrame(tabName1 .. "Spacer1", false)
 		showHideFrame(tabName2 .. "Spacer1", false)
 		showHideFrame(tabName2 .. "Spacer2", false)
 		showHideFrame(tabName3 .. "Spacer1", true)
@@ -288,21 +287,23 @@ end
 
 function Vendor.RulesUI.RulesDialog_SetDefaults(self)
 	Vendor:DebugRules("Restoring rule configuration to the default")
-	self.SellPanel.List:SetRuleConfig(Vendor.DefaultRulesConfig.sell)
-	self.KeepPanel.List:SetRuleConfig(Vendor.DefaultRulesConfig..keep)
+	local config = Vendor:GetConfig()
+	self.SellPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Vendor.c_RuleType_Sell))
+	self.KeepPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Vendor.c_RuleType_Keep))
 end
 
-function Vendor.RulesUI.RulesDialog_OnOk(self)	
+function Vendor.RulesUI.RulesDialog_OnOk(self)
 	Vendor:DebugRules("Applying new rule configuration")
-	HideParentPanel(self.Container)	
+	Vendor:GetConfig():BeginBatch()
 	Vendor.RulesUI.ApplySystemRuleConfig(self.SellPanel.List)
     Vendor.RulesUI.ApplySystemRuleConfig(self.KeepPanel.List)
-    Vendor:OnRuleConfigUpdated()
+    Vendor:GetConfig():EndBatch()
+	HideParentPanel(self.Container)
 end
 
 function Vendor:ShowRulesDialog()
-	VendorRulesDialog.SellPanel.List:SetRuleConfig(Vendor:GetRulesConfig().sell)
-	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Vendor:GetRulesConfig().keep)
+	VendorRulesDialog.SellPanel.List:SetRuleConfig(Vendor:GetRulesConfig(Vendor.c_RuleType_Sell))
+	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Vendor:GetRulesConfig(Vendor.c_RulesType_Keep))
 	VendorRulesDialog:Show()
 end
 

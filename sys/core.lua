@@ -10,6 +10,7 @@ function Vendor:OnEnable()
     -- Set up events
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
+	self:RegisterEvent("END_BOUND_TRADEABLE", "OnEndBoundTradeable")
 
     -- Tooltip hooks
     self:HookScript(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")

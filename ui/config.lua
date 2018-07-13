@@ -157,23 +157,42 @@ function Vendor.Config:SetPerCharacter(usePerCharacter)
 end
 
 --*****************************************************************************
+-- Retrieve the default rule configuration of the given type, or everything
+-- NOTE: This always returns a valid table, but it can be empty
+--*****************************************************************************
+function Vendor.Config:GetDefaultRulesConfig(ruleType)
+    if (not ruleType) then
+        return Vendor:DeepTableCopy(Vendor.DefaultConfig.Rules)
+    else
+        local value = rawget(Vendor.DefaultConfig.Rules, string.lower(ruleType))
+        if (value) then
+            return Vendor.DeepTableCopy(value)
+        end
+    end
+    return {}
+end
+
+--*****************************************************************************
 -- Retrieves the current rule configuration for the user, this will gather
 -- the data from the default table if we don't have user specific changes
 -- NOTE: This always returns a valid table, but it can be empty
 --*****************************************************************************
 function Vendor.Config:GetRulesConfig(ruleType)
-    local key = string.lower(ruleType)
+    if (not ruleType) then
+        return Vendor_RulesConfig or Vendor.DeepTableCopy(Vendor.DefaultConfig.Rules)
+    else
+        local key = string.lower(ruleType)
 
-    local value = rawget(Vendor_RulesConfig, key)
-    if (value ~= nil) then
-        return value
+        local value = rawget(Vendor_RulesConfig, key)
+        if (value ~= nil) then
+            return value
+        end
+
+        local value = self:GetDefaultRulesConfig(ruleType)
+        if (value ~= nil) then
+            return value
+        end
     end
-
-    local value = rawget(Vendor.DefaultConfig.Rules, key)
-    if (value ~= nil) then
-        return value
-    end
-
     return {}
 end
 
