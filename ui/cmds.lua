@@ -1,12 +1,19 @@
 local L = Vendor:GetLocalizedStrings()
 
+-- This registers all of the commands in this file.
+function Vendor:SetupConsoleCommands()
+	self:RegisterConsoleCommandName(self.c_AddonName, "/vendor", "/ven")
+	self:AddConsoleCommand(nil, nil, "OpenConfigDialog_Cmd")						-- Override the default
+	self:AddConsoleCommand("config", L["CMD_CONFIG_HELP"], "OpenConfigDialog_Cmd")
+	self:AddConsoleCommand("sell", L["CMD_SELLITEM_HELP"], "SellItem_Cmd")
+	self:AddConsoleCommand("clear", L["CMD_CLEARDATA_HELP"], "ClearData_Cmd")
+	self:AddConsoleCommand("list", L["CMD_LISTDATA_HELP"], "ListData_Cmd")
+	self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
+end
+
 -- Add or remove items from the blacklist or whitelist.
-function Vendor:SellItem_Cmd(info)
-    -- split arg from command line
-    local list = info.input:match("^[^%s]+%s+([^%s]+)")
-    local item = info.input:match("^[^%s]+%s+[^%s]+%s+([^%s].*)")
-    self:Debug(tostring(list).." "..tostring(item))
-    
+function Vendor:SellItem_Cmd(list, item)
+
     -- need at least one command, should print usage
     if not list or (list ~= self.c_AlwaysSellList and list ~= self.c_NeverSellList) then 
         self:Print(L["CMD_SELLITEM_INVALIDARG"])
@@ -32,12 +39,7 @@ function Vendor:SellItem_Cmd(info)
 end
 
 -- Clear the blacklist and or whitelist.
-function Vendor:ClearData_Cmd(info)
-    local _, arg
-    if info.input then
-        _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
-    end
-
+function Vendor:ClearData_Cmd(arg)
     if arg and arg ~= self.c_NeverSellList and arg ~= self.c_AlwaysSellList then
         self:Print(string.format(L["CMD_CLEARDATA_INVALIDARG"], arg))
         return
@@ -55,13 +57,7 @@ function Vendor:ClearData_Cmd(info)
 end
 
 -- List items in the blacklist and or whitelist.
-function Vendor:ListData_Cmd(info)
-    -- split arg from command line
-    local _, arg
-    if info.input then
-        _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
-    end
-    
+function Vendor:ListData_Cmd(arg)
     if arg and arg ~= self.c_NeverSellList and arg ~= self.c_AlwaysSellList then
         self:Print(string.format(L["CMD_LISTDATA_INVALIDARG"], arg))
         return
@@ -96,12 +92,39 @@ function Vendor:PrintVendorList(list)
     end
 end
 
-function Vendor:OpenSettings_Cmd(info)
+-- This is defunct, but in case we add a hook in...
+function Vendor:OpenSettings_Cmd()
     -- Call it twice so it opens first to the Game options, then to the AddOns category.
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
 end
 
-function Vendor:OpenConfigDialog_Cmd(info)
-	VendorRulesDialog:Show()
+function Vendor:OpenKeybindings_Cmd()
+	-- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
+	if not KeyBindingFrame then
+		KeyBindingFrame_LoadUI()
+	end
+
+	-- If we still don't have it, bail.
+	if not KeyBindingFrame then
+		return
+	end
+	
+	-- Make sure the buttons and categories exist, and enumerate them.
+	if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
+		-- Find our category in the list of categories.
+		for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
+			if button.element and button.element.name and button.element.name == _G["BINDING_CATEGORY_VENDOR"] then
+				-- Found it. Click it to set the category.
+				KeybindingsCategoryListButton_OnClick(button)
+			end
+		end
+	end
+	
+	-- Show the keybinding frame. Even if we dont' find it, its closer.
+	KeyBindingFrame:Show()
+end
+
+function Vendor:OpenConfigDialog_Cmd()
+	Vendor:ShowRulesDialog()
 end

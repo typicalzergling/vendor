@@ -243,7 +243,7 @@ function Vendor.Config:GetValue(name)
 end
 
 --*****************************************************************************
--- The sets a configuration value, if the value is the ssame as currently
+-- The sets a configuration value, if the value is the same as currently
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
 function Vendor.Config:SetValue(name, value)

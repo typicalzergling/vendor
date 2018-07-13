@@ -2,9 +2,28 @@
 -- This file will exist on a release build so Debug related code in the other files is defined.
 Vendor = Vendor or {}
 
---@debug@
-local debugEanbled = nil
+--@do-not-package@
+local debugEnabled = nil
 local debugRuledEnabled = nil
+
+function Vendor:ToggleDebug(channel)
+	local config = self:GetConfig()
+
+	local enabled = false
+	if channel == "debug" then
+		enabled = self:IsDebug()
+	elseif channel == "debugrules" then
+		enabled = self:IsDebugRules()
+	end
+	
+	if enabled then
+		config:SetValue(channel, false)
+		self:Print("Debug channel %s disabled.", tostring(channel))
+	else
+		config:SetValue(channel, true)
+		self:Print("Debug channel %s enabled.", tostring(channel))
+	end
+end
 
 function Vendor:IsDebug()
     local function update(config)
@@ -36,7 +55,8 @@ function Vendor:IsDebugRules()
     end
     return debugRulesEnabled
 end
---@end-debug@
+
+--@end-do-not-package@
 
 -- Debug print. On a release build this does nothing.
 function Vendor:Debug(msg, ...)

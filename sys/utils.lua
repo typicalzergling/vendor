@@ -37,7 +37,7 @@ end
 -- dumps the contents of the table
 function Vendor:DumpTable(t)
     for k, v in pairs(t) do
-        self:Debug("K = "..tostring(k).."   V = "..tostring(v))
+        self:Print("K = "..tostring(k).."   V = "..tostring(v))
         --if type(v) == "table" and v ~= t then
         --  self:DumpTable(v)
         --end

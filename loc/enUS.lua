@@ -7,6 +7,7 @@ Vendor.Locales["enUS"] =
 -- Core
 ["ADDON_NAME"] = "Vendor",
 
+
 -- Bindings
 ["BINDING_HEADER_VENDORQUICKLIST"] = "Quick Add/Remove items from the sell lists when mousing over the item",
 ["BINDING_NAME_VENDORALWAYSSELL"] = "Toggle Always-Sell Item",
@@ -61,23 +62,24 @@ Vendor.Locales["enUS"] =
 ["OPTIONS_SETTINGDESC_CYCLE_RATE"] = "Interval in seconds between attempts to sell the throttled number of items.\n\nRecommended value: .5 to 2",
 ["OPTIONS_SETTINGINVALID_CYCLE_RATE"] = "Invalid cycle rate; it must be greater than .1",
 
--- Commands
-["CMD_SETTINGS_NAME"] = "Open Settings",
-["CMD_SETTINGS_DESC"] = "Open the settings panel for Vendor.",
-["CMD_SELLITEM_NAME"] = "Set never sell or always sell items.",
-["CMD_SELLITEM_DESC"] = "Adds or removes items from the sell list: sell {always||never} [itemid]",
+-- Console Commands
+["CMD_HELP_HEADER"] = "Command Reference: ",
+["CMD_HELP_HELP"] = "Show this command list reference.",
+
+["CMD_CONFIG_HELP"] = "Open the settings configuration panel.",
+["CMD_KEYS_HELP"] = "Open keybindings. You can find ours under the 'Vendor' name in the left side list.",
+
+["CMD_SELLITEM_HELP"] = "Adds or removes items from the sell list: sell {always||never} [itemid]",
 ["CMD_SELLITEM_INVALIDARG"] = "Must specify which list to which you want to query or edit an item: {always||never} [item]",
 ["CMD_SELLITEM_ADDED"] = "Item: %s added to the %s-sell list.",
 ["CMD_SELLITEM_REMOVED"] = "Item: %s removed from the %s-sell list.",
 
-["CMD_CLEARDATA_NAME"] = "Clear never-sell and always-sell lists",
-["CMD_CLEARDATA_DESC"] = "Clears data for all lists, or the list if specified. Usage: clear [always||never]",
+["CMD_CLEARDATA_HELP"] = "Clears data for all lists, or the list if specified. Usage: clear [always||never]",
 ["CMD_CLEARDATA_INVALIDARG"] = "Invalid option: %s  Usage: clear [always||never]",
 ["CMD_CLEARDATA_ALWAYS"] = "The always-sell list has been cleared.",
 ["CMD_CLEARDATA_NEVER"] = "The never-sell list has been cleared.",
 
-["CMD_LISTDATA_NAME"] = "Print the never-sell and/or always-sell lists.",
-["CMD_LISTDATA_DESC"] = "Prints the items for all lists, or the list if specified. Usage: list [always||never]",
+["CMD_LISTDATA_HELP"] = "Prints the items for all lists, or the list if specified. Usage: list [always||never]",
 ["CMD_LISTDATA_INVALIDARG"] = "Invalid option: %s  Usage: clear [always||never]",
 ["CMD_LISTDATA_EMPTY"] = "The %s-sell list is empty.",
 ["CMD_LISTDATA_LISTHEADER"] = "Items in the %s-sell list:",
