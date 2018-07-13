@@ -42,10 +42,8 @@ Vendor.Locales["enUS"] =
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Keep rules are always processed first, then Sell rules run on items that remain. By default we have several safeguard Keep rules enabled so you don't accidentally sell something you want. Before disabling any Keep rules, you should definitely take a look at the sell rules that are enabled first.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
 ["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.\n\nDisabling this will also hide Vendor tooltip lines.",
-["OPTIONS_SETTINGNAME_SELLRULES"] = "Sell Rules",
-["OPTIONS_SETTINGDESC_SELLRULES"] = "Shows the dialog which allows you view and toggle Keep Rules.\n\nSell Rules are always run after Keep rules.",
-["OPTIONS_SETTINGNAME_KEEPRULES"] = "Keep Rules",
-["OPTIONS_SETTINGDESC_KEEPRULES"] = "Shows the dialog which allows you view and toggle Keep Rules.\n\nKeep Rules are generally safeguards to prevent unintentional selling.",
+["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
+["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
 
 -- Performance Settings tab
 ["OPTIONS_CATEGORY_PERFORMANCE"] = "Performance",
@@ -95,7 +93,7 @@ Vendor.Locales["enUS"] =
 ["CONFIG_DIALOG_SELLRULES_TAB"] = "Sell Rules",
 ["CONFIG_DIALOG_SELLRULES_TEXT"] = "These are the built-in rules which Vendor using for selling your items",
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Rules",
-["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "Custom rules are not yet implement but are are comming soon(tm)",
+["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "Custom rules are not yet implemented but are coming Soon(TM)",
 
 -- System rules
 
@@ -112,8 +110,10 @@ Vendor.Locales["enUS"] =
 ["SYSRULE_SELL_RAREGEAR_DESC"] = "Matches Any Rare equipment with an item level less than specified item level.",
 ["SYSRULE_SELL_EPICGEAR"] = "Epic (Purple) Gear",
 ["SYSRULE_SELL_EPICGEAR_DESC"] = "Matches Soulbound Epic equipment with an item level less than specified item level. We assume you will want to sell BoE Epics on the auction house, so BoEs are excluded.",
-["SYSRULE_SELL_KNOWNTOYS"] = "Soulbound Already-Known Toys",
+["SYSRULE_SELL_KNOWNTOYS"] = "Already-Known Toys",
 ["SYSRULE_SELL_KNOWNTOYS_DESC"] = "Matches any already-known toys that are Soulbound. You can't AH them and you can't learn them, so help them home to the vendor.",
+["SYSRULE_SELL_OLDFOOD"] = "Low-Level Food",
+["SYSRULE_SELL_OLDFOOD_DESC"] = "Matches food and drink that is 10 or more levels below you. This will cover food from previous expansions, and old food while leveling.",
 
 -- Keep Rules
 ["SYSRULE_KEEP_NEVERSELL"] = "Items in Never Sell List",
@@ -126,7 +126,7 @@ Vendor.Locales["enUS"] =
 ["SYSRULE_KEEP_COMMON_DESC"] = "Matches any Common quality item. These are typically valuable consumables or crafting materials. This is a safeguard rule meant to protect you from vendoring your consumables and crafting materials.",
 ["SYSRULE_KEEP_UNKNOWNAPPEARANCE"] = "Uncollected Transmog Apperances",
 ["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"] = "Matches any gear that is an Uncollected Appearance. This is a Safeguard for your transmog hunting.",
-["SYSRULE_KEEP_LEGENDARYANDUP"] = "Legendary Quality or Higher Items",
+["SYSRULE_KEEP_LEGENDARYANDUP"] = "Legendary or Better Items",
 ["SYSRULE_KEEP_LEGENDARYANDUP_DESC"] = "Always keeps any items of Legendary quality or higher. This includes Legendaries, Artifacts, Heirlooms, and Blizzard items (WoW Tokens). This just a paranoid Safeguard Rule that we don't recommend disabling.",
 ["SYSRULE_KEEP_UNCOMMONGEAR"] = "Uncommon (Green) Gear|r",
 ["SYSRULE_KEEP_UNCOMMONGEAR_DESC"] = "Matches any Uncommon quality equipment. Does not include non-equipment of Uncommon quality.",

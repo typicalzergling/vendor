@@ -101,3 +101,7 @@ function Vendor:OpenSettings_Cmd(info)
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
 end
+
+function Vendor:OpenConfigDialog_Cmd(info)
+	VendorRulesDialog:Show()
+end

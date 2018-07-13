@@ -21,7 +21,7 @@ Vendor.SystemRules =
             		end
             	end,
             Locked = true,
-            Order = -2000,
+            Order = -1000,
         },
 
         poor = 
@@ -68,6 +68,13 @@ Vendor.SystemRules =
             Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
             Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
         },
+		
+		oldfood =
+		{
+            Name = L["SYSRULE_SELL_OLDFOOD"],
+            Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
+            Script = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
+        },
     },
 
     --*****************************************************************************
@@ -88,7 +95,7 @@ Vendor.SystemRules =
 				    end
             	end,
             Locked = true,
-            Order = -1000,
+            Order = -2000,
         },
         
         -- This is an unsellable item if value is 0

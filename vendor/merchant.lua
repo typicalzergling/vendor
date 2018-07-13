@@ -12,6 +12,18 @@ function Vendor:OnMerchantShow()
     self:AutoSell()
 end
 
+-- Believe this is fired when attempting to sell an item that can still be traded to someone else.
+-- For now we will capture the event.
+function Vendor:OnEndBoundTradeable(event, ...)
+	self:Print("OnEndBoundTradeable fired. Arguments:")
+	for k, v in ipairs({...}) do
+		self:Print("    Arg %s: %s", tostring(k), tostring(v))
+	end
+	
+	-- If this is what we think it is, this may auto-confirm it while we are selling:
+	-- ConfirmBindOnUse()
+end
+
 -- For checking to make sure merchant window is open prior to selling anything.
 function Vendor:IsMerchantOpen()
     if MerchantFrame and MerchantFrame.IsVisible then
