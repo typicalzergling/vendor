@@ -40,6 +40,8 @@ ui\cmds.lua
 ui\config.lua
 ui\rulelist.lua
 ui\rulelist.xml
+ui\configpanel.lua
+ui\configpanel.xml
 
 #@do-not-package@
 # Debug

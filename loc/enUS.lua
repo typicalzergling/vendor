@@ -2,7 +2,7 @@
 
 Vendor = Vendor or {}
 Vendor.Locales = Vendor.Locales or {}
-Vendor.Locales["enUS"] = 
+Vendor.Locales["enUS"] =
 {
 -- Core
 ["ADDON_NAME"] = "Vendor",

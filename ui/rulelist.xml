@@ -1,5 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
+	<Frame name="Vendor.RulesUI.ConfigPanelTemplate" virtual="true" visible="false" parentArray="Panels"/>
+	<Frame name="Vendor.RulesUI.ConfigPanelTabTemplate" inherits="OptionsFrameTabButtonTemplate" virtual="true" visible="false" parentArray="Tabs"/>
+	<Texture name="Vendor.RulesUI.ConfigPanelTabSpacerTemplate" virtual="true" visible="false" parentArray="Spacers"/>
+
     <Frame name = "BaseVendorSimpleRuleTemplate" virtual="true" visble="false" parentArray="Rules">
         <Size x="250" y="64"/>
         <Layers>
@@ -18,18 +22,18 @@
                         <Anchor point="BOTTOMRIGHT" realtivePoint="BOTTOMRIGHT"/>
                     </Anchors>
                 </Texture>
-            </Layer>        
+            </Layer>
         </Layers>
         <Frames>
             <CheckButton name="$parentEnabled" parentKey="Enabled" inherits="OptionsBaseCheckButtonTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="2" y="0"/>
-                </Anchors>  
+                </Anchors>
                 <Scripts>
                     <OnClick>if (self:GetParent().ToggleRuleState) then self:GetParent():ToggleRuleState() end</OnClick>
                 </Scripts>
             </CheckButton>
-        </Frames>       
+        </Frames>
         <Scripts>
             <OnEnter>self.Highlight:Show()</OnEnter>
             <OnLeave>self.Highlight:Hide()</OnLeave>
@@ -56,7 +60,7 @@
             </Layer>
         </Layers>
     </Frame>
-    
+
     <Frame name="VendorRuleTemplateWithItemLevel" virtual="true" visble="false"  inherits="BaseVendorSimpleRuleTemplate">
         <Size x="250" y="64"/>
         <Layers>
@@ -89,7 +93,7 @@
                                 <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" y="2"/>
                             </Anchors>
                         </FontString>
-                    </Layer>                
+                    </Layer>
                 </Layers>
                 <Scripts>
                     <OnShow>self.Label:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)</OnShow>
@@ -124,9 +128,9 @@
                                 <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-2"/>
                                 <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="2"/>
                             </Anchors>
-                        </Texture>              
-                    </Layer>        
-                </Layers>           
+                        </Texture>
+                    </Layer>
+                </Layers>
                 <Scripts>
                     <OnVerticalScroll>
                         local parent = self:GetParent()
@@ -152,8 +156,8 @@
                 Vendor.RulesUI.InitRuleList(self, Vendor.c_RuleType_Keep, Vendor.SystemRules.Keep)
             </OnLoad>
         </Scripts>
-    </Frame>    
-    
+    </Frame>
+
 	<!--
 	==================================================================================================================================
 	-->
@@ -210,8 +214,8 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>Vendor.RulesUI.RulesDialog_OnOk(VendorRulesDialog)</OnClick>
-				</Scripts>				
-			</Button>		
+				</Scripts>
+			</Button>
 			<Button name="$parentDefaults" inherits="UIPanelButtonTemplate" text="DEFAULTS">
 				<Size x="96" y="22"/>
 				<Anchors>
@@ -222,7 +226,7 @@
 				</Scripts>
 			</Button>
 
-			<Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true">
+			<Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="2">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
@@ -235,7 +239,7 @@
 								<Anchor point="TOPLEFT" x="16" y="-16"/>
 								<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
 							</Anchors>
-						</FontString>				
+						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
@@ -254,8 +258,8 @@
 	            	</Frame>
 	            </Frames>
 			</Frame>
-			
-			<Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true">
+
+			<Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="1">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
@@ -268,7 +272,7 @@
 								<Anchor point="TOPLEFT" x="16" y="-16"/>
 								<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
 							</Anchors>
-						</FontString>				
+						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
@@ -287,8 +291,8 @@
 	            	</Frame>
 	            </Frames>
 			</Frame>
-			
-			<Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true">
+
+			<Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="3">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
@@ -297,7 +301,7 @@
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString name="$parentHeaderText" inherits="GameFontHighlightHuge" text="NOT-YET-IMPLEMENTED" parentKey="TopText" setAllPoints="true">
-						</FontString>				
+						</FontString>
 					</Layer>
 				</Layers>
 			</Frame>
@@ -363,8 +367,8 @@
 						</Texture>
 					</Layer>
 				</Layers>
-			</Frame>		
-			<Button name="$parentTab1" inherits="OptionsFrameTabButtonTemplate" text="KEEP_TAB" id="1" parentKey="KeepTab">
+			</Frame>
+			<Button name="$parentTab1" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" text="KEEP_TAB" id="1" parentKey="KeepTab">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentContainer" relativePoint="TOPLEFT" x="6" y="-3"/>
 				</Anchors>
@@ -377,7 +381,7 @@
 				</Scripts>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">
+						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
 							<Size x="85" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-10" y="-6"/>
@@ -387,27 +391,27 @@
 					</Layer>
 				</Layers>
 			</Button>
-			<Button name="$parentTab2" inherits="OptionsFrameTabButtonTemplate" text="SELL_TAB" id="2" parentKey="SellTab">
+			<Button name="$parentTab2" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" text="SELL_TAB" id="2" parentKey="SellTab">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT" x="-16" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">
+						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
 							<Size x="64" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
 								<Anchor point="LEFT" relativeTo="VendorRulesDialogContainerTopLeft" relativePoint="RIGHT"/>
 							</Anchors>
 						</Texture>
-						<Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">
+						<Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
 							<Size x="16" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
 								<Anchor point="RIGHT" relativeTo="VendorRulesDialogContainerTopRight" relativePoint="LEFT"/>
 							</Anchors>
 						</Texture>
-					</Layer>						
+					</Layer>
 				</Layers>
 				<Scripts>
 					<OnClick>
@@ -415,22 +419,22 @@
 						PanelTemplates_Tab_OnClick(self, VendorRulesDialog);
 						Vendor.RulesUI.RuleDialog_ShowTab(VendorRulesDialog, 2)
 					</OnClick>
-				</Scripts>								
+				</Scripts>
 			</Button>
-			<Button name="$parentTab3" inherits="OptionsFrameTabButtonTemplate" text="CUSTOM_TAB" id="3" parentKey="CustomTab">
+			<Button name="$parentTab3" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" text="CUSTOM_TAB" id="3" parentKey="CustomTab">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentTab2" relativePoint="TOPRIGHT" x="-16" y="0"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">
+						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
 							<Size x="64" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
 								<Anchor point="LEFT" relativeTo="VendorRulesDialogContainerTopLeft" relativePoint="RIGHT"/>
 							</Anchors>
 						</Texture>
-						<Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true">
+						<Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
 							<Size x="16" y="16"/>
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
@@ -445,13 +449,13 @@
 						PanelTemplates_Tab_OnClick(self, VendorRulesDialog);
 						Vendor.RulesUI.RuleDialog_ShowTab(VendorRulesDialog, 3)
 					</OnClick>
-				</Scripts>								
-			</Button>			
+				</Scripts>
+			</Button>
 		</Frames>
 		<Scripts>
 			<OnLoad>Vendor.RulesUI.RuleDialog_OnLoad(self)</OnLoad>
 			<OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
-            <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>            
+            <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
 		</Scripts>
-	</Frame>    
+	</Frame>
 </Ui>

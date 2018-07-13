@@ -3,7 +3,7 @@
 Vendor = Vendor or {}
 
 --@debug@
-local debugEanbled = nil
+local debugEnabled = nil
 local debugRuledEnabled = nil
 
 function Vendor:IsDebug()

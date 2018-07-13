@@ -208,17 +208,6 @@ end
 
 --************************************--
 
-local function showHideFrame(frameName, show)
-	local frame = _G[frameName]
-	if (frame) then
-		if (show) then
-			frame:Show()
-		else
-			frame:Hide()
-		end
-	end
-end
-
 function Vendor.RulesUI.RuleDialog_OnLoad(self)
     --tinsert(UISpecialFrames, self:GetName());
 	self.Caption:SetText(L["CONFIG_DIALOG_CAPTION"])
@@ -251,38 +240,27 @@ function Vendor.RulesUI.RuleDialog_OnLoad(self)
 end
 
 function Vendor.RulesUI.RuleDialog_ShowTab(self, tabId)
-	local tabName1 = (self:GetName() .. "Tab1")
-	local tabName2 = (self:GetName() .. "Tab2")
-	local tabName3 = (self:GetName() .. "Tab3")
+    -- Update our tabs and spaces
+    for _, tab in ipairs(self.Tabs) do
+        if (tab:GetID() == tabId) then
+            for _, spacer in ipairs(tab.Spacers) do
+                spacer:Show()
+            end
+        else
+            for _, spacer in ipairs(tab.Spacers) do
+                spacer:Hide()
+            end
+        end
+    end
 
-	if (tabId == 1) then
-		showHideFrame(tabName1 .. "Spacer1", true)
-		showHideFrame(tabName2 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer2", false)
-		showHideFrame(tabName3 .. "Spacer1", false)
-		showHideFrame(tabName3 .. "Spacer2", false)
-		self.SellPanel:Hide()
-		self.KeepPanel:Show()
-		self.CustomPanel:Hide()
-	elseif (tabId == 2) then
-		showHideFrame(tabName1 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer1", true)
-		showHideFrame(tabName2 .. "Spacer2", true)
-		showHideFrame(tabName3 .. "Spacer1", false)
-		showHideFrame(tabName3 .. "Spacer2", false)
-		self.SellPanel:Show()
-		self.KeepPanel:Hide()
-		self.CustomPanel:Hide()
-	elseif (tabId == 3) then
-		showHideFrame(tabName1 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer2", false)
-		showHideFrame(tabName3 .. "Spacer1", true)
-		showHideFrame(tabName3 .. "Spacer2", true)
-		self.SellPanel:Hide()
-		self.KeepPanel:Hide()
-		self.CustomPanel:Show()
-	end
+    -- Update our panels
+    for _, panel in ipairs(self.Panels) do
+        if (panel:GetID() == tabId) then
+            panel:Show()
+        else
+            panel:Hide()
+        end
+    end
 end
 
 function Vendor.RulesUI.RulesDialog_SetDefaults(self)
@@ -302,8 +280,9 @@ function Vendor.RulesUI.RulesDialog_OnOk(self)
 end
 
 function Vendor:ShowRulesDialog()
-	VendorRulesDialog.SellPanel.List:SetRuleConfig(Vendor:GetRulesConfig(Vendor.c_RuleType_Sell))
-	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Vendor:GetRulesConfig(Vendor.c_RulesType_Keep))
+	local config = Vendor:GetConfig()
+	VendorRulesDialog.SellPanel.List:SetRuleConfig(config:GetRulesConfig(Vendor.c_RuleType_Sell))
+	VendorRulesDialog.KeepPanel.List:SetRuleConfig(config:GetRulesConfig(Vendor.c_RuleType_Keep))
 	VendorRulesDialog:Show()
 end
 
