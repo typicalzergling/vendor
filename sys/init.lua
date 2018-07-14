@@ -11,6 +11,7 @@ BINDING_NAME_VENDORNEVERSELL = L["BINDING_NAME_VENDORNEVERSELL"]
 BINDING_DESC_VENDORNEVERSELL = L["BINDING_DESC_VENDORNEVERSELL"]
 
 -- Constants 
+Vendor.c_AddonName = select(1, ...)		-- First argument to the file load is Addon Name, 2nd is apparently an empty table.
 Vendor.c_AlwaysSellList = "always"
 Vendor.c_NeverSellList = "never"
 Vendor.c_RuleType_Sell = "Sell"

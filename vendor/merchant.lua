@@ -1,6 +1,8 @@
 -- Merchant event handling.
 local L = Vendor:GetLocalizedStrings()
 
+local threadName = "ItemSeller"
+
 -- When the merchant window is opened, we will attempt to auto repair and sell.
 function Vendor:OnMerchantShow()
     self:Debug("Merchant opened.");
@@ -53,6 +55,13 @@ function Vendor:AutoRepair()
     end
 end
 
+-- This returns true if we are in the middle of autoselling.
+function Vendor:IsAutoSelling()
+	-- We are selling if we have a thread active.
+	return not not self:GetThread(threadName)
+end
+
+
 -- Selling happens on a thread (coroutine) for UI responsiveness and to avoid being throttled by Blizzard.
 -- We have to be careful of two scenarios when selling:
 -- 1) The user is moving things around in the bag. This can mess up our selling. The mitigation is to wait anytime something
@@ -67,7 +76,7 @@ function Vendor:AutoSell()
 
     -- Start selling on a thread.
     -- If coroutine already exists no need to create another one.
-    if self:GetThread("ItemSeller") then
+    if self:GetThread(threadName) then
         return
     end
 
@@ -136,7 +145,5 @@ function Vendor:AutoSell()
     end)  -- Coroutine end
 
     -- Add thread to the thread queue and start it.
-    self:AddThread(thread, "ItemSeller")
+    self:AddThread(thread, threadName)
 end
-
-

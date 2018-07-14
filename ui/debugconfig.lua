@@ -1,10 +1,19 @@
 -- This is exclusively for the debug options panel and Debug-specific commands that do not appear in a normal build.
 -- This entire file is excluded from packaging and it is not localized intentionally.
 
+
+-- Sets up all the console commands for debug functions in this file.
+function Vendor:SetupDebugConsoleCommands()
+	self:AddConsoleCommand("debug", "Toggle Debug", function() Vendor:ToggleDebug("debug") end)
+	self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Vendor:ToggleDebug("debugrules") end)
+	self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
+	self:AddConsoleCommand("test", "It is a mystery!", "Test_Cmd")
+end
+
+
 -- Debug Commands
 
-function Vendor:DumpLink_Cmd(info)
-    local _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
+function Vendor:DumpLink_Cmd(arg)
     self:Print("Link: "..tostring(arg))
     self:Print("Raw: "..gsub(arg, "\124", "\124\124"))
     self:Print("ItemString: "..tostring(self:GetLinkString(arg)))
@@ -19,10 +28,7 @@ function Vendor:DumpLink_Cmd(info)
     end
 end
 
-function Vendor:Test_Cmd(info)
-    -- split arg from command line
-    local _, arg = info.input:match("([^%s]+)%s+([^%s].*)")
-
+function Vendor:Test_Cmd(...)
     local iteminfo = self:GetAllBagItemInformation()
     for k, item in pairs(iteminfo) do
         local v = item.Properties

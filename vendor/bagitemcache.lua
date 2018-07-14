@@ -107,6 +107,14 @@ end
 -- Fired when a bag's inventory changes.
 -- Expected to fire multiple times when moving an item in the inventory, once for source and once for destination.
 -- We need to clear the cache for the bag whenever this happens.
+-- Caveat - if this happens while we are auto-selling, don't refresh the cache, because that will cause us to re-run the rules
+-- for every item in that bag every time we sell an item.
 function Vendor:OnBagUpdate(event, bag)
+
+	-- Check for Autoselling in progress
+	if self:IsAutoSelling() then
+		self:Debug("Autoselling, skipping cache clear for the bag.")
+		return
+	end
     self:ClearBagItemCache(tonumber(bag))
 end

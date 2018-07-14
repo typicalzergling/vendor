@@ -18,6 +18,7 @@ sys\init.lua
 sys\utils.lua
 sys\debug.lua
 sys\threads.lua
+sys\console.lua
 sys\core.lua
 
 # Vendoring
