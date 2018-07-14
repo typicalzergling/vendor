@@ -1,9 +1,10 @@
 -- Item cache used to store results of scans and track item state for efficient retrieval. This is for bags only, not tooltips.
+local Addon, L = _G[select(1,...).."_GET"]()
 
 local bagItemCache = {}
 
 -- Clears either a specific bag slot, an entire bag, or the entire cache
-function Vendor:ClearBagItemCache(bag, slot)
+function Addon:ClearBagItemCache(bag, slot)
     bag = tonumber(bag)
     slot = tonumber(slot)
     if not bag and not slot then
@@ -29,7 +30,7 @@ function Vendor:ClearBagItemCache(bag, slot)
     self:ClearTooltipResultCache()
 end
 
-function Vendor:AddItemToBagItemCache(bag, slot, item)
+function Addon:AddItemToBagItemCache(bag, slot, item)
     --@debug@
     assert(tonumber(bag) and tonumber(slot) and bag >= 0 and bag <= NUM_BAG_SLOTS)
     --@end-debug@
@@ -44,7 +45,7 @@ function Vendor:AddItemToBagItemCache(bag, slot, item)
     self:ClearTooltipResultCache()
 end
 
-function Vendor:IsBagItemCached(bag, slot)
+function Addon:IsBagItemCached(bag, slot)
     --@debug@
     assert(tonumber(bag) and tonumber(slot) and bag >= 0 and bag <= NUM_BAG_SLOTS)
     --@end-debug@
@@ -58,7 +59,7 @@ function Vendor:IsBagItemCached(bag, slot)
 end
 
 -- This will get the cached item info from a bag slot
-function Vendor:GetBagItemFromCache(bag, slot)
+function Addon:GetBagItemFromCache(bag, slot)
     --@debug@
     assert(tonumber(bag) and tonumber(slot) and bag >= 0 and bag <= NUM_BAG_SLOTS)
     --@end-debug@
@@ -82,7 +83,7 @@ end
 -- item.Sell                Item evaluation for selling.
 -- item.RuleId              RuleId used to determine the evaluation.
 
-function Vendor:CacheBagItem(bag, slot)
+function Addon:CacheBagItem(bag, slot)
     --@debug@
     assert(tonumber(bag) and tonumber(slot) and bag >= 0 and bag <= NUM_BAG_SLOTS)
     --@end-debug@
@@ -109,7 +110,7 @@ end
 -- We need to clear the cache for the bag whenever this happens.
 -- Caveat - if this happens while we are auto-selling, don't refresh the cache, because that will cause us to re-run the rules
 -- for every item in that bag every time we sell an item.
-function Vendor:OnBagUpdate(event, bag)
+function Addon:OnBagUpdate(event, bag)
 
 	-- Check for Autoselling in progress
 	if self:IsAutoSelling() then

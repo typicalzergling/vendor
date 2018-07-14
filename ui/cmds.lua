@@ -1,7 +1,7 @@
-local L = Vendor:GetLocalizedStrings()
+local Addon, L = _G[select(1,...).."_GET"]()
 
 -- This registers all of the commands in this file.
-function Vendor:SetupConsoleCommands()
+function Addon:SetupConsoleCommands()
 	self:RegisterConsoleCommandName(self.c_AddonName, "/vendor", "/ven")
 	self:AddConsoleCommand(nil, nil, "OpenConfigDialog_Cmd")						-- Override the default
 	self:AddConsoleCommand("config", L["CMD_CONFIG_HELP"], "OpenConfigDialog_Cmd")
@@ -12,7 +12,7 @@ function Vendor:SetupConsoleCommands()
 end
 
 -- Add or remove items from the blacklist or whitelist.
-function Vendor:SellItem_Cmd(list, item)
+function Addon:SellItem_Cmd(list, item)
 
     -- need at least one command, should print usage
     if not list or (list ~= self.c_AlwaysSellList and list ~= self.c_NeverSellList) then 
@@ -34,12 +34,12 @@ function Vendor:SellItem_Cmd(list, item)
 
     -- otherwise dump the list
     else
-        self:PrintVendorList(list)
+        self:PrintAddonList(list)
     end
 end
 
 -- Clear the blacklist and or whitelist.
-function Vendor:ClearData_Cmd(arg)
+function Addon:ClearData_Cmd(arg)
     if arg and arg ~= self.c_NeverSellList and arg ~= self.c_AlwaysSellList then
         self:Print(string.format(L["CMD_CLEARDATA_INVALIDARG"], arg))
         return
@@ -57,21 +57,21 @@ function Vendor:ClearData_Cmd(arg)
 end
 
 -- List items in the blacklist and or whitelist.
-function Vendor:ListData_Cmd(arg)
+function Addon:ListData_Cmd(arg)
     if arg and arg ~= self.c_NeverSellList and arg ~= self.c_AlwaysSellList then
         self:Print(string.format(L["CMD_LISTDATA_INVALIDARG"], arg))
         return
     end
     
     if not arg then
-        self:PrintVendorList(self.c_NeverSellList)
-        self:PrintVendorList(self.c_AlwaysSellList)
+        self:PrintAddonList(self.c_NeverSellList)
+        self:PrintAddonList(self.c_AlwaysSellList)
     else
-        self:PrintVendorList(arg)
+        self:PrintAddonList(arg)
     end
 end
 
-function Vendor:PrintVendorList(list)
+function Addon:PrintAddonList(list)
     local vlist = self:GetBlocklist(list)
     if self:TableSize(vlist) == 0 then
         self:Print(string.format(L["CMD_LISTDATA_EMPTY"], list))
@@ -93,13 +93,13 @@ function Vendor:PrintVendorList(list)
 end
 
 -- This is defunct, but in case we add a hook in...
-function Vendor:OpenSettings_Cmd()
+function Addon:OpenSettings_Cmd()
     -- Call it twice so it opens first to the Game options, then to the AddOns category.
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
     InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
 end
 
-function Vendor:OpenKeybindings_Cmd()
+function Addon:OpenKeybindings_Cmd()
 	-- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
 	if not KeyBindingFrame then
 		KeyBindingFrame_LoadUI()
@@ -125,6 +125,6 @@ function Vendor:OpenKeybindings_Cmd()
 	KeyBindingFrame:Show()
 end
 
-function Vendor:OpenConfigDialog_Cmd()
-	Vendor:ShowRulesDialog()
+function Addon:OpenConfigDialog_Cmd()
+	Addon:ShowRulesDialog()
 end

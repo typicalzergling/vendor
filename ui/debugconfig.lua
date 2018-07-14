@@ -1,11 +1,11 @@
 -- This is exclusively for the debug options panel and Debug-specific commands that do not appear in a normal build.
 -- This entire file is excluded from packaging and it is not localized intentionally.
-
+local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Sets up all the console commands for debug functions in this file.
-function Vendor:SetupDebugConsoleCommands()
-	self:AddConsoleCommand("debug", "Toggle Debug", function() Vendor:ToggleDebug("debug") end)
-	self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Vendor:ToggleDebug("debugrules") end)
+function Addon:SetupDebugConsoleCommands()
+	self:AddConsoleCommand("debug", "Toggle Debug", function() Addon:ToggleDebug("debug") end)
+	self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Addon:ToggleDebug("debugrules") end)
 	self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
 	self:AddConsoleCommand("test", "It is a mystery!", "Test_Cmd")
 end
@@ -13,7 +13,7 @@ end
 
 -- Debug Commands
 
-function Vendor:DumpLink_Cmd(arg)
+function Addon:DumpLink_Cmd(arg)
     self:Print("Link: "..tostring(arg))
     self:Print("Raw: "..gsub(arg, "\124", "\124\124"))
     self:Print("ItemString: "..tostring(self:GetLinkString(arg)))
@@ -28,7 +28,7 @@ function Vendor:DumpLink_Cmd(arg)
     end
 end
 
-function Vendor:Test_Cmd(...)
+function Addon:Test_Cmd(...)
     local iteminfo = self:GetAllBagItemInformation()
     for k, item in pairs(iteminfo) do
         local v = item.Properties
@@ -37,7 +37,7 @@ function Vendor:Test_Cmd(...)
     end
 end
 
-function Vendor:GetAllBagItemInformation()
+function Addon:GetAllBagItemInformation()
     local items = {}
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, GetContainerNumSlots(bag) do

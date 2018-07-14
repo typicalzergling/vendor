@@ -1,10 +1,10 @@
 -- Merchant event handling.
-local L = Vendor:GetLocalizedStrings()
+local Addon, L = _G[select(1,...).."_GET"]()
 
 local threadName = "ItemSeller"
 
 -- When the merchant window is opened, we will attempt to auto repair and sell.
-function Vendor:OnMerchantShow()
+function Addon:OnMerchantShow()
     self:Debug("Merchant opened.");
 
     -- Do auto-repair
@@ -16,7 +16,7 @@ end
 
 -- Believe this is fired when attempting to sell an item that can still be traded to someone else.
 -- For now we will capture the event.
-function Vendor:OnEndBoundTradeable(event, ...)
+function Addon:OnEndBoundTradeable(event, ...)
 	self:Print("OnEndBoundTradeable fired. Arguments:")
 	for k, v in ipairs({...}) do
 		self:Print("    Arg %s: %s", tostring(k), tostring(v))
@@ -27,7 +27,7 @@ function Vendor:OnEndBoundTradeable(event, ...)
 end
 
 -- For checking to make sure merchant window is open prior to selling anything.
-function Vendor:IsMerchantOpen()
+function Addon:IsMerchantOpen()
     if MerchantFrame and MerchantFrame.IsVisible then
         return MerchantFrame:IsVisible()
     else
@@ -37,7 +37,7 @@ function Vendor:IsMerchantOpen()
 end
 
 -- Do Autorepair. If using guild funds and guild funds don't cover the repair, we will use our own funds.
-function Vendor:AutoRepair()
+function Addon:AutoRepair()
     local config = self:GetConfig()
     if not config:GetValue("autorepair") then return end
 
@@ -56,7 +56,7 @@ function Vendor:AutoRepair()
 end
 
 -- This returns true if we are in the middle of autoselling.
-function Vendor:IsAutoSelling()
+function Addon:IsAutoSelling()
 	-- We are selling if we have a thread active.
 	return not not self:GetThread(threadName)
 end
@@ -71,7 +71,7 @@ end
 --    skipped from the sell if it moved from a yet-to-be-checked slot to an already-checked slot. We could be more robust here
 --    and watch for these events and re-scan, but that's making things significantly more complex for an edge case that doesnt
 --    really matter. Worst-case, the user re-opens the merchant window.
-function Vendor:AutoSell()
+function Addon:AutoSell()
     if not self:GetConfig():GetValue("autosell") then return end
 
     -- Start selling on a thread.

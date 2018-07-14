@@ -1,3 +1,5 @@
+local Addon, L = _G[select(1,...).."_GET"]()
+
 -- Thread processor.
 -- This allows the addon to queue up work and then do it later in the background without cuasing a perf hit.
 -- This is also useful for avoiding throttling by Blizzard.
@@ -16,18 +18,18 @@ local processingFrame = CreateFrame("Frame")
 processingFrame:Hide()
 processingFrame:SetScript("OnUpdate", function(self, elapsed)
     counter = counter + elapsed
-    if counter >= Vendor:GetConfig():GetValue("throttle_time") then
-        counter = counter - Vendor:GetConfig():GetValue("throttle_time")
+    if counter >= Addon:GetConfig():GetValue("throttle_time") then
+        counter = counter - Addon:GetConfig():GetValue("throttle_time")
 
         -- Do some processing on the next thread.
-        Vendor:DoSomeWork()
+        Addon:DoSomeWork()
     end
 end)
 
 -- Wake up the next thread in the queue and do processing.
 -- Assumes the threads will yield on their own so this doesn't hang the UI or cause a disconnect.
 -- If the coroutine needs to stop, it should be baked into the coroutine itself.
-function Vendor:DoSomeWork()
+function Addon:DoSomeWork()
 
     -- Go through the thread queue.
     while self:HasWorkToDo() do
@@ -47,7 +49,7 @@ function Vendor:DoSomeWork()
     processingFrame:Hide()
 end
 
-function Vendor:HasWorkToDo()
+function Addon:HasWorkToDo()
     if #threads > 0 then
         return true
     else
@@ -57,7 +59,7 @@ end
 
 -- Accessor for adding a thread to the processor. Duplicate names are allowed.
 -- Also wakes up listener, as if you add a thread, surely you intend for it to be executed.
-function Vendor:AddThread(thread, name)
+function Addon:AddThread(thread, name)
     local obj = {}
     obj.thread = thread
     obj.name = name
@@ -70,7 +72,7 @@ end
 
 -- Accessor for getting a thread from the processor
 -- Returns the first match if there are duplicates.
-function Vendor:GetThread(name)
+function Addon:GetThread(name)
     -- search thread list
     for _, r in pairs(threads) do
         if r.name == name then
@@ -85,7 +87,7 @@ end
 -- Will remove all that match the name.
 -- When a coroutine has no references it is killed after its last yield.
 -- LUA is not really multi-threaded so we don't need to worry about synchronization.
-function Vendor:RemoveThread(name)
+function Addon:RemoveThread(name)
     -- search thread list
     for k, v in pairs(threads) do
         if v.name == name then

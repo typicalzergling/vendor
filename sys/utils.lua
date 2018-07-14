@@ -1,5 +1,5 @@
 -- Yeah I know util is bad naming, but it fits. If something fits better elsewhere I'll move it out before this gets into a steaming pile.
-local L = Vendor:GetLocalizedStrings()
+local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Gets the version of the addon
 function Vendor:GetVersion()
@@ -12,7 +12,7 @@ end
 
 -- Gets item ID from an itemstring or item link
 -- If a number is passed in it assumes that is the ID
-function Vendor:GetItemId(str)
+function Addon:GetItemId(str)
     -- extract the id
     if type(str) == "number" or tonumber(str) then
         return tonumber(str)
@@ -24,7 +24,7 @@ function Vendor:GetItemId(str)
 end
 
 -- Assumes link
-function Vendor:GetLinkString(link)
+function Addon:GetLinkString(link)
     if link and type(link) == "string" then
         local _, _, lstr = link:find('|H(.-)|h')
         return lstr
@@ -34,7 +34,7 @@ function Vendor:GetLinkString(link)
 end
 
 -- Returns table of link properties
-function Vendor:GetLinkProperties(link)
+function Addon:GetLinkProperties(link)
     local lstr = self:GetLinkString(link)
     if lstr then
         return {strsplit(':', lstr)}
@@ -44,7 +44,7 @@ function Vendor:GetLinkProperties(link)
 end
 
 -- dumps the contents of the table
-function Vendor:DumpTable(t)
+function Addon:DumpTable(t)
     for k, v in pairs(t) do
         self:Print("K = "..tostring(k).."   V = "..tostring(v))
         --if type(v) == "table" and v ~= t then
@@ -55,13 +55,13 @@ end
 
 -- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 4 lines. Thanks AceConsole for the inspiriation and color code.
 -- Assume if multiple arguments it is a format string.
-local printPrefix = string.format("%s%s%s", "|cff33ff99", L["ADDON_NAME"], "|r: ")
-function Vendor:Print(msg, ...)
+local printPrefix = string.format("%s[%s%s%s]%s%s", HIGHLIGHT_FONT_COLOR_CODE, ORANGE_FONT_COLOR_CODE, L["ADDON_NAME"], HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, " ")
+function Addon:Print(msg, ...)
     DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
 end
 
 -- Counts size of the table
-function Vendor:TableSize(T)
+function Addon:TableSize(T)
     local count = 0
     if (T) then
         for _ in pairs(T) do count = count + 1 end
@@ -70,7 +70,7 @@ function Vendor:TableSize(T)
 end
 
 -- Merges the contents of source into dest, source can be nil
-function Vendor:MergeTable(dest, source)
+function Addon:MergeTable(dest, source)
     if source then
         for key, value in pairs(source) do
             rawset(dest, key, value)
@@ -80,13 +80,13 @@ end
 
 -- Table deep copy, as seen on StackOverflow
 -- https://stackoverflow.com/questions/640642/how-do-you-copy-a-lua-table-by-value
-function Vendor.DeepTableCopy(obj, seen)
+function Addon.DeepTableCopy(obj, seen)
     if type(obj) ~= 'table' then return obj end
     if seen and seen[obj] then return seen[obj] end
     local s = seen or {}
     local res = setmetatable({}, getmetatable(obj))
     s[obj] = res
-    for k, v in pairs(obj) do res[Vendor.DeepTableCopy(k, s)] = Vendor.DeepTableCopy(v, s) end
+    for k, v in pairs(obj) do res[Addon.DeepTableCopy(k, s)] = Addon.DeepTableCopy(v, s) end
     return res
 end
 
@@ -95,7 +95,7 @@ end
 -- Gold:    FFFFFF00
 -- Silver:  FFFFFFFF
 -- Copper:  FFAE6938
-function Vendor:GetPriceString(price)
+function Addon:GetPriceString(price)
     if not price then
         return "<missing>"
     end

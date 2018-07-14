@@ -1,3 +1,5 @@
+local Addon, L = _G[select(1,...).."_GET"]()
+
 -- Gets information about an item 
 -- Here is the list of captured item properties.
 --     Name
@@ -35,7 +37,7 @@
 --      tooltip, link - we will use the link and the tooltip for scanning
 --      bag, slot       - we will get link from the containerinfo and use the scanning tip for scanning
 
-function Vendor:GetItemProperties(arg1, arg2)
+function Addon:GetItemProperties(arg1, arg2)
     local item = {}
     local tooltip = nil
     local bag = nil
@@ -169,11 +171,11 @@ function Vendor:GetItemProperties(arg1, arg2)
 end
 
 -- Both bag and slot must be numbers and both passed in.
-function Vendor:GetItemPropertiesFromBag(bag, slot)
+function Addon:GetItemPropertiesFromBag(bag, slot)
     return self:GetItemProperties(bag, slot)
 end
 
 -- Link is optional, will be gotten from the tooltip if not provided.
-function Vendor:GetItemPropertiesFromTooltip(tooltip, link)
+function Addon:GetItemPropertiesFromTooltip(tooltip, link)
     return self:GetItemProperties(tooltip, link)
 end

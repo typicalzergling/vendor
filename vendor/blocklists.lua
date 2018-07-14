@@ -1,4 +1,4 @@
-Vendor = Vendor or {}
+local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Manages the always-sell and never-sell blocklists.
 -- Consider - adding "toggle" as a method on config can (and should) fire a config change.
@@ -6,7 +6,7 @@ Vendor = Vendor or {}
 -- Returns 1 if item was added to the list.
 -- Returns 2 if item was removed from the list.
 -- Returns nil if no action taken.
-function Vendor:ToggleItemInBlocklist(list, item)
+function Addon:ToggleItemInBlocklist(list, item)
     local function toggle(l, o, i)
         if (l[i]) then
             l[i] = nil
@@ -41,7 +41,7 @@ function Vendor:ToggleItemInBlocklist(list, item)
 end
 
 -- Quick direct accessor for Never Sell List
-function Vendor:IsItemIdInNeverSellList(id)
+function Addon:IsItemIdInNeverSellList(id)
     local list = self:GetConfig():GetValue("sell_never")
     if id and list then
         return list[id]
@@ -50,7 +50,7 @@ function Vendor:IsItemIdInNeverSellList(id)
 end
 
 -- Quick direct accessor for Always Sell List
-function Vendor:IsItemIdInAlwaysSellList(id)
+function Addon:IsItemIdInAlwaysSellList(id)
     local list = self:GetConfig():GetValue("sell_always")
     if id and list then
         return list[id]
@@ -59,7 +59,7 @@ function Vendor:IsItemIdInAlwaysSellList(id)
 end
 
 -- Returns whether an item is in the list and which one.
-function Vendor:GetBlocklistForItem(item)
+function Addon:GetBlocklistForItem(item)
     local id = self:GetItemId(item)
     if id then
         if self:IsItemIdInNeverSellList(id) then
@@ -74,7 +74,7 @@ function Vendor:GetBlocklistForItem(item)
 end
 
 -- Returns the list of items on the black or white list
-function Vendor:GetBlocklist(list)
+function Addon:GetBlocklist(list)
     local vlist = {}
     if list == self.c_AlwaysSellList then
         vlist = self:GetConfig():GetValue("sell_always")
@@ -85,7 +85,7 @@ function Vendor:GetBlocklist(list)
 end
 
 -- Permanently deletes the associated blocklist.
-function Vendor:ClearBlocklist(list)
+function Addon:ClearBlocklist(list)
     if list == self.c_AlwaysSellList then
         self:GetConfig():SetValue("sell_always", {})
     elseif list == self.c_NeverSellList then
