@@ -158,20 +158,7 @@ function Addon.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
     for key, _ in pairs(frame.RuleList) do
         table.insert(ruleKeys, key)
     end
-
-    local ruleSort = function (a, b)
-        if not frame.RuleList[a].Order and not frame.RuleList[b].Order then
-            return frame.RuleList[a].Name < frame.RuleList[b].Name
-        elseif not frame.RuleList[a].Order then
-            return b
-        elseif not frame.RuleList[b].Order then
-            return a
-        else
-            return frame.RuleList[a].Order < frame.RuleList[b].Order
-        end
-    end
-
-    table.sort(ruleKeys, ruleSort)
+    table.sort(ruleKeys, function (a, b) return frame.RuleList[a].Order < frame.RuleList[b].Order end)
     
     -- Create the frame for each of our rules.
     for _, id in ipairs(ruleKeys) do
