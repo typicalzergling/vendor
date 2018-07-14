@@ -2,7 +2,7 @@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: VendorDB, Vendor_CustomRuleDefintions, Vendor_Settings
+## SavedVariables: Vendor_CustomRuleDefintions, Vendor_Settings
 ## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_SettingsPerCharacter
 ## Author: Malvir / Severin of Windrunner
 
@@ -40,8 +40,12 @@ ui\cmds.lua
 ui\config.lua
 ui\rulelist.lua
 ui\rulelist.xml
-ui\configpanel.lua
-ui\configpanel.xml
+ui\sellconfigpanel.lua
+ui\repairconfigpanel.lua
+ui\perfconfigpanel.lua
+ui\debugconfigpanel.lua
+ui\configpanels.lua
+ui\configpanels.xml
 
 #@do-not-package@
 # Debug

@@ -178,7 +178,6 @@ end
 -- NOTE: This always returns a valid table, but it can be empty
 --*****************************************************************************
 function Vendor.Config:GetRulesConfig(ruleType)
-print("----- GetRulesConfig:", ruleType)
     if (not ruleType) then
         return Vendor_RulesConfig or Vendor.DeepTableCopy(Vendor.DefaultConfig.Rules)
     else

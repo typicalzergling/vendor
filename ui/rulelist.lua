@@ -217,13 +217,13 @@ function Vendor.RulesUI.RuleDialog_OnLoad(self)
 	PanelTemplates_TabResize(self.SellTab, 0)
 	self.SellPanel.TopText:SetText(L["CONFIG_DIALOG_SELLRULES_TEXT"])
 	self.SellPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
-	self.SellPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.10)
+	self.SellPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
 
 	-- Setup the keep panel
 	self.KeepTab:SetText(L["CONFIG_DIALOG_KEEPRULES_TAB"])
 	PanelTemplates_TabResize(self.KeepTab, 0)
 	self.KeepPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
-	self.KeepPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.10)
+	self.KeepPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
 	self.KeepPanel.TopText:SetText(L["CONFIG_DIALOG_KEEPRULES_TEXT"])
 
 	-- Setup the custom rules panel
