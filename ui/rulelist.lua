@@ -1,6 +1,7 @@
-Vendor = Vendor or {}
-Vendor.RulesUI = {}
-local L = Vendor:GetLocalizedStrings()
+local Addon, L = _G[select(1,...).."_GET"]()
+
+Addon.RulesUI = {}
+local L = Addon:GetLocalizedStrings()
 
 local function toggleRuleWithItemLevel(frame)
     if (frame.ItemLevel) then
@@ -142,7 +143,7 @@ end
 -- Called when a rules list is loaded in order to populate the list of
 -- frames which represent the rules contained in the list.
 --*****************************************************************************
-function Vendor.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
+function Addon.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
     frame.RuleFrameSize = 0
     frame.NumVisible = 0
     frame.GetRuleConfig = getRuleConfigFromList
@@ -163,7 +164,7 @@ function Vendor.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
     end
 
     -- Give an initial update of the view
-    Vendor.RulesUI.UpdateRuleList(frame)
+    Addon.RulesUI.UpdateRuleList(frame)
 end
 
 --*****************************************************************************
@@ -171,7 +172,7 @@ end
 -- of frames an then show/hide and position the frames which should be
 -- currently visibile.
 --*****************************************************************************
-function Vendor.RulesUI.UpdateRuleList(frame)
+function Addon.RulesUI.UpdateRuleList(frame)
     if (frame.Rules) then
         local offset = FauxScrollFrame_GetOffset(frame.View)
         local ruleHeight = frame.RuleFrameSize
@@ -201,9 +202,9 @@ function Vendor.RulesUI.UpdateRuleList(frame)
     end
 end
 
-function Vendor.RulesUI.ApplySystemRuleConfig(frame)
-    Vendor:DebugRules("Applying config for rule type '%s'", frame.RuleType)
-    Vendor:GetConfig():SetRulesConfig(frame.RuleType, getRuleConfigFromList(frame))
+function Addon.RulesUI.ApplySystemRuleConfig(frame)
+    Addon:DebugRules("Applying config for rule type '%s'", frame.RuleType)
+    Addon:GetConfig():SetRulesConfig(frame.RuleType, getRuleConfigFromList(frame))
 end
 
 --************************************--
@@ -219,7 +220,7 @@ local function showHideFrame(frameName, show)
 	end
 end
 
-function Vendor.RulesUI.RuleDialog_OnLoad(self)
+function Addon.RulesUI.RuleDialog_OnLoad(self)
     --tinsert(UISpecialFrames, self:GetName());
 	self.Caption:SetText(L["CONFIG_DIALOG_CAPTION"])
 
@@ -247,10 +248,10 @@ function Vendor.RulesUI.RuleDialog_OnLoad(self)
 	PanelTemplates_SetNumTabs(self, 3)
 	self.selectedTab = 2
 	PanelTemplates_UpdateTabs(self)
-	Vendor.RulesUI.RuleDialog_ShowTab(self, self.selectedTab)
+	Addon.RulesUI.RuleDialog_ShowTab(self, self.selectedTab)
 end
 
-function Vendor.RulesUI.RuleDialog_ShowTab(self, tabId)
+function Addon.RulesUI.RuleDialog_ShowTab(self, tabId)
 	local tabName1 = (self:GetName() .. "Tab1")
 	local tabName2 = (self:GetName() .. "Tab2")
 	local tabName3 = (self:GetName() .. "Tab3")
@@ -285,25 +286,25 @@ function Vendor.RulesUI.RuleDialog_ShowTab(self, tabId)
 	end
 end
 
-function Vendor.RulesUI.RulesDialog_SetDefaults(self)
-	Vendor:DebugRules("Restoring rule configuration to the default")
-	local config = Vendor:GetConfig()
-	self.SellPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Vendor.c_RuleType_Sell))
-	self.KeepPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Vendor.c_RuleType_Keep))
+function Addon.RulesUI.RulesDialog_SetDefaults(self)
+	Addon:DebugRules("Restoring rule configuration to the default")
+	local config = Addon:GetConfig()
+	self.SellPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Addon.c_RuleType_Sell))
+	self.KeepPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Addon.c_RuleType_Keep))
 end
 
-function Vendor.RulesUI.RulesDialog_OnOk(self)
-	Vendor:DebugRules("Applying new rule configuration")
-	Vendor:GetConfig():BeginBatch()
-	Vendor.RulesUI.ApplySystemRuleConfig(self.SellPanel.List)
-    Vendor.RulesUI.ApplySystemRuleConfig(self.KeepPanel.List)
-    Vendor:GetConfig():EndBatch()
+function Addon.RulesUI.RulesDialog_OnOk(self)
+	Addon:DebugRules("Applying new rule configuration")
+	Addon:GetConfig():BeginBatch()
+	Addon.RulesUI.ApplySystemRuleConfig(self.SellPanel.List)
+    Addon.RulesUI.ApplySystemRuleConfig(self.KeepPanel.List)
+    Addon:GetConfig():EndBatch()
 	HideParentPanel(self.Container)
 end
 
-function Vendor:ShowRulesDialog()
-	VendorRulesDialog.SellPanel.List:SetRuleConfig(Vendor:GetRulesConfig(Vendor.c_RuleType_Sell))
-	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Vendor:GetRulesConfig(Vendor.c_RulesType_Keep))
+function Addon:ShowRulesDialog()
+	VendorRulesDialog.SellPanel.List:SetRuleConfig(Addon:GetRulesConfig(Addon.c_RuleType_Sell))
+	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Addon:GetRulesConfig(Addon.c_RulesType_Keep))
 	VendorRulesDialog:Show()
 end
 

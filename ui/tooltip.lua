@@ -1,7 +1,7 @@
-local L = Vendor:GetLocalizedStrings()
+local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
-function Vendor:AddTooltipItemToSellList(list)
+function Addon:AddTooltipItemToSellList(list)
     -- Get the item from
     name, link = GameTooltip:GetItem();
     if not link then
@@ -19,16 +19,16 @@ function Vendor:AddTooltipItemToSellList(list)
 end
 
 -- Called by keybinds to direct-add items to the blocklists
-function Vendor:AddTooltipItemToAlwaysSellList()
+function Addon:AddTooltipItemToAlwaysSellList()
     self:AddTooltipItemToSellList(self.c_AlwaysSellList)
 end
 
-function Vendor:AddTooltipItemToNeverSellList()
+function Addon:AddTooltipItemToNeverSellList()
     self:AddTooltipItemToSellList(self.c_NeverSellList)
 end
 
 -- Hooks for item tooltips
-function Vendor:OnTooltipSetItem(tooltip, ...)
+function Addon:OnTooltipSetItem(tooltip, ...)
     -- If we are not auto-selling, do nothing.
     if not self:GetConfig():GetValue("autosell") then return end
 
@@ -46,7 +46,7 @@ local ruleId = nil
 local ruleName = nil
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
-function Vendor:ClearTooltipResultCache()
+function Addon:ClearTooltipResultCache()
     itemLink = nil
     willBeSold = nil
     blocklist = nil
@@ -54,7 +54,7 @@ function Vendor:ClearTooltipResultCache()
     ruleName = nil
 end
 
-function Vendor:AddItemTooltipLines(tooltip, link)
+function Addon:AddItemTooltipLines(tooltip, link)
     -- Check Cache if we already have data for this item from a previous update.
     -- If it isn't in the cache, we need to evaluate this item/link.
     -- If it is in the cache, then we already have our answer, so don't waste perf re-evaluating.
@@ -74,7 +74,7 @@ function Vendor:AddItemTooltipLines(tooltip, link)
 
     -- Add lines to the tooltip we are scanning after we've scanned it.
     if blocklist then
-        -- Add Vendor state to the tooltip.
+        -- Add Addon state to the tooltip.
         if blocklist == self.c_AlwaysSellList then
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
         else
@@ -94,7 +94,7 @@ function Vendor:AddItemTooltipLines(tooltip, link)
     if (ruleId) then
 		-- If we had a rule match (make a choice) then add it to the tooltip, if we didn't get a match then
 		-- no line means we didn't match anything.
-	    tooltip:AddLine(string.format("Vendor RuleId: %s[%s]%s", ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
+	    tooltip:AddLine(string.format("%s RuleId: %s[%s]%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
 	end
     --@end-debug@
 
@@ -102,8 +102,8 @@ end
 
 --@do-not-package@
 
-function Vendor:DumpItemPropertiesFromTooltip()
-    Vendor:DumpTooltipItemProperties()
+function Addon:DumpItemPropertiesFromTooltip()
+    Addon:DumpTooltipItemProperties()
 end
 
 --@end-do-not-package@

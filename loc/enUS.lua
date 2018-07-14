@@ -1,8 +1,6 @@
 -- enUS Localization
-
-Vendor = Vendor or {}
-Vendor.Locales = Vendor.Locales or {}
-Vendor.Locales["enUS"] = 
+local Addon = _G[select(1,...).."_GET"]()
+Addon.Locales["enUS"] = 
 {
 -- Core
 ["ADDON_NAME"] = "Vendor",

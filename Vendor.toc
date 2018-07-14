@@ -6,16 +6,18 @@
 ## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_SettingsPerCharacter
 ## Author: Malvir / Severin of Windrunner
 
-# Load libraries first.
-libs\libs.xml
+# Initialize & Constants must come first.
+sys\init.lua
+sys\constants.lua
 
-# Localization (Must be before Base)
-loc\loc.lua
+# Locales must be loaded next so they can be used in all subsequent files.
 loc\enUS.lua
 
+# After this point order shouldn't matter.
+
 # Base
-sys\init.lua
 sys\utils.lua
+sys\hook.lua
 sys\debug.lua
 sys\threads.lua
 sys\console.lua

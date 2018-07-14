@@ -1,14 +1,15 @@
 
-Vendor = Vendor or {}
-Vendor.Config = {}
-Vendor.DefaultConfig = {}
+local Addon, L = _G[select(1,...).."_GET"]()
 
--- NOTE: This can't use Vendor:Debug(...) need to figure out a new plan
+Addon.Config = {}
+Addon.DefaultConfig = {}
+
+-- NOTE: This can't use Addon:Debug(...) need to figure out a new plan
 
 --*****************************************************************************
--- The default settings for Vendor.
+-- The default settings for Addon.
 --*****************************************************************************
-Vendor.DefaultConfig.Settings =
+Addon.DefaultConfig.Settings =
 {
     -- Current version of the settings config
     version = 1,
@@ -26,7 +27,7 @@ Vendor.DefaultConfig.Settings =
 --*****************************************************************************
 -- The default rule configuration
 --*****************************************************************************
-Vendor.DefaultConfig.Rules =
+Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
     version = 2,
@@ -66,7 +67,7 @@ local ALWAYS_SELL = "sell_always"
 --*****************************************************************************
 -- Create a new config object which provides access to our configuration
 --*****************************************************************************
-function Vendor.Config:Create()
+function Addon.Config:Create()
     local instance =
     {
         handlers = {},
@@ -83,7 +84,7 @@ function Vendor.Config:Create()
                         local status, result = pcall(callback, self)
                         --@debug@
                         if (not status) then
-                            print("Vendor.Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
+                            print("Addon.Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
                         end
                         --@end-debug@
                     end
@@ -93,20 +94,20 @@ function Vendor.Config:Create()
     }
 
     if (not Vendor_Settings) then
-        Vendor_Settings = Vendor.DeepTableCopy(Vendor.DefaultConfig.Settings)
-    elseif (Vendor_Settings and (Vendor_Settings.version ~= Vendor.DefaultConfig.Settings.version)) then
+        Vendor_Settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
+    elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
         local oldSettings = Vendor_Settings
-        local newSettings = Vendor.DeepTableCopy(Vendor.DefaultConfig.Settings)
+        local newSettings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
         self:migrateSettings(oldSettings, newSettings)
         Vendor_Settings = newSettings
         Vendor_SettingsPerCharacter = nil
     end
 
     if (not Vendor_RulesConfig) then
-        Vendor_RulesConfig = Vendor.DeepTableCopy(Vendor.DefaultConfig.Rules)
-    elseif (Vendor_RulesConfig and (Vendor_RulesConfig.version ~= Vendor.DefaultConfig.Rules.version)) then
+        Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+    elseif (Vendor_RulesConfig and (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
         local oldRuleConfig = Vendor_RulesConfig
-        local newRuleConfig = Vendor.DeepTableCopy(Vendor.DefaultConfig.Rules)
+        local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
         self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
         Vendor_RulesConfig = newRuleConfig
     end
@@ -124,14 +125,14 @@ end
 --   config:SetValue("b", 2)
 --   config:EndBatch()
 --*****************************************************************************
-function Vendor.Config:BeginBatch()
+function Addon.Config:BeginBatch()
     self.suspend = (self.suspend + 1)
 end
 
 --*****************************************************************************
 -- Enad a batch of changes, sends notificaitons if we had any changes
 --*****************************************************************************
-function Vendor.Config:EndBatch()
+function Addon.Config:EndBatch()
     self.suspend = math.max(0, self.suspend - 1)
     self:notifyChanges()
 end
@@ -140,7 +141,7 @@ end
 -- Adds a handler to be called when the configuration has changed, passes
 -- the configuration object as the first parameter.
 --*****************************************************************************
-function Vendor.Config:AddOnChanged(onchange)
+function Addon.Config:AddOnChanged(onchange)
     if (type(onchange) == "function") then
         table.insert(self.handlers, onchange)
     end
@@ -150,7 +151,7 @@ end
 -- Adds a handler to be called when the configuration has changed, passes
 -- the configuration object as the first parameter.
 --*****************************************************************************
-function Vendor.Config:SetPerCharacter(usePerCharacter)
+function Addon.Config:SetPerCharacter(usePerCharacter)
     if (usePerCharacter) then
     else
     end
@@ -160,13 +161,13 @@ end
 -- Retrieve the default rule configuration of the given type, or everything
 -- NOTE: This always returns a valid table, but it can be empty
 --*****************************************************************************
-function Vendor.Config:GetDefaultRulesConfig(ruleType)
+function Addon.Config:GetDefaultRulesConfig(ruleType)
     if (not ruleType) then
-        return Vendor:DeepTableCopy(Vendor.DefaultConfig.Rules)
+        return Addon:DeepTableCopy(Addon.DefaultConfig.Rules)
     else
-        local value = rawget(Vendor.DefaultConfig.Rules, string.lower(ruleType))
+        local value = rawget(Addon.DefaultConfig.Rules, string.lower(ruleType))
         if (value) then
-            return Vendor.DeepTableCopy(value)
+            return Addon.DeepTableCopy(value)
         end
     end
     return {}
@@ -177,9 +178,9 @@ end
 -- the data from the default table if we don't have user specific changes
 -- NOTE: This always returns a valid table, but it can be empty
 --*****************************************************************************
-function Vendor.Config:GetRulesConfig(ruleType)
+function Addon.Config:GetRulesConfig(ruleType)
     if (not ruleType) then
-        return Vendor_RulesConfig or Vendor.DeepTableCopy(Vendor.DefaultConfig.Rules)
+        return Vendor_RulesConfig or Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
     else
         local key = string.lower(ruleType)
 
@@ -201,7 +202,7 @@ end
 -- it not effecient, and don't change much this doesn't attempt to do a diff
 -- of the configuration
 --*****************************************************************************
-function Vendor.Config:SetRulesConfig(ruleType, rules)
+function Addon.Config:SetRulesConfig(ruleType, rules)
     local key = string.lower(ruleType)
     rawset(Vendor_RulesConfig, key, rules)
     self.changes = true
@@ -218,7 +219,7 @@ end
 --    2 - Global setttings
 --    3 - Default settings
 --*****************************************************************************
-function Vendor.Config:GetValue(name)
+function Addon.Config:GetValue(name)
     assert(type(name) == "string", "The name of a config value must be a string")
 
     local key = string.lower(name)
@@ -234,7 +235,7 @@ function Vendor.Config:GetValue(name)
         return value
     end
 
-    local value = rawget(Vendor.DefaultConfig.Settings, key)
+    local value = rawget(Addon.DefaultConfig.Settings, key)
     if (value ~= nil) then
         return value
     end
@@ -246,7 +247,7 @@ end
 -- The sets a configuration value, if the value is the same as currently
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
-function Vendor.Config:SetValue(name, value)
+function Addon.Config:SetValue(name, value)
     assert(type(name) == "string", "The name of a config value must be a string")
 
     local key = string.lower(name)
@@ -271,41 +272,41 @@ end
 -- This is called when we need to migrate the settings from one version to
 -- another, both of the tables will be non-nil so you can access them directly.
 --*****************************************************************************
-function Vendor.Config:migrateSettings(oldSettings, newSettings)
-    --Vendor:Debug("[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
+function Addon.Config:migrateSettings(oldSettings, newSettings)
+    --Addon:Debug("[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
     -- Migrate the sell_never to the new version
    if (rawget(oldSettings, NEVER_SELL)) then
-        --Vendor:Debug("[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
+        --Addon:Debug("[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
         rawset(newSettings, NEVER_SELL, rawget(oldSettings, NEVER_SELL))
     end
 
     if (rawget(oldSettings, ALWAYS_SELL)) then
-        --Vendor:Debug("[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
+        --Addon:Debug("[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
         rawset(newSettings, ALWAYS_SELL, rawget(oldSettings, ALWAYS_SELL))
     end
-    --Vendor:Debug("[Config] +Setting migration complete")
+    --Addon:Debug("[Config] +Setting migration complete")
 end
 
 --*****************************************************************************
 -- The sets a configuration value, if the value is the ssame as currently
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
-function Vendor.Config:migrateRulesConfig(oldSettings, newSettings)
+function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
 end
 
 --*****************************************************************************
 -- Creates and returns the configuration object
 --*****************************************************************************
-function Vendor:GetConfig()
+function Addon:GetConfig()
     if (not self.config) then
-        self.config = Vendor.Config:Create()
+        self.config = Addon.Config:Create()
         self.config:AddOnChanged(function() self:ClearTooltipResultCache() end)
     end
     return self.config
 end
 
 -- prototype/
-function Vendor:GetConfigV2()
+function Addon:GetConfigV2()
     if (not self.configV2) then
         local cfg = self:GetConfig()
         self.configV2 =  {}

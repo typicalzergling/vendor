@@ -1,3 +1,6 @@
+
+local Addon, L = _G[select(1,...).."_GET"]()
+
 -- Tooltip scanning for item information. This is necessary because not all information is available via item info API.
 
 -- Create tooltip used for scanning items for properties not available normally.
@@ -7,7 +10,7 @@ local scanningtip = CreateFrame('GameTooltip', 'VendorScanningTip', nil, 'GameTo
 scanningtip:SetOwner(WorldFrame, 'ANCHOR_NONE')
 
 -- Text scan for left text.
-function Vendor:IsStringInTooltipLeftText(tooltip, bag, slot, str)
+function Addon:IsStringInTooltipLeftText(tooltip, bag, slot, str)
     -- We assume the tooltip is the GameTooltip
     local tooltipTextLeft = "GameTooltipTextLeft"
 
@@ -36,26 +39,26 @@ function Vendor:IsStringInTooltipLeftText(tooltip, bag, slot, str)
 end
 
 -- Soulbound
-function Vendor:IsItemSoulboundInTooltip(tooltip, bag, slot)
+function Addon:IsItemSoulboundInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ITEM_SOULBOUND"])
 end
 
 -- You haven't collected this appearance
-function Vendor:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot)
+function Addon:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN"])
 end
 
 -- Artifact Power
-function Vendor:IsItemArtifactPowerInTooltip(tooltip, bag, slot)
+function Addon:IsItemArtifactPowerInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ARTIFACT_POWER"])
 end
 
 -- Toy
-function Vendor:IsItemToyInTooltip(tooltip, bag, slot)
+function Addon:IsItemToyInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["TOY"])
 end
 
 -- Already known
-function Vendor:IsItemAlreadyKnownInTooltip(tooltip, bag, slot)
+function Addon:IsItemAlreadyKnownInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ITEM_SPELL_KNOWN"])
 end

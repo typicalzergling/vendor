@@ -1,4 +1,4 @@
-local L = Vendor:GetLocalizedStrings()
+local Addon, L = _G[select(1,...).."_GET"]()
 
 local commandList = {}
 
@@ -11,10 +11,10 @@ local function ShowConsoleHelp()
 	table.sort(cmds)
 	
 	-- Print Command help
-	Vendor.Print(Vendor, L["CMD_HELP_HEADER"])
+	Addon.Print(Addon, L["CMD_HELP_HEADER"])
 	for _, cmd in ipairs(cmds) do
 		if commandList[cmd].Help then
-			Vendor.Print(Vendor, "    %s  -  %s", cmd, commandList[cmd].Help)
+			Addon.Print(Addon, "    %s%s%s  -  %s",YELLOW_FONT_COLOR_CODE, cmd, FONT_COLOR_CODE_CLOSE, commandList[cmd].Help)
 		end
 	end
 end
@@ -79,7 +79,7 @@ end
 --					You can specify multiple slash commands that will all be
 --					aliases for the same console commands.
 --*****************************************************************************
-function Vendor:RegisterConsoleCommandName(namespace, ...)
+function Addon:RegisterConsoleCommandName(namespace, ...)
 	namespace = string.upper(namespace)
 	local commandList = {...}
 	
@@ -123,7 +123,7 @@ end
 --				Example: "/foo cmd arg1   arg2 arg3" will be passed:
 --				func(arg1, arg2, arg3)
 --*****************************************************************************
-function Vendor:AddConsoleCommand(name, help, func)
+function Addon:AddConsoleCommand(name, help, func)
 	cmd = {}
 	cmd.Help = help							-- No help text means none will be displayed.
 	
@@ -133,9 +133,9 @@ function Vendor:AddConsoleCommand(name, help, func)
 			cmd.Func = func
 		elseif type(func) == "string" then
 			-- Get function from the Addon's Namespace
-			if Vendor[func] then
+			if Addon[func] then
 				-- Will assume that the function is to be called with the 'self' parameter specified.
-				cmd.Func = function(...) Vendor[func](Vendor,...) end
+				cmd.Func = function(...) Addon[func](Addon,...) end
 			else
 				assert(false, "Specified function does not exist in addon's namespace.")
 			end

@@ -1,12 +1,12 @@
 -- This is a file exclusively for debug channels and functions. On a release build, debug statements are no-op and ignored.
 -- This file will exist on a release build so Debug related code in the other files is defined.
-Vendor = Vendor or {}
+local Addon, L = _G[select(1,...).."_GET"]()
 
 --@do-not-package@
 local debugEnabled = nil
 local debugRuledEnabled = nil
 
-function Vendor:ToggleDebug(channel)
+function Addon:ToggleDebug(channel)
 	local config = self:GetConfig()
 
 	local enabled = false
@@ -25,7 +25,7 @@ function Vendor:ToggleDebug(channel)
 	end
 end
 
-function Vendor:IsDebug()
+function Addon:IsDebug()
     local function update(config)
         debugEnabled = false
         if (config:GetValue("debug")) then
@@ -33,14 +33,14 @@ function Vendor:IsDebug()
         end
     end
     if (debugEnabled == nil) then
-        local config = Vendor:GetConfig()
+        local config = Addon:GetConfig()
         config:AddOnChanged(update)
         update(config)
     end
     return debugEnabled
 end
 
-function Vendor:IsDebugRules()
+function Addon:IsDebugRules()
     local function update(config)
         print("update-debugrules")
         debugRulesEnabled = false
@@ -49,7 +49,7 @@ function Vendor:IsDebugRules()
         end
     end
     if (debugRulesEnabled == nil) then
-        local config = Vendor:GetConfig()
+        local config = Addon:GetConfig()
         config:AddOnChanged(update)
         update(config)
     end
@@ -59,7 +59,7 @@ end
 --@end-do-not-package@
 
 -- Debug print. On a release build this does nothing.
-function Vendor:Debug(msg, ...)
+function Addon:Debug(msg, ...)
     --@debug@
     if not self:IsDebug() then return end
     self:Print(msg, ...)
@@ -67,7 +67,7 @@ function Vendor:Debug(msg, ...)
 end
 
 -- Debug print function for rules
-function Vendor:DebugRules(msg, ...)
+function Addon:DebugRules(msg, ...)
     --@debug@
     if (self:IsDebugRules()) then
         self:Print(" %s[Rules]%s " .. msg, ACHIEVEMENT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, ...)
@@ -81,19 +81,19 @@ end
 --@do-not-package@
 -- Beyond this point are debug related functions that are not packaged.
 
-function Vendor:DumpTooltipItemProperties()
+function Addon:DumpTooltipItemProperties()
     local props = self:GetItemProperties(GameTooltip)
     self:Print("Properties for "..props["Link"])
 
     -- Print non-derived properties first.
-    for i, v in Vendor.orderedPairs(props) do
+    for i, v in Addon.orderedPairs(props) do
         if not string.find(i, "^Is") then
             self:Print("    ["..tostring(i).."] "..tostring(v))
         end
     end
 
     -- Print all the derived properties ("Is*") together.
-    for i, v in Vendor.orderedPairs(props) do
+    for i, v in Addon.orderedPairs(props) do
         if string.find(i, "^Is") then
             self:Print("    ["..tostring(i).."] "..tostring(v))
         end
@@ -104,7 +104,7 @@ end
 
 -- Sorted Pairs from Lua-Users.org. We use this for pretty-printing tables for debugging purposes.
 
-function Vendor.__genOrderedIndex( t )
+function Addon.__genOrderedIndex( t )
     local orderedIndex = {}
     for key in pairs(t) do
         table.insert( orderedIndex, key )
@@ -113,7 +113,7 @@ function Vendor.__genOrderedIndex( t )
     return orderedIndex
 end
 
-function Vendor.orderedNext(t, state)
+function Addon.orderedNext(t, state)
     -- Equivalent of the next function, but returns the keys in the alphabetic
     -- order. We use a temporary ordered key table that is stored in the
     -- table being iterated.
@@ -122,7 +122,7 @@ function Vendor.orderedNext(t, state)
     --print("orderedNext: state = "..tostring(state) )
     if state == nil then
         -- the first time, generate the index
-        t.__orderedIndex = Vendor.__genOrderedIndex( t )
+        t.__orderedIndex = Addon.__genOrderedIndex( t )
         key = t.__orderedIndex[1]
     else
         -- fetch the next value
@@ -142,10 +142,10 @@ function Vendor.orderedNext(t, state)
     return
 end
 
-function Vendor.orderedPairs(t)
+function Addon.orderedPairs(t)
     -- Equivalent of the pairs() function on tables. Allows to iterate
     -- in order
-    return Vendor.orderedNext, t, nil
+    return Addon.orderedNext, t, nil
 end
 
 --@end-do-not-package@
