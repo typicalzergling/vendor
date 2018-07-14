@@ -15,7 +15,7 @@ function Addon:ToggleDebug(channel)
 	elseif channel == "debugrules" then
 		enabled = self:IsDebugRules()
 	end
-	
+
 	if enabled then
 		config:SetValue(channel, false)
 		self:Print("Debug channel %s disabled.", tostring(channel))
@@ -42,7 +42,6 @@ end
 
 function Addon:IsDebugRules()
     local function update(config)
-        print("update-debugrules")
         debugRulesEnabled = false
         if (config:GetValue("debugrules")) then
             debugRulesEnabled = true
@@ -55,7 +54,6 @@ function Addon:IsDebugRules()
     end
     return debugRulesEnabled
 end
-
 --@end-do-not-package@
 
 -- Debug print. On a release build this does nothing.
@@ -74,9 +72,6 @@ function Addon:DebugRules(msg, ...)
     end
     --@end-debug@
 end
-
-
-
 
 --@do-not-package@
 -- Beyond this point are debug related functions that are not packaged.

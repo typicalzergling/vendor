@@ -11,9 +11,7 @@ end
 
 -- Called when our rule configuration has changed
 local function onRulesConfigUpdated(ruleManager, config)
-    print("---- onRulesConfigUpdated", ruleManager, config)
     if (ruleManager) then
-        print("---- UPDATING RULES MANAGER")
 		ruleManager:UpdateConfig(config:GetRulesConfig())
 	end
 end

@@ -1,7 +1,5 @@
 local Addon, L = _G[select(1,...).."_GET"]()
-
 Addon.RulesUI = {}
-local L = Addon:GetLocalizedStrings()
 
 local function toggleRuleWithItemLevel(frame)
     if (frame.ItemLevel) then
@@ -209,16 +207,6 @@ end
 
 --************************************--
 
-local function showHideFrame(frameName, show)
-	local frame = _G[frameName]
-	if (frame) then
-		if (show) then
-			frame:Show()
-		else
-			frame:Hide()
-		end
-	end
-end
 
 function Addon.RulesUI.RuleDialog_OnLoad(self)
     --tinsert(UISpecialFrames, self:GetName());
@@ -229,13 +217,13 @@ function Addon.RulesUI.RuleDialog_OnLoad(self)
 	PanelTemplates_TabResize(self.SellTab, 0)
 	self.SellPanel.TopText:SetText(L["CONFIG_DIALOG_SELLRULES_TEXT"])
 	self.SellPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
-	self.SellPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.10)
+	self.SellPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
 
 	-- Setup the keep panel
 	self.KeepTab:SetText(L["CONFIG_DIALOG_KEEPRULES_TAB"])
 	PanelTemplates_TabResize(self.KeepTab, 0)
 	self.KeepPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
-	self.KeepPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.10)
+	self.KeepPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
 	self.KeepPanel.TopText:SetText(L["CONFIG_DIALOG_KEEPRULES_TEXT"])
 
 	-- Setup the custom rules panel
@@ -252,38 +240,27 @@ function Addon.RulesUI.RuleDialog_OnLoad(self)
 end
 
 function Addon.RulesUI.RuleDialog_ShowTab(self, tabId)
-	local tabName1 = (self:GetName() .. "Tab1")
-	local tabName2 = (self:GetName() .. "Tab2")
-	local tabName3 = (self:GetName() .. "Tab3")
+    -- Update our tabs and spaces
+    for _, tab in ipairs(self.Tabs) do
+        if (tab:GetID() == tabId) then
+            for _, spacer in ipairs(tab.Spacers) do
+                spacer:Show()
+            end
+        else
+            for _, spacer in ipairs(tab.Spacers) do
+                spacer:Hide()
+            end
+        end
+    end
 
-	if (tabId == 1) then
-		showHideFrame(tabName1 .. "Spacer1", true)
-		showHideFrame(tabName2 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer2", false)
-		showHideFrame(tabName3 .. "Spacer1", false)
-		showHideFrame(tabName3 .. "Spacer2", false)
-		self.SellPanel:Hide()
-		self.KeepPanel:Show()
-		self.CustomPanel:Hide()
-	elseif (tabId == 2) then
-		showHideFrame(tabName1 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer1", true)
-		showHideFrame(tabName2 .. "Spacer2", true)
-		showHideFrame(tabName3 .. "Spacer1", false)
-		showHideFrame(tabName3 .. "Spacer2", false)
-		self.SellPanel:Show()
-		self.KeepPanel:Hide()
-		self.CustomPanel:Hide()
-	elseif (tabId == 3) then
-		showHideFrame(tabName1 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer1", false)
-		showHideFrame(tabName2 .. "Spacer2", false)
-		showHideFrame(tabName3 .. "Spacer1", true)
-		showHideFrame(tabName3 .. "Spacer2", true)
-		self.SellPanel:Hide()
-		self.KeepPanel:Hide()
-		self.CustomPanel:Show()
-	end
+    -- Update our panels
+    for _, panel in ipairs(self.Panels) do
+        if (panel:GetID() == tabId) then
+            panel:Show()
+        else
+            panel:Hide()
+        end
+    end
 end
 
 function Addon.RulesUI.RulesDialog_SetDefaults(self)
@@ -303,8 +280,9 @@ function Addon.RulesUI.RulesDialog_OnOk(self)
 end
 
 function Addon:ShowRulesDialog()
-	VendorRulesDialog.SellPanel.List:SetRuleConfig(Addon:GetRulesConfig(Addon.c_RuleType_Sell))
-	VendorRulesDialog.KeepPanel.List:SetRuleConfig(Addon:GetRulesConfig(Addon.c_RulesType_Keep))
+	local config = Addon:GetConfig()
+	VendorRulesDialog.SellPanel.List:SetRuleConfig(config:GetRulesConfig(Addon.c_RuleType_Sell))
+	VendorRulesDialog.KeepPanel.List:SetRuleConfig(config:GetRulesConfig(Addon.c_RuleType_Keep))
 	VendorRulesDialog:Show()
 end
 

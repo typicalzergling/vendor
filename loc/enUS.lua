@@ -27,7 +27,8 @@ Addon.Locales["enUS"] =
 
 -- Options
 ["OPTIONS_TITLE_ADDON"] = "These settings are for configuring Vendor behavior.\n\n",
-["OPTIONS_CATEGORY_PROFILES"] = "Profiles",
+["OPTIONS_SHOW_BINDINGS"] = "Key Bindings",
+["OPTIONS_OPEN_RULES"] = "Open Rules",
 
 
 ["OPTIONS_HEADER_REPAIR"] = "Repair",
@@ -51,14 +52,12 @@ Addon.Locales["enUS"] =
 ["OPTIONS_HEADER_THROTTLES"] = "Throttles",
 ["OPTIONS_DESC_THROTTLES"] = "These values all set how many actions are taken per throttle cycle.",
 ["OPTIONS_SETTINGNAME_SELL_THROTTLE"] = "Items Vendored",
-["OPTIONS_SETTINGDESC_SELL_THROTTLE"] = "Used when auto-selling items to a vendor. Lower this value if items are inconsistently auto-selling.\n\nRecommended value: 1 to 5",
-["OPTIONS_SETTINGINVALID_SELL_THROTTLE"] = "Invalid throttle value; it must be an integer greater than 0.",
+["OPTIONS_SETTINGDESC_SELL_THROTTLE"] = "Used when auto-selling items to a vendor. Lower this value if items are inconsistently auto-selling.",
 
 ["OPTIONS_HEADER_FREQUENCY"] = "Frequency",
 ["OPTIONS_DESC_FREQUENCY"] = "Sets how frequently a throttled task executes per second. Changing this affects all throttles.",
 ["OPTIONS_SETTINGNAME_CYCLE_RATE"] = "Cycle Rate",
-["OPTIONS_SETTINGDESC_CYCLE_RATE"] = "Interval in seconds between attempts to sell the throttled number of items.\n\nRecommended value: .5 to 2",
-["OPTIONS_SETTINGINVALID_CYCLE_RATE"] = "Invalid cycle rate; it must be greater than .1",
+["OPTIONS_SETTINGDESC_CYCLE_RATE"] = "Interval in seconds between attempts to sell the throttled number of items.",
 
 -- Console Commands
 ["CMD_HELP_HEADER"] = "Command Reference: ",
@@ -87,7 +86,7 @@ Addon.Locales["enUS"] =
 -- Rules
 ["RULEMATCH_TOOLTIP"] = "Vendor Rule: \"%s\"",
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
-["CONFIG_DIALOG_CAPTION"] = "Vendor Setting",
+["CONFIG_DIALOG_CAPTION"] = "Vendor Rules",
 ["CONFIG_DIALOG_KEEPRULES_TAB"] = "Keep Rules",
 ["CONFIG_DIALOG_KEEPRULES_TEXT"] = "These are the built-in rules which Vendor uses to determine if hte item should be kept or sold",
 ["CONFIG_DIALOG_SELLRULES_TAB"] = "Sell Rules",

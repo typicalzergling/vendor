@@ -2,20 +2,21 @@
 Vendor = Vendor or {}
 local L = Vendor:GetLocalizedStrings()
 
-Vendor.SystemRules = 
+Vendor.SystemRules =
 {
     --*****************************************************************************
-    -- 
-    -- 
+    --
+    --
     --*****************************************************************************
-    Sell = 
+    Sell =
     {
-        alwayssell = 
+        alwayssell =
         {
             Name = L["SYSRULE_SELL_ALWAYSSELL"],
             Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
-            Script = 
-            	function() 
+            ScriptText = "IsAlwaysSellItem()",
+            Script =
+            	function()
             		if IsAlwaysSellItem() then
             			return SELL
             		end
@@ -24,7 +25,7 @@ Vendor.SystemRules =
             Order = -1000,
         },
 
-        poor = 
+        poor =
         {
             Name = L["SYSRULE_SELL_POORITEMS"],
             Description = L["SYSRULE_SELL_POORITEMS_DESC"],
@@ -36,7 +37,7 @@ Vendor.SystemRules =
             Name = L["SYSRULE_SELL_ARTIFACTPOWER"],
             Description = L["SYSRULE_SELL_ARTIFACTPOWER_DESC"],
             Script = "IsArtifactPower() and IsFromExpansion(6) and (PlayerLevel() >= 110)",
-        },      
+        },
 
         uncommongear =
         {
@@ -45,7 +46,7 @@ Vendor.SystemRules =
             Script = "IsEquipment() and Quality() == 2 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
         },
-        
+
         raregear =
         {
             Name = L["SYSRULE_SELL_RAREGEAR"],
@@ -61,14 +62,14 @@ Vendor.SystemRules =
             Script = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
         },
-        
+
         knowntoys =
         {
             Name = L["SYSRULE_SELL_KNOWNTOYS"],
             Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
             Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
         },
-		
+
 		oldfood =
 		{
             Name = L["SYSRULE_SELL_OLDFOOD"],
@@ -78,8 +79,8 @@ Vendor.SystemRules =
     },
 
     --*****************************************************************************
-    -- 
-    -- 
+    --
+    --
     --*****************************************************************************
     Keep =
     {
@@ -88,7 +89,8 @@ Vendor.SystemRules =
         {
             Name = L["SYSRULE_KEEP_NEVERSELL"],
             Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
-            Script = 
+            ScriptText = "IsNeverSellItem()",
+            Script =
             	function()
     				if IsNeverSellItem() then
 				        return KEEP
@@ -97,7 +99,7 @@ Vendor.SystemRules =
             Locked = true,
             Order = -2000,
         },
-        
+
         -- This is an unsellable item if value is 0
         unsellable =
         {
@@ -167,7 +169,7 @@ Vendor.SystemRules =
 }
 
 --*****************************************************************************
--- Gets the rule definitions of the specified type,or returns an empty 
+-- Gets the rule definitions of the specified type,or returns an empty
 -- table if there aren't any available.
 --*****************************************************************************
 local function getSystemRuleDefinitons(ruleType)
@@ -175,7 +177,7 @@ local function getSystemRuleDefinitons(ruleType)
 end
 
 --*****************************************************************************
--- Subsitutes every instance of "{inset}" with the value specified by 
+-- Subsitutes every instance of "{inset}" with the value specified by
 -- insetValue as a string.
 --*****************************************************************************
 local function replaceInset(source, inset, insetValue)
@@ -198,8 +200,8 @@ local function replaceInsets(source, insets)
 end
 
 --*****************************************************************************
--- Creates a new id using the rule type and id which is uniuqe for the 
--- given set of insets.  
+-- Creates a new id using the rule type and id which is uniuqe for the
+-- given set of insets.
 --
 -- Example: makeRuleId("Sell", "Epic", { itemlevel=700 })
 --           creates the following "sell.epic(itemlevel:700)"
@@ -234,7 +236,7 @@ local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
 end
 
 --*****************************************************************************
--- Gets the definition of the specified rule checking the tables of rules 
+-- Gets the definition of the specified rule checking the tables of rules
 -- returns the id and the script of the rule. this will format the item level
 -- into the rule of needed.
 --
