@@ -11,31 +11,31 @@ BINDING_DESC_VENDORNEVERSELL = L["BINDING_DESC_VENDORNEVERSELL"]
 
 -- Run initialization code.
 function Addon:OnInitialize()
-	-- Setup Console Commands
-	self:SetupConsoleCommands()
-	--@debug@
-	self:SetupDebugConsoleCommands()
-	--@end-debug@
-	
+    -- Setup Console Commands
+    self:SetupConsoleCommands()
+    --@debug@
+    self:SetupDebugConsoleCommands()
+    --@end-debug@
+    
     -- Set up events
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
-	self:RegisterEvent("END_BOUND_TRADEABLE", "OnEndBoundTradeable")
+    self:RegisterEvent("END_BOUND_TRADEABLE", "OnEndBoundTradeable")
 
     -- Tooltip hooks
     self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
     self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
-	--self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTestHook")
-	
-	-- Print version and load confirmation to console.
-	local version = GetAddOnMetadata(self.c_AddonName, "version")
-	--@do-not-package@
-	if version == "@project-version@" then version = "Debug" end
-	--@end-do-not-package@
-	self:Print("%s %sv%s%s is loaded.", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, version, FONT_COLOR_CODE_CLOSE)
+    --self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTestHook")
+    
+    -- Print version and load confirmation to console.
+    local version = GetAddOnMetadata(self.c_AddonName, "version")
+    --@do-not-package@
+    if version == "@project-version@" then version = "Debug" end
+    --@end-do-not-package@
+    self:Print("%s %sv%s%s is loaded.", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, version, FONT_COLOR_CODE_CLOSE)
 end
 
 function Addon:OnTestHook()
 
-	self:Print("Test Hook worked!")
+    self:Print("Test Hook worked!")
 end

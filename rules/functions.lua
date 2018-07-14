@@ -1,11 +1,10 @@
+local Addon, L = _G[select(1,...).."_GET"]()
 
-Vendor = Vendor or {}
-Vendor.RuleFunctions = {}
-
-Vendor.RuleFunctions.NO_ACTION = 1
-Vendor.RuleFunctions.KEEP = 2
-Vendor.RuleFunctions.SELL = 3
-Vendor.RuleFunctions.SELL_WITH_PROMPT = 4
+Addon.RuleFunctions = {}
+Addon.RuleFunctions.NO_ACTION = 1
+Addon.RuleFunctions.KEEP = 2
+Addon.RuleFunctions.SELL = 3
+Addon.RuleFunctions.SELL_WITH_PROMPT = 4
 
 --*****************************************************************************
 -- Given a set of values this searches for them in the map to see if they map
@@ -32,9 +31,9 @@ end
 -- Matches the item quality (or item qualities) this accepts multiple arguments
 -- which can be either strings or numbers.
 --*****************************************************************************
-function Vendor.RuleFunctions.ItemQuality(...)
+function Addon.RuleFunctions.ItemQuality(...)
     assert((Quality() >= LE_ITEM_QUALITY_POOR) and (Quality() <= LE_ITEM_QUALITY_WOW_TOKEN), "Item quality is out of range")
-    return checkMap(Vendor.Maps.Quality, Quality(), {...})
+    return checkMap(Addon.Maps.Quality, Quality(), {...})
 end
 
 --*****************************************************************************
@@ -42,24 +41,24 @@ end
 -- which can either be numeric or strings which are mapped with the table
 -- above.
 --*****************************************************************************
-function Vendor.RuleFunctions.ItemType(...)
-    return checkMap(Vendor.Maps.ItemType, TypeId(), {...})
+function Addon.RuleFunctions.ItemType(...)
+    return checkMap(Addon.Maps.ItemType, TypeId(), {...})
 end
 
 --*****************************************************************************
 -- Rule function which matches of the item is from a particular expansion
 -- these can either be numeric or you can use a value from the table above
 --*****************************************************************************
-function Vendor.RuleFunctions.IsFromExpansion(...)
-    return checkMap(Vendor.Maps.Expansion, ExpansionPackId(), {...})
+function Addon.RuleFunctions.IsFromExpansion(...)
+    return checkMap(Addon.Maps.Expansion, ExpansionPackId(), {...})
 end
 
 --*****************************************************************************
 -- Rule function which checks if the specified item is present in the 
 -- list of items which should never be sold.
 --*****************************************************************************
-function Vendor.RuleFunctions.IsNeverSellItem()
-    if Vendor:IsItemIdInNeverSellList(Id()) then
+function Addon.RuleFunctions.IsNeverSellItem()
+    if Addon:IsItemIdInNeverSellList(Id()) then
         return true
     end
 end 
@@ -68,8 +67,8 @@ end
 -- Rule function which chceks if the item is in the list of items which 
 -- should always be sold.
 --*****************************************************************************
-function Vendor.RuleFunctions.IsAlwaysSellItem()
-    if Vendor:IsItemIdInAlwaysSellList(Id()) then
+function Addon.RuleFunctions.IsAlwaysSellItem()
+    if Addon:IsItemIdInAlwaysSellList(Id()) then
         return true
     end
 end
@@ -77,6 +76,6 @@ end
 --*****************************************************************************
 -- Rule function which returns the level of the player.
 --*****************************************************************************
-function Vendor.RuleFunctions.PlayerLevel()
+function Addon.RuleFunctions.PlayerLevel()
     return tonumber(UnitLevel("player"))
 end

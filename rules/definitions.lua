@@ -1,8 +1,6 @@
+local Addon, L = _G[select(1,...).."_GET"]()
 
-Vendor = Vendor or {}
-local L = Vendor:GetLocalizedStrings()
-
-Vendor.SystemRules =
+Addon.SystemRules =
 {
     --*****************************************************************************
     --
@@ -16,11 +14,11 @@ Vendor.SystemRules =
             Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
             ScriptText = "IsAlwaysSellItem()",
             Script =
-            	function()
-            		if IsAlwaysSellItem() then
-            			return SELL
-            		end
-            	end,
+                function()
+                    if IsAlwaysSellItem() then
+                        return SELL
+                    end
+                end,
             Locked = true,
             Order = -1000,
         },
@@ -70,8 +68,8 @@ Vendor.SystemRules =
             Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
         },
 
-		oldfood =
-		{
+        oldfood =
+        {
             Name = L["SYSRULE_SELL_OLDFOOD"],
             Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
             Script = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
@@ -91,11 +89,11 @@ Vendor.SystemRules =
             Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
             ScriptText = "IsNeverSellItem()",
             Script =
-            	function()
-    				if IsNeverSellItem() then
-				        return KEEP
-				    end
-            	end,
+                function()
+                    if IsNeverSellItem() then
+                        return KEEP
+                    end
+                end,
             Locked = true,
             Order = -2000,
         },
@@ -173,7 +171,7 @@ Vendor.SystemRules =
 -- table if there aren't any available.
 --*****************************************************************************
 local function getSystemRuleDefinitons(ruleType)
-    return Vendor.SystemRules[ruleType] or {}
+    return Addon.SystemRules[ruleType] or {}
 end
 
 --*****************************************************************************
@@ -191,7 +189,7 @@ end
 -- can be null or empty.
 --*****************************************************************************
 local function replaceInsets(source, insets)
-    if (Vendor:TableSize(insets) ~= 0) then
+    if (Addon:TableSize(insets) ~= 0) then
         for inset, value in pairs(insets) do
             source = replaceInset(source, inset, value)
         end
@@ -208,7 +206,7 @@ end
 --*****************************************************************************
 local function makeRuleId(ruleType, ruleId, insets)
     local id = string.format("%s.%s", string.lower(ruleType), string.lower(ruleId))
-    if (Vendor:TableSize(insets) ~= 0) then
+    if (Addon:TableSize(insets) ~= 0) then
         for inset, value in pairs(insets) do
             if (string.lower(ruleId) ~= string.lower(value)) then
                 id  = (id .. string.format("(%s:%s)", string.lower(inset), tostring(value)))
@@ -223,7 +221,7 @@ end
 --*****************************************************************************
 local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
     return {
-    			RawId = ruleId,
+                RawId = ruleId,
                 Id = makeRuleId(ruleType, ruleId, insets),
                 Name =  ruleDef.Name,
                 Description = ruleDef.Description,
@@ -243,7 +241,7 @@ end
 -- insets is an optional parameter which is a table of items which shuold
 -- be formated into both the ruleId and script.
 --*****************************************************************************
-function Vendor.SystemRules.GetDefinition(ruleType, ruleId, insets)
+function Addon.SystemRules.GetDefinition(ruleType, ruleId, insets)
     local ruleDef = getSystemRuleDefinitons(ruleType)[string.lower(ruleId)]
     if (ruleDef ~= nil) then
         return createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
@@ -255,18 +253,18 @@ end
 --  Gets the list of system rules which are considered locked, meaning they
 -- cannot be added/removed by the user as part of the config.
 --*****************************************************************************
-function Vendor.SystemRules.GetLockedRules()
+function Addon.SystemRules.GetLockedRules()
     lockedRules = {}
     -- Handle sell rules
-    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Vendor.c_RuleType_Sell)) do
+    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Addon.c_RuleType_Sell)) do
         if (ruleDef.Locked) then
-            table.insert(lockedRules, createRuleFromDefinition(Vendor.c_RuleType_Sell, ruleId, ruleDef))
+            table.insert(lockedRules, createRuleFromDefinition(Addon.c_RuleType_Sell, ruleId, ruleDef))
         end
     end
     -- Handle keep rules
-    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Vendor.c_RuleType_Keep)) do
+    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Addon.c_RuleType_Keep)) do
         if (ruleDef.Locked) then
-            table.insert(lockedRules, createRuleFromDefinition(Vendor.c_RuleType_Keep, ruleId, ruleDef))
+            table.insert(lockedRules, createRuleFromDefinition(Addon.c_RuleType_Keep, ruleId, ruleDef))
         end
     end
     return lockedRules

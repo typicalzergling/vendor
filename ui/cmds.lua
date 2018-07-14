@@ -2,13 +2,14 @@ local Addon, L = _G[select(1,...).."_GET"]()
 
 -- This registers all of the commands in this file.
 function Addon:SetupConsoleCommands()
-	self:RegisterConsoleCommandName(self.c_AddonName, "/vendor", "/ven")
-	self:AddConsoleCommand(nil, nil, "OpenConfigDialog_Cmd")						-- Override the default
-	self:AddConsoleCommand("config", L["CMD_CONFIG_HELP"], "OpenConfigDialog_Cmd")
-	self:AddConsoleCommand("sell", L["CMD_SELLITEM_HELP"], "SellItem_Cmd")
-	self:AddConsoleCommand("clear", L["CMD_CLEARDATA_HELP"], "ClearData_Cmd")
-	self:AddConsoleCommand("list", L["CMD_LISTDATA_HELP"], "ListData_Cmd")
-	self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
+    self:RegisterConsoleCommandName(self.c_AddonName, "/vendor", "/ven")
+    self:AddConsoleCommand(nil, nil, "OpenSettings_Cmd")                        -- Override the default
+    self:AddConsoleCommand("rules", L["CMD_CONFIG_HELP"], "OpenConfigDialog_Cmd")
+    self:AddConsoleCommand("sell", L["CMD_SELLITEM_HELP"], "SellItem_Cmd")
+    self:AddConsoleCommand("clear", L["CMD_CLEARDATA_HELP"], "ClearData_Cmd")
+    self:AddConsoleCommand("list", L["CMD_LISTDATA_HELP"], "ListData_Cmd")
+    self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
+    self:AddConsoleCommand("settings", L["CMD_CONFIG_HELP"], "OpenSettings_Cmd")
 end
 
 -- Add or remove items from the blacklist or whitelist.
@@ -100,31 +101,31 @@ function Addon:OpenSettings_Cmd()
 end
 
 function Addon:OpenKeybindings_Cmd()
-	-- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
-	if not KeyBindingFrame then
-		KeyBindingFrame_LoadUI()
-	end
+    -- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
+    if not KeyBindingFrame then
+        KeyBindingFrame_LoadUI()
+    end
 
-	-- If we still don't have it, bail.
-	if not KeyBindingFrame then
-		return
-	end
-	
-	-- Make sure the buttons and categories exist, and enumerate them.
-	if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
-		-- Find our category in the list of categories.
-		for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
-			if button.element and button.element.name and button.element.name == _G["BINDING_CATEGORY_VENDOR"] then
-				-- Found it. Click it to set the category.
-				KeybindingsCategoryListButton_OnClick(button)
-			end
-		end
-	end
-	
-	-- Show the keybinding frame. Even if we dont' find it, its closer.
-	KeyBindingFrame:Show()
+    -- If we still don't have it, bail.
+    if not KeyBindingFrame then
+        return
+    end
+    
+    -- Make sure the buttons and categories exist, and enumerate them.
+    if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
+        -- Find our category in the list of categories.
+        for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
+            if button.element and button.element.name and button.element.name == _G["BINDING_CATEGORY_VENDOR"] then
+                -- Found it. Click it to set the category.
+                KeybindingsCategoryListButton_OnClick(button)
+            end
+        end
+    end
+    
+    -- Show the keybinding frame. Even if we dont' find it, its closer.
+    KeyBindingFrame:Show()
 end
 
 function Addon:OpenConfigDialog_Cmd()
-	Addon:ShowRulesDialog()
+    Addon:ShowRulesDialog()
 end

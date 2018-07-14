@@ -4,10 +4,10 @@ local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Sets up all the console commands for debug functions in this file.
 function Addon:SetupDebugConsoleCommands()
-	self:AddConsoleCommand("debug", "Toggle Debug", function() Addon:ToggleDebug("debug") end)
-	self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Addon:ToggleDebug("debugrules") end)
-	self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
-	self:AddConsoleCommand("test", "It is a mystery!", "Test_Cmd")
+    self:AddConsoleCommand("debug", "Toggle Debug", function() Addon:ToggleDebug("debug") end)
+    self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Addon:ToggleDebug("debugrules") end)
+    self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
+    self:AddConsoleCommand("test", "It is a mystery!", "Test_Cmd")
 end
 
 

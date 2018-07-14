@@ -15,11 +15,11 @@ Addon.DefaultConfig.Settings =
     version = 1,
 
     -- Default values of our settings
-    throttle_time = 0.5,
+    throttle_time = 0.1,
     autosell = true,
     autorepair = true,
     guildrepair = true,
-    sell_throttle = 3,
+    sell_throttle = 1,
     sell_never = {},
     sell_always = {},
 }

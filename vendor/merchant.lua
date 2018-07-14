@@ -17,13 +17,13 @@ end
 -- Believe this is fired when attempting to sell an item that can still be traded to someone else.
 -- For now we will capture the event.
 function Addon:OnEndBoundTradeable(event, ...)
-	self:Print("OnEndBoundTradeable fired. Arguments:")
-	for k, v in ipairs({...}) do
-		self:Print("    Arg %s: %s", tostring(k), tostring(v))
-	end
-	
-	-- If this is what we think it is, this may auto-confirm it while we are selling:
-	-- ConfirmBindOnUse()
+    self:Print("OnEndBoundTradeable fired. Arguments:")
+    for k, v in ipairs({...}) do
+        self:Print("    Arg %s: %s", tostring(k), tostring(v))
+    end
+    
+    -- If this is what we think it is, this may auto-confirm it while we are selling:
+    -- ConfirmBindOnUse()
 end
 
 -- For checking to make sure merchant window is open prior to selling anything.
@@ -57,8 +57,8 @@ end
 
 -- This returns true if we are in the middle of autoselling.
 function Addon:IsAutoSelling()
-	-- We are selling if we have a thread active.
-	return not not self:GetThread(threadName)
+    -- We are selling if we have a thread active.
+    return not not self:GetThread(threadName)
 end
 
 

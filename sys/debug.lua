@@ -7,22 +7,22 @@ local debugEnabled = nil
 local debugRuledEnabled = nil
 
 function Addon:ToggleDebug(channel)
-	local config = self:GetConfig()
+    local config = self:GetConfig()
 
-	local enabled = false
-	if channel == "debug" then
-		enabled = self:IsDebug()
-	elseif channel == "debugrules" then
-		enabled = self:IsDebugRules()
-	end
+    local enabled = false
+    if channel == "debug" then
+        enabled = self:IsDebug()
+    elseif channel == "debugrules" then
+        enabled = self:IsDebugRules()
+    end
 
-	if enabled then
-		config:SetValue(channel, false)
-		self:Print("Debug channel %s disabled.", tostring(channel))
-	else
-		config:SetValue(channel, true)
-		self:Print("Debug channel %s enabled.", tostring(channel))
-	end
+    if enabled then
+        config:SetValue(channel, false)
+        self:Print("Debug channel %s disabled.", tostring(channel))
+    else
+        config:SetValue(channel, true)
+        self:Print("Debug channel %s enabled.", tostring(channel))
+    end
 end
 
 function Addon:IsDebug()

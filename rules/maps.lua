@@ -1,13 +1,12 @@
+local Addon, L = _G[select(1,...).."_GET"]()
 
-Vendor = Vendor or {}
-Vendor.Maps = {}
-local L = Vendor:GetLocalizedStrings()
+Addon.Maps = {}
 
 --*****************************************************************************
 -- Mapping of numeric representation to possible names (strings) which would identify 
 -- the quality of an item, for example, 4, epic, purple are all the same.
 --*****************************************************************************
-Vendor.Maps.Quality = {
+Addon.Maps.Quality = {
     ["poor"] = LE_ITEM_QUALITY_POOR,
     ["junk"] = LE_ITEM_QUALITY_POOR,
     ["gray"] = LE_ITEM_QUALITY_POOR,
@@ -29,7 +28,7 @@ Vendor.Maps.Quality = {
 -- Mapping of the numeric item type to non-locasized strings which represent 
 -- the type of the item.
 --*****************************************************************************
-Vendor.Maps.ItemType = 
+Addon.Maps.ItemType = 
 {
     ["weapon"] = 2,
     ["armor"] = 4,
@@ -39,7 +38,7 @@ Vendor.Maps.ItemType =
 -- Mapping of the numeric expansion id to non-localized and friendly name
 -- for the given expansion.
 --*****************************************************************************
-Vendor.Maps.Expansion =
+Addon.Maps.Expansion =
 {
     ["tbc"] = LE_EXPANSION_BURNING_CRUSADE,
     ["bc"] = LE_EXPANSION_BURNING_CRUSADE,

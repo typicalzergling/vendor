@@ -210,33 +210,33 @@ end
 
 function Addon.RulesUI.RuleDialog_OnLoad(self)
     --tinsert(UISpecialFrames, self:GetName());
-	self.Caption:SetText(L["CONFIG_DIALOG_CAPTION"])
+    self.Caption:SetText(L["CONFIG_DIALOG_CAPTION"])
 
-	-- Setup the sell Panel
-	self.SellTab:SetText(L["CONFIG_DIALOG_SELLRULES_TAB"])
-	PanelTemplates_TabResize(self.SellTab, 0)
-	self.SellPanel.TopText:SetText(L["CONFIG_DIALOG_SELLRULES_TEXT"])
-	self.SellPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
-	self.SellPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
+    -- Setup the sell Panel
+    self.SellTab:SetText(L["CONFIG_DIALOG_SELLRULES_TAB"])
+    PanelTemplates_TabResize(self.SellTab, 0)
+    self.SellPanel.TopText:SetText(L["CONFIG_DIALOG_SELLRULES_TEXT"])
+    self.SellPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
+    self.SellPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
 
-	-- Setup the keep panel
-	self.KeepTab:SetText(L["CONFIG_DIALOG_KEEPRULES_TAB"])
-	PanelTemplates_TabResize(self.KeepTab, 0)
-	self.KeepPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
-	self.KeepPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
-	self.KeepPanel.TopText:SetText(L["CONFIG_DIALOG_KEEPRULES_TEXT"])
+    -- Setup the keep panel
+    self.KeepTab:SetText(L["CONFIG_DIALOG_KEEPRULES_TAB"])
+    PanelTemplates_TabResize(self.KeepTab, 0)
+    self.KeepPanel.List:SetBackdropBorderColor(.6, .6, .6, 1)
+    self.KeepPanel.List:SetBackdropColor(1.0, 1.0, 1.0, 0.20)
+    self.KeepPanel.TopText:SetText(L["CONFIG_DIALOG_KEEPRULES_TEXT"])
 
-	-- Setup the custom rules panel
-	--self.CustomPanel.List:SetBackdropBorderColor(.6, .6, .6, 1);
-	self.CustomTab:SetText(L["CONFIG_DIALOG_CUSTOMRULES_TAB"])
-	PanelTemplates_TabResize(self.CustomTab, 0)
-	self.CustomPanel.TopText:SetText(L["CONFIG_DIALOG_CUSTOMRULES_TEXT"])
+    -- Setup the custom rules panel
+    --self.CustomPanel.List:SetBackdropBorderColor(.6, .6, .6, 1);
+    self.CustomTab:SetText(L["CONFIG_DIALOG_CUSTOMRULES_TAB"])
+    PanelTemplates_TabResize(self.CustomTab, 0)
+    self.CustomPanel.TopText:SetText(L["CONFIG_DIALOG_CUSTOMRULES_TEXT"])
 
-	-- Initialize the tabs
-	PanelTemplates_SetNumTabs(self, 3)
-	self.selectedTab = 2
-	PanelTemplates_UpdateTabs(self)
-	Addon.RulesUI.RuleDialog_ShowTab(self, self.selectedTab)
+    -- Initialize the tabs
+    PanelTemplates_SetNumTabs(self, 3)
+    self.selectedTab = 2
+    PanelTemplates_UpdateTabs(self)
+    Addon.RulesUI.RuleDialog_ShowTab(self, self.selectedTab)
 end
 
 function Addon.RulesUI.RuleDialog_ShowTab(self, tabId)
@@ -264,25 +264,25 @@ function Addon.RulesUI.RuleDialog_ShowTab(self, tabId)
 end
 
 function Addon.RulesUI.RulesDialog_SetDefaults(self)
-	Addon:DebugRules("Restoring rule configuration to the default")
-	local config = Addon:GetConfig()
-	self.SellPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Addon.c_RuleType_Sell))
-	self.KeepPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Addon.c_RuleType_Keep))
+    Addon:DebugRules("Restoring rule configuration to the default")
+    local config = Addon:GetConfig()
+    self.SellPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Addon.c_RuleType_Sell))
+    self.KeepPanel.List:SetRuleConfig(config:GetDefaultRulesConfig(Addon.c_RuleType_Keep))
 end
 
 function Addon.RulesUI.RulesDialog_OnOk(self)
-	Addon:DebugRules("Applying new rule configuration")
-	Addon:GetConfig():BeginBatch()
-	Addon.RulesUI.ApplySystemRuleConfig(self.SellPanel.List)
+    Addon:DebugRules("Applying new rule configuration")
+    Addon:GetConfig():BeginBatch()
+    Addon.RulesUI.ApplySystemRuleConfig(self.SellPanel.List)
     Addon.RulesUI.ApplySystemRuleConfig(self.KeepPanel.List)
     Addon:GetConfig():EndBatch()
-	HideParentPanel(self.Container)
+    HideParentPanel(self.Container)
 end
 
 function Addon:ShowRulesDialog()
-	local config = Addon:GetConfig()
-	VendorRulesDialog.SellPanel.List:SetRuleConfig(config:GetRulesConfig(Addon.c_RuleType_Sell))
-	VendorRulesDialog.KeepPanel.List:SetRuleConfig(config:GetRulesConfig(Addon.c_RuleType_Keep))
-	VendorRulesDialog:Show()
+    local config = Addon:GetConfig()
+    VendorRulesDialog.SellPanel.List:SetRuleConfig(config:GetRulesConfig(Addon.c_RuleType_Sell))
+    VendorRulesDialog.KeepPanel.List:SetRuleConfig(config:GetRulesConfig(Addon.c_RuleType_Keep))
+    VendorRulesDialog:Show()
 end
 

@@ -1,10 +1,12 @@
 -- enUS Localization
-local Addon = _G[select(1,...).."_GET"]()
-Addon.Locales["enUS"] = 
+-- If the loading order of the files is incorrect, this will fail when trying to use AddonLocales.
+-- Locales should be loaded AFTER Init and before anything that uses them.
+-- So basically make sure they are all loaded together in the TOC right after Init (constants is OK too).
+local AddonLocales = _G[select(1,...).."_LOC"]()
+AddonLocales["enUS"] = 
 {
 -- Core
 ["ADDON_NAME"] = "Vendor",
-
 
 -- Bindings
 ["BINDING_HEADER_VENDORQUICKLIST"] = "Quick Add/Remove items from the sell lists when mousing over the item",
@@ -51,13 +53,13 @@ Addon.Locales["enUS"] =
 
 ["OPTIONS_HEADER_THROTTLES"] = "Throttles",
 ["OPTIONS_DESC_THROTTLES"] = "These values all set how many actions are taken per throttle cycle.",
-["OPTIONS_SETTINGNAME_SELL_THROTTLE"] = "Items Vendored",
-["OPTIONS_SETTINGDESC_SELL_THROTTLE"] = "Used when auto-selling items to a vendor. Lower this value if items are inconsistently auto-selling.",
+["OPTIONS_SETTINGNAME_SELL_THROTTLE"] = "Items Vendored Per Cycle",
+["OPTIONS_SETTINGDESC_SELL_THROTTLE"] = "This is the number of items vendored per sell cycle. Increase this if you want to sell items more in bulk, but lower this to lower the risk Blizzard will throttle you.",
 
 ["OPTIONS_HEADER_FREQUENCY"] = "Frequency",
 ["OPTIONS_DESC_FREQUENCY"] = "Sets how frequently a throttled task executes per second. Changing this affects all throttles.",
 ["OPTIONS_SETTINGNAME_CYCLE_RATE"] = "Cycle Rate",
-["OPTIONS_SETTINGDESC_CYCLE_RATE"] = "Interval in seconds between attempts to sell the throttled number of items.",
+["OPTIONS_SETTINGDESC_CYCLE_RATE"] = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 
 -- Console Commands
 ["CMD_HELP_HEADER"] = "Command Reference: ",

@@ -86,16 +86,16 @@ function Addon:AddItemTooltipLines(tooltip, link)
     if willBeSold then
         tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
         if (ruleName) then
-	        tooltip:AddLine(string.format(L["RULEMATCH_TOOLTIP"], ruleName))
-	  	end
+            tooltip:AddLine(string.format(L["RULEMATCH_TOOLTIP"], ruleName))
+          end
     end
 
     --@debug@
     if (ruleId) then
-		-- If we had a rule match (make a choice) then add it to the tooltip, if we didn't get a match then
-		-- no line means we didn't match anything.
-	    tooltip:AddLine(string.format("%s RuleId: %s[%s]%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
-	end
+        -- If we had a rule match (make a choice) then add it to the tooltip, if we didn't get a match then
+        -- no line means we didn't match anything.
+        tooltip:AddLine(string.format("%s RuleId: %s[%s]%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
+    end
     --@end-debug@
 
 end

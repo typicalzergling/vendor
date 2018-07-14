@@ -112,10 +112,10 @@ end
 -- for every item in that bag every time we sell an item.
 function Addon:OnBagUpdate(event, bag)
 
-	-- Check for Autoselling in progress
-	if self:IsAutoSelling() then
-		self:Debug("Autoselling, skipping cache clear for the bag.")
-		return
-	end
+    -- Check for Autoselling in progress
+    if self:IsAutoSelling() then
+        self:Debug("Autoselling, skipping cache clear for the bag.")
+        return
+    end
     self:ClearBagItemCache(tonumber(bag))
 end

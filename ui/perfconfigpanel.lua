@@ -1,7 +1,7 @@
-Vendor = Vendor or {}
-Vendor.ConfigPanel = Vendor.ConfigPanel or {}
-local L = Vendor:GetLocalizedStrings()
-Vendor.ConfigPanel.Perf = {}
+local Addon, L = _G[select(1,...).."_GET"]()
+
+Addon.ConfigPanel = Addon.ConfigPanel or {}
+Addon.ConfigPanel.Perf = {}
 
 local MAX_SELL_THROTTLE = 5
 local MIN_SELL_THROTTLE = 1
@@ -12,12 +12,12 @@ local TIME_MULT = 10
 --*****************************************************************************
 -- Called to sync the values on our page with the config.
 --*****************************************************************************
-function Vendor.ConfigPanel.Perf.Set(self, config)
-    Vendor:Debug("Setting performance panel config")
+function Addon.ConfigPanel.Perf.Set(self, config)
+    Addon:Debug("Setting performance panel config")
 
     local time = math.max(MIN_TIME_THROTTLE, math.min(MAX_TIME_THROTTLE, config:GetValue("throttle_time") or 0))
     self.TimeThrottle.Value:SetValue(time * TIME_MULT)
-    self.TimeThrottle.DisplayValue:SetFormattedText("%0.1f", time)
+    self.TimeThrottle.DisplayValue:SetFormattedText("%0.2f", time)
 
     local sell = math.max(MIN_SELL_THROTTLE, math.min(MAX_SELL_THROTTLE, config:GetValue("sell_throttle") or 0))
     self.SellThrottle.Value:SetValue(sell)
@@ -27,8 +27,8 @@ end
 --*****************************************************************************
 -- Called to push the values from page into the config
 --*****************************************************************************
-function Vendor.ConfigPanel.Perf.Apply(self, config)
-    Vendor:Debug("Applying performance options")
+function Addon.ConfigPanel.Perf.Apply(self, config)
+    Addon:Debug("Applying performance options")
     config:SetValue("sell_throttle", self.SellThrottle.Value:GetValue())
     config:SetValue("throttle_time", self.TimeThrottle.Value:GetValue() / TIME_MULT)
 end
@@ -36,7 +36,7 @@ end
 --*****************************************************************************
 -- Called to setup our panel
 --*****************************************************************************
-function Vendor.ConfigPanel.Perf.Init(self)
+function Addon.ConfigPanel.Perf.Init(self)
     self.Title:SetText(L["OPTIONS_CATEGORY_PERFORMANCE"])
     self.HelpText:SetText(L["OPTIONS_TITLE_PERFORMANCE"])
 
@@ -52,13 +52,13 @@ function Vendor.ConfigPanel.Perf.Init(self)
         end
 
     self.TimeThrottle.Label:SetText(L["OPTIONS_SETTINGNAME_CYCLE_RATE"])
-    self.TimeThrottle.Text:SetText(L["OPTIONS_SETTINGDESC_SELL_THROTTLE"])
+    self.TimeThrottle.Text:SetText(L["OPTIONS_SETTINGDESC_CYCLE_RATE"])
     self.TimeThrottle.Value:SetMinMaxValues(MIN_TIME_THROTTLE * TIME_MULT, MAX_TIME_THROTTLE * TIME_MULT)
-    self.TimeThrottle.Max:SetFormattedText("%0.1f", MAX_TIME_THROTTLE)
-    self.TimeThrottle.Min:SetFormattedText("%0.1f", MIN_TIME_THROTTLE)
-    self.TimeThrottle.Value:SetValueStep(1)
+    self.TimeThrottle.Max:SetFormattedText("%0.2f", MAX_TIME_THROTTLE)
+    self.TimeThrottle.Min:SetFormattedText("%0.2f", MIN_TIME_THROTTLE)
+    self.TimeThrottle.Value:SetValueStep(.5)
     self.TimeThrottle.OnValueChanged =
         function(self, value)
-            self.DisplayValue:SetFormattedText("%0.1f", value / 10)
+            self.DisplayValue:SetFormattedText("%0.2f", value / 10)
         end
 end
