@@ -1,6 +1,15 @@
 -- Yeah I know util is bad naming, but it fits. If something fits better elsewhere I'll move it out before this gets into a steaming pile.
 local L = Vendor:GetLocalizedStrings()
 
+-- Gets the version of the addon
+function Vendor:GetVersion()
+    local addonVerison = GetAddOnMetadata("Vendor", "Version")
+    --@debug@
+    addonVersion = "(Working)"
+    --@end-debug@
+    return addonVersion
+end
+
 -- Gets item ID from an itemstring or item link
 -- If a number is passed in it assumes that is the ID
 function Vendor:GetItemId(str)

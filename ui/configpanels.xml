@@ -89,12 +89,7 @@
 					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-72" y="14"/>
 				</Anchors>
 				<Scripts>
-					<OnValueChanged>
-						local callback = self:GetParent().OnValueChanged
-						if (callback and (type(callback) == "function")) then
-							callback(self:GetParent(), self:GetValue())
-						end
-					</OnValueChanged>
+					<OnValueChanged>Vendor.ConfigPanel.OnSliderValueChange(self)</OnValueChanged>
 				</Scripts>
 				<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
 					<Size x="32" y="32"/>
