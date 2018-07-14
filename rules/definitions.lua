@@ -28,6 +28,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_SELL_POORITEMS"],
             Description = L["SYSRULE_SELL_POORITEMS_DESC"],
             Script = "Quality() == 0",
+            Order = 1000,
         },
 
         artifactpower =
@@ -35,6 +36,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_SELL_ARTIFACTPOWER"],
             Description = L["SYSRULE_SELL_ARTIFACTPOWER_DESC"],
             Script = "IsArtifactPower() and IsFromExpansion(6) and (PlayerLevel() >= 110)",
+            Order = 1200,
         },
 
         uncommongear =
@@ -43,6 +45,7 @@ Addon.SystemRules =
             Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
             Script = "IsEquipment() and Quality() == 2 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
+            Order = 1400,
         },
 
         raregear =
@@ -51,6 +54,7 @@ Addon.SystemRules =
             Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
             Script = "IsEquipment() and Quality() == 3 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
+            Order = 1500,
         },
 
         epicgear =
@@ -59,6 +63,7 @@ Addon.SystemRules =
             Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
             Script = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
+            Order = 1600,
         },
 
         knowntoys =
@@ -66,6 +71,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_SELL_KNOWNTOYS"],
             Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
             Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
+            Order = 1300,
         },
 
         oldfood =
@@ -73,6 +79,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_SELL_OLDFOOD"],
             Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
             Script = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
+            Order = 1100,
         },
     },
 
@@ -114,6 +121,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_KEEP_COMMON"],
             Description = L["SYSRULE_KEEP_COMMON_DESC"],
             Script = "Quality() == 1",
+            Order = 1300,
         },
 
         -- Safeguard rule - Keep soulbound equipment.
@@ -122,6 +130,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
             Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
             Script = "IsEquipment() and IsSoulbound()",
+            Order = 1100,
         },
 
         -- Safeguard rule - Protect those transmogs!
@@ -130,6 +139,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
             Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
             Script = "IsUnknownAppearance()",
+            Order = 1200,
         },
 
         -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
@@ -138,6 +148,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
             Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
             Script = "Quality() >= 5",
+            Order = 1000,
         },
 
         -- Optional Safeguard - Might be useful for leveling.
@@ -146,6 +157,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
             Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
             Script = "IsEquipment() and Quality() == 2",
+            Order = 1400,
         },
 
         -- Optional Safeguard - Might be useful for leveling or early max-level.
@@ -154,6 +166,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_KEEP_RAREGEAR"],
             Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
             Script = "IsEquipment() and Quality() == 3",
+            Order = 1500,
         },
 
         -- Optional Safeguard - If you're a bit paranoid.
@@ -162,6 +175,7 @@ Addon.SystemRules =
             Name = L["SYSRULE_KEEP_EPICGEAR"],
             Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
             Script = "IsEquipment() and Quality() == 4",
+            Order = 1600,
         },
     }
 }

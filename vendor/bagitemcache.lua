@@ -101,7 +101,7 @@ function Addon:CacheBagItem(bag, slot)
     end
     
     -- Do evaluation and cache it.
-    item.Sell, item.RuleId = self:EvaluateItemForSelling(item.Properties)
+    item.Sell, item.RuleId, item.RuleName = self:EvaluateItemForSelling(item.Properties)
     self:AddItemToBagItemCache(bag, slot, item)
 end
 
@@ -113,9 +113,12 @@ end
 function Addon:OnBagUpdate(event, bag)
 
     -- Check for Autoselling in progress
+    -- We can clear the cache, but it can also be cleared by the player moving things around in the bag.
+    -- So to be on the safe side, we will always clear the cache when items change, even during selling.
+    --[[
     if self:IsAutoSelling() then
         self:Debug("Autoselling, skipping cache clear for the bag.")
         return
-    end
+    end ]]
     self:ClearBagItemCache(tonumber(bag))
 end
