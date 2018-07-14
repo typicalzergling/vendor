@@ -1,6 +1,7 @@
 Vendor = Vendor or {}
 Vendor.ConfigPanel = Vendor.ConfigPanel or {}
 local L = Vendor:GetLocalizedStrings()
+Vendor.ConfigPanel.Perf = {}
 
 local MAX_SELL_THROTTLE = 5
 local MIN_SELL_THROTTLE = 1
@@ -8,7 +9,9 @@ local MAX_TIME_THROTTLE = 2.0
 local MIN_TIME_THROTTLE = 0.0
 local TIME_MULT = 10
 
-Vendor.ConfigPanel.Perf = {}
+--*****************************************************************************
+-- Called to sync the values on our page with the config.
+--*****************************************************************************
 function Vendor.ConfigPanel.Perf.Set(self, config)
     Vendor:Debug("Setting performance panel config")
 
@@ -21,12 +24,18 @@ function Vendor.ConfigPanel.Perf.Set(self, config)
     self.SellThrottle.DisplayValue:SetFormattedText("%0d", sell)
 end
 
+--*****************************************************************************
+-- Called to push the values from page into the config
+--*****************************************************************************
 function Vendor.ConfigPanel.Perf.Apply(self, config)
     Vendor:Debug("Applying performance options")
     config:SetValue("sell_throttle", self.SellThrottle.Value:GetValue())
     config:SetValue("throttle_time", self.TimeThrottle.Value:GetValue() / TIME_MULT)
 end
 
+--*****************************************************************************
+-- Called to setup our panel
+--*****************************************************************************
 function Vendor.ConfigPanel.Perf.Init(self)
     self.Title:SetText(L["OPTIONS_CATEGORY_PERFORMANCE"])
     self.HelpText:SetText(L["OPTIONS_TITLE_PERFORMANCE"])
