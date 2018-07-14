@@ -6,14 +6,13 @@ local L = Vendor:GetLocalizedStrings()
 Vendor.ConfigPanel.Debug = {}
 
 function Vendor.ConfigPanel.Debug.Set(self, config)
-print("in debug set", config:GetValue("debug"))
     Vendor:Debug("Setting debug options panel values")
     self.Debug.State:SetChecked(not not config:GetValue("debug"))
     self.DebugRules.State:SetChecked(not not config:GetValue("debugrules"))
 end
 
 function Vendor.ConfigPanel.Debug.Apply(self, config)
-    Vendor:Debug("Applying debugging options")
+    Vendor:Debug("Applying debugging panel options")
     config:SetValue("debug", self.Debug.State:GetChecked())
     config:SetValue("debugrules", self.DebugRules.State:GetChecked())
 end

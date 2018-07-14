@@ -10,6 +10,8 @@ local TIME_MULT = 10
 
 Vendor.ConfigPanel.Perf = {}
 function Vendor.ConfigPanel.Perf.Set(self, config)
+    Vendor:Debug("Setting performance panel config")
+
     local time = math.max(MIN_TIME_THROTTLE, math.min(MAX_TIME_THROTTLE, config:GetValue("throttle_time") or 0))
     self.TimeThrottle.Value:SetValue(time * TIME_MULT)
     self.TimeThrottle.DisplayValue:SetFormattedText("%0.1f", time)
@@ -21,7 +23,7 @@ end
 
 function Vendor.ConfigPanel.Perf.Apply(self, config)
     Vendor:Debug("Applying performance options")
-    config:SetValue("sell_throttle", self.SellThrottle.Value.GetValue())
+    config:SetValue("sell_throttle", self.SellThrottle.Value:GetValue())
     config:SetValue("throttle_time", self.TimeThrottle.Value:GetValue() / TIME_MULT)
 end
 

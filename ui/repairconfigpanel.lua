@@ -14,6 +14,7 @@ function Vendor.ConfigPanel.Repair.updateGuildRepair(self, repairState)
 end
 
 function Vendor.ConfigPanel.Repair.Set(self, config)
+    Vendor:Debug("Setting repair panel config")
     self.AutoRepair.State:SetChecked(not not config:GetValue("autorepair"))
     self.GuildRepair.State:SetChecked(not not config:GetValue("guildrepair"))
 end

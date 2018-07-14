@@ -10,15 +10,16 @@ function Vendor.ConfigPanel.Sell.OnOpenRules()
 end
 
 function Vendor.ConfigPanel.OnOpenBindings()
-    Vendor:Debug("Show keybindings dialog")
+    Vendor:Debug("Showing key bindings")
 end
 
 function Vendor.ConfigPanel.Sell.Apply(self, config)
-    Vendor:Debug("Applying selling configuration")
+    Vendor:Debug("Applying sell panel configuration")
     config:SetValue("autosell", self.AutoSell.State:GetChecked())
 end
 
 function Vendor.ConfigPanel.Sell.Set(self, config)
+    Vendor:Debug("Setting sell panel config")
     self.AutoSell.State:SetChecked(not not config:GetValue("autosell"))
 end
 
