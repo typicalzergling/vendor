@@ -102,6 +102,7 @@ end
 -- Setup Localization
 -- After I
 -- It is a huge memory waste when we have more than one locale.
+-- TODO: Make this late bound so we evaluate the strings then flush
 local locales = {}
 local localizedStrings = nil
 local function getLocalizedStrings()
@@ -150,7 +151,12 @@ _G[AddonName.."_LOC"] = getLocales
 -- This should only be called either before the default locale constant has
 -- been defined, or after all locales have been loaded.
 local function getAddonInfo()
-    return Addon, getLocalizedStrings()
+    if (not Addon.Config) then
+        return Addon, getLocalizedStrings()
+    else
+        return Addon, getLocalizedStrings(), Addon:GetConfig()
+    end
 end
+
 _G[AddonName.."_GET"] = getAddonInfo
 

@@ -9,6 +9,7 @@
 # Initialize & Constants must come first.
 sys\init.lua
 sys\constants.lua
+ui\config.lua
 
 # Locales must be loaded next so they can be used in all subsequent files.
 loc\enUS.lua
@@ -40,15 +41,16 @@ rules\evaluate.lua
 # User Interface
 ui\tooltip.lua
 ui\cmds.lua
-ui\config.lua
-ui\rulelist.lua
-ui\rulelist.xml
+ui\ruleslist.lua
+ui\ruleslist.xml
 ui\sellconfigpanel.lua
 ui\repairconfigpanel.lua
 ui\perfconfigpanel.lua
 ui\debugconfigpanel.lua
 ui\configpanels.lua
 ui\configpanels.xml
+ui\rulesdialog.lua
+ui\rulesdialog.xml
 
 #@do-not-package@
 # Debug

@@ -127,5 +127,5 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
-    Addon:ShowRulesDialog()
+    Addon.RulesDialog.Toggle()
 end

@@ -4,6 +4,19 @@ local Addon, L = _G[select(1,...).."_GET"]()
 Addon.Config = {}
 Addon.DefaultConfig = {}
 
+-- Table deep copy, as seen on StackOverflow
+-- https://stackoverflow.com/questions/640642/how-do-you-copy-a-lua-table-by-value
+local function deep_copy(obj, seen)
+    if type(obj) ~= 'table' then return obj end
+    if seen and seen[obj] then return seen[obj] end
+    local s = seen or {}
+    local res = setmetatable({}, getmetatable(obj))
+    s[obj] = res
+    for k, v in pairs(obj) do res[deep_copy(k, s)] = deep_copy(v, s) end
+    return res
+end
+
+
 -- NOTE: This can't use Addon:Debug(...) need to figure out a new plan
 
 --*****************************************************************************
@@ -94,20 +107,20 @@ function Addon.Config:Create()
     }
 
     if (not Vendor_Settings) then
-        Vendor_Settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
+        Vendor_Settings = deep_copy(Addon.DefaultConfig.Settings)
     elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
         local oldSettings = Vendor_Settings
-        local newSettings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
+        local newSettings = deep_copy(Addon.DefaultConfig.Settings)
         self:migrateSettings(oldSettings, newSettings)
         Vendor_Settings = newSettings
         Vendor_SettingsPerCharacter = nil
     end
 
     if (not Vendor_RulesConfig) then
-        Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+        Vendor_RulesConfig = deep_copy(Addon.DefaultConfig.Rules)
     elseif (Vendor_RulesConfig and (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
         local oldRuleConfig = Vendor_RulesConfig
-        local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+        local newRuleConfig = deep_copy(Addon.DefaultConfig.Rules)
         self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
         Vendor_RulesConfig = newRuleConfig
     end
@@ -163,11 +176,11 @@ end
 --*****************************************************************************
 function Addon.Config:GetDefaultRulesConfig(ruleType)
     if (not ruleType) then
-        return Addon:DeepTableCopy(Addon.DefaultConfig.Rules)
+        return deep_copy(Addon.DefaultConfig.Rules)
     else
         local value = rawget(Addon.DefaultConfig.Rules, string.lower(ruleType))
         if (value) then
-            return Addon.DeepTableCopy(value)
+            return deep_copy(value)
         end
     end
     return {}
@@ -180,7 +193,7 @@ end
 --*****************************************************************************
 function Addon.Config:GetRulesConfig(ruleType)
     if (not ruleType) then
-        return Vendor_RulesConfig or Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+        return Vendor_RulesConfig or deep_copy(Addon.DefaultConfig.Rules)
     else
         local key = string.lower(ruleType)
 

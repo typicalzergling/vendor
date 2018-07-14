@@ -1,168 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
+    <!-- Templates -->
     <Frame name="Vendor.RulesUI.ConfigPanelTemplate" virtual="true" visible="false" parentArray="Panels"/>
     <Frame name="Vendor.RulesUI.ConfigPanelTabTemplate" inherits="OptionsFrameTabButtonTemplate" virtual="true" visible="false" parentArray="Tabs"/>
     <Texture name="Vendor.RulesUI.ConfigPanelTabSpacerTemplate" virtual="true" visible="false" parentArray="Spacers"/>
 
-    <Frame name = "BaseVendorSimpleRuleTemplate" virtual="true" visble="false" parentArray="Rules">
-        <Size x="250" y="64"/>
-        <Layers>
-            <Layer level="BACKGROUND">
-                <Texture parentKey="OddBackground" hidden="true">
-                    <Color r="1" g="1" b="1" a="0.10"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT" realtivePoint="TOPLEFT"/>
-                        <Anchor point="BOTTOMRIGHT" realtivePoint="BOTTOMRIGHT"/>
-                    </Anchors>
-                </Texture>
-                <Texture parentKey="Highlight" hidden="true">
-                    <Color r="0" g="0" b="1.0" a="0.25"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT" realtivePoint="TOPLEFT"/>
-                        <Anchor point="BOTTOMRIGHT" realtivePoint="BOTTOMRIGHT"/>
-                    </Anchors>
-                </Texture>
-            </Layer>
-        </Layers>
-        <Frames>
-            <CheckButton name="$parentEnabled" parentKey="Enabled" inherits="OptionsBaseCheckButtonTemplate">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="2" y="0"/>
-                </Anchors>
-                <Scripts>
-                    <OnClick>if (self:GetParent().ToggleRuleState) then self:GetParent():ToggleRuleState() end</OnClick>
-                </Scripts>
-            </CheckButton>
-        </Frames>
-        <Scripts>
-            <OnEnter>self.Highlight:Show()</OnEnter>
-            <OnLeave>self.Highlight:Hide()</OnLeave>
-        </Scripts>
-    </Frame>
-
-
-    <Frame name="VendorSimpleRuleTemplate" virtual="true" visble="false" inherits="BaseVendorSimpleRuleTemplate">
-        <Size x="250" y="64"/>
-        <Layers>
-            <Layer level="ARTWORK">
-                <FontString parentKey="RuleName" inherits="GameFontHighlightLarge" justifyH="LEFT">
-                    <Anchors>
-                        <Anchor point="TOPLEFT"  x="32" y="-4"/>
-                        <Anchor point="TOPRIGHT" x="-4" relativeTo="TOPRIGHT" y="-24"/>
-                    </Anchors>
-                </FontString>
-                <FontString parentKey="RuleDescription" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP"  wordwrap="true">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativeKey="$parent.RuleName" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
-                        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="4"/>
-                    </Anchors>
-                </FontString>
-            </Layer>
-        </Layers>
-    </Frame>
-
-    <Frame name="VendorRuleTemplateWithItemLevel" virtual="true" visble="false"  inherits="BaseVendorSimpleRuleTemplate">
-        <Size x="250" y="64"/>
-        <Layers>
-            <Layer level="ARTWORK">
-                <FontString parentKey="RuleName" inherits="GameFontHighlightLarge" justifyH="LEFT">
-                    <Anchors>
-                        <Anchor point="TOPLEFT"  x="32" y="-4"/>
-                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-4" y="-24"/>
-                    </Anchors>
-                </FontString>
-                <FontString parentKey="RuleDescription" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativeKey="$parent.RuleName" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
-                        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-72" y="4"/>
-                    </Anchors>
-                </FontString>
-            </Layer>
-        </Layers>
-        <Frames>
-            <EditBox name="$parentItemLevel" parentKey="ItemLevel" inherits="InputBoxTemplate" letters="4" numeric="true" autoFocus="false" multiLne="false" enabled="false">
-                <Size x="58" y="18"/>
-                <Anchors>
-                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="8"/>
-                </Anchors>
-                <Layers>
-                    <Layer level="ARTWORK">
-                        <FontString parentKey="Label" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormalSmall" text="ITEM_LEVEL_LABEL">
-                            <Size x="100" y="12"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" y="2"/>
-                            </Anchors>
-                        </FontString>
-                    </Layer>
-                </Layers>
-                <Scripts>
-                    <OnShow>self.Label:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)</OnShow>
-                    <OnDisable>
-                        self:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-                        self.Label:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-                    </OnDisable>
-                    <OnEnable>
-                        self:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-                        self.Label:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-                    </OnEnable>
-                </Scripts>
-            </EditBox>
-        </Frames>
-    </Frame>
-
-    <Frame name="VendorSystemRuleList" virtual="true" enableMouse="true">
-        <Frames>
-            <ScrollFrame name="$parentView" parentKey="View" inherits="FauxScrollFrameTemplate">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="6" y="-6"/>
-                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-28" y="-6"/>
-                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="6" y="6"/>
-                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-28" y="6"/>>
-                </Anchors>
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture>
-                            <Size x="20" y="20"/>
-                            <Color r="0" g="0" b="0" a="0.5"/>
-                            <Anchors>
-                                <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-2"/>
-                                <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="2"/>
-                            </Anchors>
-                        </Texture>
-                    </Layer>
-                </Layers>
-                <Scripts>
-                    <OnVerticalScroll>
-                        local parent = self:GetParent()
-                        FauxScrollFrame_OnVerticalScroll(self, offset, parent.RuleFrameSize, function() Vendor.RulesUI.UpdateRuleList(parent) end)
-                    </OnVerticalScroll>
-                    <OnShow>Vendor.RulesUI.UpdateRuleList(self:GetParent())</OnShow>
-                </Scripts>
-            </ScrollFrame>
-        </Frames>
-    </Frame>
-
-    <Frame name="VendorSellSystemRuleList" inherits="VendorSystemRuleList" virtual="true">
-        <Scripts>
-            <OnLoad>
-                Vendor.RulesUI.InitRuleList(self, Vendor.c_RuleType_Sell, Vendor.SystemRules.Sell)
-            </OnLoad>
-        </Scripts>
-    </Frame>
-
-    <Frame name="VendorKeepSystemRuleList" inherits="VendorSystemRuleList" virtual="true">
-        <Scripts>
-            <OnLoad>
-                Vendor.RulesUI.InitRuleList(self, Vendor.c_RuleType_Keep, Vendor.SystemRules.Keep)
-            </OnLoad>
-        </Scripts>
-    </Frame>
-
-    <!--
-    ==================================================================================================================================
-    -->
-
-    <Frame name="VendorRulesDialog" toplevel="true" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH">
+    <!-- Rules dialog Frame -->
+    <Frame name="VendorRulesDialog" toplevel="true" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH" movable="true">
         <Size x="858" y="622"/>
         <Anchors>
             <Anchor point="CENTER"/>
@@ -186,7 +30,7 @@
                         <Anchor point="TOP" x="0" y="12"/>
                     </Anchors>
                 </Texture>
-                <FontString name="$parentHeaderText" inherits="GameFontNormal" text="DIALOG_CAPTION" parentKey="Caption">
+                <FontString name="$parentHeaderText" inherits="GameFontNormal" parentKey="Caption">
                     <Anchors>
                         <Anchor point="TOP" relativeTo="$parentHeader" x="0" y="-14"/>
                     </Anchors>
@@ -222,10 +66,45 @@
                     <Anchor point="BOTTOMLEFT" x="22" y="16"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick>Vendor.RulesUI.RulesDialog_SetDefaults(VendorRulesDialog)</OnClick>
+                    <OnClick>Vendor.RulesDialog.SetDefaults(VendorRulesDialog)</OnClick>
                 </Scripts>
             </Button>
-
+            
+            <!-- Keep Panel -->
+            <Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="1">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="RIGHT" x="-22" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" parentKey="TopText">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="16" y="-16"/>
+                                <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Frame name="$parentSellList" parentKey="List" inherits="VendorKeepSystemRuleList">
+                        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" bgFile="Interface\Tooltips\UI-Tooltip-Background">
+                            <EdgeSize><AbsValue val="16"/></EdgeSize>
+                            <TileSize><AbsValue val="16"/></TileSize>
+                            <BackgroundInsets>
+                                <AbsInset left="5" right="5" top="5" bottom="5"/>
+                            </BackgroundInsets>
+                        </Backdrop>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeTo="$parentHeaderText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                            <Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+                        </Anchors>
+                    </Frame>
+                </Frames>
+            </Frame>
+            
+            <!-- Sell Panel -->
             <Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="2">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
@@ -234,7 +113,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" text="!!!!! Instructional text for sell page this should be a very long string that can wrap severla times to help the user out" parentKey="TopText">
+                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" parentKey="TopText">
                             <Anchors>
                                 <Anchor point="TOPLEFT" x="16" y="-16"/>
                                 <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
@@ -259,39 +138,7 @@
                 </Frames>
             </Frame>
 
-            <Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="1">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
-                    <Anchor point="RIGHT" x="-22" y="0"/>
-                </Anchors>
-                <Layers>
-                    <Layer level="ARTWORK">
-                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" text="!!!!! Instructional text for sell page this should be a very long string that can wrap severla times to help the user out" parentKey="TopText">
-                            <Anchors>
-                                <Anchor point="TOPLEFT" x="16" y="-16"/>
-                                <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
-                            </Anchors>
-                        </FontString>
-                    </Layer>
-                </Layers>
-                <Frames>
-                    <Frame name="$parentSellList" parentKey="List" inherits="VendorKeepSystemRuleList">
-                        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" bgFile="Interface\Tooltips\UI-Tooltip-Background">
-                            <EdgeSize><AbsValue val="16"/></EdgeSize>
-                            <TileSize><AbsValue val="16"/></TileSize>
-                            <BackgroundInsets>
-                                <AbsInset left="5" right="5" top="5" bottom="5"/>
-                            </BackgroundInsets>
-                        </Backdrop>
-                        <Anchors>
-                            <Anchor point="TOPLEFT" relativeTo="$parentHeaderText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
-                            <Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
-                        </Anchors>
-                    </Frame>
-                </Frames>
-            </Frame>
-
+            <!-- Custom Panel -->
             <Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="3">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
@@ -300,12 +147,13 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="$parentHeaderText" inherits="GameFontHighlightHuge" text="NOT-YET-IMPLEMENTED" parentKey="TopText" setAllPoints="true">
+                        <FontString name="$parentHeaderText" inherits="GameFontHighlightHuge"  parentKey="TopText" setAllPoints="true">
                         </FontString>
                     </Layer>
                 </Layers>
             </Frame>
 
+            <!-- Panels are sized to this frame when shown -->
             <Frame name="$parentContainer" parentKey="Container">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
@@ -368,7 +216,9 @@
                     </Layer>
                 </Layers>
             </Frame>
-            <Button name="$parentTab1" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" text="KEEP_TAB" id="1" parentKey="KeepTab">
+
+            <!-- Keep Tab -->
+            <Button name="$parentTab1" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" id="1" parentKey="KeepTab">
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeTo="$parentContainer" relativePoint="TOPLEFT" x="6" y="-3"/>
                 </Anchors>
@@ -376,7 +226,7 @@
                     <OnClick>
                         PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
                         PanelTemplates_Tab_OnClick(self, VendorRulesDialog);
-                        Vendor.RulesUI.RuleDialog_ShowTab(VendorRulesDialog, 1)
+                        Vendor.RulesDialog.ShowTab(VendorRulesDialog, 1)
                     </OnClick>
                 </Scripts>
                 <Layers>
@@ -391,7 +241,9 @@
                     </Layer>
                 </Layers>
             </Button>
-            <Button name="$parentTab2" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" text="SELL_TAB" id="2" parentKey="SellTab">
+
+            <!-- Sell Tab -->
+            <Button name="$parentTab2" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" id="2" parentKey="SellTab">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
@@ -417,11 +269,13 @@
                     <OnClick>
                         PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
                         PanelTemplates_Tab_OnClick(self, VendorRulesDialog);
-                        Vendor.RulesUI.RuleDialog_ShowTab(VendorRulesDialog, 2)
+                        Vendor.RulesDialog.ShowTab(VendorRulesDialog, 2)
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentTab3" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" text="CUSTOM_TAB" id="3" parentKey="CustomTab">
+
+            <!-- Custom Tab -->
+            <Button name="$parentTab3" inherits="Vendor.RulesUI.ConfigPanelTabTemplate" id="3" parentKey="CustomTab">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parentTab2" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
@@ -447,15 +301,17 @@
                     <OnClick>
                         PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
                         PanelTemplates_Tab_OnClick(self, VendorRulesDialog);
-                        Vendor.RulesUI.RuleDialog_ShowTab(VendorRulesDialog, 3)
+                        Vendor.RulesDialog.ShowTab(VendorRulesDialog, 3)
                     </OnClick>
                 </Scripts>
             </Button>
         </Frames>
         <Scripts>
-            <OnLoad>Vendor.RulesUI.RuleDialog_OnLoad(self)</OnLoad>
-            <OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
+            <OnLoad>self:RegisterForDrag("LeftButton"); Vendor.RulesDialog.OnLoad(self)</OnLoad>
+            <OnShow>Vendor.RulesDialog.PrepareToShow(self); PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
             <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
+            <OnDragStart>self:StartMoving()</OnDragStart>
+            <OnDragStop>self:StopMovingOrSizing(); Vendor.RulesDialog.SavePosition(self)</OnDragStop>
         </Scripts>
     </Frame>
 </Ui>
