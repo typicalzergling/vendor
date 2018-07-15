@@ -4,7 +4,16 @@ local Addon, L = _G[select(1,...).."_GET"]()
 Addon.Config = {}
 Addon.DefaultConfig = {}
 
--- NOTE: This can't use Addon:Debug(...) need to figure out a new plan
+-- BFA specific migration check. 
+-- If we existed before BFA, and are currently on or above BFA
+local function IsMigrationToBFA()
+    if tonumber(Vendor_RulesConfig.interfaceversion) < 80000 
+        and tonumber(select(4, GetBuildInfo())) >= 80000 then   -- This condition can be removed once BFA lands
+        Addon:Print(L["DATA_MIGRATION_BFA_NOTICE"])
+        return true
+    end
+    return false
+end
 
 --*****************************************************************************
 -- The default settings for Addon.
@@ -15,7 +24,7 @@ Addon.DefaultConfig.Settings =
     version = 1,
 
     -- Default values of our settings
-    throttle_time = 0.1,
+    throttle_time = 0.15,
     autosell = true,
     autorepair = true,
     guildrepair = true,
@@ -30,25 +39,25 @@ Addon.DefaultConfig.Settings =
 Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
-    version = 2,
+    version = 4,
+    
+    -- Current interface version of the client
+    interfaceversion = select(4, GetBuildInfo()),
 
     -- The default rules to enable which cause items to be kept
     keep = {
-        "neversell",
-        "unsellable",
-        "common",
+        "legendaryandup",
         "soulboundgear",
         "unknownappearance",
-        "legendaryandup",
     },
 
     -- The default rules to enable which cause items to be sold.
     sell =
     {
-        "artifactpower",
         "poor",
+        "oldfood",
+        "artifactpower",
         "knowntoys",
-                                "oldfood",
         { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
         { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
     },
@@ -61,8 +70,8 @@ Addon.DefaultConfig.Rules =
 
 -- NOTE: Per character isn't fully implemented
 
-local NEVER_SELL = "sell_never"
-local ALWAYS_SELL = "sell_always"
+local NEVER_SELL = Addon.c_ConfigSellNever
+local ALWAYS_SELL = Addon.c_ConfigSellAlways
 
 --*****************************************************************************
 -- Create a new config object which provides access to our configuration
@@ -77,48 +86,66 @@ function Addon.Config:Create()
             function(self)
                 if (Vendor_Settings) then return Vendor_Settings.savepercharacter end
             end,
+            
         notifyChanges =
             function(self)
                 if ((self.suspend == 0) and self.changes) then
                     for _, callback in ipairs(self.handlers) do
                         local status, result = pcall(callback, self)
-                        --@debug@
                         if (not status) then
-                            print("Addon.Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
+                            Addon:Debug("Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
                         end
-                        --@end-debug@
                     end
                     self.changes = false
                 end
             end,
+
+        ensure = function(self)
+            if (not self.ensured) then
+
+                if (not Vendor_Settings) then
+                    Vendor_Settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
+                    Addon:Debug("Settings have been set from defaults.")
+                elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
+                    local oldSettings = Vendor_Settings
+                    local newSettings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
+                    self:migrateSettings(oldSettings, newSettings)
+                    Vendor_Settings = newSettings
+                    Vendor_SettingsPerCharacter = nil
+                    Addon:Debug("Settings have been migrated.")
+                end
+
+                -- If rules config doesn't exist, initialize it with the defaults.
+                if (not Vendor_RulesConfig) then
+                    Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+                    Addon:Debug("Rules config has been set from defaults.")
+
+                -- If it does exist, check the version and the interface version to see if we need to do any migration.
+                -- For BFA specifically, there is an ilvl squish which necessitates a rule config reset.
+                elseif (Vendor_RulesConfig and 
+                        ((Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)
+                         or IsMigrationToBFA())
+                       ) then
+                    local oldRuleConfig = Vendor_RulesConfig
+                    local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+                    self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
+                    Vendor_RulesConfig = newRuleConfig
+                    Addon:Debug("Rules config has been migrated.")
+                end
+
+                self.ensured = true;
+            end
+        end,
     }
 
-    if (not Vendor_Settings) then
-        Vendor_Settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
-    elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
-        local oldSettings = Vendor_Settings
-        local newSettings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
-        self:migrateSettings(oldSettings, newSettings)
-        Vendor_Settings = newSettings
-        Vendor_SettingsPerCharacter = nil
-    end
-
-    if (not Vendor_RulesConfig) then
-        Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
-    elseif (Vendor_RulesConfig and (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
-        local oldRuleConfig = Vendor_RulesConfig
-        local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
-        self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
-        Vendor_RulesConfig = newRuleConfig
-    end
-
+    --Addon:RegisterEvent("PLAYER_LOGIN", function() self:ensure() end)
     setmetatable(instance, self)
     self.__index = self
     return instance
 end
 
 --*****************************************************************************
--- When a batch of chagnes are being made to our settings you can send out
+-- When a batch of changes are being made to our settings you can send out
 -- a single notifcation by doing:
 --   config:BeginBatch()
 --   config:SetValue("a", 1)
@@ -163,7 +190,7 @@ end
 --*****************************************************************************
 function Addon.Config:GetDefaultRulesConfig(ruleType)
     if (not ruleType) then
-        return Addon:DeepTableCopy(Addon.DefaultConfig.Rules)
+        return Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
     else
         local value = rawget(Addon.DefaultConfig.Rules, string.lower(ruleType))
         if (value) then
@@ -179,6 +206,7 @@ end
 -- NOTE: This always returns a valid table, but it can be empty
 --*****************************************************************************
 function Addon.Config:GetRulesConfig(ruleType)
+    self:ensure()
     if (not ruleType) then
         return Vendor_RulesConfig or Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
     else
@@ -221,6 +249,7 @@ end
 --*****************************************************************************
 function Addon.Config:GetValue(name)
     assert(type(name) == "string", "The name of a config value must be a string")
+    self:ensure()
 
     local key = string.lower(name)
     --if (self:usingPerUserConfig() and Vendor_SettingsPerCharacter) then
@@ -249,7 +278,7 @@ end
 --*****************************************************************************
 function Addon.Config:SetValue(name, value)
     assert(type(name) == "string", "The name of a config value must be a string")
-
+   
     local key = string.lower(name)
     --if (self:usingPerUserConfig()) then
     --    Vendor_SettingsPerCharacter = Vendor_SettingsPerCharacter or {}
@@ -273,25 +302,32 @@ end
 -- another, both of the tables will be non-nil so you can access them directly.
 --*****************************************************************************
 function Addon.Config:migrateSettings(oldSettings, newSettings)
-    --Addon:Debug("[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
+    Addon:Debug("[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
     -- Migrate the sell_never to the new version
-   if (rawget(oldSettings, NEVER_SELL)) then
-        --Addon:Debug("[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
+    if (rawget(oldSettings, NEVER_SELL)) then
+        Addon:Debug("[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
         rawset(newSettings, NEVER_SELL, rawget(oldSettings, NEVER_SELL))
     end
 
     if (rawget(oldSettings, ALWAYS_SELL)) then
-        --Addon:Debug("[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
+        Addon:Debug("[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
         rawset(newSettings, ALWAYS_SELL, rawget(oldSettings, ALWAYS_SELL))
     end
-    --Addon:Debug("[Config] +Setting migration complete")
+    Addon:Debug("[Config] +Setting migration complete")
 end
 
 --*****************************************************************************
--- The sets a configuration value, if the value is the ssame as currently
+-- The sets a configuration value, if the value is the same as currently
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
 function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
+end
+
+--*****************************************************************************
+-- Determines if the config has been loaded yet.
+--*****************************************************************************
+function Addon:IsConfigInitialized()
+    return self.config and self.config.ensured
 end
 
 --*****************************************************************************
@@ -303,22 +339,4 @@ function Addon:GetConfig()
         self.config:AddOnChanged(function() self:ClearTooltipResultCache() end)
     end
     return self.config
-end
-
--- prototype/
-function Addon:GetConfigV2()
-    if (not self.configV2) then
-        local cfg = self:GetConfig()
-        self.configV2 =  {}
-        setmetatable(self.configV2,
-            {
-                __index = function(self, key)
-                    return cfg:GetValue(key)
-                end,
-                __newindex = function(self, key,value)
-                    cfg:SetValue(key, value)
-                end,
-            })
-    end
-    return self.configV2
 end

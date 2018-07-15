@@ -8,7 +8,7 @@ Addon.ConfigPanel.Sell = {}
 --*****************************************************************************
 function Addon.ConfigPanel.Sell.OnOpenRules()
     Addon:Debug("Showing rules dialog")
-    Addon:ShowRulesDialog()
+    Addon.RulesDialog.Toggle()
 end
 
 --*****************************************************************************

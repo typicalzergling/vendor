@@ -32,7 +32,15 @@ function Addon:IsDebug()
             debugEnabled = true
         end
     end
+    
     if (debugEnabled == nil) then
+        -- This allows us to call Addon:Debug() within Config.lua
+        -- We assume that if the config is not initialized then we want
+        -- debug spew because this doesn't exist in release builds.
+        if not Addon:IsConfigInitialized() then
+            return true
+        end
+
         local config = Addon:GetConfig()
         config:AddOnChanged(update)
         update(config)
@@ -54,6 +62,7 @@ function Addon:IsDebugRules()
     end
     return debugRulesEnabled
 end
+
 --@end-do-not-package@
 
 -- Debug print. On a release build this does nothing.
@@ -75,7 +84,6 @@ end
 
 --@do-not-package@
 -- Beyond this point are debug related functions that are not packaged.
-
 function Addon:DumpTooltipItemProperties()
     local props = self:GetItemProperties(GameTooltip)
     self:Print("Properties for "..props["Link"])

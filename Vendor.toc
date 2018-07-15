@@ -6,21 +6,26 @@
 ## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_SettingsPerCharacter
 ## Author: Malvir / Severin of Windrunner
 
+# Load order is very specific and important up until after Config is loaded.
 # Initialize & Constants must come first.
 sys\init.lua
 sys\constants.lua
 
-# Locales must be loaded next so they can be used in all subsequent files.
+# LOCALES - Locales must be loaded next so they can be used in all subsequent files.
 loc\enUS.lua
 
-# After this point order shouldn't matter.
-
-# Base
+# Helpers & Configuration loads after loc, giving all core functionality.
 sys\utils.lua
-sys\hook.lua
+sys\config.lua
+
+# After this point load order shouldn't matter.
+
+# Base Addon Functionality
 sys\debug.lua
-sys\threads.lua
+sys\hook.lua
 sys\console.lua
+sys\cmds.lua
+sys\threads.lua
 sys\core.lua
 
 # Vendoring
@@ -39,16 +44,16 @@ rules\evaluate.lua
 
 # User Interface
 ui\tooltip.lua
-ui\cmds.lua
-ui\config.lua
-ui\rulelist.lua
-ui\rulelist.xml
+ui\ruleslist.lua
+ui\ruleslist.xml
 ui\sellconfigpanel.lua
 ui\repairconfigpanel.lua
 ui\perfconfigpanel.lua
 ui\debugconfigpanel.lua
 ui\configpanels.lua
 ui\configpanels.xml
+ui\rulesdialog.lua
+ui\rulesdialog.xml
 
 #@do-not-package@
 # Debug

@@ -85,9 +85,11 @@ function Addon:AddItemTooltipLines(tooltip, link)
     -- Add a warning that this item will be auto-sold on next vendor trip.
     if willBeSold then
         tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+        --@debug@
         if (ruleName) then
             tooltip:AddLine(string.format(L["RULEMATCH_TOOLTIP"], ruleName))
-          end
+        end
+        --@end-debug@
     end
 
     --@debug@
@@ -97,13 +99,10 @@ function Addon:AddItemTooltipLines(tooltip, link)
         tooltip:AddLine(string.format("%s RuleId: %s[%s]%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
     end
     --@end-debug@
-
 end
 
 --@do-not-package@
-
 function Addon:DumpItemPropertiesFromTooltip()
     Addon:DumpTooltipItemProperties()
 end
-
 --@end-do-not-package@
