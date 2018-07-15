@@ -28,12 +28,15 @@ function Addon:EvaluateItemForSelling(item)
     -- we always add the check against the neversell list no matter what the options says
     if (not self.ruleManager) then
         self.ruleManager = Addon.RuleManager:Create(Addon.RuleFunctions);
-        local _, _, _, version = GetBuildInfo()
-        if (version < 80000) then
+        
+        -- For now we will treat current expansion as Legion. We have no rules which use this, and no custom rules yet.
+        -- TODO: Update this to be BFA once it lands.
+        --local _, _, _, version = GetBuildInfo()
+        --if (version < 80000) then
             self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_LEGION)
-           else
-            self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_8_0)
-           end
+        --   else
+        --    self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_BATTLE_FOR_AZEROTH)
+        --   end
 
         local config = self:GetConfig()
            config:AddOnChanged(function (c) onRulesConfigUpdated(self.ruleManager, c) end)

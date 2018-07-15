@@ -14,18 +14,6 @@ function Addon:OnMerchantShow()
     self:AutoSell()
 end
 
--- Believe this is fired when attempting to sell an item that can still be traded to someone else.
--- For now we will capture the event.
-function Addon:OnEndBoundTradeable(event, ...)
-    self:Print("OnEndBoundTradeable fired. Arguments:")
-    for k, v in ipairs({...}) do
-        self:Print("    Arg %s: %s", tostring(k), tostring(v))
-    end
-    
-    -- If this is what we think it is, this may auto-confirm it while we are selling:
-    -- ConfirmBindOnUse()
-end
-
 -- For checking to make sure merchant window is open prior to selling anything.
 function Addon:IsMerchantOpen()
     if MerchantFrame and MerchantFrame.IsVisible then
@@ -60,7 +48,6 @@ function Addon:IsAutoSelling()
     -- We are selling if we have a thread active.
     return not not self:GetThread(threadName)
 end
-
 
 -- Selling happens on a thread (coroutine) for UI responsiveness and to avoid being throttled by Blizzard.
 -- We have to be careful of two scenarios when selling:
@@ -125,7 +112,7 @@ function Addon:AutoSell()
                     end
 
                     -- Still open, so OK to sell it.
-                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Properties.Link), tostring(item.RuleName), self:GetPriceString(item.Properties.NetValue))
+                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Properties.Link), self:GetPriceString(item.Properties.NetValue))
                     UseContainerItem(bag, slot)
                     numSold = numSold + 1
                     totalValue = totalValue + item.Properties.NetValue
@@ -145,4 +132,46 @@ function Addon:AutoSell()
 
     -- Add thread to the thread queue and start it.
     self:AddThread(thread, threadName)
+end
+
+-- Convert price to a pretty string
+-- To reduce spam we don't show copper unless it is the only unit of measurement (i.e. < 1 silver)
+-- Gold:    FFFFFF00
+-- Silver:  FFFFFFFF
+-- Copper:  FFAE6938
+function Addon:GetPriceString(price)
+    if not price then
+        return "<missing>"
+    end
+
+    local copper, silver, gold, str
+    copper = price % 100
+    price = math.floor(price / 100)
+    silver = price % 100
+    gold = math.floor(price / 100)
+
+    str = {}
+    if gold > 0 then
+        table.insert(str, "|cFFFFD100")
+        table.insert(str, gold)
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-GoldIcon:12:12:4:0|t  ")
+
+        table.insert(str, "|cFFE6E6E6")
+        table.insert(str, string.format("%02d", silver))
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
+
+    elseif silver > 0 then
+        table.insert(str, "|cFFE6E6E6")
+        table.insert(str, silver)
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
+
+    else
+        -- Show copper if that is the only unit of measurement.
+        table.insert(str, "|cFFC8602C")
+        table.insert(str, copper)
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
+    end
+
+    -- Return the concatenated string using the efficient function for it
+    return table.concat(str)
 end

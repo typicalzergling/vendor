@@ -4,20 +4,16 @@ local Addon, L = _G[select(1,...).."_GET"]()
 Addon.Config = {}
 Addon.DefaultConfig = {}
 
--- Table deep copy, as seen on StackOverflow
--- https://stackoverflow.com/questions/640642/how-do-you-copy-a-lua-table-by-value
-local function deep_copy(obj, seen)
-    if type(obj) ~= 'table' then return obj end
-    if seen and seen[obj] then return seen[obj] end
-    local s = seen or {}
-    local res = setmetatable({}, getmetatable(obj))
-    s[obj] = res
-    for k, v in pairs(obj) do res[deep_copy(k, s)] = deep_copy(v, s) end
-    return res
+-- BFA specific migration check. 
+-- If we existed before BFA, and are currently on or above BFA
+local function IsMigrationToBFA()
+    if tonumber(Vendor_RulesConfig.interfaceversion) < 80000 
+        and tonumber(select(4, GetBuildInfo())) >= 80000 then   -- This condition can be removed once BFA lands
+        Addon:Print(L["DATA_MIGRATION_BFA_NOTICE"])
+        return true
+    end
+    return false
 end
-
-
--- NOTE: This can't use Addon:Debug(...) need to figure out a new plan
 
 --*****************************************************************************
 -- The default settings for Addon.
@@ -43,7 +39,10 @@ Addon.DefaultConfig.Settings =
 Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
-    version = 3,
+    version = 4,
+    
+    -- Current interface version of the client
+    interfaceversion = select(4, GetBuildInfo()),
 
     -- The default rules to enable which cause items to be kept
     keep = {
@@ -93,11 +92,9 @@ function Addon.Config:Create()
                 if ((self.suspend == 0) and self.changes) then
                     for _, callback in ipairs(self.handlers) do
                         local status, result = pcall(callback, self)
-                        --@debug@
                         if (not status) then
-                            print("Addon.Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
+                            Addon:Debug("Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
                         end
-                        --@end-debug@
                     end
                     self.changes = false
                 end
@@ -107,22 +104,33 @@ function Addon.Config:Create()
             if (not self.ensured) then
 
                 if (not Vendor_Settings) then
-                    Vendor_Settings = deep_copy(Addon.DefaultConfig.Settings)
+                    Vendor_Settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
+                    Addon:Debug("Settings have been set from defaults.")
                 elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
                     local oldSettings = Vendor_Settings
-                    local newSettings = deep_copy(Addon.DefaultConfig.Settings)
+                    local newSettings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
                     self:migrateSettings(oldSettings, newSettings)
                     Vendor_Settings = newSettings
                     Vendor_SettingsPerCharacter = nil
+                    Addon:Debug("Settings have been migrated.")
                 end
 
+                -- If rules config doesn't exist, initialize it with the defaults.
                 if (not Vendor_RulesConfig) then
-                    Vendor_RulesConfig = deep_copy(Addon.DefaultConfig.Rules)
-                elseif (Vendor_RulesConfig and (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
+                    Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+                    Addon:Debug("Rules config has been set from defaults.")
+
+                -- If it does exist, check the version and the interface version to see if we need to do any migration.
+                -- For BFA specifically, there is an ilvl squish which necessitates a rule config reset.
+                elseif (Vendor_RulesConfig and 
+                        ((Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)
+                         or IsMigrationToBFA())
+                       ) then
                     local oldRuleConfig = Vendor_RulesConfig
-                    local newRuleConfig = deep_copy(Addon.DefaultConfig.Rules)
+                    local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
                     self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
                     Vendor_RulesConfig = newRuleConfig
+                    Addon:Debug("Rules config has been migrated.")
                 end
 
                 self.ensured = true;
@@ -137,7 +145,7 @@ function Addon.Config:Create()
 end
 
 --*****************************************************************************
--- When a batch of chagnes are being made to our settings you can send out
+-- When a batch of changes are being made to our settings you can send out
 -- a single notifcation by doing:
 --   config:BeginBatch()
 --   config:SetValue("a", 1)
@@ -182,11 +190,11 @@ end
 --*****************************************************************************
 function Addon.Config:GetDefaultRulesConfig(ruleType)
     if (not ruleType) then
-        return deep_copy(Addon.DefaultConfig.Rules)
+        return Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
     else
         local value = rawget(Addon.DefaultConfig.Rules, string.lower(ruleType))
         if (value) then
-            return deep_copy(value)
+            return Addon.DeepTableCopy(value)
         end
     end
     return {}
@@ -200,7 +208,7 @@ end
 function Addon.Config:GetRulesConfig(ruleType)
     self:ensure()
     if (not ruleType) then
-        return Vendor_RulesConfig or deep_copy(Addon.DefaultConfig.Rules)
+        return Vendor_RulesConfig or Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
     else
         local key = string.lower(ruleType)
 
@@ -294,25 +302,32 @@ end
 -- another, both of the tables will be non-nil so you can access them directly.
 --*****************************************************************************
 function Addon.Config:migrateSettings(oldSettings, newSettings)
-    --Addon:Debug("[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
+    Addon:Debug("[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
     -- Migrate the sell_never to the new version
-   if (rawget(oldSettings, NEVER_SELL)) then
-        --Addon:Debug("[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
+    if (rawget(oldSettings, NEVER_SELL)) then
+        Addon:Debug("[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
         rawset(newSettings, NEVER_SELL, rawget(oldSettings, NEVER_SELL))
     end
 
     if (rawget(oldSettings, ALWAYS_SELL)) then
-        --Addon:Debug("[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
+        Addon:Debug("[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
         rawset(newSettings, ALWAYS_SELL, rawget(oldSettings, ALWAYS_SELL))
     end
-    --Addon:Debug("[Config] +Setting migration complete")
+    Addon:Debug("[Config] +Setting migration complete")
 end
 
 --*****************************************************************************
--- The sets a configuration value, if the value is the ssame as currently
+-- The sets a configuration value, if the value is the same as currently
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
 function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
+end
+
+--*****************************************************************************
+-- Determines if the config has been loaded yet.
+--*****************************************************************************
+function Addon:IsConfigInitialized()
+    return self.config and self.config.ensured
 end
 
 --*****************************************************************************

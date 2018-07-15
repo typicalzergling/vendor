@@ -10,7 +10,7 @@
         Vendor:AddTooltipItemToNeverSellList()
     </Binding>
     <!--@do-not-package@-->
--    <Binding 
+    <Binding 
         name="Vendor Item Properties Debug Dump" 
         description="Dump item properties to console" category="BINDING_CATEGORY_VENDOR">
         Vendor:DumpItemPropertiesFromTooltip()

@@ -4,12 +4,12 @@ local Addon, L = _G[select(1,...).."_GET"]()
 function Addon:SetupConsoleCommands()
     self:RegisterConsoleCommandName(self.c_AddonName, "/vendor", "/ven")
     self:AddConsoleCommand(nil, nil, "OpenSettings_Cmd")                        -- Override the default
-    self:AddConsoleCommand("rules", L["CMD_CONFIG_HELP"], "OpenConfigDialog_Cmd")
+    self:AddConsoleCommand("rules", L["CMD_RULES_HELP"], "OpenConfigDialog_Cmd")
     self:AddConsoleCommand("sell", L["CMD_SELLITEM_HELP"], "SellItem_Cmd")
     self:AddConsoleCommand("clear", L["CMD_CLEARDATA_HELP"], "ClearData_Cmd")
     self:AddConsoleCommand("list", L["CMD_LISTDATA_HELP"], "ListData_Cmd")
     self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
-    self:AddConsoleCommand("settings", L["CMD_CONFIG_HELP"], "OpenSettings_Cmd")
+    self:AddConsoleCommand("settings", L["CMD_SETTINGS_HELP"], "OpenSettings_Cmd")
 end
 
 -- Add or remove items from the blacklist or whitelist.

@@ -32,7 +32,15 @@ function Addon:IsDebug()
             debugEnabled = true
         end
     end
+    
     if (debugEnabled == nil) then
+        -- This allows us to call Addon:Debug() within Config.lua
+        -- We assume that if the config is not initialized then we want
+        -- debug spew because this doesn't exist in release builds.
+        if not Addon:IsConfigInitialized() then
+            return true
+        end
+
         local config = Addon:GetConfig()
         config:AddOnChanged(update)
         update(config)

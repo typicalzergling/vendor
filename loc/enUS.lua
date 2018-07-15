@@ -18,7 +18,7 @@ AddonLocales["enUS"] =
 -- Merchant
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
-["MERCHANT_SELLING_ITEM"] = "Selling %s (%s) for %s",
+["MERCHANT_SELLING_ITEM"] = "Selling %s for %s",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
 
 -- Tooltip
@@ -65,8 +65,9 @@ AddonLocales["enUS"] =
 ["CMD_HELP_HEADER"] = "Command Reference: ",
 ["CMD_HELP_HELP"] = "Show this command list reference.",
 
-["CMD_CONFIG_HELP"] = "Open the settings configuration panel.",
-["CMD_KEYS_HELP"] = "Open keybindings. You can find ours under the 'Vendor' name in the left side list.",
+["CMD_SETTINGS_HELP"] = "Open the settings in the interface options.",
+["CMD_RULES_HELP"] = "Open the Sell/Keep Rules configuration panel.",
+["CMD_KEYS_HELP"] = "Open keybindings. Working with blocklists is much easier with keybinds!",
 
 ["CMD_SELLITEM_HELP"] = "Adds or removes items from the sell list: sell {always||never} [itemid]",
 ["CMD_SELLITEM_INVALIDARG"] = "Must specify which list to which you want to query or edit an item: {always||never} [item]",
@@ -135,5 +136,8 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_RAREGEAR_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Rare quality.",
 ["SYSRULE_KEEP_EPICGEAR"] = "Epic Gear",
 ["SYSRULE_KEEP_EPICGEAR_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Epic quality.",
+
+-- Data Migration
+["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!"
 
 } -- END OF LOCALIZATION TABLE

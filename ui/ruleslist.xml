@@ -85,7 +85,7 @@
                 <FontString parentKey="RuleName" inherits="GameFontHighlightLarge" justifyH="LEFT">
                     <Anchors>
                         <Anchor point="TOPLEFT"  x="32" y="-4"/>
-                        <Anchor point="TOPRIGHT" x="-28"  y="-24"/>
+                        <Anchor point="TOPRIGHT" x="-28" y="-24"/>
                     </Anchors>
                 </FontString>
                 <FontString parentKey="RuleDescription" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP"  wordwrap="true">
