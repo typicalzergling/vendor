@@ -129,7 +129,6 @@ end
 -- Create a new frame for a rule item in the provided list. This will setup
 -- the item for all of the proeprties of the rule
 --
--- TODO: handle insets here.
 --*****************************************************************************
 local function createRuleItem(parent, ruleId, rule)
     local template = "VendorSimpleRuleTemplate"
@@ -220,7 +219,7 @@ local function setRuleConfigFromList(frame, config)
             
             table.sort(part,
                 function (ruleA, ruleB) 
-                    return ((ruleA.Order or 0) < (ruleB.Order or 0))
+                    return ((ruleA.Rule.Order or 0) < (ruleB.Rule.Order or 0))
                 end)
 
             for i=1,#part do
@@ -246,17 +245,9 @@ function Addon.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
 
     assert(frame.RuleList, "Rule List frame needs to have the rule list set")
     assert(frame.RuleType, "Rule List frame needs to have the rule type set")
-
-    -- Sort the rules by their Order then by alphabetical.
-    local ruleKeys = {}
-    for key, _ in pairs(frame.RuleList) do
-        table.insert(ruleKeys, key)
-    end
-    table.sort(ruleKeys, function (a, b) return frame.RuleList[a].Order < frame.RuleList[b].Order end)
     
     -- Create the frame for each of our rules.
-    for _, id in ipairs(ruleKeys) do
-        rule = frame.RuleList[id]
+    for id, rule in pairs(ruleList) do
         if (not rule.Locked) then
             local rule = createRuleItem(frame, id, rule)
             frame.RuleFrameSize = math.max(frame.RuleFrameSize, rule:GetHeight())

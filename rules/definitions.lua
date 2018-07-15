@@ -31,6 +31,14 @@ Addon.SystemRules =
             Order = 1000,
         },
 
+        oldfood =
+        {
+            Name = L["SYSRULE_SELL_OLDFOOD"],
+            Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
+            Script = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
+            Order = 1100,
+        },
+
         artifactpower =
         {
             Name = L["SYSRULE_SELL_ARTIFACTPOWER"],
@@ -39,6 +47,14 @@ Addon.SystemRules =
             Order = 1200,
         },
 
+        knowntoys =
+        {
+            Name = L["SYSRULE_SELL_KNOWNTOYS"],
+            Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
+            Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
+            Order = 1300,
+        },
+       
         uncommongear =
         {
             Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
@@ -64,22 +80,6 @@ Addon.SystemRules =
             Script = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
             InsetsNeeded = { "itemlevel" },
             Order = 1600,
-        },
-
-        knowntoys =
-        {
-            Name = L["SYSRULE_SELL_KNOWNTOYS"],
-            Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
-            Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
-            Order = 1300,
-        },
-
-        oldfood =
-        {
-            Name = L["SYSRULE_SELL_OLDFOOD"],
-            Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
-            Script = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
-            Order = 1100,
         },
     },
 
@@ -115,13 +115,13 @@ Addon.SystemRules =
             Order = -9999,
         },
 
-        -- Safeguard rule - Common items are usually important and useful.
-        common =
+        -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
+        legendaryandup =
         {
-            Name = L["SYSRULE_KEEP_COMMON"],
-            Description = L["SYSRULE_KEEP_COMMON_DESC"],
-            Script = "Quality() == 1",
-            Order = 1300,
+            Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
+            Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
+            Script = "Quality() >= 5",
+            Order = 1000,
         },
 
         -- Safeguard rule - Keep soulbound equipment.
@@ -140,15 +140,15 @@ Addon.SystemRules =
             Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
             Script = "IsUnknownAppearance()",
             Order = 1200,
-        },
+        },        
 
-        -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
-        legendaryandup =
+        -- Safeguard rule - Common items are usually important and useful.
+        common =
         {
-            Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
-            Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
-            Script = "Quality() >= 5",
-            Order = 1000,
+            Name = L["SYSRULE_KEEP_COMMON"],
+            Description = L["SYSRULE_KEEP_COMMON_DESC"],
+            Script = "Quality() == 1",
+            Order = 1300,
         },
 
         -- Optional Safeguard - Might be useful for leveling.

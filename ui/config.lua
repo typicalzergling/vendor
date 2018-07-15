@@ -43,24 +43,22 @@ Addon.DefaultConfig.Settings =
 Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
-    version = 2,
+    version = 3,
 
     -- The default rules to enable which cause items to be kept
     keep = {
-        "neversell",
-        "unsellable",
+        "legendaryandup",
         "soulboundgear",
         "unknownappearance",
-        "legendaryandup",
     },
 
     -- The default rules to enable which cause items to be sold.
     sell =
     {
-        "artifactpower",
         "poor",
-        "knowntoys",
         "oldfood",
+        "artifactpower",
+        "knowntoys",
         { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
         { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
     },
@@ -89,6 +87,7 @@ function Addon.Config:Create()
             function(self)
                 if (Vendor_Settings) then return Vendor_Settings.savepercharacter end
             end,
+            
         notifyChanges =
             function(self)
                 if ((self.suspend == 0) and self.changes) then
@@ -103,27 +102,35 @@ function Addon.Config:Create()
                     self.changes = false
                 end
             end,
+
+        ensure = function(self)
+            if (not self.ensured) then
+
+                if (not Vendor_Settings) then
+                    Vendor_Settings = deep_copy(Addon.DefaultConfig.Settings)
+                elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
+                    local oldSettings = Vendor_Settings
+                    local newSettings = deep_copy(Addon.DefaultConfig.Settings)
+                    self:migrateSettings(oldSettings, newSettings)
+                    Vendor_Settings = newSettings
+                    Vendor_SettingsPerCharacter = nil
+                end
+
+                if (not Vendor_RulesConfig) then
+                    Vendor_RulesConfig = deep_copy(Addon.DefaultConfig.Rules)
+                elseif (Vendor_RulesConfig and (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
+                    local oldRuleConfig = Vendor_RulesConfig
+                    local newRuleConfig = deep_copy(Addon.DefaultConfig.Rules)
+                    self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
+                    Vendor_RulesConfig = newRuleConfig
+                end
+
+                self.ensured = true;
+            end
+        end,
     }
 
-    if (not Vendor_Settings) then
-        Vendor_Settings = deep_copy(Addon.DefaultConfig.Settings)
-    elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
-        local oldSettings = Vendor_Settings
-        local newSettings = deep_copy(Addon.DefaultConfig.Settings)
-        self:migrateSettings(oldSettings, newSettings)
-        Vendor_Settings = newSettings
-        Vendor_SettingsPerCharacter = nil
-    end
-
-    if (not Vendor_RulesConfig) then
-        Vendor_RulesConfig = deep_copy(Addon.DefaultConfig.Rules)
-    elseif (Vendor_RulesConfig and (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
-        local oldRuleConfig = Vendor_RulesConfig
-        local newRuleConfig = deep_copy(Addon.DefaultConfig.Rules)
-        self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
-        Vendor_RulesConfig = newRuleConfig
-    end
-
+    --Addon:RegisterEvent("PLAYER_LOGIN", function() self:ensure() end)
     setmetatable(instance, self)
     self.__index = self
     return instance
@@ -191,6 +198,7 @@ end
 -- NOTE: This always returns a valid table, but it can be empty
 --*****************************************************************************
 function Addon.Config:GetRulesConfig(ruleType)
+    self:ensure()
     if (not ruleType) then
         return Vendor_RulesConfig or deep_copy(Addon.DefaultConfig.Rules)
     else
@@ -233,6 +241,7 @@ end
 --*****************************************************************************
 function Addon.Config:GetValue(name)
     assert(type(name) == "string", "The name of a config value must be a string")
+    self:ensure()
 
     local key = string.lower(name)
     --if (self:usingPerUserConfig() and Vendor_SettingsPerCharacter) then
@@ -261,7 +270,7 @@ end
 --*****************************************************************************
 function Addon.Config:SetValue(name, value)
     assert(type(name) == "string", "The name of a config value must be a string")
-
+   
     local key = string.lower(name)
     --if (self:usingPerUserConfig()) then
     --    Vendor_SettingsPerCharacter = Vendor_SettingsPerCharacter or {}
