@@ -1,5 +1,4 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
-
 local RULE_TYPE_KEEP = Addon.c_RuleType_Keep
 local RULE_TYPE_SELL = Addon.c_RuleType_Sell
 local RULE_TYPE_CUSTOM = "Custom"
@@ -15,7 +14,7 @@ Addon.RulesDialog = {
     --=========================================================================
     UpdateRuleConfig = function(frame)
         Addon:DebugRules("Applying config for rule type '%s'", frame.RuleType)
-        Config:SetRulesConfig(frame.RuleType, getRuleConfigFromList(frame))
+        Config:SetRulesConfig(frame.RuleType, frame:GetRuleConfig())
     end,
 
     --=========================================================================
@@ -64,7 +63,7 @@ Addon.RulesDialog = {
     -- Resets the dialogs position back to the default (center of the scren)
     --=========================================================================
     ResetPosition = function(self)
-        Vendor:Debug("Resetting position of the rules dialog")
+        Addon:Debug("Resetting position of the rules dialog")
         Config:SetValue(RULES_DIALOG_LOC_SETTING, nil)
     end,
 
@@ -72,6 +71,7 @@ Addon.RulesDialog = {
     -- Initialize all of the parts of our dialog and setup all of the callbacks
     --=========================================================================
     OnLoad = function(self)
+        self:SetClampedToScreen(true)
         self.Caption:SetText(L["CONFIG_DIALOG_CAPTION"])
 
         -- Setup the panels
@@ -83,7 +83,7 @@ Addon.RulesDialog = {
         PanelTemplates_SetNumTabs(self, table.getn(self.Tabs))
         self.selectedTab = 2
         PanelTemplates_UpdateTabs(self)
-        Addon.RulesUI.RuleDialog_ShowTab(self, self.selectedTab)
+        Addon.RulesDialog.ShowTab(self, self.selectedTab)
 
         -- Setup dialog location persistence
         local function setDialogLocation() 

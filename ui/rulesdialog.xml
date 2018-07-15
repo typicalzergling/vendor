@@ -57,7 +57,7 @@
                     <Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick>Vendor.RulesUI.RulesDialog_OnOk(VendorRulesDialog)</OnClick>
+                    <OnClick>Vendor.RulesDialog.OnOk(VendorRulesDialog)</OnClick>
                 </Scripts>
             </Button>
             <Button name="$parentDefaults" inherits="UIPanelButtonTemplate" text="DEFAULTS">

@@ -317,21 +317,3 @@ function Addon:GetConfig()
     end
     return self.config
 end
-
--- prototype/
-function Addon:GetConfigV2()
-    if (not self.configV2) then
-        local cfg = self:GetConfig()
-        self.configV2 =  {}
-        setmetatable(self.configV2,
-            {
-                __index = function(self, key)
-                    return cfg:GetValue(key)
-                end,
-                __newindex = function(self, key,value)
-                    cfg:SetValue(key, value)
-                end,
-            })
-    end
-    return self.configV2
-end
