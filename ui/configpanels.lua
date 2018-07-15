@@ -25,7 +25,7 @@ end
 
 --*****************************************************************************
 -- Called when the value of slider has changed and delegates to the parent
--- handler if oen was provied.
+-- handler if one was provied.
 --*****************************************************************************
 function Addon.ConfigPanel.OnSliderValueChange(self)
     local callback = self:GetParent().OnValueChanged

@@ -97,7 +97,7 @@ function Addon:AutoSell()
                     -- It is possible the merchant window closes while the user is holding an item, so check for termination condition before yielding.
                     if not self:IsMerchantOpen() then
                         if numSold > 0 then
-                            self:Print(string.format(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue)))
+                            self:Print(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue))
                         end
                         return
                     end
@@ -107,29 +107,28 @@ function Addon:AutoSell()
                 end
 
                 -- Get Item properties and run sell rules.
-                local item = self:GetItemPropertiesFromBag(bag, slot)
-                local sellItem = self:EvaluateItemForSelling(item)
+                local item = self:GetBagItemFromCache(bag, slot)
                 if item then
-                    self:Debug("Evaluated: "..tostring(item.Link).." = "..tostring(sellItem))
+                    self:Debug("Evaluated: "..tostring(item.Properties.Link).." = "..tostring(item.Sell))
                 end
 
                 -- Determine if it is to be sold
-                if sellItem then
+                if item and item.Sell then
 
                     -- UseContainerItem is really just a limited auto-right click, and it will equip/use the item if we are not in a merchant window!
                     -- So before we do this, make sure the Merchant frame is still open. If not, terminate the coroutine.
                     if not self:IsMerchantOpen() then
                         if numSold > 0 then
-                            self:Print(string.format(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue)))
+                            self:Print(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue))
                         end
                         return
                     end
 
                     -- Still open, so OK to sell it.
-                    self:Print(string.format(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(item.NetValue)))
+                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Properties.Link), tostring(item.RuleName), self:GetPriceString(item.Properties.NetValue))
                     UseContainerItem(bag, slot)
                     numSold = numSold + 1
-                    totalValue = totalValue + item.NetValue
+                    totalValue = totalValue + item.Properties.NetValue
 
                     -- Yield per throttling setting.
                     if numSold % config:GetValue("sell_throttle") == 0 then
@@ -140,7 +139,7 @@ function Addon:AutoSell()
         end
 
         if numSold > 0 then
-            self:Print(string.format(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue)))
+            self:Print(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue))
         end
     end)  -- Coroutine end
 

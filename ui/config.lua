@@ -28,7 +28,7 @@ Addon.DefaultConfig.Settings =
     version = 1,
 
     -- Default values of our settings
-    throttle_time = 0.1,
+    throttle_time = 0.15,
     autosell = true,
     autorepair = true,
     guildrepair = true,
@@ -49,7 +49,6 @@ Addon.DefaultConfig.Rules =
     keep = {
         "neversell",
         "unsellable",
-        "common",
         "soulboundgear",
         "unknownappearance",
         "legendaryandup",
@@ -61,7 +60,7 @@ Addon.DefaultConfig.Rules =
         "artifactpower",
         "poor",
         "knowntoys",
-                                "oldfood",
+        "oldfood",
         { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
         { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
     },
@@ -74,8 +73,8 @@ Addon.DefaultConfig.Rules =
 
 -- NOTE: Per character isn't fully implemented
 
-local NEVER_SELL = "sell_never"
-local ALWAYS_SELL = "sell_always"
+local NEVER_SELL = Addon.c_ConfigSellNever
+local ALWAYS_SELL = Addon.c_ConfigSellAlways
 
 --*****************************************************************************
 -- Create a new config object which provides access to our configuration

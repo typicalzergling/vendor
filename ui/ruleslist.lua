@@ -247,8 +247,16 @@ function Addon.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
     assert(frame.RuleList, "Rule List frame needs to have the rule list set")
     assert(frame.RuleType, "Rule List frame needs to have the rule type set")
 
+    -- Sort the rules by their Order then by alphabetical.
+    local ruleKeys = {}
+    for key, _ in pairs(frame.RuleList) do
+        table.insert(ruleKeys, key)
+    end
+    table.sort(ruleKeys, function (a, b) return frame.RuleList[a].Order < frame.RuleList[b].Order end)
+    
     -- Create the frame for each of our rules.
-    for id, rule in pairs(frame.RuleList) do
+    for _, id in ipairs(ruleKeys) do
+        rule = frame.RuleList[id]
         if (not rule.Locked) then
             local rule = createRuleItem(frame, id, rule)
             frame.RuleFrameSize = math.max(frame.RuleFrameSize, rule:GetHeight())

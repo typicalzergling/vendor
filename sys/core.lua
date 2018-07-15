@@ -16,7 +16,7 @@ function Addon:OnInitialize()
     --@debug@
     self:SetupDebugConsoleCommands()
     --@end-debug@
-    
+
     -- Set up events
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
@@ -25,17 +25,7 @@ function Addon:OnInitialize()
     -- Tooltip hooks
     self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
     self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
-    --self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTestHook")
-    
+
     -- Print version and load confirmation to console.
-    local version = GetAddOnMetadata(self.c_AddonName, "version")
-    --@do-not-package@
-    if version == "@project-version@" then version = "Debug" end
-    --@end-do-not-package@
-    self:Print("%s %sv%s%s is loaded.", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, version, FONT_COLOR_CODE_CLOSE)
-end
-
-function Addon:OnTestHook()
-
-    self:Print("Test Hook worked!")
+    self:Print("%s %sv%s%s is loaded.", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, self:GetVersion(), FONT_COLOR_CODE_CLOSE)
 end

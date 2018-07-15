@@ -2,12 +2,12 @@
 local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Gets the version of the addon
-function Vendor:GetVersion()
-    local addonVerison = GetAddOnMetadata("Vendor", "Version")
-    --@debug@
-    addonVersion = "(Working)"
-    --@end-debug@
-    return addonVersion
+function Addon:GetVersion()
+    local version = GetAddOnMetadata(self.c_AddonName, "version")
+    --@do-not-package@
+    if version == "@project-version@" then version = "Debug" end
+    --@end-do-not-package@
+    return version
 end
 
 -- Gets item ID from an itemstring or item link
