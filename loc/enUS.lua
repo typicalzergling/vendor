@@ -40,12 +40,17 @@ AddonLocales["enUS"] =
 ["OPTIONS_SETTINGNAME_GUILDREPAIR"] = "Use Guild Bank for Repairs",
 ["OPTIONS_SETTINGDESC_GUILDREPAIR"] = "Uses guild bank for repairs if possible.",
 
-["OPTIONS_HEADER_SELLING"] = "Selling",
+-- Main Config Panel (aka Selling)
+["OPTIONS_HEADER_SELLING"] = "General",
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Keep rules are always processed first, then Sell rules run on items that remain. By default we have several safeguard Keep rules enabled so you don't accidentally sell something you want. Before disabling any Keep rules, you should definitely take a look at the sell rules that are enabled first.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
-["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.\n\nDisabling this will also hide Vendor tooltip lines.",
+["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.",
 ["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
 ["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
+["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
+["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose have the tooltip also include the rule which will cause the item to be sold or kept",
+["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Enable rule information",
+
 
 -- Performance Settings tab
 ["OPTIONS_CATEGORY_PERFORMANCE"] = "Performance",

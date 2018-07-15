@@ -46,7 +46,7 @@ rules\evaluate.lua
 ui\tooltip.lua
 ui\ruleslist.lua
 ui\ruleslist.xml
-ui\sellconfigpanel.lua
+ui\generalconfigpanel.lua
 ui\repairconfigpanel.lua
 ui\perfconfigpanel.lua
 ui\debugconfigpanel.lua

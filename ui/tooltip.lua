@@ -1,4 +1,4 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local Addon, L, Config = _G[select(1,...).."_GET"]()
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
 function Addon:AddTooltipItemToSellList(list)
@@ -73,23 +73,25 @@ function Addon:AddItemTooltipLines(tooltip, link)
     end
 
     -- Add lines to the tooltip we are scanning after we've scanned it.
-    if blocklist then
-        -- Add Addon state to the tooltip.
-        if blocklist == self.c_AlwaysSellList then
-            tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
-        else
-            tooltip:AddLine(L["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"])
+    if (Config:GetValue(Addon.c_Config_Tooltip)) then
+        if blocklist then
+            -- Add Addon state to the tooltip.
+            if blocklist == self.c_AlwaysSellList then
+                tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
+            else
+                tooltip:AddLine(L["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"])
+            end
         end
-    end
 
-    -- Add a warning that this item will be auto-sold on next vendor trip.
-    if willBeSold then
-        tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
-        --@debug@
-        if (ruleName) then
-            tooltip:AddLine(string.format(L["RULEMATCH_TOOLTIP"], ruleName))
+        -- Add a warning that this item will be auto-sold on next vendor trip.
+        if willBeSold then
+            tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+            --@debug@
+            if (ruleName and Config:GetValue(Addon.c_Config_Tooltip_Rule)) then
+                tooltip:AddLine(string.format(L["RULEMATCH_TOOLTIP"], ruleName))
+            end
+            --@end-debug@
         end
-        --@end-debug@
     end
 
     --@debug@

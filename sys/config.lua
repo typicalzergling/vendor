@@ -21,7 +21,7 @@ end
 Addon.DefaultConfig.Settings =
 {
     -- Current version of the settings config
-    version = 1,
+    version = 2,
 
     -- Default values of our settings
     throttle_time = 0.15,
@@ -31,6 +31,7 @@ Addon.DefaultConfig.Settings =
     sell_throttle = 1,
     sell_never = {},
     sell_always = {},
+    tooltip_basic = true,
 }
 
 --*****************************************************************************

@@ -32,11 +32,7 @@ function Addon.ConfigPanel.Repair.Apply(self, config)
 
     local autorepair = self.AutoRepair.State:GetChecked()
     config:SetValue("autorepair", autorepair)
-    if (not autorepair) then
-        config:SetValue("guildrepair", false)
-    else
-        config:SetValue("guildrepair", self.GuildRepair.State:GetChecked())
-    end
+    config:SetValue("guildrepair", autorepair and self.GuildRepair.State:GetChecked())
 end
 
 --*****************************************************************************
