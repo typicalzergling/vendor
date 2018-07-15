@@ -11,7 +11,9 @@ end
 -- Gets the version of the addon
 function Addon:GetVersion()
     local version = GetAddOnMetadata(self.c_AddonName, "version")
+    --@debug@
     if version == "@project-version@" then version = "Debug" end
+    --@end-debug@
     return version
 end
 

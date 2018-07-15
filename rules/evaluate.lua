@@ -33,7 +33,7 @@ function Addon:EvaluateItemForSelling(item)
         -- TODO: Update this to be BFA once it lands.
         --local _, _, _, version = GetBuildInfo()
         --if (version < 80000) then
-            self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_LEGION)
+        --    self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_LEGION)
         --   else
         --    self.ruleManager:AddConstant("CURRENT_EXPANSION", LE_EXPANSION_BATTLE_FOR_AZEROTH)
         --   end
