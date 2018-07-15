@@ -3,7 +3,7 @@
 -- Locales should be loaded AFTER Init and before anything that uses them.
 -- So basically make sure they are all loaded together in the TOC right after Init (constants is OK too).
 local AddonLocales = _G[select(1,...).."_LOC"]()
-AddonLocales["enUS"] = 
+AddonLocales["enUS"] =
 {
 -- Core
 ["ADDON_NAME"] = "Vendor",
@@ -102,13 +102,11 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Rules",
 ["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "Custom rules are not yet implemented but are coming Soon(TM)",
 
--- System rules
-
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",
 ["SYSRULE_SELL_ALWAYSSELL_DESC"] = "Items that are in the Always Sell list are always sold. You can view the full list with '/vendor list always'",
 ["SYSRULE_SELL_POORITEMS"] = "Poor Items",
-["SYSRULE_SELL_POORITEMS_DESC"] = "Matches all "..ITEM_QUALITY_COLORS[0].hex.."Poor"..FONT_COLOR_CODE_CLOSE.." quality items, which is the majority of the junk you will pick up.",
+["SYSRULE_SELL_POORITEMS_DESC"] = "Matches all "..ITEM_QUALITY_COLORS[0].hex.."Poor"..FONT_COLOR_CODE_CLOSE.." quality items which are the majority of the junk you will pick up.",
 ["SYSRULE_SELL_ARTIFACTPOWER"] = "Artifact Power (Legion)",
 ["SYSRULE_SELL_ARTIFACTPOWER_DESC"] =  "Matches any "..ITEM_QUALITY_COLORS[6].hex.."Artifact Power"..FONT_COLOR_CODE_CLOSE.." items from the Legion expansion if you are level 110+. We assume you have done the quest and no longer need it.",
 ["SYSRULE_SELL_UNCOMMONGEAR"] = "Uncommon Gear",
@@ -116,11 +114,11 @@ AddonLocales["enUS"] =
 ["SYSRULE_SELL_RAREGEAR"] = "Rare Gear",
 ["SYSRULE_SELL_RAREGEAR_DESC"] = "Matches Any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than specified item level.",
 ["SYSRULE_SELL_EPICGEAR"] = "Epic Gear",
-["SYSRULE_SELL_EPICGEAR_DESC"] = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than specified item level. We assume you will want to sell BoE Epics on the auction house, so BoEs are excluded.",
+["SYSRULE_SELL_EPICGEAR_DESC"] = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than specified item level. We assume you will want to sell BoE Epics on the auction house so BoEs are excluded.",
 ["SYSRULE_SELL_KNOWNTOYS"] = "Known Toys",
-["SYSRULE_SELL_KNOWNTOYS_DESC"] = "Matches any already-known toys that are Soulbound. You can't AH them and you can't learn them, so help them home to the vendor.",
+["SYSRULE_SELL_KNOWNTOYS_DESC"] = "Matches any already-known toys that are Soulbound. You can't sell them to the Auction House  and you can't learn them, so rehome them to the vendor.",
 ["SYSRULE_SELL_OLDFOOD"] = "Low-Level Food",
-["SYSRULE_SELL_OLDFOOD_DESC"] = "Matches Food and Drink that is 10 or more levels below you. This will cover food from previous expansions, and old food while leveling.",
+["SYSRULE_SELL_OLDFOOD_DESC"] = "Matches Food and Drink that is 10 or more levels below you. This will cover food from previous expansions and old food while leveling.",
 
 -- Keep Rules
 ["SYSRULE_KEEP_NEVERSELL"] = "Items in Never Sell List",
@@ -128,7 +126,7 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_UNSELLABLE"] = "Unsellable Items",
 ["SYSRULE_KEEP_UNSELLABLE_DESC"] = "These items have no value and cannot be sold to a merchant. If you don't like it, take it up with Blizzard.",
 ["SYSRULE_KEEP_SOULBOUNDGEAR"] = "Soulbound Gear",
-["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Soulbound"..FONT_COLOR_CODE_CLOSE.." to you, even items your class cannot wear. This is a safeguard rule meant to protect you from accidentally vendoring your valuables. Take care when disabling this rule, but you will likely need to in order to take advantage of many Sell Rules.",
+["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Soulbound"..FONT_COLOR_CODE_CLOSE.." to you even items your class cannot wear. This is a safeguard rule meant to protect you from accidentally vendoring your valuables. In order to fully take advantage of many of the Sell Rules, you will need to disable this rule but think carefully before you do.",
 ["SYSRULE_KEEP_COMMON"] = "Common Items",
 ["SYSRULE_KEEP_COMMON_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[1].hex.."Common"..FONT_COLOR_CODE_CLOSE.." quality item. These are typically valuable consumables or crafting materials. This is a safeguard rule meant to protect you from vendoring your consumables and crafting materials.",
 ["SYSRULE_KEEP_UNKNOWNAPPEARANCE"] = "Uncollected Appearances",
