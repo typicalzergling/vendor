@@ -1,4 +1,4 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local Addon, L, Config = _G[select(1,...).."_GET"]()
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
 
@@ -43,7 +43,7 @@ function Addon.ConfigPanel.InitMainPanel(self)
         function()
             local config = Addon:GetConfig()
             config:BeginBatch()
-                Addon.ConfigPanel.Sell.Apply(VendorSellConfigPanel, config)
+                Addon.ConfigPanel.General.Apply(VendorGeneralConfigPanel)
                 Addon.ConfigPanel.Repair.Apply(VendorRepairConfigPanel, config)
                 Addon.ConfigPanel.Perf.Apply(VendorPerfConfigPanel, config)
                 if (VendorDebugConfigPanel and Addon.ConfigPanel.Debug) then
@@ -56,7 +56,7 @@ function Addon.ConfigPanel.InitMainPanel(self)
     -- to each one of our panels.
     local function updatePanels(self, config)
         Addon.ConfigPanel.Repair.Set(VendorRepairConfigPanel, config)
-        Addon.ConfigPanel.Sell.Set(VendorSellConfigPanel, config)
+        Addon.ConfigPanel.General.Set(VendorGeneralConfigPanel)
         Addon.ConfigPanel.Perf.Set(VendorPerfConfigPanel, config)
         if (VendorDebugConfigPanel and Addon.ConfigPanel.Debug) then
             Addon.ConfigPanel.Debug.Set(VendorDebugConfigPanel, config)

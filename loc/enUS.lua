@@ -3,7 +3,7 @@
 -- Locales should be loaded AFTER Init and before anything that uses them.
 -- So basically make sure they are all loaded together in the TOC right after Init (constants is OK too).
 local AddonLocales = _G[select(1,...).."_LOC"]()
-AddonLocales["enUS"] = 
+AddonLocales["enUS"] =
 {
 -- Core
 ["ADDON_NAME"] = "Vendor",
@@ -40,12 +40,17 @@ AddonLocales["enUS"] =
 ["OPTIONS_SETTINGNAME_GUILDREPAIR"] = "Use Guild Bank for Repairs",
 ["OPTIONS_SETTINGDESC_GUILDREPAIR"] = "Uses guild bank for repairs if possible.",
 
-["OPTIONS_HEADER_SELLING"] = "Selling",
+-- Main Config Panel (aka Selling)
+["OPTIONS_HEADER_SELLING"] = "General",
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Keep rules are always processed first, then Sell rules run on items that remain. By default we have several safeguard Keep rules enabled so you don't accidentally sell something you want. Before disabling any Keep rules, you should definitely take a look at the sell rules that are enabled first.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
-["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.\n\nDisabling this will also hide Vendor tooltip lines.",
+["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.",
 ["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
 ["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
+["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
+["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose have the tooltip also include the rule which will cause the item to be sold or kept",
+["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Enable rule information",
+
 
 -- Performance Settings tab
 ["OPTIONS_CATEGORY_PERFORMANCE"] = "Performance",
@@ -97,13 +102,11 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Rules",
 ["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "Custom rules are not yet implemented but are coming Soon(TM)",
 
--- System rules
-
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",
 ["SYSRULE_SELL_ALWAYSSELL_DESC"] = "Items that are in the Always Sell list are always sold. You can view the full list with '/vendor list always'",
 ["SYSRULE_SELL_POORITEMS"] = "Poor Items",
-["SYSRULE_SELL_POORITEMS_DESC"] = "Matches all "..ITEM_QUALITY_COLORS[0].hex.."Poor"..FONT_COLOR_CODE_CLOSE.." quality items, which is the majority of the junk you will pick up.",
+["SYSRULE_SELL_POORITEMS_DESC"] = "Matches all "..ITEM_QUALITY_COLORS[0].hex.."Poor"..FONT_COLOR_CODE_CLOSE.." quality items which are the majority of the junk you will pick up.",
 ["SYSRULE_SELL_ARTIFACTPOWER"] = "Artifact Power (Legion)",
 ["SYSRULE_SELL_ARTIFACTPOWER_DESC"] =  "Matches any "..ITEM_QUALITY_COLORS[6].hex.."Artifact Power"..FONT_COLOR_CODE_CLOSE.." items from the Legion expansion if you are level 110+. We assume you have done the quest and no longer need it.",
 ["SYSRULE_SELL_UNCOMMONGEAR"] = "Uncommon Gear",
@@ -111,11 +114,11 @@ AddonLocales["enUS"] =
 ["SYSRULE_SELL_RAREGEAR"] = "Rare Gear",
 ["SYSRULE_SELL_RAREGEAR_DESC"] = "Matches Any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than specified item level.",
 ["SYSRULE_SELL_EPICGEAR"] = "Epic Gear",
-["SYSRULE_SELL_EPICGEAR_DESC"] = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than specified item level. We assume you will want to sell BoE Epics on the auction house, so BoEs are excluded.",
+["SYSRULE_SELL_EPICGEAR_DESC"] = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than specified item level. We assume you will want to sell BoE Epics on the auction house so BoEs are excluded.",
 ["SYSRULE_SELL_KNOWNTOYS"] = "Known Toys",
-["SYSRULE_SELL_KNOWNTOYS_DESC"] = "Matches any already-known toys that are Soulbound. You can't AH them and you can't learn them, so help them home to the vendor.",
+["SYSRULE_SELL_KNOWNTOYS_DESC"] = "Matches any already-known toys that are Soulbound. You can't sell them to the Auction House  and you can't learn them, so rehome them to the vendor.",
 ["SYSRULE_SELL_OLDFOOD"] = "Low-Level Food",
-["SYSRULE_SELL_OLDFOOD_DESC"] = "Matches Food and Drink that is 10 or more levels below you. This will cover food from previous expansions, and old food while leveling.",
+["SYSRULE_SELL_OLDFOOD_DESC"] = "Matches Food and Drink that is 10 or more levels below you. This will cover food from previous expansions and old food while leveling.",
 
 -- Keep Rules
 ["SYSRULE_KEEP_NEVERSELL"] = "Items in Never Sell List",
@@ -123,7 +126,7 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_UNSELLABLE"] = "Unsellable Items",
 ["SYSRULE_KEEP_UNSELLABLE_DESC"] = "These items have no value and cannot be sold to a merchant. If you don't like it, take it up with Blizzard.",
 ["SYSRULE_KEEP_SOULBOUNDGEAR"] = "Soulbound Gear",
-["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Soulbound"..FONT_COLOR_CODE_CLOSE.." to you, even items your class cannot wear. This is a safeguard rule meant to protect you from accidentally vendoring your valuables. Take care when disabling this rule, but you will likely need to in order to take advantage of many Sell Rules.",
+["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Soulbound"..FONT_COLOR_CODE_CLOSE.." to you even items your class cannot wear. This is a safeguard rule meant to protect you from accidentally vendoring your valuables. In order to fully take advantage of many of the Sell Rules, you will need to disable this rule but think carefully before you do.",
 ["SYSRULE_KEEP_COMMON"] = "Common Items",
 ["SYSRULE_KEEP_COMMON_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[1].hex.."Common"..FONT_COLOR_CODE_CLOSE.." quality item. These are typically valuable consumables or crafting materials. This is a safeguard rule meant to protect you from vendoring your consumables and crafting materials.",
 ["SYSRULE_KEEP_UNKNOWNAPPEARANCE"] = "Uncollected Appearances",

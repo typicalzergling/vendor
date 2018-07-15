@@ -1,5 +1,10 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
+    <!-- 
+        Vendor.OptionsPanel.Template
+            Base optional panel template, this includes the title and help text, along with a version
+            anchored to the lower right
+    -->
     <Frame name="Vendor.OptionsPanel.Template" virtual="true">
         <Layers>
             <Layer level="BACKGROUND">
@@ -30,6 +35,11 @@
         </Layers>
     </Frame>
 
+    <!-- 
+        Vendor.Options.SliderTemplate
+            Template used for a slider (value contained to range) this contains the label, instructional text, 
+            slider which includes max/min and value text
+    -->
     <Frame name="Vendor.Options.SliderTemplate" virtual="true">
         <Layers>
             <Layer level="ARTWORK">
@@ -98,6 +108,10 @@
         </Frames>
     </Frame>
 
+    <!-- 
+        Vendor.Options.CheckTemplate    
+            Standard toggle option template, includes checkbox, label and instructional text
+    -->
     <Frame name="Vendor.Options.CheckTemplate" virtual="true">
         <Layers>
             <Layer level="ARTWORK">
@@ -136,7 +150,91 @@
         </Frames>
     </Frame>
 
-    <Frame name="VendorSellConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
+    <!-- 
+        Vendor.Options.SmallCheckTemplate.WithText
+            This template is a smaller version of the check template, which contains both a label
+            and also the description text. are rendered in the normal font color to indicate 
+            that it's a secondary option.
+    -->
+    <Frame name="Vendor.Options.SmallCheckTemplate.WithText" virtual="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Label" inherits="GameFontHighlight" justifyH="LEFT" JustifyV="CENTER">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="20" y="0"/>>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="-16" relativePoint="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"  x="20" y="-20"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <CheckButton parentKey="State" inherits="OptionsBaseCheckButtonTemplate">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="0" y="0"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Vendor.ConfigPanel.OnCheckboxChange(self)</OnClick>
+                    <OnEnable>
+                        self:GetParent().Label:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                        self:GetParent().Text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+                    </OnEnable>
+                    <OnDisable>
+                        self:GetParent().Label:SetTextColor(DISABLED_FONT_COLOR.r, DISABLED_FONT_COLOR.g, DISABLED_FONT_COLOR.b)
+                        self:GetParent().Text:SetTextColor(DISABLED_FONT_COLOR.r, DISABLED_FONT_COLOR.g, DISABLED_FONT_COLOR.b)
+                    </OnDisable>
+                </Scripts>
+            </CheckButton>
+        </Frames>
+    </Frame>
+
+    <!-- 
+        Vendor.Options.SmallCheckTemplate
+            This template is a smaller version of the check template, which contains only a label in the 
+            normal font color. We use this for secondary options which don't need additional display text
+    -->
+    <Frame name="Vendor.Options.SmallCheckTemplate" virtual="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Label" inherits="GameFontHighlight" justifyH="LEFT" JustifyV="CENTER">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="20" y="0"/>>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="-16"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <CheckButton parentKey="State" inherits="OptionsBaseCheckButtonTemplate">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="0" y="0"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Vendor.ConfigPanel.OnCheckboxChange(self)</OnClick>
+                    <OnEnable>
+                        self:GetParent().Label:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                    </OnEnable>
+                    <OnDisable>
+                        self:GetParent().Label:SetTextColor(DISABLED_FONT_COLOR.r, DISABLED_FONT_COLOR.g, DISABLED_FONT_COLOR.b)
+                    </OnDisable>
+                </Scripts>
+            </CheckButton>
+        </Frames>
+    </Frame>
+
+    <!-- 
+        VendorGeneralConfigPanel
+            This is the main config panel for vendor, this contains the options that most likely
+            will need to be changed.
+    -->
+    <Frame name="VendorGeneralConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
             <Frame name="$parent.AutoSell" parentKey="AutoSell" inherits="Vendor.Options.CheckTemplate">
                 <Size x="250" y="54"/>
@@ -145,14 +243,28 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
+            <Frame name="$parent.Tooltip" parentKey="Tooltip" inherits="Vendor.Options.CheckTemplate">
+                <Size x="250" y="54"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>
+            <Frame parentKey="TooltipRule" inherits="Vendor.Options.SmallCheckTemplate">
+                <Size x="250" y="54"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="32" y="0"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>
             <Button name="$parent.OpenRulesDialog" parentKey="OpenRules" inherits="UIPanelButtonTemplate">
                 <Size x="172" y="28"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="0" y="-48"/>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="0" y="-64"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Vendor.ConfigPanel.Sell.OnOpenRules()
+                        Addon.ConfigPanel.General.OnOpenRules()
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
@@ -164,7 +276,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Vendor.OpenKeybindings_Cmd()
+                        Addon.ConfigPanel.General.OnOpenBindings() 
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
@@ -173,12 +285,16 @@
         <Scripts>
             <OnLoad>
                 Vendor.ConfigPanel.SetVersionInfo(self)
-                Vendor.ConfigPanel.Sell.Init(self)
+                Vendor.ConfigPanel.General.Init(self)
                 Vendor.ConfigPanel.InitMainPanel(self)
             </OnLoad>
         </Scripts>
     </Frame>
->
+
+    <!-- 
+        VendorRepairConfigPanel
+            Panel which contains options for repair.
+    -->
     <Frame name="VendorRepairConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
             <Frame name="$parent.AutoRepair" parentKey="AutoRepair" inherits="Vendor.Options.CheckTemplate">
@@ -188,10 +304,10 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
-            <Frame name="$parent.GuildRepair" parentKey="GuildRepair" inherits="Vendor.Options.CheckTemplate">
-                <Size x="250" y="54"/>
+            <Frame name="$parent.GuildRepair" parentKey="GuildRepair" inherits="Vendor.Options.SmallCheckTemplate.WithText">
+                <Size x="250" y="48"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.AutoRepair" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.AutoRepair" relativePoint="BOTTOMLEFT" x="32" y="0"/>
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
@@ -205,6 +321,10 @@
         </Scripts>
     </Frame>
 
+    <!-- 
+        VendorPerfConfigPanel
+            Contains the settings which affect the resources / performance 
+    -->
     <Frame name="VendorPerfConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
             <Frame name="$parent.SellThrottle" parentKey="SellThrottle" inherits="Vendor.Options.SliderTemplate">
@@ -232,6 +352,11 @@
     </Frame>
 
     <!--@do-not-package@-->
+    <!-- 
+        VendorDebugConfigPanel
+            The debugging options for vendor, on used by active developers not available to 
+            release versions
+    -->    
     <Frame name="VendorDebugConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
             <Frame name="$parent.Debug" parentKey="Debug" inherits="Vendor.Options.CheckTemplate">

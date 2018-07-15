@@ -15,3 +15,6 @@ Addon.c_RuleType_Keep = "Keep"
 -- Config Constants
 Addon.c_ConfigSellNever = "sell_never"
 Addon.c_ConfigSellAlways = "sell_always"
+Addon.c_Config_AutoSell = "autosell"
+Addon.c_Config_Tooltip = "tooltip_basic"
+Addon.c_Config_Tooltip_Rule = "tooltip_addrule"
