@@ -100,9 +100,7 @@ function Addon:AddItemTooltipLines(tooltip, link)
 end
 
 --@do-not-package@
-
 function Addon:DumpItemPropertiesFromTooltip()
     Addon:DumpTooltipItemProperties()
 end
-
 --@end-do-not-package@

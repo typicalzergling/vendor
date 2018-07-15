@@ -54,6 +54,7 @@ function Addon:IsDebugRules()
     end
     return debugRulesEnabled
 end
+
 --@end-do-not-package@
 
 -- Debug print. On a release build this does nothing.
@@ -75,7 +76,6 @@ end
 
 --@do-not-package@
 -- Beyond this point are debug related functions that are not packaged.
-
 function Addon:DumpTooltipItemProperties()
     local props = self:GetItemProperties(GameTooltip)
     self:Print("Properties for "..props["Link"])

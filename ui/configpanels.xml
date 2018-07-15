@@ -231,6 +231,7 @@
         </Scripts>
     </Frame>
 
+    <!--@do-not-package@-->
     <Frame name="VendorDebugConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
             <Frame name="$parent.Debug" parentKey="Debug" inherits="Vendor.Options.CheckTemplate">
@@ -256,5 +257,6 @@
             </OnLoad>
         </Scripts>
     </Frame>
+    <!--@end-do-not-package@-->
 
 </Ui>

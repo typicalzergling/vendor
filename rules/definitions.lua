@@ -234,7 +234,7 @@ end
 -- Creates an instance of the rule from the specified definition
 --*****************************************************************************
 local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
-    return {
+    local rule = {
                 RawId = ruleId,
                 Id = makeRuleId(ruleType, ruleId, insets),
                 Name =  ruleDef.Name,
@@ -245,6 +245,12 @@ local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
                 Type = ruleType,
                 Order = ruleDef.Order,
             }
+
+    if (not ruleDef.Locked) then
+        rule.Order = nil
+    end
+    
+    return rule
 end
 
 --*****************************************************************************
