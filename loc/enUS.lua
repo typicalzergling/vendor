@@ -20,6 +20,7 @@ AddonLocales["enUS"] =
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
 ["MERCHANT_SELLING_ITEM"] = "Selling %s for %s",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
+["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
 
 -- Tooltip
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
