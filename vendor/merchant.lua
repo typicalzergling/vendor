@@ -134,6 +134,14 @@ function Addon:AutoSell()
     self:AddThread(thread, threadName)
 end
 
+-- Confirms the popup if an item will be non-tradeable when sold, but only when we are auto-selling it.
+function Addon:AutoConfirmSellTradeRemoval(link)
+    if self:IsAutoSelling() then
+        self:Print(L["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"], link)
+        SellCursorItem()
+    end
+end
+
 -- Convert price to a pretty string
 -- To reduce spam we don't show copper unless it is the only unit of measurement (i.e. < 1 silver)
 -- Gold:    FFFFFF00
