@@ -3,9 +3,10 @@ local Addon, L, Config = _G[select(1,...).."_GET"]()
 local SETTING_AUTOSELL = Addon.c_Config_AutoSell
 local SETTING_TOOLTIP = Addon.c_Config_Tooltip
 local SETTING_TOOLTIP_RULE = Addon.c_Config_Tooltip_Rule
-local SETTING_MAX_ITEMS_TO_SELL = "max_items_to_sell";
-local MAX_ITEMS_TO_SELL = 144;
-local MIN_ITEMS_TO_SELL = 1;
+local SETTING_MAX_ITEMS_TO_SELL = Addon.c_Config_MaxSellItems
+local SETTING_SELL_LIMIT = Addon.c_Config_SellLimit
+local MAX_ITEMS_TO_SELL = 144
+local MIN_ITEMS_TO_SELL = 1
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
 Addon.ConfigPanel.General = {

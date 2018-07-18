@@ -27,6 +27,8 @@ AddonLocales["enUS"] =
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
 ["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be auto-sold by Vendor",
+["TOOLTIP_RULEMATCH_SELL"] = "Sell: %s",
+["TOOLTIP_RULEMATCH_KEEP"] = "Keep: %s",
 
 -- Options
 ["OPTIONS_TITLE_ADDON"] = "These settings are for configuring Vendor behavior.\n\n",
@@ -49,10 +51,10 @@ AddonLocales["enUS"] =
 ["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
 ["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
 ["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
-["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose have the tooltip also include the rule which will cause the item to be sold or kept",
-["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Enable rule information",
-["OPTIONS_SETTINGNAME_MAXITEMS"] = "Maximum items to sell",
-["OPTIONS_SETTINGDESC_MAXITEMS"] = "Controls the maximum number items vendor will auto-sell at a time, in order to be able to buy back any items which were sold incorrectly this be less than 12.",
+["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose to include the rule that causes the item to be sold or kept.",
+["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Extra rule information",
+["OPTIONS_SETTINGNAME_MAXITEMS"] = "Limit number of items to sell",
+["OPTIONS_SETTINGDESC_MAXITEMS"] = "Controls the maximum number items vendor will auto-sell at each visit. If you want to be able to buy-back all items sold, set this to 12.",
 
 
 -- Performance Settings tab
@@ -95,7 +97,6 @@ AddonLocales["enUS"] =
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
 -- Rules
-["RULEMATCH_TOOLTIP"] = "Rule: %s",
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
 ["CONFIG_DIALOG_CAPTION"] = "Vendor Rules",
 ["CONFIG_DIALOG_KEEPRULES_TAB"] = "Keep Rules",
