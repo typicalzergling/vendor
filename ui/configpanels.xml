@@ -264,7 +264,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Addon.ConfigPanel.General.OnOpenRules()
+                        Vendor.ConfigPanel.General.OnOpenRules()
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
@@ -276,7 +276,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Addon.ConfigPanel.General.OnOpenBindings() 
+                        Vendor.ConfigPanel.General.OnOpenBindings()
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
