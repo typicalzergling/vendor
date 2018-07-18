@@ -35,6 +35,25 @@ function Addon.ConfigPanel.OnSliderValueChange(self)
 end
 
 --*****************************************************************************
+-- Handles the enabling/disabing of a slider template, we change the text 
+-- color of all parts of template so it looks disabled. We hide some
+-- parts of UX which aren't interesting if it's disabled.
+--*****************************************************************************
+function Addon.ConfigPanel.SetSliderEnable(slider, enabled)
+    if (enabled) then
+        slider.Label:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+        slider.Text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+        slider.DisplayValue:Show();
+        slider.Value:Enable();
+    else
+        slider.Value:Disable();
+        slider.DisplayValue:Hide();
+        slider.Label:SetTextColor(DISABLED_FONT_COLOR.r, DISABLED_FONT_COLOR.g, DISABLED_FONT_COLOR.b);
+        slider.Text:SetTextColor(DISABLED_FONT_COLOR.r, DISABLED_FONT_COLOR.g, DISABLED_FONT_COLOR.b);
+    end
+end
+
+--*****************************************************************************
 -- Handles the initialization of the main configruation panel
 --*****************************************************************************
 function Addon.ConfigPanel.InitMainPanel(self)
