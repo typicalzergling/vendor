@@ -21,7 +21,7 @@ end
 Addon.DefaultConfig.Settings =
 {
     -- Current version of the settings config
-    version = 1,
+    version = 2,
 
     -- Default values of our settings
     throttle_time = 0.15,
@@ -31,6 +31,8 @@ Addon.DefaultConfig.Settings =
     sell_throttle = 1,
     sell_never = {},
     sell_always = {},
+    tooltip_basic = true,
+    max_items_to_sell = 12,
 }
 
 --*****************************************************************************
@@ -47,6 +49,7 @@ Addon.DefaultConfig.Rules =
     -- The default rules to enable which cause items to be kept
     keep = {
         "legendaryandup",
+        "equipmentset",
         "soulboundgear",
         "unknownappearance",
     },
@@ -72,6 +75,8 @@ Addon.DefaultConfig.Rules =
 
 local NEVER_SELL = Addon.c_ConfigSellNever
 local ALWAYS_SELL = Addon.c_ConfigSellAlways
+local KEEP_RULES = "keep";
+local SELL_RULES = "sell";
 
 --*****************************************************************************
 -- Create a new config object which provides access to our configuration
@@ -321,6 +326,25 @@ end
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
 function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
+    Addon:Debug("[Config]: +Begin migrating rules from v=%d to v=%d", oldSettings.version, newSettings.version)
+
+    if (oldSettings.version == 3) and (newSettings.version == 4) then
+
+        if (rawget(oldSettings, KEEP_RULES)) then
+            Addon:Debug("[Config]: |         Copying keep rules with with %d items", #rawget(oldSettings, KEEP_RULES))
+            rawset(newSettings, KEEP_RULES, rawget(oldSettings, KEEP_RULES))
+            Addon:Debug("[Config]: |         adding equipmentset keep rule");
+            table.insert(rawget(newSettings, KEEP_RULES), "equipmentset");
+        end
+
+        if (rawget(oldSettings, SELL_RULES)) then
+            Addon:Debug("[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
+            rawset(newSettings, SELL_RULES, rawget(oldSettings, SELL_RULES))
+        end
+
+    end
+
+    Addon:Debug("[Config] +Rules migration complete");
 end
 
 --*****************************************************************************
