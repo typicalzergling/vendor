@@ -62,8 +62,6 @@ Addon.DefaultConfig.Rules =
         "oldfood",
         "artifactpower",
         "knowntoys",
-        { rule = "uncommongear", itemlevel = 190 }, -- green gear < ilvl
-        { rule = "raregear", itemlevel = 190 }, -- blue gear < ilvl
     },
 
     -- Custom rules provied by the user
