@@ -1,4 +1,4 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local Addon, L, Config = _G[select(1,...).."_GET"]()
 
 Addon.RuleManager = {}
 
@@ -20,23 +20,31 @@ Addon.RuleResult =
     PROMPT = 3,
 }
 
+local RULE_PARAMS_KEY = "RULE_PARAMS";
+
+local function assertImplies(a, b, m) if (a) then assert(b, m); end end 
+
 --*****************************************************************************
 -- Create a new rule object which handles keeping track of the rule it
 -- has two properties an ID and compiled chunk of script.
 --*****************************************************************************
 Addon.RuleManager.Rule = {}
-function Addon.RuleManager.Rule:Create(ruleType, ruleId, ruleScript)
+function Addon.RuleManager.Rule:Create(ruleType, ruleId, ruleScript, params)
+    --@debug@
     assert(type(ruleType) == "number", "The rule type must be one of our constants")
     assert(ruleId ~= nil and string.len(ruleId) ~= 0, "all rules must have a valid identifier")
-    assert(ruleScript ~= nil and string.len(ruleId) ~= 0, "all rules must have a valid script")
+    assert(ruleScript ~= nil and (type(ruleScript) == "function" or type(ruleScript) == "string"), "all rules must have a valid script")
+    assertImplies(ruleType == RULE_TYPE_CUSTOM, type(ruleScript) == "string", "Custom rules cannot provide a function")
+    --@end-debug@
 
     instance = {
         Type = ruleType,
         Id = string.lower(ruleId),
         Script = nil,
         Order = 0,
+        Params = nil,
     }
-    
+        
     -- We also need to wrap the rule script text in return. 
     if (type(ruleScript) == "function") then
         instance.Script = ruleScript
@@ -44,14 +52,27 @@ function Addon.RuleManager.Rule:Create(ruleType, ruleId, ruleScript)
         local script, _,  msg = loadstring(string.format("return (%s)", ruleScript))
         if (not script) then
             Addon:DebugRules("Failed to create script for '%s'  {%s} :: ", ruleId, ruleScript, msg)
+            return nil, msg;
         else
             instance.Script = script
         end
     end
+
+    -- If we got parameters, use them, otherwise lets make
+    -- one which just includes the rule id.
+    if (params == nil) then
+        params = { rule = ruleId };
+    end
+    if ((params ~= nil) and (type(params) == "table")) then
+        self.Params = {};
+        for name, value in pairs(params) do
+            rawset(self.Params, string.upper(name), value);
+        end
+    end
     
-    setmetatable(instance, self)
-    self.__index = self 
-    return instance
+    setmetatable(instance, self);
+    self.__index = self;
+    return instance, nil;
 end
 
 --*****************************************************************************
@@ -60,8 +81,11 @@ end
 --*****************************************************************************
 function Addon.RuleManager.Rule:Run(environment)
     if self.Script then
+
+        rawset(environment, RULE_PARAMS_KEY, self.Params);
         setfenv(self.Script, environment)
         local status, result = pcall(self.Script)
+        rawset(environment, RULE_PARAMS_KEY, nil);
         
         if status then
             if (type(result) == "number") and (result >= Addon.RuleResult.NONE) and (result <= Addon.RuleResult.PROMPT) then
@@ -197,11 +221,21 @@ end
 --*****************************************************************************
 -- Adds a rule with the specified id and the script. 
 --*****************************************************************************
-function Addon.RuleManager:AddRule(ruleId,  ruleScript)
-    assert(type(ruleId) == "string", "rule name must be a string")
-    assert(type(ruleScript) == "string", "rule script must be a string")
-    table.insert(self.rules[RULE_TYPE_CUSTOM], self.Rule:Create(RULE_TYPE_CUSTOM, ruleId, ruleScript))
-    Addon:DebugRules("Added rule '%s'", ruleId)
+function Addon.RuleManager:AddRule(id,  script, parameters)
+    --@debug@
+    assert(type(id) == "string", "rule name must be a string")
+    assert(type(script) == "string", "rule script must be a string")
+    assertImplies(parameters, type(parameters) == "table", "rule parameters must be a string");
+    --@debug-end@
+
+    local rule, msg = self.Rule:Create(RULE_TYPE_CUSTOM, id, script, parameters);
+    if (not rule) then
+        return false, msg
+    end
+
+    table.insert(self.rules[RULE_TYPE_CUSTOM], rule);
+    Addon:DebugRules("Added rule '%s'", id);
+    return true;
 end
 
 --*****************************************************************************
@@ -243,7 +277,7 @@ function Addon.RuleManager:Run(targetObject, ...)
 
     -- Create the environment we want to run the rules against.  Then update the environment of 
     -- all the functions we've got in our local environment
-    --   Rules - Can see in this order, Our enviornment, the object accessors, and imported globals.
+    --   Rules - Can see in this order, Our environment, the object accessors, and imported globals.
     --   Function -- Can see in this order, the object accessors and the globals
     local ruleEnv = self:CreateRestrictedEnvironment(self.environment, self:CreateRestrictedEnvironment(accessors, self.globals))
     local functionEnv = self:CreateRestrictedEnvironment(accessors, _G) 
@@ -273,13 +307,13 @@ function Addon.RuleManager:CreateRestrictedEnvironment(environment, chainTo)
     instance = {}
     setmetatable(instance, 
         { 
-        __index = function(self, key)
-            local value = environment[key]
-            if (value == nil) and (chainTo ~= nil) then
-                value = chainTo[key]
+            __index = function(self, key)
+                local value = environment[key];
+                if (value == nil) and (chainTo ~= nil) then
+                    value = chainTo[key];
+                end
+                return value
             end
-            return value
-        end
         })
         
     return instance
@@ -317,17 +351,17 @@ function Addon.RuleManager:AddSystemRule(ruleType, ruleId, insets, ruleDef)
     if (systemRuleDef.Locked) then
         ruleTable = self.rules[RULE_TYPE_LOCKED]
         if (ruleType == Addon.c_RuleType_Keep) then
-            rule = self.Rule:Create(RULE_TYPE_KEEP, systemRuleDef.Id, systemRuleDef.Script)
+            rule = self.Rule:Create(RULE_TYPE_KEEP, systemRuleDef.Id, systemRuleDef.Script, insets)
         else
             assert(ruleType == Addon.c_RuleType_Sell, "Locked rules can only be Sell/Keep (" .. ruleType .. ")")
-            rule = self.Rule:Create(RULE_TYPE_SELL, systemRuleDef.Id, systemRuleDef.Script)
+            rule = self.Rule:Create(RULE_TYPE_SELL, systemRuleDef.Id, systemRuleDef.Script, insets)
         end
     elseif (ruleType == Addon.c_RuleType_Sell) then
         ruleTable = self.rules[RULE_TYPE_SELL] 
-        rule = self.Rule:Create(RULE_TYPE_SELL, systemRuleDef.Id, systemRuleDef.Script)
+        rule = self.Rule:Create(RULE_TYPE_SELL, systemRuleDef.Id, systemRuleDef.Script, insets)
     elseif (ruleType == Addon.c_RuleType_Keep) then
         ruleTable = self.rules[RULE_TYPE_KEEP] 
-        rule = self.Rule:Create(RULE_TYPE_KEEP, systemRuleDef.Id, systemRuleDef.Script)
+        rule = self.Rule:Create(RULE_TYPE_KEEP, systemRuleDef.Id, systemRuleDef.Script, insets)
     end    
 
     if (rule and ruleTable) then
@@ -339,6 +373,10 @@ function Addon.RuleManager:AddSystemRule(ruleType, ruleId, insets, ruleDef)
                 rule.Order = #ruleTable
             end
         end
+       
+        --@debug@
+        assert(rule ~= nil, "We should never fail to create a system rule");
+        --@debug-end@
         
         Addon:DebugRules("Adding system rule '%s'  [type='%d', order=%d]", rule.Id, rule.Type, rule.Order)
         rule.Name = systemRuleDef.Name
@@ -402,24 +440,27 @@ function Addon.RuleManager:UpdateConfig(configTable)
     end
 end
 
-function Addon:GetMatchesForRule(ruleId, ruleScript)
+function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
     Addon:Debug("Evaluating '%s' against bags (no-cache)", ruleId);
     local ruleManager = Addon.RuleManager:Create(Addon.RuleFunctions);
     local results = {}
 
-    ruleManager:AddRule(ruleId, ruleScript);
-    for bag=0,NUM_BAG_SLOTS do
-        for slot=1, GetContainerNumSlots(bag) do
-            local item = Addon:GetItemPropertiesFromBag(bag, slot);
-            if (item) then
-                local action = ruleManager:Run(item, ruleId);
-                if ((action == Addon.RULE_ACTION_SELL) or (action == Addon.RULE_ACTION_PROMPT)) then
-                    table.insert(results, item.Link);
-                end
-            end                
+    local result, message = ruleManager:AddRule(ruleId, ruleScript, parameters);
+    if (result) then
+        for bag=0,NUM_BAG_SLOTS do
+            for slot=1, GetContainerNumSlots(bag) do
+                local item = Addon:GetItemPropertiesFromBag(bag, slot);
+                if (item) then
+                    local action = ruleManager:Run(item, ruleId);
+                    if ((action == Addon.RULE_ACTION_SELL) or (action == Addon.RULE_ACTION_PROMPT)) then
+                        table.insert(results, item.Link);
+                    end
+                end                
+            end
         end
+    else
+        Addon:Debug("The rule '%s' failed to parse: %s", ruleId, message);
     end
-
     Addon:Debug("Complete evaluation of rule '%s' with %d matches", ruleId, #results);
     return results;
 end

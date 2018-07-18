@@ -77,7 +77,10 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_SELL_EPICGEAR"],
             Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
-            Script = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
+            ScriptText = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
+            Script = function()
+                    return IsEquipment() and IsSoulbound() and (Quality() == 4) and (Level() < RULE_PARAMS.ITEMLEVEL);
+                end,
             InsetsNeeded = { "itemlevel" },
             Order = 1600,
         },

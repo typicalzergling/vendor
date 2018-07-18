@@ -347,7 +347,9 @@ Addon.EditRuleDialog =
 
     UpdateMatches = function(self)
         local links = {}
-        local matches = Addon:GetMatchesForRule(string.format("cr%s%d", UnitName("player"), time()), "IsInEquipmentSet('AoE Trinkets')");        
+        local player, realm = UnitFullName("player");
+        local params = { itemlevel = 220, };
+        local matches = Addon:GetMatchesForRule(string.format("cr.%s.%s.%d", player, realm, time()), "Level() > RULE_PARAMS.ITEMLEVEL", params);
         for _, link in ipairs(matches) do
             table.insert(links, "<p>" .. link .. "</p>");
         end

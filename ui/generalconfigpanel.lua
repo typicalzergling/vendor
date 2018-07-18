@@ -4,8 +4,8 @@ local SETTING_AUTOSELL = Addon.c_Config_AutoSell
 local SETTING_TOOLTIP = Addon.c_Config_Tooltip
 local SETTING_TOOLTIP_RULE = Addon.c_Config_Tooltip_Rule
 local SETTING_MAX_ITEMS_TO_SELL = "max_items_to_sell";
-local MAX_ITEMS_TO_SELL = 144;
-local MIN_ITEMS_TO_SELL = 1;
+local MAX_ITEMS_TO_SELL_ENABLED = 12;
+local MIN_ITEMS_TO_SELL_DISABLED = 0;
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
 Addon.ConfigPanel.General = {
@@ -56,13 +56,8 @@ Addon.ConfigPanel.General = {
         Addon:Debug("Setting sell panel config")
         self.AutoSell.State:SetChecked(not not Config:GetValue(SETTING_AUTOSELL))
         self.Tooltip.State:SetChecked(not not Config:GetValue(SETTING_TOOLTIP))
-        self.TooltipRule.State:SetChecked(not not Config:GetValue(SETTING_TOOLTIP_RULE))
+        self.TooltipRule.State:SetChecked(not not Config:GetValue(SETTING_TOOLTIP_RULE));
 
-        local maxItems = math.max(MIN_ITEMS_TO_SELL, math.min(MAX_ITEMS_TO_SELL, Config:GetValue(SETTING_MAX_ITEMS_TO_SELL) or 0))
-        self.maxItems.Value:SetValue(maxItems)
-        self.maxItems.DisplayValue:SetFormattedText("%0d", maxItems)
-
-        Addon.ConfigPanel.SetSliderEnable(self.maxItems, self.AutoSell.State:GetChecked()); 
         Addon.ConfigPanel.General.updateTooltipRule(self, self.Tooltip.State:GetChecked())        
     end,
 

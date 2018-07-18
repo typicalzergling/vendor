@@ -51,8 +51,7 @@ AddonLocales["enUS"] =
 ["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
 ["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose have the tooltip also include the rule which will cause the item to be sold or kept",
 ["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Enable rule information",
-["OPTIONS_SETTINGNAME_MAXITEMS"] = "Maximum items to sell",
-["OPTIONS_SETTINGDESC_MAXITEMS"] = "Controls the maximum number items vendor will auto-sell at a time, in order to be able to buy back any items which were sold incorrectly this be less than 12.",
+["OPTIONS_SETTINGNAME_MAXITEMS"] = "Limit Auto-Sell to buyback",
 
 
 -- Performance Settings tab
