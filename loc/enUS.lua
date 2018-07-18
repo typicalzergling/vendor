@@ -40,7 +40,7 @@ AddonLocales["enUS"] =
 ["OPTIONS_DESC_REPAIR"] = "Whether to auto-repair, and how to pay for it.\n",
 ["OPTIONS_SETTINGNAME_AUTOREPAIR"] = "Auto-Repair",
 ["OPTIONS_SETTINGDESC_AUTOREPAIR"] = "Automatically repair when visiting a repair-capable vendor.",
-["OPTIONS_SETTINGNAME_GUILDREPAIR"] = "Use Guild Bank for Repairs",
+["OPTIONS_SETTINGNAME_GUILDREPAIR"] = "Use Guild Bank",
 ["OPTIONS_SETTINGDESC_GUILDREPAIR"] = "Uses guild bank for repairs if possible.",
 
 -- Main Config Panel (aka Selling)
@@ -48,11 +48,14 @@ AddonLocales["enUS"] =
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Keep rules are always processed first, then Sell rules run on items that remain. By default we have several safeguard Keep rules enabled so you don't accidentally sell something you want. Before disabling any Keep rules, you should definitely take a look at the sell rules that are enabled first.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
 ["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.",
+["OPTIONS_SETTINGNAME_BUYBACK"] = "Limit number sold to 12",
+["OPTIONS_SETTINGDESC_BUYBACK"] = "Limits the number of items sold each time you interact with the merchant to 12, which is the buyback limit. This allows you to always buy back any items that were sold.",
 ["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
 ["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
 ["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
-["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose to include the rule that causes the item to be sold or kept.",
-["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Extra rule information",
+["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating when the item will be sold. ",
+["OPTIONS_SETTINGNAME_EXTRARULEINFO"] = "Extra rule information",
+["OPTIONS_SETTINGDESC_EXTRARULEINFO"] = "Include information about the rule that causes the item to be sold or kept. An item may match multiple rules; this will only display the first one that matches.",
 ["OPTIONS_SETTINGNAME_MAXITEMS"] = "Limit number of items to sell",
 ["OPTIONS_SETTINGDESC_MAXITEMS"] = "Controls the maximum number items vendor will auto-sell at each visit. If you want to be able to buy-back all items sold, set this to 12.",
 

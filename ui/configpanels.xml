@@ -318,7 +318,7 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
-            <Frame name="$parent.EnableBuyback" parentKey="enableBuyback" inherits="Vendor.Options.SmallCheckTemplate">
+            <Frame name="$parent.EnableBuyback" parentKey="EnableBuyback" inherits="Vendor.Options.SmallCheckTemplate.WithText">
                 <Size x="250" y="24"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="32" y="0"/>
@@ -334,7 +334,7 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
-            <Frame name="$parent.ToolTipRule" parentKey="TooltipRule" inherits="Vendor.Options.SmallCheckTemplate">
+            <Frame name="$parent.ToolTipRule" parentKey="TooltipRule" inherits="Vendor.Options.SmallCheckTemplate.WithText">
                 <Size x="250" y="24"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="32" y="0"/>
@@ -362,7 +362,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Addon.ConfigPanel.General.OnOpenBindings() 
+                        Vendor.ConfigPanel.General.OnOpenBindings() 
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
@@ -459,8 +459,6 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
-<<<<<<< HEAD
-=======
             <Frame name="$parent.MaxItemsSell" parentKey="maxItems" inherits="Vendor.Options.SliderTemplate">
                 <Size x="10" y="84"/>
                 <Anchors>
@@ -468,7 +466,6 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
->>>>>>> 1b95265... Add the settings/slider for max sell items.
         </Frames>
         <Scripts>
             <OnLoad>

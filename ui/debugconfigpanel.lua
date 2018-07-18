@@ -45,7 +45,7 @@ function Addon.ConfigPanel.Debug.Init(self)
     self.DebugRules.Text:SetText("Toggles debugging mode for rules This will output LOTS of messages to console.")
     self:SetScript("OnShow", 
         function()
-            local enableBuyback = VendorGeneralConfigPanel.enableBuyback;
+            local enableBuyback = VendorGeneralConfigPanel.EnableBuyback;
             Addon.ConfigPanel.SetSliderEnable(self.maxItems, enableBuyback.State:IsEnabled() and enableBuyback.State:GetChecked())
         end);
 
