@@ -27,6 +27,8 @@ AddonLocales["enUS"] =
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
 ["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be auto-sold by Vendor",
+["TOOLTIP_RULEMATCH_SELL"] = "Sell: %s",
+["TOOLTIP_RULEMATCH_KEEP"] = "Keep: %s",
 
 -- Options
 ["OPTIONS_TITLE_ADDON"] = "These settings are for configuring Vendor behavior.\n\n",
@@ -52,7 +54,6 @@ AddonLocales["enUS"] =
 ["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose have the tooltip also include the rule which will cause the item to be sold or kept",
 ["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Enable rule information",
 ["OPTIONS_SETTINGNAME_MAXITEMS"] = "Limit Auto-Sell to buyback",
-
 
 -- Performance Settings tab
 ["OPTIONS_CATEGORY_PERFORMANCE"] = "Performance",
@@ -94,7 +95,6 @@ AddonLocales["enUS"] =
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
 -- Rules
-["RULEMATCH_TOOLTIP"] = "Rule: %s",
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
 ["CONFIG_DIALOG_CAPTION"] = "Vendor Rules",
 ["CONFIG_DIALOG_KEEPRULES_TAB"] = "Keep Rules",
