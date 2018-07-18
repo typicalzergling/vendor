@@ -54,6 +54,7 @@ ui\configpanels.lua
 ui\configpanels.xml
 ui\rulesdialog.lua
 ui\rulesdialog.xml
+ui\editruledialog.xml
 
 #@do-not-package@
 # Debug

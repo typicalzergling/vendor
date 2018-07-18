@@ -75,10 +75,16 @@ function Addon.RuleManager.Rule:Run(environment)
                     if (result) then 
                         return Addon.RULE_ACTION_KEEP 
                     end
+                elseif (self.Type == RULE_TYPE_CUSTOM) then
+                    if (result) then
+                        return Addon.RULE_ACTION_SELL
+                    end
+                else
+                    assert(false, "Unknown rule type :: " .. self.Type)
                 end
             end
         elseif not status then
-            Addon:DebugRules("Failed to invoke rule '%s' : %s%s%s", self.Id, RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
+            Addon:Debug("Failed to invoke rule '%s' : %s%s%s", self.Id, RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
         end
     end
     -- If we get here something went wrong and we should take no-action
@@ -194,7 +200,7 @@ end
 function Addon.RuleManager:AddRule(ruleId,  ruleScript)
     assert(type(ruleId) == "string", "rule name must be a string")
     assert(type(ruleScript) == "string", "rule script must be a string")
-    self.rules[ruleId] = self.Rule:Create(ruleId, ruleScript)
+    table.insert(self.rules[RULE_TYPE_CUSTOM], self.Rule:Create(RULE_TYPE_CUSTOM, ruleId, ruleScript))
     Addon:DebugRules("Added rule '%s'", ruleId)
 end
 
@@ -361,7 +367,7 @@ end
 -- alread have and then adds locked, plus the rules in the table below.
 --*****************************************************************************
 function Addon.RuleManager:UpdateConfig(configTable)
-    Addon:DebugRules("Updating rule maanger config")
+    Addon:DebugRules("Updating rule manager config")
     
     self.rules =
         {
@@ -394,4 +400,26 @@ function Addon.RuleManager:UpdateConfig(configTable)
         if (customRules) then
         end
     end
+end
+
+function Addon:GetMatchesForRule(ruleId, ruleScript)
+    Addon:Debug("Evaluating '%s' against bags (no-cache)", ruleId);
+    local ruleManager = Addon.RuleManager:Create(Addon.RuleFunctions);
+    local results = {}
+
+    ruleManager:AddRule(ruleId, ruleScript);
+    for bag=0,NUM_BAG_SLOTS do
+        for slot=1, GetContainerNumSlots(bag) do
+            local item = Addon:GetItemPropertiesFromBag(bag, slot);
+            if (item) then
+                local action = ruleManager:Run(item, ruleId);
+                if ((action == Addon.RULE_ACTION_SELL) or (action == Addon.RULE_ACTION_PROMPT)) then
+                    table.insert(results, item.Link);
+                end
+            end                
+        end
+    end
+
+    Addon:Debug("Complete evaluation of rule '%s' with %d matches", ruleId, #results);
+    return results;
 end

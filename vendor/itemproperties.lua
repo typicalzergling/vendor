@@ -37,6 +37,44 @@ local Addon, L = _G[select(1,...).."_GET"]()
 --      tooltip, link - we will use the link and the tooltip for scanning
 --      bag, slot       - we will get link from the containerinfo and use the scanning tip for scanning
 
+Addon.ScriptReference = Addon.ScriptReference or {}
+Addon.ScriptReference.ItemProperties =
+{
+    Name = "Item Name",
+    Link = "Item Link",
+    Id = "Item Id",
+    Count = "The number of items in the stack",
+    Quality = 
+    {
+        Html = "<p>The quality of the item:<br/>" ..
+                 "<br/>0=Poor<br/>1=Common<br/>2=Uncommon<br/>3=Rare<br/>4=Epic<br/>5=Legendary<br/>6=Artifact<br/>7=Heirloom</p>",
+    },
+    Level = "The item level",
+    Type = "The type of the item",
+    TypeId ="The type identifier of the item",
+    SubType = "The subtype of the item",
+    SubTypeId = "The subtype id of the item",
+    EquipLoc = "The equiploc of the item",
+    BindType = "The bind type of the item",
+    StackSize = "The stack size of the item",
+    UnitValue = "Value of a single item",
+    NetValue = "???",
+    ExpansionPackId  =
+    {
+        Html = "<p>The expansion pack the item belongs to: 6=Legion</p>" ..
+                "<h2>Notes:</h2>" ..
+                "<p>everything else appears to be 0, including some legion things (Dalaran Hearthstone)</p>"
+    },
+    IsEquipment = "isequ docs",
+    IsSoulbound = "issoul docs",
+    IsBindOnEquip = "isbonddosc",
+    IsBindOnUse = "isbindonusedocs",
+    IsArtifactPower = "isapdocs",
+    IsUnknownAppearance = "isdocs",
+    IsToy = "is toy docs",
+    IsAlreadyKnown  = "isalreadyknown docs",
+}
+
 function Addon:GetItemProperties(arg1, arg2)
     local item = {}
     local tooltip = nil

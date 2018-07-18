@@ -1,0 +1,520 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="editruledialog.lua"/>
+
+    <Frame name="Vendor.RulesUI.Tab.Template" inherits="OptionsFrameTabButtonTemplate" virtual="true" parentArray="Tabs"/>
+    <Texture name="Vendor.RulesUI.TabSpacer.Template" virtual="true" parentArray="Spacers"/>
+
+   	<Frame name="Vendor.RulesUI.TabContainer" virtual="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentTopLeft" file="Interface\Tooltips\UI-Tooltip-Border" parentArray="border">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                    <TexCoords left="0.5" right="0.625" top="0" bottom="1"/>
+				</Texture>
+                <Texture name="$parentBottomLeft" file="Interface\Tooltips\UI-Tooltip-Border" parentArray="border">
+                    <Size  x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT"/>
+                    </Anchors>
+                    <TexCoords left="0.75" right="0.875" top="0" bottom="1"/>
+                </Texture>
+                <Texture name="$parentBottomRight" file="Interface\Tooltips\UI-Tooltip-Border" parentArray="border">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0.875" right="1" top="0" bottom="1"/>
+                </Texture>
+                <Texture name="$parentTopRight" file="Interface\Tooltips\UI-Tooltip-Border" parentArray="border">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0.625" right="0.75" top="0" bottom="1"/>
+                </Texture>
+                <Texture name="$parentLeft" file="Interface\Tooltips\UI-Tooltip-Border" parentArray="border">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTopLeft" relativePoint="BOTTOMLEFT"/>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomLeft" relativePoint="TOPRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.125" top="0" bottom="1"/>
+                </Texture>
+                <Texture name="$parentRight" file="Interface\Tooltips\UI-Tooltip-Border" parentArray="border">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTopRight" relativePoint="BOTTOMLEFT"/>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRight" relativePoint="TOPRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0.125" right="0.25" top="0" bottom="1"/>
+                </Texture>
+                <Texture name="$parentBottom" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" parentArray="border">
+                    <Size>
+                        <AbsDimension x="0" y="16"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeft" relativePoint="BOTTOMRIGHT" x="0" y="-2"/>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRight" relativePoint="BOTTOMLEFT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+        	<OnLoad>for _, t in ipairs(self.border) do t:SetVertexColor(0.8, 0.8, 0.8, 0.50) end</OnLoad>
+        </Scripts>
+   	</Frame>
+
+   	<EditBox name="Vendor.EditRules.Edit.Template" autoFocus="false" inherits="InsetFrameTemplate3" virtual="true">
+		<KeyValues>
+			<KeyValue key="normalColor" value="HIGHLIGHT_FONT_COLOR" type="global"/>
+			<KeyValue key="disabledColor" value="DISABLED_FONT_COLOR" type="global"/>
+		</KeyValues>
+   		<Layers>
+   			<Layer level="BACKGROUND">
+				<FontString parentKey="helpText" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+					<Color r="0.6" g="0.6" b="0.6" a="0.6"/>
+					<Anchors>
+						<Anchor point="LEFT" x="12" y="0"/>
+						<Anchor point="RIGHT" x="-12" y="0"/>
+					</Anchors>
+				</FontString>
+   			</Layer>
+   			<Layer level="ARTWORK">
+				<FontString  parentKey="label" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size x="1" y="14"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="2"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="2"/>
+					</Anchors>
+				</FontString>
+   			</Layer>
+   		</Layers>
+		<Scripts>
+			<OnEscapePressed function="EditBox_ClearFocus"/>
+			<OnEditFocusLost function="EditBox_ClearHighlight"/>
+			<OnEditFocusGained function="EditBox_HighlightText"/>
+			<OnEnable>Vendor.EditRuleDialog.OnEditEnable(self)</OnEnable>
+			<OnDisable>Vendor.EditRuleDialog.OnEditDisable(self)</OnDisable>
+			<OnLoad>Vendor.EditRuleDialog.OnEditLoad(self);</OnLoad>
+		</Scripts>
+		<FontString inherits="ChatFontNormal"/>
+		<TextInsets>
+			<AbsInset left="8" right="8" top="2" bottom="2"/>
+		</TextInsets>
+   	</EditBox>
+
+   	<ScrollFrame name="Vendor.EditRules.ScrollingEdit.Template" autoFocus="false" virtual="true" inherits="InsetFrameTemplate3,UIPanelScrollFrameTemplate">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="scrollbarBack">
+					<Color r="0" g="0" b="0" a="0.50"/>
+				</Texture>
+				<FontString parentKey="helpText" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+					<Color r="0.6" g="0.6" b="0.6" a="0.6"/>
+					<Anchors>
+						<Anchor point="LEFT" x="12" y="0"/>
+						<Anchor point="RIGHT" x="-12" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+   			<Layer level="ARTWORK">
+				<FontString  parentKey="label" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size x="1" y="14"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="2"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="2"/>
+					</Anchors>
+				</FontString>
+   			</Layer>
+		</Layers>
+		<ScrollChild>
+			<EditBox parentKey="content" multiLine="true" autoFocus="false">
+				<KeyValues>
+					<KeyValue key="normalColor" value="HIGHLIGHT_FONT_COLOR" type="global"/>
+					<KeyValue key="disabledColor" value="DISABLED_FONT_COLOR" type="global"/>
+				</KeyValues>
+				<Size x="436" y="1"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnUpdate>ScrollingEdit_OnUpdate(self, elapsed, self:GetParent())</OnUpdate>
+					<OnTextChanged>ScrollingEdit_OnTextChanged(self, self:GetParent())</OnTextChanged>
+					<OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
+					<OnEscapePressed function="EditBox_ClearFocus"/>
+					<OnEnable>Vendor.EditRuleDialog.OnEditEnable(self)</OnEnable>
+					<OnDisable>Vendor.EditRuleDialog.OnEditDisable(self)</OnDisable>
+					<OnLoad>Vendor.EditRuleDialog.OnEditLoad(self)</OnLoad>
+					<OnEditFocusGained>Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
+					<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
+				</Scripts>
+				<FontString inherits="ChatFontNormal"/>
+				<TextInsets>
+					<AbsInset left="8" right="8" top="8" bottom="8"/>
+				</TextInsets>
+			</EditBox>
+		</ScrollChild>
+		<Scripts>
+			<OnMouseDown>self.content:SetFocus()</OnMouseDown>
+			<OnLoad>ScrollFrame_OnLoad(self);Vendor.EditRuleDialog.OnScriptTextLoad(self:GetParent(), self);</OnLoad>
+		</Scripts>
+   	</ScrollFrame>
+
+	<Frame name="Vendor.EditRule.SimpleHtml" inherits="InsetFrameTemplate3" virtual="true">
+		<Frames>
+			<ScrollFrame name="$parent.ScrollFrame" parentKey="scrollFrame"  inherits="UIPanelScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="scrollBarOffsetY" value="6"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="12" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="6"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="scrollbarBack" name="$parent.scrollBarBack">
+							<Color r="0" g="0" b="0" a="0.50"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<ScrollChild>
+					<SimpleHTML inherits="InlineHyperlinkFrameTemplate" parentKey="content">
+						<Size x="354" y="100"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="8" y="-8"/>J
+						</Anchors>
+						<FontString inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" spacing="4"/>
+						<FontStringHeader1 inherits="GameFontHighlight" spacing="8" justifyH="LEFT" justifyV="TOP"/>
+						<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
+						<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
+					</SimpleHTML>
+				</ScrollChild>
+				<Scripts>
+					<OnLoad>Vendor.ScrollFrame.OnLoad(self);</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+		</Frames>
+	</Frame>
+
+    <!-- Edit Rules Dialog (includes help flyout -->
+    <Frame name="VendorEditRuleDialog" toplevel="true" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH" movable="true">
+        <Size x="500" y="600"/>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="11" top="12" bottom="10"/>
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="32"/>
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="32"/>
+            </EdgeSize>
+        </Backdrop>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+                    <Size x="300" y="68"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="12"/>
+                    </Anchors>
+                </Texture>
+                <FontString name="$parentHeaderText" inherits="GameFontNormal" parentKey="Caption">
+                    <Anchors>
+                        <Anchor point="TOP" relativeTo="$parentHeader" x="0" y="-14"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+                <Size>
+                    <AbsDimension x="96" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-22" y="16"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="PortraitFrameCloseButton_OnClick"/>
+                </Scripts>
+            </Button>
+            <Button name="$parentOkay" inherits="UIPanelButtonTemplate" text="OKAY">
+                <Size>
+                    <AbsDimension x="96" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+            </Button>
+
+			<Button name="$parentToggleButton" parentKey="ToggleHelp">
+				<Size x="16" y="64"/>
+                <Layers>
+                </Layers>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-11" y="-16"/>
+				</Anchors>
+				<Scripts>
+					<OnEnter>Vendor.EditRuleDialog.OnExpandEnter(self:GetParent(), self)</OnEnter>
+					<OnLeave>Vendor.EditRuleDialog.OnExpandLeave(self:GetParent(), self)</OnLeave>
+					<OnLoad>self:GetNormalTexture():SetTexCoord(0.5, 1, 0, 1); self:GetNormalTexture():SetDrawLayer("OVERLAY");</OnLoad>
+					<OnClick>Vendor.EditRuleDialog.ToggleExpand(self:GetParent(), self)</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\RaidFrame\RaidPanel-Toggle"/>
+			</Button>
+
+			<EditBox parentKey="name" name="$parent.NameEdit" multiLine="false" inherits="Vendor.EditRules.Edit.Template">
+				<Size x="436" y="24"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="32" y="-50"/>
+				</Anchors>
+			</EditBox>
+
+			<ScrollFrame name="$parent.Description" parentKey="description"  inherits="Vendor.EditRules.ScrollingEdit.Template">
+				<Size x="436" y="180"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.NameEdit" x="0" y="-28"/>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent.NameEdit" x="0" y="-28"/>
+				</Anchors>
+			</ScrollFrame>
+
+			<ScrollFrame name="$parent.ScriptText" parentKey="script"  inherits="Vendor.EditRules.ScrollingEdit.Template">
+				<Size x="436" y="180"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.Description" x="0" y="-28"/>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent.Description" x="0" y="-28"/>
+				</Anchors>
+			</ScrollFrame>
+
+			<!-- Help / Info Controls -->
+
+			<Frame name="$parentExpandedPanel" inherits="Vendor.RulesUI.TabContainer" parentKey="tabContainer">
+				<Size x="390" y="1"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-22" y="-38"/>
+					<Anchor point="BOTTOMRIGHT"  x="-22" y="42"/>
+				</Anchors>
+			</Frame>
+
+            <!-- Info Tab -->
+            <Button name="$parentTab1" inherits="Vendor.RulesUI.Tab.Template" id="1" parentKey="itemInfoTab">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parentExpandedPanel" relativePoint="TOPLEFT" x="64" y="-3"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Vendor.EditRuleDialog.OnTabClicked(self:GetParent(), self);</OnClick>
+                </Scripts>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
+                            <Size x="1" y="16"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
+                                <Anchor point="LEFT" relativeTo="VendorEditRuleDialogExpandedPanelTopLeft" relativePoint="RIGHT"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
+                            <Size x="1" y="16"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
+                                <Anchor point="RIGHT" relativeTo="VendorEditRuleDialogExpandedPanelTopRight" relativePoint="LEFT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Button>
+
+         	 <!-- Matches Tab -->
+            <Button name="$parentTab2" inherits="Vendor.RulesUI.Tab.Template" id="2" parentKey="matchesTab" text="Matches">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT" x="-16" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
+                            <Size x="1" y="16"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
+                                <Anchor point="LEFT" relativeTo="VendorEditRuleDialogExpandedPanelTopLeft" relativePoint="RIGHT"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
+                            <Size x="1" y="16"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
+                                <Anchor point="RIGHT" relativeTo="VendorEditRuleDialogExpandedPanel" relativePoint="RIGHT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnClick>Vendor.EditRuleDialog.OnTabClicked(self:GetParent(), self);</OnClick>
+                </Scripts>
+            </Button>
+
+         	 <!-- Item Tab -->
+            <Button name="$parentTab3" inherits="Vendor.RulesUI.Tab.Template" id="3" parentKey="helpTab">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab2" relativePoint="TOPRIGHT" x="-16" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
+                            <Size x="64" y="16"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
+                                <Anchor point="LEFT" relativeTo="VendorEditRuleDialogExpandedPanelTopLeft" relativePoint="RIGHT"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
+                            <Size x="16" y="16"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
+                                <Anchor point="RIGHT" relativeTo="VendorEditRuleDialogExpandedPanelTopRight" relativePoint="LEFT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnClick>Vendor.EditRuleDialog.OnTabClicked(self:GetParent(), self);</OnClick>
+                </Scripts>
+            </Button>
+
+            <Frame parentKey="helpPane" parentArray="Panels" name="$parent.HelpPane" hidden="true" id="3">
+            	<Layers>
+		   			<Layer level="ARTWORK">
+						<FontString  parentKey="filterLabel" inherits="GameFontHighlight" justifyV="CENTER" justifyH="LEFT" text="[FILTER]">
+							<Size x="1" y="14"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="10" y="-10"/>
+								<Anchor point="BOTTOMRIGHT" relativePoint="TOPLEFT" x="62" y="-34"/>
+							</Anchors>
+						</FontString>
+		   			</Layer>
+            	</Layers>
+            	<Frames>
+					<EditBox parentKey="filter"  multiLine="false" inherits="Vendor.EditRules.Edit.Template" name="$parent.HelpFilter">
+						<Size x="1" y="24"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="64" y="-10"/>
+							<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-10" y="10"/>
+						</Anchors>
+						<Scripts>
+							<OnTextChanged>Vendor.EditRuleDialog.UpdateReference(self:GetParent());</OnTextChanged>
+							<OnEditFocusGained>Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
+							<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
+						</Scripts>
+					</EditBox>
+					<Frame name="$parent.HelpReference" parentKey="reference" inherits="InsetFrameTemplate3">
+						<Size x="360" y="24"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.HelpFilter" x="-54" y="-6"/>
+							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-10" y="10"/>
+						</Anchors>
+						<Frames>
+							<ScrollFrame name="$parent.ScrollFrame" parentKey="scrollFrame"  inherits="UIPanelScrollFrameTemplate">
+								<KeyValues>
+									<KeyValue key="scrollBarOffsetY" value="6"/>
+								</KeyValues>
+								<Anchors>
+									<Anchor point="TOPLEFT" x="12" y="-6"/>
+									<Anchor point="BOTTOMRIGHT" x="0" y="6"/>
+								</Anchors>
+								<Layers>
+									<Layer level="BACKGROUND">
+										<Texture parentKey="scrollbarBack" name="$parent.scrollBarBack">
+											<Color r="0" g="0" b="0" a="0.50"/>
+										</Texture>
+									</Layer>
+								</Layers>
+								<ScrollChild>
+									<SimpleHTML inherits="InlineHyperlinkFrameTemplate" parentKey="content">
+										<Size x="354" y="100"/>
+										<Anchors>
+											<Anchor point="TOPLEFT" x="8" y="-8"/>J
+										</Anchors>
+										<FontString inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" spacing="4"/>
+										<FontStringHeader1 inherits="GameFontHighlight" spacing="8" justifyH="LEFT" justifyV="TOP"/>
+										<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
+										<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
+									</SimpleHTML>
+								</ScrollChild>
+								<Scripts>
+									<OnLoad>Vendor.ScrollFrame.OnLoad(self);</OnLoad>
+								</Scripts>
+							</ScrollFrame>
+						</Frames>
+					</Frame>
+            	</Frames>
+            	<Scripts>
+            		<OnLoad>Vendor.EditRuleDialog.OnHelpPaneLoad(self);</OnLoad>
+            	</Scripts>
+           	</Frame>
+
+           	<Frame parentkey="itemInfoPanel" name="$parent.ItemInfoPane" parentArray="Panels" id="1" hidden="true" enableMouse="true">
+           		<Layers>
+           			<Layer level="ARTWORK">
+           				<FontString parentKey="topText" name="$parentTopText" inherits="GameFontNormal" justifyV="TOP" justifyH="LEFT" text="You can drag an item to this panel to display the value of it's properites">
+           					<Size x="1" y="36"/>
+           					<Anchors>
+           						<Anchor point="TOPLEFT" x="10" y="-10"/>
+           						<Anchor point="TOPRIGHT" x="-10" y="-10"/>>
+           					</Anchors>
+           				</FontString>
+           			</Layer>
+           		</Layers>
+           		<Frames>
+					<Frame parentKey="propHtml" inherits="Vendor.EditRule.SimpleHtml">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentTopText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+							<Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+						</Anchors>
+					</Frame>
+           		</Frames>
+           		<Scripts>
+           			<OnMouseUp>Vendor.EditRuleDialog.UpdateItemProperties(self);</OnMouseUp>
+           			<OnMouseDown>Vendor.EditRuleDialog.UpdateItemProperties(self)</OnMouseDown>
+           		</Scripts>
+           	</Frame>
+
+           	<Frame parentkey="matchesInfoPanel" name="$parent.matchesInfoPanel" parentArray="Panels" id="2" hidden="true">
+           		<Layers>
+           			<Layer level="ARTWORK">
+           				<FontString parentKey="topText" name="$parentTopText" inherits="GameFontNormal" justifyV="TOP" justifyH="LEFT" text="You can drag an item to this panel to display the value of it's properites">
+           					<Size x="1" y="36"/>
+           					<Anchors>
+           						<Anchor point="TOPLEFT" x="10" y="-10"/>
+           						<Anchor point="TOPRIGHT" x="-10" y="-10"/>>
+           					</Anchors>
+           				</FontString>
+           			</Layer>
+           		</Layers>
+           		<Frames>
+					<Frame parentKey="propMatches" inherits="Vendor.EditRule.SimpleHtml">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentTopText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+							<Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+						</Anchors>
+					</Frame>
+           		</Frames>
+           		<Scripts>
+           			<OnShow>Vendor.EditRuleDialog.UpdateMatches(self);</OnShow>
+           		</Scripts>
+           	</Frame>
+
+
+        </Frames>
+        <Scripts>
+            <OnLoad>self:RegisterForDrag("LeftButton");Vendor.EditRuleDialog.OnLoad(self)</OnLoad>
+            <OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
+            <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
+            <OnDragStart>self:StartMoving()</OnDragStart>
+            <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
+        </Scripts>
+    </Frame>
+
+</Ui>
+
