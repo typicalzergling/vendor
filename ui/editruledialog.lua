@@ -171,7 +171,7 @@ Addon.EditRuleDialog =
         PanelTemplates_SetNumTabs(self, table.getn(self.Tabs))
         self.selectedTab = self.helpTab:GetID()
         PanelTemplates_UpdateTabs(self);
-        Addon.EditRuleDialog.SetMode(self, MODE_FULL);
+        Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
     end,
 
     ShowTab = function(self, tabId)
@@ -438,7 +438,7 @@ Addon.EditRuleDialog =
         if (readOnly) then
             Addon.EditRuleDialog.SetMode(self, MODE_READONLY);
         else
-            Addon.EditRuleDialog.SetMode(self, MODE_FULL);
+            Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
         end
 
         self:Show()
@@ -448,7 +448,9 @@ Addon.EditRuleDialog =
 local EditRuleDialog = Addon.EditRuleDialog;
 
 function EditRuleDialog.SetMode(self, mode)
+    print("settingmode:", self.mode, mode);
     if (mode ~= self.mode) then
+    print("changing mode");
         self.mode = mode;
         if (mode == MODE_READONLY) then
             self.Caption:SetText(L["EDITRULE_CAPTION"]);
