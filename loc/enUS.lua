@@ -139,8 +139,18 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_RAREGEAR_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Rare quality.",
 ["SYSRULE_KEEP_EPICGEAR"] = "Epic Gear",
 ["SYSRULE_KEEP_EPICGEAR_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Epic quality.",
+["SYSRULE_KEEP_EQUIPMENTSET_NAME"] = "Equipment Sets",
+["SYSRULE_KEEP_EQUIPMENTSET_DESC"] = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
 
 -- Data Migration
-["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!"
+["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
+
+-- Edit Rule Dialog
+["EDITRULE_CAPTION"] = "Edit Rule",
+["EDITRULE_NAME_LABEL"] = "Name:",
+["EDITRULE_DESCR_LABEL"] = "Description:",
+["EDITRULE_SCRIPT_LABEL"] = "Script:",
+["EDITRULE_EXPAND_TOOLTIP"] = "Expand the dialog showing the API help",
+["EDITRULE_COLLAPSE_TOOLTIP"] = "Collapse the dialog hiding the API help",
 
 } -- END OF LOCALIZATION TABLE
