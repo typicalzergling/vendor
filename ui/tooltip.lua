@@ -73,26 +73,32 @@ function Addon:AddItemTooltipLines(tooltip, link)
     end
 
     -- Add lines to the tooltip we are scanning after we've scanned it.
-    if (Config:GetValue(Addon.c_Config_Tooltip)) then
-        if blocklist then
-            -- Add Addon state to the tooltip.
-            if blocklist == self.c_AlwaysSellList then
-                tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
-            else
-                tooltip:AddLine(L["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"])
-            end
-        end
-
-        -- Add a warning that this item will be auto-sold on next vendor trip.
-        if willBeSold then
-            tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
-            --@debug@
-            if (ruleName and Config:GetValue(Addon.c_Config_Tooltip_Rule)) then
-                tooltip:AddLine(string.format(L["RULEMATCH_TOOLTIP"], ruleName))
-            end
-            --@end-debug@
+    -- We always add if the item is in the Always-Sell or Never-Sell list.
+    if blocklist then
+        -- Add Addon state to the tooltip.
+        if blocklist == self.c_AlwaysSellList then
+            tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
+        else
+            tooltip:AddLine(L["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"])
         end
     end
+
+    -- Add a warning that this item will be auto-sold on next vendor trip.
+    if (Config:GetValue(Addon.c_Config_Tooltip)) then
+        if willBeSold then
+            tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+        end
+    end
+    
+    -- Add Advanced Rule information if set and available.
+    if (ruleName and Config:GetValue(Addon.c_Config_Tooltip_Rule)) then
+        if willBeSold then
+            tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
+        else
+            tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_KEEP"], ruleName))
+        end
+    end
+
 
     --@debug@
     if (ruleId) then

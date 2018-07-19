@@ -177,6 +177,18 @@ Addon.SystemRules =
             Script = "IsEquipment() and Quality() == 4",
             Order = 1600,
         },
+        
+        -- Safeguard against selling item sets, even if it matches some 
+        -- other rule, for example, a fishing or transmog set.
+        --[[
+        equipmentset = 
+        {
+            Name = L["SYSRULE_KEEP_EQUIPMENTSET_NAME"],
+            Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
+            ScriptText = "IsInEquipmentSet()",
+            Script = function() return IsInEquipmentSet() end,
+            Order = 1050,
+        },]]
     }
 }
 
@@ -203,11 +215,16 @@ end
 -- can be null or empty.
 --*****************************************************************************
 local function replaceInsets(source, insets)
-    if (Addon:TableSize(insets) ~= 0) then
-        for inset, value in pairs(insets) do
-            source = replaceInset(source, inset, value)
+    if (type(source) == "string") then
+        if (Addon:TableSize(insets) ~= 0) then
+            for inset, value in pairs(insets) do
+                source = replaceInset(source, inset, value);
+            end
         end
-    end
+    else
+        assert(type(source) == "function", "If the source is not a string then it must be a function!");
+        assert(Addon:TableSize(inset) == 0, "If the source is a function it should not have insets!");
+    end 
     return source
 end
 
@@ -246,6 +263,7 @@ local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
                 Order = ruleDef.Order,
             }
 
+    -- If it's not a locked rule, then the user controls the order
     if (not ruleDef.Locked) then
         rule.Order = nil
     end

@@ -2,7 +2,7 @@ local Addon, L, Config = _G[select(1,...).."_GET"]()
 local RULE_TYPE_KEEP = Addon.c_RuleType_Keep
 local RULE_TYPE_SELL = Addon.c_RuleType_Sell
 local RULE_TYPE_CUSTOM = "Custom"
-local PANEL_BACKGROUND_COLOR = { 1.0, 1.0, 1.0, 0.15 }
+local PANEL_BACKGROUND_COLOR = { 0.2, 0.2, 0.2, 0.60 }
 local PANEL_BORDER_COLOR =  { 0.6, 0.6, 0.6, 1 }
 local RULES_DIALOG_LOC_SETTING = "rulesdialog_position"
 

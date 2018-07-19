@@ -18,8 +18,9 @@ AddonLocales["enUS"] =
 -- Merchant
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
-["MERCHANT_SELLING_ITEM"] = "Selling %s for %s",
+["MERCHANT_SELLING_ITEM"] = "Sold %s for %s",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
+["MERCHANT_SELL_LIMIT_REACHED"] = "Reached the sell limit (%s), stopping auto-sell.",
 ["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
 
 -- Tooltip
@@ -27,6 +28,8 @@ AddonLocales["enUS"] =
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
 ["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be auto-sold by Vendor",
+["TOOLTIP_RULEMATCH_SELL"] = "Sell: %s",
+["TOOLTIP_RULEMATCH_KEEP"] = "Keep: %s",
 
 -- Options
 ["OPTIONS_TITLE_ADDON"] = "These settings are for configuring Vendor behavior.\n\n",
@@ -38,7 +41,7 @@ AddonLocales["enUS"] =
 ["OPTIONS_DESC_REPAIR"] = "Whether to auto-repair, and how to pay for it.\n",
 ["OPTIONS_SETTINGNAME_AUTOREPAIR"] = "Auto-Repair",
 ["OPTIONS_SETTINGDESC_AUTOREPAIR"] = "Automatically repair when visiting a repair-capable vendor.",
-["OPTIONS_SETTINGNAME_GUILDREPAIR"] = "Use Guild Bank for Repairs",
+["OPTIONS_SETTINGNAME_GUILDREPAIR"] = "Use Guild Bank",
 ["OPTIONS_SETTINGDESC_GUILDREPAIR"] = "Uses guild bank for repairs if possible.",
 
 -- Main Config Panel (aka Selling)
@@ -46,11 +49,16 @@ AddonLocales["enUS"] =
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Keep rules are always processed first, then Sell rules run on items that remain. By default we have several safeguard Keep rules enabled so you don't accidentally sell something you want. Before disabling any Keep rules, you should definitely take a look at the sell rules that are enabled first.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
 ["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.",
+["OPTIONS_SETTINGNAME_BUYBACK"] = "Limit number sold to 12",
+["OPTIONS_SETTINGDESC_BUYBACK"] = "Limits the number of items sold each time you interact with the merchant to 12, which is the buyback limit. This allows you to always buy back any items that were sold.",
 ["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
 ["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
 ["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
-["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating the item will be sold. In addition you can choose have the tooltip also include the rule which will cause the item to be sold or kept",
-["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"] = "Enable rule information",
+["OPTIONS_SETTINGDESC_TOOLTIP"] = "Vendor will add a line to the tooltip indicating when the item will be sold. ",
+["OPTIONS_SETTINGNAME_EXTRARULEINFO"] = "Extra rule information",
+["OPTIONS_SETTINGDESC_EXTRARULEINFO"] = "Include information about the rule that causes the item to be sold or kept. An item may match multiple rules; this will only display the first one that matches.",
+["OPTIONS_SETTINGNAME_MAXITEMS"] = "Limit number of items to sell",
+["OPTIONS_SETTINGDESC_MAXITEMS"] = "Controls the maximum number items vendor will auto-sell at each visit. If you want to be able to buy-back all items sold, set this to 12.",
 
 
 -- Performance Settings tab
@@ -93,7 +101,6 @@ AddonLocales["enUS"] =
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
 -- Rules
-["RULEMATCH_TOOLTIP"] = "Rule: %s",
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
 ["CONFIG_DIALOG_CAPTION"] = "Vendor Rules",
 ["CONFIG_DIALOG_KEEPRULES_TAB"] = "Keep Rules",
@@ -140,8 +147,18 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_RAREGEAR_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Rare quality.",
 ["SYSRULE_KEEP_EPICGEAR"] = "Epic Gear",
 ["SYSRULE_KEEP_EPICGEAR_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Epic quality.",
+["SYSRULE_KEEP_EQUIPMENTSET_NAME"] = "Equipment Sets",
+["SYSRULE_KEEP_EQUIPMENTSET_DESC"] = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
 
 -- Data Migration
-["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!"
+["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
+
+-- Edit Rule Dialog
+["EDITRULE_CAPTION"] = "Edit Rule",
+["EDITRULE_NAME_LABEL"] = "Name:",
+["EDITRULE_DESCR_LABEL"] = "Description:",
+["EDITRULE_SCRIPT_LABEL"] = "Script:",
+["EDITRULE_EXPAND_TOOLTIP"] = "Expand the dialog showing the API help",
+["EDITRULE_COLLAPSE_TOOLTIP"] = "Collapse the dialog hiding the API help",
 
 } -- END OF LOCALIZATION TABLE
