@@ -78,6 +78,7 @@ function GeneralPanel.Init(self)
     self.AutoSell.Text:SetText(L["OPTIONS_SETTINGDESC_AUTOSELL"]);
     self.AutoSell.Label:SetText(L["OPTIONS_SETTINGNAME_AUTOSELL"]);
     self.enableBuyback.Label:SetText(L.OPTIONS_SETTINGNAME_MAXITEMS);
+    self.enableBuyback.Text:SetText(L.OPTIONS_SETTINGDESC_MAXITEMS);
     self.AutoSell.OnStateChange = 
         function(checkbox, state)
            GeneralPanel.updateSubItems(self);               
@@ -85,7 +86,8 @@ function GeneralPanel.Init(self)
 
     self.Tooltip.Text:SetText(L["OPTIONS_SETTINGDESC_TOOLTIP"]);
     self.Tooltip.Label:SetText(L["OPTIONS_SETTINGNAME_TOOLTIP"]);
-    self.TooltipRule.Label:SetText(L["OPTIONS_SETTINGNAME_RULE_ON_TOOLTIP"]);
+    self.TooltipRule.Label:SetText(L.OPTIONS_SETTINGNAME_EXTRARULEINFO);
+    self.TooltipRule.Text:SetText(L.OPTIONS_SETTINGDESC_EXTRARULEINFO);
     self.Tooltip.OnStateChange =
         function(checkbox, state)
            GeneralPanel.updateSubItems(self);
