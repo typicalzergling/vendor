@@ -1,15 +1,52 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
 local HELP_WIDTH = 360 + 32;
+local READONLY_WIDTH = 500;
+local EDIT_WIDTH = READONLY_WIDTH + 360 + 32;
 local SCROLL_PADDING_X = 4;
 local SCROLL_PADDING_Y = 17;
 local SCROLL_BUTTON_PADDING = 4;
 local ITEM_INFO_HTML_BODY_FMT = "<html><body><h1>%s</h1>%s</body></html>";
 local ITEM_HTML_FMT = "<p>%s() = %s%s%s</p>";
 local NIL_ITEM_STRING = GRAY_FONT_COLOR_CODE .. "nil" .. FONT_COLOR_CODE_CLOSE;
-local MATCHES_HTML_BODY_FMT1 = "<html><body>%s</body></html>";
+local MATCHES_HTML_START = "<html><body>";
+local MATCHES_HTML_END = "</body></html>";
 local MATCHES_LINK_FMT1 = "<p>%s</p>";
 local MODE_READONLY = 1;
 local MODE_EDIT = 2;
+
+local RuleManager = Addon.RuleManager;
+--Addon.EditRuleDialog = {};
+
+Addon.EditTemplate = {}
+local EditTemplate = Addon.EditTemplate;
+
+Addon.Utils = Addon.Utils or {};
+Addon.Utils.StringBuilder = {};
+function Addon.Utils.StringBuilder:Create()
+    local instance = { buffer = {} };
+    setmetatable(instance, self);
+    self.__index = self;
+    return instance;
+end
+
+function Addon.Utils.StringBuilder:Add(str)
+    local buffer = rawget(self, "buffer");
+    table.insert(buffer, tostring(str));
+    for i=table.getn(buffer)-1,1,-1 do
+        if (string.len(buffer[i]) > string.len(buffer[i+1])) then
+            break;
+        end
+        buffer[i] = (buffer[i] .. table.remove(buffer));
+    end
+end
+
+function Addon.Utils.StringBuilder:AddFormatted(str, ...)
+    self:Add(string.format(str, ...));
+end
+
+function Addon.Utils.StringBuilder:Get()
+    return table.concat(rawget(self, "buffer"));
+end
 
 local function spairs(t, order)
     local keys = {};
@@ -68,7 +105,7 @@ Addon.RuleDocumentation =
 
     end,
 
-    Create = function() 
+    Create = function()
         -- Create our singleton cache
         if (not Addon.RuleDocumentation.__docs) then
             local docs = {};
@@ -162,7 +199,6 @@ Addon.EditRuleDialog =
         Addon.EditRuleDialog.SetEditLabel(self.name, L["EDITRULE_NAME_LABEL"]);
         Addon.EditRuleDialog.SetEditLabel(self.script, L["EDITRULE_SCRIPT_LABEL"]);
         Addon.EditRuleDialog.SetEditLabel(self.description, "[DESCRIPTION]");
-        self.ToggleHelp:GetNormalTexture():SetTexCoord(0.5, 1, 0, 1);
 
         -- Initialize the tabs
         Addon.EditRuleDialog.InitTab(self, self.helpTab, "[HELP]")
@@ -172,6 +208,9 @@ Addon.EditRuleDialog =
         self.selectedTab = self.helpTab:GetID()
         PanelTemplates_UpdateTabs(self);
         Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
+
+        -- Setup callbacks from the parts.
+        self.script.content:SetScript("OnTextChanged", function() Addon.EditRuleDialog.OnScriptChanged(self); end);
     end,
 
     ShowTab = function(self, tabId)
@@ -197,12 +236,12 @@ Addon.EditRuleDialog =
             end
         end
     end,
-    
+
     InitTab = function(self, tab, name)
-        tab:SetText(name)        
+        tab:SetText(name)
         PanelTemplates_TabResize(tab, 0)
         for _, spacer in ipairs(tab.Spacers) do
-            spacer:SetVertexColor(0.8, 0.8, 0.8, 0.50); 
+            spacer:SetVertexColor(0.8, 0.8, 0.8, 0.50);
             spacer:Hide();
         end
     end,
@@ -245,56 +284,6 @@ Addon.EditRuleDialog =
             end
     end,
 
-    UpdateHelpControls = function(self)
-        if (not self.expanded) then
-            for _, panel in pairs(self.Panels) do
-                panel:Hide();
-            end
-            for _, tab in pairs(self.Tabs) do
-                tab:Hide();
-            end
-            self.tabContainer:Hide();
-        else
-            Addon.EditRuleDialog.ShowTab(self, self.selectedTab)
-            Addon.EditRuleDialog.UpdateReference(self.helpPane)
-            for _, tab in pairs(self.Tabs) do
-                tab:Show();
-            end
-            self.tabContainer:Show();
-        end
-    end,
-
-    ToggleExpand = function(self, button)
-        if (not self.expanded) then
-	        button:GetNormalTexture():SetTexCoord(0.5, 1, 0, 1);
-	        self:SetWidth(self:GetWidth() + HELP_WIDTH)
-	        self.expanded = true
-        else
-        	button:GetNormalTexture():SetTexCoord(0, 0.5, 0, 1);
-        	self:SetWidth(self:GetWidth() - HELP_WIDTH)
-        	self.expanded = false
-        end
-        Addon.EditRuleDialog.OnExpandLeave(self, button)
-        Addon.EditRuleDialog.UpdateHelpControls(self)
-    end,
-
-    OnExpandEnter = function(self, button)
-        GameTooltip:SetOwner(button, "ANCHOR_NONE")
-        GameTooltip:SetPoint("TOPLEFT", button, "RIGHT")
-        if (self.expanded) then
-            GameTooltip:SetText(L["EDITRULE_COLLAPSE_TOOLTIP"])
-        else
-            GameTooltip:SetText(L["EDITRULE_EXPAND_TOOLTIP"])
-        end
-        GameTooltip:Show()
-    end,
-
-    OnExpandLeave = function(self, button)
-        if (GameTooltip:GetOwner() == button) then
-            GameTooltip:Hide()
-        end
-    end,
-
     OnHelpPaneLoad = function(self)
         Addon.EditRuleDialog.SetEditHelpText(self.filter, "[CLICK_TO_FILTER]")
     end,
@@ -311,14 +300,14 @@ Addon.EditRuleDialog =
         for _, content in spairs(docs) do
             table.insert(temp, content)
         end
-        
+
         -- Put the text into the body
         local html = "<html><body>" .. table.concat(temp, "<br/>") .. "</body></html>"
         helpPane.reference.scrollFrame.content:SetText(html)
     end,
 
     UpdateItemProperties = function(infoPane)
-        if (not CursorHasItem()) then 
+        if (not CursorHasItem()) then
             return;
         end
 
@@ -340,24 +329,13 @@ Addon.EditRuleDialog =
 
                 table.insert(props, string.format(ITEM_HTML_FMT, name, GREEN_FONT_COLOR_CODE, htmlEncode(valStr), FONT_COLOR_CODE_CLOSE));
             end
-            
+
             infoPane.propHtml.scrollFrame.content:SetText(string.format(ITEM_INFO_HTML_BODY_FMT, link, table.concat(props)));
         end
     end,
 
-    UpdateMatches = function(self)
-        local links = {}
-        local player, realm = UnitFullName("player");
-        local params = { itemlevel = 220, };
-        local matches = Addon:GetMatchesForRule(string.format("cr.%s.%s.%d", player, realm, time()), "Level() > RULE_PARAMS.ITEMLEVEL", params);
-        for _, link in ipairs(matches) do
-            table.insert(links, "<p>" .. link .. "</p>");
-        end
-        self.propMatches.scrollFrame.content:SetText("<html><body>" .. table.concat(links) .. "</body></html>");
-    end,
-
     --*****************************************************************************
-    -- Called when our "filter" focus state changes, we want to show/hide our 
+    -- Called when our "filter" focus state changes, we want to show/hide our
     -- help text if we've got content.
     --*****************************************************************************
     OnEditFocusChange = function(self, gained)
@@ -369,7 +347,7 @@ Addon.EditRuleDialog =
                 if (not text or (text == "") or (string.len(text) == 0)) then
                     self.helpText:Show()
                 end
-            end                
+            end
         end
     end,
 
@@ -401,31 +379,32 @@ Addon.EditRuleDialog =
 
     OnEditLoad = function(self)
         self.SetLabel = Addon.EditRuleDialog.SetEditLable;
-        self.SetHelpText = Addon.EditRuleDialog.SetEditHelpText; 
+        self.SetHelpText = Addon.EditRuleDialog.SetEditHelpText;
         Addon.EditRuleDialog.OnEditEnable(self);
     end,
 
     --*****************************************************************************
-    -- Create a new rule (Generates a unique new id for it) and then opens the 
+    -- Create a new rule (Generates a unique new id for it) and then opens the
     -- dialog to the rule (read only is considered false)
     --*****************************************************************************
     CreateRule = function(self)
-        self:EditRule({ Id = string.format("cr%d%s", UnitName("player"), time()) })
+        self:EditRule({ Id = RuleManager.CreateCustomRuleId() })
     end,
 
     --*****************************************************************************
-    -- Called when our "filter" focus state changes, we want to show/hide our 
+    -- Called when our "filter" focus state changes, we want to show/hide our
     -- help text if we've got content.
     --*****************************************************************************
     EditRule = function(self, ruleDef, readOnly)
         self.ruleDef = ruleDef;
         self.readOnly = readOnly or false;
+        self.scriptValid = false;
 
         -- Set the name / description
         self.name:SetText(ruleDef.Name or "")
         self.description.content:SetText(ruleDef.Description or "")
-        
-        -- Set the script text        
+
+        -- Set the script text
         if (ruleDef.ScriptText) then
             self.script.content:SetText(ruleDef.ScriptText)
         elseif (ruleDef.Script) then
@@ -441,22 +420,50 @@ Addon.EditRuleDialog =
             Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
         end
 
+        Addon.EditRuleDialog.UpdateButtonState(self);
         self:Show()
     end,
 };
 
 local EditRuleDialog = Addon.EditRuleDialog;
+local MATCHES_HTML_BODY_FMT1 = "<html><body>%s</body></html>";
+local MATCHES_LINK_FMT1 = "<p>%s</p>";
 
+
+--[[===========================================================================
+    | Called to handle updating the matches panel, this is called whenever
+    | the panel is shown, or the rule has been updated.
+    ===========================================================================--]]
+function EditRuleDialog.    UpdateMatches(self)
+    if (self:IsShown()) then
+        local ruleDialog = self:GetParent();
+        if (ruleDialog.scriptValid) then
+            local matches = Addon:GetMatchesForRule(ruleDialog.ruleDef.Id, ruleDialog.script.content:GetText());
+            local sb = Addon.Utils.StringBuilder:Create();
+
+            sb:Add(MATCHES_HTML_START);
+            for _, link in ipairs(matches) do
+                sb:AddFormatted(MATCHES_LINK_FMT1, link);
+            end
+            sb:Add(MATCHES_HTML_END);
+
+            self.propMatches.scrollFrame.content:SetText(sb:Get());
+        end
+     end
+end
+
+--[[===========================================================================
+    | Toggle the layout of the dialog to either the read-only or edit layout
+    ===========================================================================--]]
 function EditRuleDialog.SetMode(self, mode)
-    print("settingmode:", self.mode, mode);
     if (mode ~= self.mode) then
-    print("changing mode");
         self.mode = mode;
         if (mode == MODE_READONLY) then
+            self:SetWidth(READONLY_WIDTH)
             self.Caption:SetText(L["EDITRULE_CAPTION"]);
-            
+
             -- ReadOnly hides the panels to the right
-            for _, panel in ipairs(self.Tabs) do
+            for _, panel in ipairs(self.Panels) do
                 panel:Hide();
             end
             for _, tab in ipairs(self.Tabs) do
@@ -466,8 +473,14 @@ function EditRuleDialog.SetMode(self, mode)
             self.tabContainer:Hide();
             self.script.content:Disable();
             self.name:Disable();
-            self.description.content:Disable();            
+            self.description.content:Disable();
+            self.ok:Hide();
+            self.cancel:Hide();
+            self.close:Show();
+            self.errorText:Hide();
+            self.successText:Hide();
         else
+        	self:SetWidth(EDIT_WIDTH)
             self.Caption:SetText("[RULEDIALOG_READONLY_CAPTION]");
 
             -- Full mode shows everything
@@ -479,7 +492,93 @@ function EditRuleDialog.SetMode(self, mode)
             self.name:Enable();
             self.description.content:Enable();
             self.tabContainer:Show();
-            EditRuleDialog.ShowTab(self.selectedTab)
+            EditRuleDialog.ShowTab(self, self.selectedTab)
+            self.ok:Show();
+            self.cancel:Show();
+            self.close:Hide();
+            self.errorText:Hide();
+            self.successText:Hide();
         end
     end
+end
+
+-- todo move to rule manager
+function RuleManager.CreateRuleFunction(script)
+    local result, message = loadstring("return " .. script,  "");
+    print(result, message)
+    if (not result) then
+       return result, message:gsub("%[string.*:%d+:%s*", "");
+    end
+
+    return result, ""
+end
+
+--[[===========================================================================
+    | Called when the text of the rule edit field has changed, this will queue
+    | a timer to delay evaluation until the user has stopped typing. If the
+    | dialog is not currently in editing mode then we simply bail out.
+    ===========================================================================--]]
+function EditRuleDialog.UpdateButtonState(self)
+    local ruleName = self.name:GetText();
+    local ruleScript = self.script.content:GetText();
+    local ruleDescription = self.description.content:GetText();
+
+    if (self.ok:IsShown()) then
+        if (self.scriptValid and
+            (ruleName and (string.len(ruleName) ~= 0)) and
+            (ruleScript and (string.len(ruleScript) ~= 0)) and
+            (ruleDescription and (string.len(ruleDescription) ~= 0))) then
+            EditRuleDialog.UpdateMatches(self.matchesInfoPanel);
+            self.ok:Enable()
+        else
+            self.ok:Disable();
+        end
+    end
+end
+
+--[[===========================================================================
+    | Called when the text of the rule edit field has changed, this will queue
+    | a timer to delay evaluation until the user has stopped typing. If the
+    | dialog is not currently in editing mode then we simply bail out.
+    ===========================================================================--]]
+function EditRuleDialog.OnScriptChanged(self)
+    -- If we are not editing we are done.
+    if (self.mode ~= MODE_EDIT) then
+        return;
+    end
+
+    -- If we are currently waiting to evaluate then cancel
+    self.scriptValid = false;
+    if (self.timer) then
+        self.timer:Cancel();
+    end
+
+    self.timer = C_Timer.NewTimer(0.60, function() EditRuleDialog.ValidateScript(self); end);
+end
+
+--[[===========================================================================
+    | Called when both the script, and our timer has fired. This is a helper
+    | to user which validates the script is OK, if we find an error, we show
+    | and error widget (with the message).
+    ===========================================================================--]]
+function EditRuleDialog.ValidateScript(self)
+    Addon:Debug("Validating script");
+
+    local scriptText = self.script.content:GetText();
+    if (scriptText and (string.len(scriptText) ~= 0)) then
+        local result, message = RuleManager.CreateRuleFunction(scriptText);
+        if (not result) then
+            self.errorText:Show();
+            self.errorText:SetText(message);
+            self.successText:Hide();
+            self.scriptValid = false;
+        else
+            self.errorText:Hide();
+            self.successText:Show();
+            self.scriptValid = true;
+        end
+    else
+        self.scriptValid = false;
+    end
+    EditRuleDialog.UpdateButtonState(self);
 end

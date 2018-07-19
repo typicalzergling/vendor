@@ -211,14 +211,14 @@ local function setRuleConfigFromList(frame, config)
             end
         end
 
-        -- Third the remaining rules should be sorted by the order 
+        -- Third the remaining rules should be sorted by the order
         -- of execution (items without an order are pushed to the end)
         if (#config ~= #rules) then
             local start = #config
             local part = { select(start + 1, unpack(rules)) }
-            
+
             table.sort(part,
-                function (ruleA, ruleB) 
+                function (ruleA, ruleB)
                     return ((ruleA.Rule.Order or 0) < (ruleB.Rule.Order or 0))
                 end)
 
@@ -245,7 +245,7 @@ function Addon.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
 
     assert(frame.RuleList, "Rule List frame needs to have the rule list set")
     assert(frame.RuleType, "Rule List frame needs to have the rule type set")
-    
+
     -- Create the frame for each of our rules.
     for id, rule in pairs(ruleList) do
         if (not rule.Locked) then
@@ -298,16 +298,24 @@ function Addon.RulesUI.UpdateRuleList(frame)
                 else
                     ruleFrame.Divider:Hide()
                 end
-                
+
                 if (ruleFrame:IsMouseOver()) then
                     Addon.RulesList.UpdateMoveButtons(ruleFrame)
                 else
                     Addon.RulesList.HideMoveButtons(ruleFrame)
                 end
 
-                previousFrame = ruleFrame                
+                previousFrame = ruleFrame
             end
         end
+    end
+end
+
+local RulesList = Addon.RulesList;
+
+function RulesList.OnRuleItemMouseUp(ruleItem, mouseButton)
+    if ((mouseButton == "RightButton") and IsShiftKeyDown()) then
+        VendorEditRuleDialog:EditRule(ruleItem.Rule, true)
     end
 end
 

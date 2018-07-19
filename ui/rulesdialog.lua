@@ -7,10 +7,10 @@ local PANEL_BORDER_COLOR =  { 0.6, 0.6, 0.6, 1 }
 local RULES_DIALOG_LOC_SETTING = "rulesdialog_position"
 
 Addon.RulesDialog = {
-    
+
     --=========================================================================
-    -- Given a frame which represents a rules list this pushes the values 
-    -- into our settings. 
+    -- Given a frame which represents a rules list this pushes the values
+    -- into our settings.
     --=========================================================================
     UpdateRuleConfig = function(frame)
         Addon:DebugRules("Applying config for rule type '%s'", frame.RuleType)
@@ -44,22 +44,6 @@ Addon.RulesDialog = {
     end,
 
     --=========================================================================
-    -- When the frame has been moved this is called to save the location
-    -- into our config so we remember the position for the next interface load
-    --=========================================================================
-    SavePosition = function(self)
-        if (self:GetNumPoints() == 1) and (self:GetParent() == UIParent) then
-            local point = { self:GetPoint(1) }
-            if (point) then
-                if (#point == 5) then
-                    table.remove(point, 2)
-                end
-                Config:SetValue(RULES_DIALOG_LOC_SETTING, point)
-            end                
-        end            
-    end,
-
-    --=========================================================================
     -- Resets the dialogs position back to the default (center of the scren)
     --=========================================================================
     ResetPosition = function(self)
@@ -84,24 +68,6 @@ Addon.RulesDialog = {
         self.selectedTab = 2
         PanelTemplates_UpdateTabs(self)
         Addon.RulesDialog.ShowTab(self, self.selectedTab)
-
-        -- Setup dialog location persistence
-        local function setDialogLocation() 
-                local point = Config:GetValue(RULES_DIALOG_LOC_SETTING)
-                if (not self:IsShown() or (point == nil)) then
-                    self:ClearAllPoints()
-                    if (point and (type(point) == "table") and (#point == 4)) then
-                        Addon:Debug("Setting rules dialog position (p=%s, rp=%s, x=%d, y=%d)", unpack(point))
-                        self:SetPoint(point[1], UIParent, point[2], point[3], point[4])
-                    else
-                        Addon:Debug("Setting rules dialog to the center")
-                        self:SetPoint("CENTER", UIParent)
-                    end
-                end
-            end
-
-        Addon:RegisterEvent("PLAYER_LOGIN", setDialogLocation)
-        Config:AddOnChanged(setDialogLocation)
     end,
 
     --=========================================================================
@@ -113,7 +79,7 @@ Addon.RulesDialog = {
     end,
 
     --=========================================================================
-    -- Changes between tabs in the dialog, shows the proper panel hides the 
+    -- Changes between tabs in the dialog, shows the proper panel hides the
     -- reset, shows/hide frame components so the dialog looks correct.
     --=========================================================================
     ShowTab = function(self, tabId)

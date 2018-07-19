@@ -69,7 +69,7 @@
                     <OnClick>Vendor.RulesDialog.SetDefaults(VendorRulesDialog)</OnClick>
                 </Scripts>
             </Button>
-            
+
             <!-- Keep Panel -->
             <Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="1">
                 <Anchors>
@@ -103,7 +103,7 @@
                     </Frame>
                 </Frames>
             </Frame>
-            
+
             <!-- Sell Panel -->
             <Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTemplate" id="2">
                 <Anchors>
@@ -311,7 +311,7 @@
             <OnShow>Vendor.RulesDialog.PrepareToShow(self); PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
             <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
             <OnDragStart>self:StartMoving()</OnDragStart>
-            <OnDragStop>self:StopMovingOrSizing(); Vendor.RulesDialog.SavePosition(self)</OnDragStop>
+            <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
         </Scripts>
     </Frame>
 </Ui>

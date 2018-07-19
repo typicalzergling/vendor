@@ -217,7 +217,7 @@
         <Layers>
             <Layer level="ARTWORK">
                 <Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
-                    <Size x="300" y="68"/>
+                    <Size x="360" y="68"/>
                     <Anchors>
                         <Anchor point="TOP" x="0" y="12"/>
                     </Anchors>
@@ -227,10 +227,25 @@
                         <Anchor point="TOP" relativeTo="$parentHeader" x="0" y="-14"/>
                     </Anchors>
                 </FontString>
+                <FontString name="$parentErrorText" inherits="GameFontRed" parentKey="errorText" justifyH="LEFT" justifyV="TOP" text="ERROR_TEXT">
+                	<Size x="1" y="64"/>
+                	<Anchors>
+                		<Anchor point="BOTTOMLEFT" x="22" y="38"/>
+                		<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="468" y="38"/>
+                	</Anchors>
+                </FontString>
+                <FontString inherits="GameFontGreen" parentKey="successText" justfyH="LEFT" justifyV="TOP" text="SUCCESS">
+                	<Size x="1" y="64"/>
+                	<Anchors>
+                		<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parentErrorText"/>
+                		<Anchor point="BOTTOMRIGHT" relativePoint="BOTTTOMRIGHT" relativeTo="$parentErrorText"/>
+                	</Anchors>
+                </FontString>
             </Layer>
         </Layers>
         <Frames>
-            <Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+            <!-- Buttons -->
+            <Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL" parentKey="cancel">
                 <Size>
                     <AbsDimension x="96" y="22"/>
                 </Size>
@@ -241,7 +256,18 @@
                     <OnClick function="PortraitFrameCloseButton_OnClick"/>
                 </Scripts>
             </Button>
-            <Button name="$parentOkay" inherits="UIPanelButtonTemplate" text="OKAY">
+            <Button name="$parentClose" parentKey="close" inherits="UIPanelButtonTemplate" text="CLOSE">
+                <Size>
+                    <AbsDimension x="96" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-22" y="16"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick function="PortraitFrameCloseButton_OnClick"/>
+                </Scripts>
+            </Button>
+            <Button name="$parentOkay" inherits="UIPanelButtonTemplate" text="OKAY" parentKey="ok">
                 <Size>
                     <AbsDimension x="96" y="22"/>
                 </Size>
@@ -250,39 +276,22 @@
                 </Anchors>
             </Button>
 
-			<Button name="$parentToggleButton" parentKey="ToggleHelp">
-				<Size x="16" y="64"/>
-                <Layers>
-                </Layers>
-				<Anchors>
-					<Anchor point="TOPRIGHT" x="-11" y="-16"/>
-				</Anchors>
-				<Scripts>
-					<OnEnter>Vendor.EditRuleDialog.OnExpandEnter(self:GetParent(), self)</OnEnter>
-					<OnLeave>Vendor.EditRuleDialog.OnExpandLeave(self:GetParent(), self)</OnLeave>
-					<OnLoad>self:GetNormalTexture():SetTexCoord(0.5, 1, 0, 1); self:GetNormalTexture():SetDrawLayer("OVERLAY");</OnLoad>
-					<OnClick>Vendor.EditRuleDialog.ToggleExpand(self:GetParent(), self)</OnClick>
-				</Scripts>
-				<NormalTexture file="Interface\RaidFrame\RaidPanel-Toggle"/>
-			</Button>
-
+            <!-- Rule definition -->
 			<EditBox parentKey="name" name="$parent.NameEdit" multiLine="false" inherits="Vendor.EditRules.Edit.Template">
-				<Size x="436" y="24"/>
+				<Size x="456" y="24"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="32" y="-50"/>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-38"/>
 				</Anchors>
 			</EditBox>
-
 			<ScrollFrame name="$parent.Description" parentKey="description"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-				<Size x="436" y="180"/>
+				<Size x="456" y="180"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.NameEdit" x="0" y="-28"/>
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent.NameEdit" x="0" y="-28"/>
 				</Anchors>
 			</ScrollFrame>
-
 			<ScrollFrame name="$parent.ScriptText" parentKey="script"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-				<Size x="436" y="180"/>
+				<Size x="456" y="180"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.Description" x="0" y="-28"/>
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent.Description" x="0" y="-28"/>
@@ -292,7 +301,7 @@
 			<!-- Help / Info Controls -->
 
 			<Frame name="$parentExpandedPanel" inherits="Vendor.RulesUI.TabContainer" parentKey="tabContainer">
-				<Size x="390" y="1"/>
+				<Size x="380" y="1"/>
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-22" y="-38"/>
 					<Anchor point="BOTTOMRIGHT"  x="-22" y="42"/>

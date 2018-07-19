@@ -10,7 +10,7 @@ Addon.RuleFunctions.SELL_WITH_PROMPT = 4
 -- the expected value which is passed in.
 --*****************************************************************************
 local function checkMap(map, expectedValue, values)
-    for i=1,table.getn(values) do 
+    for i=1,table.getn(values) do
         local value = values[i]
         if (type(value) == "number") then
             if (value == expectedValue) then
@@ -58,17 +58,17 @@ function Addon.RuleFunctions.IsFromExpansion(...)
 end
 
 --*****************************************************************************
--- Rule function which checks if the specified item is present in the 
+-- Rule function which checks if the specified item is present in the
 -- list of items which should never be sold.
 --*****************************************************************************
 function Addon.RuleFunctions.IsNeverSellItem()
     if Addon:IsItemIdInNeverSellList(Id()) then
         return true
     end
-end 
+end
 
 --*****************************************************************************
--- Rule function which chceks if the item is in the list of items which 
+-- Rule function which chceks if the item is in the list of items which
 -- should always be sold.
 --*****************************************************************************
 function Addon.RuleFunctions.IsAlwaysSellItem()
@@ -92,11 +92,15 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
     local function check(itemId, setId)
         itemIds = C_EquipmentSet.GetItemIDs(setId);
         for _, setItemId in ipairs(itemIds) do
+            print("set:", setId, "setItem:", setItemId, "checkId", itemId);
             if ((setItemId ~= -1) and (setItemId == itemId)) then
+                print("itemMatched:", setItemId, itemId);
                 return true
             end
         end
     end
+
+    print("----------------- start of eval ----------");
 
     local sets = { ... };
     local itemId = Id();
@@ -114,7 +118,7 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
             local setId = C_EquipmentSet.GetEquipmentSetID(set)
             if (setId and check(itemId, setId)) then
                 return true
-            end                
+            end
         end
     end
 end
@@ -133,7 +137,7 @@ Addon.ScriptReference.Functions =
         Map = Addon.Maps.Expansion,
     },
 
-    ItemType = 
+    ItemType =
     {
         Args = "type0 [, type2...typeN]",
         Text = "Checks the item type against the string/number passed in which represents the item type",

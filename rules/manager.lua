@@ -1,6 +1,6 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
-
 Addon.RuleManager = {}
+Addon.RuleManager.Rule = {}
 
 local RULE_TYPE_LOCKED = 1
 local RULE_TYPE_KEEP = 2
@@ -23,6 +23,9 @@ Addon.RuleResult =
 local RULE_PARAMS_KEY = "RULE_PARAMS";
 
 local function assertImplies(a, b, m) if (a) then assert(b, m); end end 
+
+local RuleManager = Addon.RuleManager;
+local Rule = Addon.RuleManager.Rule;
 
 --*****************************************************************************
 -- Create a new rule object which handles keeping track of the rule it
@@ -439,6 +442,16 @@ function Addon.RuleManager:UpdateConfig(configTable)
         end
     end
 end
+
+--*****************************************************************************
+-- Generates a new unique custom rule id, this rule encodes the player, realm
+-- and time so it should be very unique.
+--*****************************************************************************
+function RuleManager.CreateCustomRuleId()
+    local player, realm = UnitFullName("player");
+    return string.format("cr.%s.%s.%d", player, realm, time());
+end    
+
 
 function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
     Addon:Debug("Evaluating '%s' against bags (no-cache)", ruleId);

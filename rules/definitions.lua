@@ -6,6 +6,7 @@ Addon.SystemRules =
     --
     --
     --*****************************************************************************
+
     Sell =
     {
         alwayssell =
@@ -27,7 +28,10 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_SELL_POORITEMS"],
             Description = L["SYSRULE_SELL_POORITEMS_DESC"],
-            Script = "Quality() == 0",
+            ScriptText = "Quality() == 0",
+            Script = function()
+                    return Quality() == 0;
+                end,
             Order = 1000,
         },
 
@@ -35,7 +39,10 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_SELL_OLDFOOD"],
             Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
-            Script = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
+            ScriptText = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
+            Script = function()
+                return (TypeId() == 0) and (SubType() == 5) and (Level() <= (PlayerLevel() - 10));
+            end,
             Order = 1100,
         },
 
@@ -51,15 +58,21 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_SELL_KNOWNTOYS"],
             Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
-            Script = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
+            ScriptText = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
+            Script = function()
+                    return IsSoulbound() and IsToy() and IsAlreadyKnown();
+                end,
             Order = 1300,
         },
-       
+
         uncommongear =
         {
             Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
             Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
-            Script = "IsEquipment() and Quality() == 2 and Level() < {itemlevel}",
+            ScriptText = "IsEquipment() and Quality() == 2 and Level() < {itemlevel}",
+            Script = function()
+                    return IsEquipment() and (Quality() == 2) and (Level() < RULE_PARAMS.ITEMLEVEL);
+                end,
             InsetsNeeded = { "itemlevel" },
             Order = 1400,
         },
@@ -68,7 +81,10 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_SELL_RAREGEAR"],
             Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
-            Script = "IsEquipment() and Quality() == 3 and Level() < {itemlevel}",
+            ScriptText = "IsEquipment() and Quality() == 3 and Level() < {itemlevel}",
+            Script = function()
+                    return IsEquipment() and (Quality() == 3) and (Level() < RULE_PARAMS.ITEMLEVEL);
+                end,
             InsetsNeeded = { "itemlevel" },
             Order = 1500,
         },
@@ -90,6 +106,7 @@ Addon.SystemRules =
     --
     --
     --*****************************************************************************
+
     Keep =
     {
         -- Item is in the Never Sell list.
@@ -113,7 +130,8 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_KEEP_UNSELLABLE"],
             Description = L["SYSRULE_KEEP_UNSELLABLE_DESC"],
-            Script = "UnitValue() == 0",
+            ScriptText = "UnitValue() == 0",
+            Script = function() return UnitValue() == 0; end,
             Locked = true,
             Order = -9999,
         },
@@ -123,7 +141,8 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
             Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
-            Script = "Quality() >= 5",
+            ScriptText = "Quality() >= 5",
+            Script = function() return Quality() >= 5; end,
             Order = 1000,
         },
 
@@ -132,7 +151,10 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
             Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
-            Script = "IsEquipment() and IsSoulbound()",
+            ScriptText = "IsEquipment() and IsSoulbound()",
+            Script = function()
+                    return IsEquipment() and IsSoulbound();
+                end,
             Order = 1100,
         },
 
@@ -141,16 +163,18 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
             Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
-            Script = "IsUnknownAppearance()",
+            ScriptText = "IsUnknownAppearance()",
+            Script = function() return IsUnknownAppearance() end,
             Order = 1200,
-        },        
+        },
 
         -- Safeguard rule - Common items are usually important and useful.
         common =
         {
             Name = L["SYSRULE_KEEP_COMMON"],
             Description = L["SYSRULE_KEEP_COMMON_DESC"],
-            Script = "Quality() == 1",
+            ScriptText = "Quality() == 1",
+            Script = function() return (Quality() == 1) end,
             Order = 1300,
         },
 
@@ -159,7 +183,10 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
             Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
-            Script = "IsEquipment() and Quality() == 2",
+            ScriptText = "IsEquipment() and Quality() == 2",
+            Script = function()
+                    return IsEquipment() and (Quality() == 2);
+                end,
             Order = 1400,
         },
 
@@ -168,7 +195,10 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_KEEP_RAREGEAR"],
             Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
-            Script = "IsEquipment() and Quality() == 3",
+            ScriptText = "IsEquipment() and Quality() == 3",
+            Script = function()
+                    return IsEquipment() and (Quality() == 3);
+                end,
             Order = 1500,
         },
 
@@ -177,13 +207,16 @@ Addon.SystemRules =
         {
             Name = L["SYSRULE_KEEP_EPICGEAR"],
             Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
-            Script = "IsEquipment() and Quality() == 4",
+            ScriptText = "IsEquipment() and Quality() == 4",
+            Script = function()
+                    return IsEquipment() and (Quality() == 4);
+                end,
             Order = 1600,
         },
-        
-        -- Safeguard against selling item sets, even if it matches some 
+
+        -- Safeguard against selling item sets, even if it matches some
         -- other rule, for example, a fishing or transmog set.
-        equipmentset = 
+        equipmentset =
         {
             Name = L["SYSRULE_KEEP_EQUIPMENTSET_NAME"],
             Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
@@ -226,7 +259,7 @@ local function replaceInsets(source, insets)
     else
         assert(type(source) == "function", "If the source is not a string then it must be a function!");
         assert(Addon:TableSize(inset) == 0, "If the source is a function it should not have insets!");
-    end 
+    end
     return source
 end
 
@@ -269,7 +302,7 @@ local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
     if (not ruleDef.Locked) then
         rule.Order = nil
     end
-    
+
     return rule
 end
 
