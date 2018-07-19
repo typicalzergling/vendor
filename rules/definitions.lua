@@ -180,6 +180,7 @@ Addon.SystemRules =
         
         -- Safeguard against selling item sets, even if it matches some 
         -- other rule, for example, a fishing or transmog set.
+        --[[
         equipmentset = 
         {
             Name = L["SYSRULE_KEEP_EQUIPMENTSET_NAME"],
@@ -187,7 +188,7 @@ Addon.SystemRules =
             ScriptText = "IsInEquipmentSet()",
             Script = function() return IsInEquipmentSet() end,
             Order = 1050,
-        },
+        },]]
     }
 }
 

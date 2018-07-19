@@ -55,7 +55,7 @@ Addon.ConfigPanel.General = {
         Config:SetValue(SETTING_AUTOSELL, self.AutoSell.State:GetChecked())
         Config:SetValue(SETTING_TOOLTIP, self.Tooltip.State:GetChecked())
         Config:SetValue(SETTING_TOOLTIP_RULE, self.Tooltip.State:GetChecked() and self.TooltipRule.State:GetChecked())
-        Config:SetValue(SETTING_BUYBACK, self.EnableBuyback.State:GetChecked() and self.AutoSell.state:GetChecked())
+        Config:SetValue(SETTING_BUYBACK, self.EnableBuyback.State:GetChecked() and self.AutoSell.State:GetChecked())
     end,
 
     --*****************************************************************************

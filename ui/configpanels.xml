@@ -319,7 +319,7 @@
                 </Anchors>
             </Frame>
             <Frame name="$parent.EnableBuyback" parentKey="EnableBuyback" inherits="Vendor.Options.SmallCheckTemplate.WithText">
-                <Size x="250" y="24"/>
+                <Size x="250" y="48"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="32" y="0"/>
                     <Anchor point="RIGHT" x="-16" />
@@ -335,7 +335,7 @@
                 </Anchors>
             </Frame>
             <Frame name="$parent.ToolTipRule" parentKey="TooltipRule" inherits="Vendor.Options.SmallCheckTemplate.WithText">
-                <Size x="250" y="24"/>
+                <Size x="250" y="48"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="32" y="0"/>
                     <Anchor point="RIGHT" x="-16" />

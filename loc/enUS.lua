@@ -18,8 +18,9 @@ AddonLocales["enUS"] =
 -- Merchant
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
-["MERCHANT_SELLING_ITEM"] = "Selling %s for %s",
+["MERCHANT_SELLING_ITEM"] = "Sold %s for %s",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
+["MERCHANT_SELL_LIMIT_REACHED"] = "Reached the sell limit (%s), stopping auto-sell.",
 ["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
 
 -- Tooltip

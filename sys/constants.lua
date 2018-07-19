@@ -13,10 +13,15 @@ Addon.c_RuleType_Sell = "Sell"
 Addon.c_RuleType_Keep = "Keep"
 
 -- Config Constants
-Addon.c_ConfigSellNever = "sell_never"
-Addon.c_ConfigSellAlways = "sell_always"
+Addon.c_Config_SellNever = "sell_never"
+Addon.c_Config_SellAlways = "sell_always"
 Addon.c_Config_AutoSell = "autosell"
 Addon.c_Config_Tooltip = "tooltip_basic"
 Addon.c_Config_Tooltip_Rule = "tooltip_addrule"
 Addon.c_Config_SellLimit = "autosell_limit"
 Addon.c_Config_MaxSellItems = "max_items_to_sell"
+Addon.c_Config_SellThrottle = "sell_throttle"
+Addon.c_Config_ThrottleTime = "throttle_time"
+Addon.c_Config_AutoRepair = "autorepair"
+Addon.c_Config_GuildRepair = "guildrepair"
+
