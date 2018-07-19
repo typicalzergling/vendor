@@ -362,7 +362,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Vendor.ConfigPanel.General.OnOpenBindings() 
+                        Vendor.ConfigPanel.General.OnOpenBindings()
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
