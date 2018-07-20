@@ -91,7 +91,7 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
     -- Checks the item set for the specified item
     local function check(itemId, setId)
         itemIds = C_EquipmentSet.GetItemIDs(setId);
-        for _, setItemId in ipairs(itemIds) do
+        for _, setItemId in pairs(itemIds) do
             if ((setItemId ~= -1) and (setItemId == itemId)) then
                 return true
             end
