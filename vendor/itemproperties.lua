@@ -29,6 +29,24 @@ local Addon, L = _G[select(1,...).."_GET"]()
 --     IsToy = false
 --     IsAlreadyKnown = false
 
+--[[
+local function GetItemEquipmentSets(itemId)
+    local sets = {}
+    local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
+    for _, setId in pairs(itemSets) do
+        local itemIds = C_EquipmentSet.GetItemIDs(setId)
+        for _, id in pairs(itemIds) do
+            if itemId == id then
+                local name = C_EquipmentSet.GetEquipmentSetInfo(setId)
+                table.insert(sets, name)
+                break
+            end
+        end
+    end
+    return sets
+end]]
+
+
 -- Gets information about the item in the specified slot.
 -- If we pass in a link, use the link. If link is nil, use bag and slot.
 -- We do this so we can evaluate based purely on a link, or on item container if we have it.
