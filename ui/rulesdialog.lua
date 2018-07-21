@@ -76,6 +76,8 @@ Addon.RulesDialog = {
     PrepareToShow = function(self)
         self.SellPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_SELL))
         self.KeepPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_KEEP))
+        Vendor.RulesUI.InitRuleList(self.CustomPanel.List, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
+        self.CustomPanel.List:SetRuleConfig({});
     end,
 
     --=========================================================================
@@ -114,6 +116,7 @@ Addon.RulesDialog = {
         Addon:DebugRules("Restoring rule configuration to the default")
         self.SellPanel.List:SetRuleConfig(Config:GetDefaultRulesConfig(RULE_TYPE_SELL))
         self.KeepPanel.List:SetRuleConfig(Config:GetDefaultRulesConfig(RULE_TYPE_KEEP))
+        self.CustomPanel.List:SetRuleConfig({});
     end,
 
     --=========================================================================
@@ -122,8 +125,9 @@ Addon.RulesDialog = {
     OnOk = function(self)
         Addon:DebugRules("Applying new rule configuration")
         Config:BeginBatch()
-            Addon.RulesDialog.UpdateRuleConfig(self.SellPanel.List)
-            Addon.RulesDialog.UpdateRuleConfig(self.KeepPanel.List)
+            Addon.RulesDialog.UpdateRuleConfig(self.SellPanel.List);
+            Addon.RulesDialog.UpdateRuleConfig(self.KeepPanel.List);
+            Addon.RulesDialog.UpdateRuleConfig(self.CustomPanel.List);
         Config:EndBatch()
         HideParentPanel(self.Container)
     end,

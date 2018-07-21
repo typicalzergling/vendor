@@ -63,13 +63,10 @@ function Addon.RuleManager.Rule:Create(ruleType, ruleId, ruleScript, params)
 
     -- If we got parameters, use them, otherwise lets make
     -- one which just includes the rule id.
-    if (params == nil) then
-        params = { rule = ruleId };
-    end
     if ((params ~= nil) and (type(params) == "table")) then
-        self.Params = {};
+        instance.Params = {};
         for name, value in pairs(params) do
-            rawset(self.Params, string.upper(name), value);
+            rawset(instance.Params, string.upper(name), value);
         end
     end
     
@@ -238,7 +235,7 @@ function Addon.RuleManager:AddRule(id,  script, parameters)
 
     table.insert(self.rules[RULE_TYPE_CUSTOM], rule);
     Addon:DebugRules("Added rule '%s'", id);
-    return true;
+    return rule;
 end
 
 --*****************************************************************************
@@ -439,6 +436,20 @@ function Addon.RuleManager:UpdateConfig(configTable)
         -- Handle custom rules (NYI)
         local customRules = configTable["custom"]
         if (customRules) then
+            for _, ruleConfig in pairs(customRules) do
+                if (type(ruleConfig) == "table") then
+                    local customRuleDef = (Vendor_CustomRuleDefinitions or {})[ruleConfig.rule];
+                    if (customRuleDef and not customRuleDef.HasError) then
+                        local result, message = self:AddRule(customRuleDef.Id, customRuleDef.Script, nil);
+                        if (not result) then
+                            Vendor:Debug("Unable to add custom rule '%s': %s", message);
+                            customRuleDef.HasError = true;
+                        else
+                            result.Name = customRuleDef.Name;
+                        end
+                    end
+                end                    
+            end                
         end
     end
 end

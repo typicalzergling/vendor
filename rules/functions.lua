@@ -91,23 +91,19 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
     -- Checks the item set for the specified item
     local function check(itemId, setId)
         itemIds = C_EquipmentSet.GetItemIDs(setId);
-        for _, setItemId in ipairs(itemIds) do
-            print("set:", setId, "setItem:", setItemId, "checkId", itemId);
+        for _, setItemId in pairs(itemIds) do
             if ((setItemId ~= -1) and (setItemId == itemId)) then
-                print("itemMatched:", setItemId, itemId);
                 return true
             end
         end
     end
-
-    print("----------------- start of eval ----------");
 
     local sets = { ... };
     local itemId = Id();
     if (#sets == 0) then
         -- No sets provied, so enumerate and check all of the characters item sets
         local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
-        for _, setId in ipairs(itemSets) do
+        for _, setId in pairs(itemSets) do
             if (check(itemId, setId)) then
                 return true;
             end

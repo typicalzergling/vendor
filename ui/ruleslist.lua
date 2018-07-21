@@ -245,12 +245,21 @@ function Addon.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
 
     assert(frame.RuleList, "Rule List frame needs to have the rule list set")
     assert(frame.RuleType, "Rule List frame needs to have the rule type set")
+    --if (self.Rules and ruleType == Addon.c_RuleType_Custom) then
+    --    Addon:Debug("Clearing old rule frames (count=%d)", #self.Rules);
+    --    while (#self.Rules ~= 0) do
+    --        table.remove(self.Rules);
+    --    end
+    --end
 
     -- Create the frame for each of our rules.
     for id, rule in pairs(ruleList) do
+    print("ruleId:", id);
+    table.foreach(rule, print);
         if (not rule.Locked) then
-            local rule = createRuleItem(frame, id, rule)
-            frame.RuleFrameSize = math.max(frame.RuleFrameSize, rule:GetHeight())
+            local ruleFrame = createRuleItem(frame, id, rule)
+            print("ruleFrame", ruleFrame);
+            frame.RuleFrameSize = math.max(frame.RuleFrameSize, ruleFrame:GetHeight())
         end
     end
 

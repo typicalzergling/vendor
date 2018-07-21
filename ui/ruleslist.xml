@@ -196,4 +196,11 @@
         </Scripts>
     </Frame>
 
+    <Frame name="VendorCustomRuleList" inherits="VendorSystemRuleList" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Vendor.RulesUI.InitRuleList(self, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
+            </OnLoad>
+        </Scripts>
+    </Frame>
 </Ui>

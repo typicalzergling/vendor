@@ -11,6 +11,7 @@ Addon.c_AlwaysSellList = "always"
 Addon.c_NeverSellList = "never"
 Addon.c_RuleType_Sell = "Sell"
 Addon.c_RuleType_Keep = "Keep"
+Addon.c_RuleType_Custom = "Custom";
 
 -- Config Constants
 Addon.c_ConfigSellNever = "sell_never"

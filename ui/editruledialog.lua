@@ -434,7 +434,7 @@ local MATCHES_LINK_FMT1 = "<p>%s</p>";
     | Called to handle updating the matches panel, this is called whenever
     | the panel is shown, or the rule has been updated.
     ===========================================================================--]]
-function EditRuleDialog.    UpdateMatches(self)
+function EditRuleDialog.UpdateMatches(self)
     if (self:IsShown()) then
         local ruleDialog = self:GetParent();
         if (ruleDialog.scriptValid) then
@@ -581,4 +581,23 @@ function EditRuleDialog.ValidateScript(self)
         self.scriptValid = false;
     end
     EditRuleDialog.UpdateButtonState(self);
+end
+
+--[[===========================================================================
+    | Called when the user clicks OKAY, this will create  a new custom 
+    | rule definition and place it into the saved variable.
+    ===========================================================================--]]
+function EditRuleDialog.HandleOk(self)
+    Addon:Debug("Creating new custom rule definition");
+    local newRuleDef = {};
+    local name, realm = UnitFullName("player");
+    newRuleDef.Id = self.ruleDef.Id;
+    newRuleDef.EditedBy = string.format("%s - %s", name, realm);
+    newRuleDef.Script = self.script.content:GetText();
+    newRuleDef.Name = self.name:GetText();
+    newRuleDef.Description = self.description.content:GetText();
+    print("here2");
+    Vendor_CustomRuleDefinitions = Vendor_CustomRuleDefinitions or {}
+    Vendor_CustomRuleDefinitions[newRuleDef.Id] = newRuleDef;
+    Addon:Debug("Created new custom rule definition (%s)", newRuleDef.Id);
 end

@@ -274,6 +274,9 @@
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
                 </Anchors>
+                <Scripts>
+                    <OnClick>print(pcall(function() Vendor.EditRuleDialog.HandleOk(self:GetParent()) end));PortraitFrameCloseButton_OnClick(self);</OnClick>
+                </Scripts>
             </Button>
 
             <!-- Rule definition -->
