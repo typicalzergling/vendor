@@ -133,6 +133,15 @@ Addon.SystemRules =
             Order = 1100,
         },
 
+        -- Safeguard rule - Keep BoE Equipment
+        bindonequipgear =
+        {
+            Name = L["SYSRULE_KEEP_BINDONEQUIPGEAR"],
+            Description = L["SYSRULE_KEEP_BINDONEQUIPGEAR_DESC"],
+            Script = "IsEquipment() and IsBindOnEquip()",
+            Order = 1150,
+        },
+
         -- Safeguard rule - Protect those transmogs!
         unknownappearance =
         {
