@@ -102,6 +102,10 @@ AddonLocales["enUS"] =
 ["CMD_LISTDATA_LISTITEM"] = "  %s - %s",
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
+["CMD_AUTOSELL_MERCHANTNOTOPEN"] = "Merchant window is not open. You must be at a merchant to auto-sell.",
+["CMD_AUTOSELL_INPROGRESS"] = "Already auto-selling. Please wait for completion before re-running.",
+["CMD_AUTOSELL_EXECUTING"] = "Running auto-sell.",
+
 -- Rules
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
 ["CONFIG_DIALOG_CAPTION"] = "Vendor Rules",

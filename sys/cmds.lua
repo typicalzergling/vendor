@@ -134,17 +134,17 @@ end
 function Addon:AutoSell_Cmd()
     -- Check for merchant not being open.
     if not self:IsMerchantOpen() then
-        self:Print("Merchant window is not open. You must be at a merchant to auto-sell.")
+        self:Print(L["CMD_AUTOSELL_MERCHANTNOTOPEN"])
         return
     end
     
     -- Check for sell in progress.
     if self:IsAutoSelling() then
-        self:Print("Already auto-selling. Please wait for completion before re-running.")
+        self:Print(L["CMD_AUTOSELL_INPROGRESS"])
         return
     end
 
     -- OK to do the auto-sell.
-    self:Print("Running auto-sell.")
+    self:Print(L["CMD_AUTOSELL_EXECUTING"])
     self:AutoSell()
 end
