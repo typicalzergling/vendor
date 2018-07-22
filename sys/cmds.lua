@@ -129,3 +129,22 @@ end
 function Addon:OpenConfigDialog_Cmd()
     Addon.RulesDialog.Toggle()
 end
+
+-- Initiates a manual Auto-Sell. This ignores the auto-sell configuration setting.
+function Addon:AutoSell_Cmd()
+    -- Check for merchant not being open.
+    if not self:IsMerchantOpen() then
+        self:Print("Merchant window is not open. You must be at a merchant to auto-sell.")
+        return
+    end
+    
+    -- Check for sell in progress.
+    if self:IsAutoSelling() then
+        self:Print("Already auto-selling. Please wait for completion before re-running.")
+        return
+    end
+
+    -- OK to do the auto-sell.
+    self:Print("Running auto-sell.")
+    self:AutoSell()
+end

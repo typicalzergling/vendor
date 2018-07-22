@@ -55,7 +55,7 @@ Addon.ConfigPanel.General = {
         Config:SetValue(SETTING_AUTOSELL, self.AutoSell.State:GetChecked())
         Config:SetValue(SETTING_TOOLTIP, self.Tooltip.State:GetChecked())
         Config:SetValue(SETTING_TOOLTIP_RULE, self.Tooltip.State:GetChecked() and self.TooltipRule.State:GetChecked())
-        Config:SetValue(SETTING_BUYBACK, self.EnableBuyback.State:GetChecked() and self.AutoSell.State:GetChecked())
+        Config:SetValue(SETTING_BUYBACK, self.EnableBuyback.State:GetChecked())
     end,
 
     --*****************************************************************************
@@ -81,11 +81,7 @@ Addon.ConfigPanel.General = {
         self.AutoSell.Text:SetText(L["OPTIONS_SETTINGDESC_AUTOSELL"]);
         self.AutoSell.Label:SetText(L["OPTIONS_SETTINGNAME_AUTOSELL"]);
         self.EnableBuyback.Label:SetText(L["OPTIONS_SETTINGNAME_BUYBACK"]);
-        self.EnableBuyback.Text:SetText(L["OPTIONS_SETTINGDESC_BUYBACK"])
-        self.AutoSell.OnStateChange = 
-            function(checkbox, state)
-                Addon.ConfigPanel.General.updateEnableBuyback(self, state);
-            end
+        self.EnableBuyback.Text:SetText(L["OPTIONS_SETTINGDESC_BUYBACK"]);
 
         self.Tooltip.Text:SetText(L["OPTIONS_SETTINGDESC_TOOLTIP"]);
         self.Tooltip.Label:SetText(L["OPTIONS_SETTINGNAME_TOOLTIP"]);
