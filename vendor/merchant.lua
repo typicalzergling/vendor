@@ -7,11 +7,15 @@ local threadName = "ItemSeller"
 function Addon:OnMerchantShow()
     self:Debug("Merchant opened.")
 
-    -- Do auto-repair
-    self:AutoRepair()
+    -- Do auto-repair if enabled
+    if Config:GetValue(Addon.c_Config_AutoRepair) then
+        self:AutoRepair()
+    end
 
-    -- Do auto-selling
-    self:AutoSell()
+    -- Do auto-selling if enabled
+    if Config:GetValue(Addon.c_Config_AutoSell) then
+        self:AutoSell()
+    end
 end
 
 -- For checking to make sure merchant window is open prior to selling anything.
@@ -26,8 +30,6 @@ end
 
 -- Do Autorepair. If using guild funds and guild funds don't cover the repair, we will use our own funds.
 function Addon:AutoRepair()
-    if not Config:GetValue(Addon.c_Config_AutoRepair) then return end
-
     local cost, canRepair = GetRepairAllCost()
     if canRepair then
         if Config:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
@@ -63,9 +65,8 @@ end
 --    skipped from the sell if it moved from a yet-to-be-checked slot to an already-checked slot. We could be more robust here
 --    and watch for these events and re-scan, but that's making things significantly more complex for an edge case that doesnt
 --    really matter. Worst-case, the user re-opens the merchant window.
+-- Tiggered manually flag is to give additional feedback during the auto-selling.
 function Addon:AutoSell()
-    if not Config:GetValue(Addon.c_Config_AutoSell) then return end
-
     -- Start selling on a thread.
     -- If coroutine already exists no need to create another one.
     if self:GetThread(threadName) then
