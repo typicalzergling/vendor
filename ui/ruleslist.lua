@@ -18,7 +18,10 @@ Addon.RulesList =
     -- Updates the state of the up/down arrows for the specified rule item
     --*****************************************************************************
     UpdateMoveButtons = function(rule)
-        if (rule.first) then
+        if (rule.first and rule.last) then
+            rule.MoveUp:Hide();
+            rule.MoveDown:Hide();
+        elseif (rule.first) then
             rule.MoveUp:Hide()
             rule.MoveDown:Show()
         elseif (rule.last) then
@@ -149,6 +152,16 @@ local function createRuleItem(parent, ruleId, rule)
     if (frame.ItemLevel) then
         frame.ItemLevel.Label:SetText(L["RULEUI_LABEL_ITEMLEVEL"])
         frame.ToggleRuleState = toggleRuleWithItemLevel
+    end
+
+    -- If this rule has an error then update the error items to reflect 
+    -- the error state.
+    if (rule.InError) then
+        frame.hasError:Show();
+        frame.errorBack:Show();
+    else
+        frame.hasError:Hide();
+        frame.errorBack:Hide();
     end
 
     updateRuleEnabledState(frame, parent.RuleConfig)
@@ -323,8 +336,25 @@ end
 local RulesList = Addon.RulesList;
 
 function RulesList.OnRuleItemMouseUp(ruleItem, mouseButton)
-    if ((mouseButton == "RightButton") and IsShiftKeyDown()) then
-        VendorEditRuleDialog:EditRule(ruleItem.Rule, true)
+    local ruleType = ruleItem:GetParent().RuleType;
+    if (ruleType ~= Addon.c_RuleType_Custom) then
+        -- System rules can be displayed (read-only) by shift-right click
+        if ((mouseButton == "RightButton") and IsShiftKeyDown()) then
+            VendorEditRuleDialog:EditRule(ruleItem.Rule, true)
+        end
+    elseif ((ruleType == Addon.c_RuleType_Custom) and (mouseButton == "LeftButton")) then
+        -- Custom rules are edited by double clicking.  So in order to handle that
+        -- we need to set a timer and when it expires clear the double click logic. When
+        -- the timer expires (it's a single shot) we clear the time which means we don't
+        -- have a click pending, otherwise it's valid and we've got a click pending so
+        --- this has become a double click.
+        if (not ruleItem.timer) then
+            ruleItem.timer = C_Timer.NewTicker(0.500, function() ruleItem.timer = nil; end);
+        else
+            ruleItem.timer:Cancel();
+            ruleItem.timer = nil;
+            VendorEditRuleDialog:EditRule(ruleItem.Rule, false);
+        end
     end
 end
 

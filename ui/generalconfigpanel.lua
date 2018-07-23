@@ -37,17 +37,6 @@ function GeneralPanel.OnOpenRules()
     Addon.RulesDialog.Toggle()
 end
 
-    --*****************************************************************************
-    -- Called to push the settings from our page into the addon
-    --*****************************************************************************
-    Apply = function(self)
-        Addon:Debug("Applying sell panel configuration")
-        Config:SetValue(SETTING_AUTOSELL, self.AutoSell.State:GetChecked())
-        Config:SetValue(SETTING_TOOLTIP, self.Tooltip.State:GetChecked())
-        Config:SetValue(SETTING_TOOLTIP_RULE, self.Tooltip.State:GetChecked() and self.TooltipRule.State:GetChecked())
-        Config:SetValue(SETTING_BUYBACK, self.EnableBuyback.State:GetChecked())
-    end,
-
 --*****************************************************************************
 -- Called to push the settings from our page into the addon
 --*****************************************************************************

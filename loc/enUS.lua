@@ -113,7 +113,7 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SELLRULES_TAB"] = "Sell Rules",
 ["CONFIG_DIALOG_SELLRULES_TEXT"] = "These rules govern what will be auto-sold to the merchant. Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept. Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work, check the Keep Rules to see if something is preventing it.",
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Rules",
-["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "Custom rules are not yet implemented but are coming Soon(TM)",
+["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "The custom rules you have defined (account wide) are shown below.  You can create a new one by using the button on the bottom or edit your rule by double clicking it.",
 
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",
@@ -162,10 +162,24 @@ AddonLocales["enUS"] =
 
 -- Edit Rule Dialog
 ["EDITRULE_CAPTION"] = "Edit Rule",
+["VIEWRULE_CAPTION"] = "View Rule",
+["CREATE_BUTTON"] = "Create",
 ["EDITRULE_NAME_LABEL"] = "Name:",
+["EDITRULE_NAME_HELPTEXT"] = "type the name of your rule here",
+["EDITRULE_FILTER_LABEL"] = "Filter:",
+["EDITRULE_FILTER_HELPTEXT"] = "click here to filter the help",
 ["EDITRULE_DESCR_LABEL"] = "Description:",
+["EDITRULE_DESCR_HELPTEXT"] = "type the description of your rule here",
 ["EDITRULE_SCRIPT_LABEL"] = "Script:",
-["EDITRULE_EXPAND_TOOLTIP"] = "Expand the dialog showing the API help",
-["EDITRULE_COLLAPSE_TOOLTIP"] = "Collapse the dialog hiding the API help",
+["EDITRULE_SCRIPT_HELPTEXT"] = "enter the script for your rule here, see 'Help' for a list of available functions along with relational operators: and, or, >, >=, <, <=, ==, ~=",
+["EDITRULE_HELP_TAB_NAME"] = "Help",
+["EDITRULE_MATCHES_TAB_NAME"] = "Matches",
+["EDITRULE_MATCHES_TAB_TEXT"] = "Below you can see all of the items currently in your inventory which would be matched by this rules text.",
+["EDITRULE_ITEMINFO_TAB_NAME"] = "Item Info",
+["EDITRULE_ITEMINFO_TAB_TEXT"] = "Drag an item into the space below to view all of the functions available to your script.",
+["EDITRULE_SCRIPT_OKAY"] = "Your script parses successfully, please check the matches tab to be sure it does what you expect.",
+["EDITRULE_SCRIPT_ERROR"] = "There was an error parsing your rule: %s",
+
+
 
 } -- END OF LOCALIZATION TABLE

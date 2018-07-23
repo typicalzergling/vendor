@@ -19,6 +19,18 @@
                         <Anchor point="BOTTOMRIGHT" x="-16" />
                     </Anchors>
                 </Texture>
+
+                <!-- Error indicator (meaning the rule has an error -->
+                <Texture parentKey="errorBack" hidden="true">
+                    <Color r="1.0" g="0" b="0" a="0.15"/>
+                </Texture>
+                <FontString parentKey="hasError" text="!" inherits="Game30Font" justifyH="LEFT" justifyV="BOTTOM" hidden="true">
+                    <Color r="1.0" g="0.0" b="0" a="9.5"/>
+                    <Size x="32" y="60"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="8" y="2"/>                        
+                    </Anchors>
+                </FontString>
             </Layer>
         </Layers>
         <Frames>
@@ -77,7 +89,6 @@
             <OnMouseUp>Vendor.RulesList.OnRuleItemMouseUp(self, button)</OnMouseUp>
         </Scripts>
     </Frame>
-
 
     <Frame name="VendorSimpleRuleTemplate" virtual="true" visble="false" inherits="BaseVendorSimpleRuleTemplate">
         <Size x="250" y="64"/>

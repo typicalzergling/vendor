@@ -196,14 +196,17 @@ Addon.EditRuleDialog =
         self.EditRule = Addon.EditRuleDialog.EditRule
         self:SetClampedToScreen(true)
 
-        Addon.EditRuleDialog.SetEditLabel(self.name, L["EDITRULE_NAME_LABEL"]);
-        Addon.EditRuleDialog.SetEditLabel(self.script, L["EDITRULE_SCRIPT_LABEL"]);
-        Addon.EditRuleDialog.SetEditLabel(self.description, "[DESCRIPTION]");
+        Addon.EditRuleDialog.SetEditLabel(self.name, L.EDITRULE_NAME_LABEL);
+        Addon.EditRuleDialog.SetEditHelpText(self.name, L.EDITRULE_NAME_HELPTEXT);
+        Addon.EditRuleDialog.SetEditLabel(self.script, L.EDITRULE_SCRIPT_LABEL);
+        Addon.EditRuleDialog.SetEditHelpText(self.script, L.EDITRULE_SCRIPT_HELPTEXT);
+        Addon.EditRuleDialog.SetEditLabel(self.description, L.EDITRULE_DESCR_LABEL);
+        Addon.EditRuleDialog.SetEditHelpText(self.description, L.EDITRULE_DESCR_HELPTEXT);
 
         -- Initialize the tabs
-        Addon.EditRuleDialog.InitTab(self, self.helpTab, "[HELP]")
-        Addon.EditRuleDialog.InitTab(self, self.itemInfoTab, "[ITEM_INFO]")
-        Addon.EditRuleDialog.InitTab(self, self.matchesTab, "[MATCHES]")
+        Addon.EditRuleDialog.InitTab(self, self.helpTab, L.EDITRULE_HELP_TAB_NAME)
+        Addon.EditRuleDialog.InitTab(self, self.itemInfoTab, L.EDITRULE_ITEMINFO_TAB_NAME, L.EDITRULE_ITEMINFO_TAB_TEXT);
+        Addon.EditRuleDialog.InitTab(self, self.matchesTab,  L.EDITRULE_MATCHES_TAB_NAME, L.EDITRULE_MATCHES_TAB_TEXT);
         PanelTemplates_SetNumTabs(self, table.getn(self.Tabs))
         self.selectedTab = self.helpTab:GetID()
         PanelTemplates_UpdateTabs(self);
@@ -237,12 +240,21 @@ Addon.EditRuleDialog =
         end
     end,
 
-    InitTab = function(self, tab, name)
+    InitTab = function(self, tab, name, topText)
         tab:SetText(name)
         PanelTemplates_TabResize(tab, 0)
         for _, spacer in ipairs(tab.Spacers) do
             spacer:SetVertexColor(0.8, 0.8, 0.8, 0.50);
             spacer:Hide();
+        end
+
+        if (topText) then
+            for _, panel in pairs(self.Panels) do
+                if ((panel:GetID() == tab:GetID()) and panel.topText) then
+                    panel.topText:SetText(topText);
+                    break;
+                end
+            end
         end
     end,
 
@@ -285,7 +297,8 @@ Addon.EditRuleDialog =
     end,
 
     OnHelpPaneLoad = function(self)
-        Addon.EditRuleDialog.SetEditHelpText(self.filter, "[CLICK_TO_FILTER]")
+        self.filterLabel:SetText(L.EDITRULE_FILTER_LABEL);
+        Addon.EditRuleDialog.SetEditHelpText(self.filter, L.EDITRULE_FILTER_HELPTEXT)
     end,
 
     --*****************************************************************************
@@ -339,13 +352,16 @@ Addon.EditRuleDialog =
     -- help text if we've got content.
     --*****************************************************************************
     OnEditFocusChange = function(self, gained)
-        if (self.helpText) then
+        local helpText = self.helpText or self:GetParent().helpText;
+        if (helpText) then
             if (gained) then
-                self.helpText:Hide()
+                helpText:Hide()
             else
                 local text = self:GetText()
                 if (not text or (text == "") or (string.len(text) == 0)) then
-                    self.helpText:Show()
+                    helpText:Show()
+                else
+                    helpText:Hide();
                 end
             end
         end
@@ -387,7 +403,7 @@ Addon.EditRuleDialog =
     -- Create a new rule (Generates a unique new id for it) and then opens the
     -- dialog to the rule (read only is considered false)
     --*****************************************************************************
-    CreateRule = function(self)
+    CreateNewRule = function(self)
         self:EditRule({ Id = RuleManager.CreateCustomRuleId() })
     end,
 
@@ -402,7 +418,9 @@ Addon.EditRuleDialog =
 
         -- Set the name / description
         self.name:SetText(ruleDef.Name or "")
+        Vendor.EditRuleDialog.OnEditFocusChange(self.name);
         self.description.content:SetText(ruleDef.Description or "")
+        Vendor.EditRuleDialog.OnEditFocusChange(self.description.content);
 
         -- Set the script text
         if (ruleDef.ScriptText) then
@@ -412,22 +430,22 @@ Addon.EditRuleDialog =
         else
             self.script.content:SetText("")
         end
+        Vendor.EditRuleDialog.OnEditFocusChange(self.script.content, false);
 
         -- If we're read-only disable all the fields.
         if (readOnly) then
             Addon.EditRuleDialog.SetMode(self, MODE_READONLY);
+            Addon.EditRuleDialog.UpdateButtonState(self);            
         else
             Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
+            Addon.EditRuleDialog.ValidateScript(self);
         end
 
-        Addon.EditRuleDialog.UpdateButtonState(self);
         self:Show()
     end,
 };
 
 local EditRuleDialog = Addon.EditRuleDialog;
-local MATCHES_HTML_BODY_FMT1 = "<html><body>%s</body></html>";
-local MATCHES_LINK_FMT1 = "<p>%s</p>";
 
 
 --[[===========================================================================
@@ -460,7 +478,7 @@ function EditRuleDialog.SetMode(self, mode)
         self.mode = mode;
         if (mode == MODE_READONLY) then
             self:SetWidth(READONLY_WIDTH)
-            self.Caption:SetText(L["EDITRULE_CAPTION"]);
+            self.Caption:SetText(L["VIEWRULE_CAPTION"]);
 
             -- ReadOnly hides the panels to the right
             for _, panel in ipairs(self.Panels) do
@@ -481,7 +499,7 @@ function EditRuleDialog.SetMode(self, mode)
             self.successText:Hide();
         else
         	self:SetWidth(EDIT_WIDTH)
-            self.Caption:SetText("[RULEDIALOG_READONLY_CAPTION]");
+            self.Caption:SetText(L.EDITRULE_CAPTION);
 
             -- Full mode shows everything
             for _, tab in ipairs(self.Tabs) do
@@ -505,7 +523,6 @@ end
 -- todo move to rule manager
 function RuleManager.CreateRuleFunction(script)
     local result, message = loadstring("return " .. script,  "");
-    print(result, message)
     if (not result) then
        return result, message:gsub("%[string.*:%d+:%s*", "");
     end
@@ -569,17 +586,19 @@ function EditRuleDialog.ValidateScript(self)
         local result, message = RuleManager.CreateRuleFunction(scriptText);
         if (not result) then
             self.errorText:Show();
-            self.errorText:SetText(message);
+            self.errorText:SetFormattedText(L.EDITRULE_SCRIPT_ERROR, message);
             self.successText:Hide();
             self.scriptValid = false;
         else
             self.errorText:Hide();
+            self.successText:SetText(L.EDITRULE_SCRIPT_OKAY);
             self.successText:Show();
             self.scriptValid = true;
         end
     else
         self.scriptValid = false;
     end
+
     EditRuleDialog.UpdateButtonState(self);
 end
 
@@ -589,6 +608,7 @@ end
     ===========================================================================--]]
 function EditRuleDialog.HandleOk(self)
     Addon:Debug("Creating new custom rule definition");
+    
     local newRuleDef = {};
     local name, realm = UnitFullName("player");
     newRuleDef.Id = self.ruleDef.Id;
@@ -596,8 +616,11 @@ function EditRuleDialog.HandleOk(self)
     newRuleDef.Script = self.script.content:GetText();
     newRuleDef.Name = self.name:GetText();
     newRuleDef.Description = self.description.content:GetText();
-    print("here2");
     Vendor_CustomRuleDefinitions = Vendor_CustomRuleDefinitions or {}
     Vendor_CustomRuleDefinitions[newRuleDef.Id] = newRuleDef;
+
     Addon:Debug("Created new custom rule definition (%s)", newRuleDef.Id);
+    if (VendorRulesDialog:IsShown()) then
+        VendorRulesDialog:UpdateCustomRules();
+    end
 end
