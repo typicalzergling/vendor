@@ -18,8 +18,9 @@ local processingFrame = CreateFrame("Frame")
 processingFrame:Hide()
 processingFrame:SetScript("OnUpdate", function(self, elapsed)
     counter = counter + elapsed
-    if counter >= Addon:GetConfig():GetValue("throttle_time") then
-        counter = counter - Addon:GetConfig():GetValue("throttle_time")
+    local throttletime = Addon:GetConfig():GetValue(Addon.c_Config_ThrottleTime)
+    if counter >= throttletime then
+        counter = counter - throttletime
 
         -- Do some processing on the next thread.
         Addon:DoSomeWork()

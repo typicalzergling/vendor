@@ -24,14 +24,14 @@ Addon.DefaultConfig.Settings =
     version = 2,
 
     -- Default values of our settings
-    throttle_time = 0.15,
-    autosell = true,
-    autorepair = true,
-    guildrepair = true,
-    sell_throttle = 1,
-    sell_never = {},
-    sell_always = {},
-    tooltip_basic = true,
+    [Addon.c_Config_ThrottleTime] = 0.15,
+    [Addon.c_Config_AutoSell] = true,
+    [Addon.c_Config_AutoRepair] = true,
+    [Addon.c_Config_GuildRepair] = true,
+    [Addon.c_Config_SellThrottle] = 1,
+    [Addon.c_Config_SellNever] = {},
+    [Addon.c_Config_SellAlways] = {},
+    [Addon.c_Config_Tooltip] = true,
     [Addon.c_Config_SellLimit] = false,
     [Addon.c_Config_MaxSellItems] = Addon.c_BuybackLimit,
 }
@@ -72,8 +72,8 @@ Addon.DefaultConfig.Rules =
 
 -- NOTE: Per character isn't fully implemented
 
-local NEVER_SELL = Addon.c_ConfigSellNever
-local ALWAYS_SELL = Addon.c_ConfigSellAlways
+local NEVER_SELL = Addon.c_Config_SellNever
+local ALWAYS_SELL = Addon.c_Config_SellAlways
 local KEEP_RULES = "keep";
 local SELL_RULES = "sell";
 

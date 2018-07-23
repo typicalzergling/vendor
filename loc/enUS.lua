@@ -14,12 +14,15 @@ AddonLocales["enUS"] =
 ["BINDING_DESC_VENDORALWAYSSELL"] = "Adds the item currently in the game tooltip to the Always-sell list. Removes it if it is already in the list.",
 ["BINDING_NAME_VENDORNEVERSELL"] = "Toggle Never-Sell Item",
 ["BINDING_DESC_VENDORNEVERSELL"] = "Adds the item currently in the game tooltip to the Never-sell list. Removes it if it is already in the list.",
+["BINDING_NAME_VENDORRUNAUTOSELL"] = "Autosell at Merchant",
+["BINDING_DESC_VENDORRUNAUTOSELL"] = "Manually trigger an autoselling run while at a merchant.",
 
 -- Merchant
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
-["MERCHANT_SELLING_ITEM"] = "Selling %s for %s",
+["MERCHANT_SELLING_ITEM"] = "Sold %s for %s",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
+["MERCHANT_SELL_LIMIT_REACHED"] = "Reached the sell limit (%s), stopping auto-sell.",
 ["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
 
 -- Tooltip
@@ -47,9 +50,9 @@ AddonLocales["enUS"] =
 ["OPTIONS_HEADER_SELLING"] = "General",
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Keep rules are always processed first, then Sell rules run on items that remain. By default we have several safeguard Keep rules enabled so you don't accidentally sell something you want. Before disabling any Keep rules, you should definitely take a look at the sell rules that are enabled first.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
-["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.",
+["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items when interacting with a merchant. If this is disabled you can still manually sell by setting a hotkey.",
 ["OPTIONS_SETTINGNAME_BUYBACK"] = "Limit number sold to 12",
-["OPTIONS_SETTINGDESC_BUYBACK"] = "Limits the number of items sold each time you interact with the merchant to 12, which is the buyback limit. This allows you to always buy back any items that were sold.",
+["OPTIONS_SETTINGDESC_BUYBACK"] = "Limits the number of items sold each time an autosell is triggered to 12, which is the buyback limit. This allows you to always buy back any items that were sold.",
 ["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
 ["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
 ["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
@@ -98,6 +101,10 @@ AddonLocales["enUS"] =
 ["CMD_LISTDATA_LISTITEM"] = "  %s - %s",
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
+["CMD_AUTOSELL_MERCHANTNOTOPEN"] = "Merchant window is not open. You must be at a merchant to auto-sell.",
+["CMD_AUTOSELL_INPROGRESS"] = "Already auto-selling. Please wait for completion before re-running.",
+["CMD_AUTOSELL_EXECUTING"] = "Running auto-sell.",
+
 -- Rules
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
 ["CONFIG_DIALOG_CAPTION"] = "Vendor Rules",
@@ -133,6 +140,8 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_UNSELLABLE_DESC"] = "These items have no value and cannot be sold to a merchant. If you don't like it, take it up with Blizzard.",
 ["SYSRULE_KEEP_SOULBOUNDGEAR"] = "Soulbound Gear",
 ["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Soulbound"..FONT_COLOR_CODE_CLOSE.." to you even items your class cannot wear. This is a safeguard rule meant to protect you from accidentally vendoring your valuables. In order to fully take advantage of many of the Sell Rules, you will need to disable this rule but think carefully before you do.",
+["SYSRULE_KEEP_BINDONEQUIPGEAR"] = "Bind-on-Equip Gear",
+["SYSRULE_KEEP_BINDONEQUIPGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Binds when equipped"..FONT_COLOR_CODE_CLOSE..". This is intended to make sure you can always auction or trade your BoE equipment.",
 ["SYSRULE_KEEP_COMMON"] = "Common Items",
 ["SYSRULE_KEEP_COMMON_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[1].hex.."Common"..FONT_COLOR_CODE_CLOSE.." quality item. These are typically valuable consumables or crafting materials. This is a safeguard rule meant to protect you from vendoring your consumables and crafting materials.",
 ["SYSRULE_KEEP_UNKNOWNAPPEARANCE"] = "Uncollected Appearances",

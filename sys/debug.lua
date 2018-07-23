@@ -91,7 +91,11 @@ function Addon:DumpTooltipItemProperties()
     -- Print non-derived properties first.
     for i, v in Addon.orderedPairs(props) do
         if not string.find(i, "^Is") then
-            self:Print("    ["..tostring(i).."] "..tostring(v))
+            local val = v
+            if type(v) == "table" then
+                val = "{"..table.concat(v, ", ").."}"
+            end
+            self:Print("    ["..tostring(i).."] "..tostring(val))
         end
     end
 
