@@ -73,6 +73,7 @@ Addon.RulesDialog = {
         -- Called from the edit rule dialog if we are visible
         self.UpdateCustomRules = function()
                 Vendor.RulesUI.InitRuleList(self.CustomPanel.List, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
+                self.CustomPanel.List:SetRuleConfig(Config:GetRulesConfig(Vendor.c_RuleType_Custom));
             end;
     end,
 
@@ -83,7 +84,7 @@ Addon.RulesDialog = {
         self.SellPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_SELL))
         self.KeepPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_KEEP))
         Vendor.RulesUI.InitRuleList(self.CustomPanel.List, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
-        self.CustomPanel.List:SetRuleConfig({});
+        self.CustomPanel.List:SetRuleConfig(Config:GetRulesConfig(Vendor.c_RuleType_Custom))
     end,
 
     --=========================================================================
