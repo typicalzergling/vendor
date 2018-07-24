@@ -14,12 +14,15 @@ AddonLocales["enUS"] =
 ["BINDING_DESC_VENDORALWAYSSELL"] = "Adds the item currently in the game tooltip to the Always-sell list. Removes it if it is already in the list.",
 ["BINDING_NAME_VENDORNEVERSELL"] = "Toggle Never-Sell Item",
 ["BINDING_DESC_VENDORNEVERSELL"] = "Adds the item currently in the game tooltip to the Never-sell list. Removes it if it is already in the list.",
+["BINDING_NAME_VENDORRUNAUTOSELL"] = "Autosell at Merchant",
+["BINDING_DESC_VENDORRUNAUTOSELL"] = "Manually trigger an autoselling run while at a merchant.",
 
 -- Merchant
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
-["MERCHANT_SELLING_ITEM"] = "Selling %s for %s",
+["MERCHANT_SELLING_ITEM"] = "Sold %s for %s",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
+["MERCHANT_SELL_LIMIT_REACHED"] = "Reached the sell limit (%s), stopping auto-sell.",
 ["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
 
 -- Tooltip
@@ -47,9 +50,9 @@ AddonLocales["enUS"] =
 ["OPTIONS_HEADER_SELLING"] = "General",
 ["OPTIONS_DESC_SELLING"] = "What to sell at a vendor automatically. Keep rules are always processed first, then Sell rules run on items that remain. By default we have several safeguard Keep rules enabled so you don't accidentally sell something you want. Before disabling any Keep rules, you should definitely take a look at the sell rules that are enabled first.\n",
 ["OPTIONS_SETTINGNAME_AUTOSELL"] = "Auto-Sell",
-["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items per the sell and keep rules.",
+["OPTIONS_SETTINGDESC_AUTOSELL"] = "Automatically sell items when interacting with a merchant. If this is disabled you can still manually sell by setting a hotkey.",
 ["OPTIONS_SETTINGNAME_BUYBACK"] = "Limit number sold to 12",
-["OPTIONS_SETTINGDESC_BUYBACK"] = "Limits the number of items sold each time you interact with the merchant to 12, which is the buyback limit. This allows you to always buy back any items that were sold.",
+["OPTIONS_SETTINGDESC_BUYBACK"] = "Limits the number of items sold each time an autosell is triggered to 12, which is the buyback limit. This allows you to always buy back any items that were sold.",
 ["OPTIONS_SETTINGNAME_CONFIG"] = "Open Rule Config",
 ["OPTIONS_SETTINGDESC_CONFIG"] = "Shows the Rule Configuration Dialog, allowing you to toggle rules and create your own rules.",
 ["OPTIONS_SETTINGNAME_TOOLTIP"] = "Enable ToolTip",
@@ -98,6 +101,10 @@ AddonLocales["enUS"] =
 ["CMD_LISTDATA_LISTITEM"] = "  %s - %s",
 ["CMD_LISTDATA_NOTINCACHE"] = "[Item not seen yet, re-run to see it]",
 
+["CMD_AUTOSELL_MERCHANTNOTOPEN"] = "Merchant window is not open. You must be at a merchant to auto-sell.",
+["CMD_AUTOSELL_INPROGRESS"] = "Already auto-selling. Please wait for completion before re-running.",
+["CMD_AUTOSELL_EXECUTING"] = "Running auto-sell.",
+
 -- Rules
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
 ["CONFIG_DIALOG_CAPTION"] = "Vendor Rules",
@@ -106,7 +113,7 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SELLRULES_TAB"] = "Sell Rules",
 ["CONFIG_DIALOG_SELLRULES_TEXT"] = "These rules govern what will be auto-sold to the merchant. Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept. Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work, check the Keep Rules to see if something is preventing it.",
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Rules",
-["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "Custom rules are not yet implemented but are coming Soon(TM)",
+["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "The custom rules you have defined (account wide) are shown below.  You can create a new one by using the button on the bottom or edit your rule by double clicking it.",
 
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",
@@ -133,6 +140,8 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_UNSELLABLE_DESC"] = "These items have no value and cannot be sold to a merchant. If you don't like it, take it up with Blizzard.",
 ["SYSRULE_KEEP_SOULBOUNDGEAR"] = "Soulbound Gear",
 ["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Soulbound"..FONT_COLOR_CODE_CLOSE.." to you even items your class cannot wear. This is a safeguard rule meant to protect you from accidentally vendoring your valuables. In order to fully take advantage of many of the Sell Rules, you will need to disable this rule but think carefully before you do.",
+["SYSRULE_KEEP_BINDONEQUIPGEAR"] = "Bind-on-Equip Gear",
+["SYSRULE_KEEP_BINDONEQUIPGEAR_DESC"] = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Binds when equipped"..FONT_COLOR_CODE_CLOSE..". This is intended to make sure you can always auction or trade your BoE equipment.",
 ["SYSRULE_KEEP_COMMON"] = "Common Items",
 ["SYSRULE_KEEP_COMMON_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[1].hex.."Common"..FONT_COLOR_CODE_CLOSE.." quality item. These are typically valuable consumables or crafting materials. This is a safeguard rule meant to protect you from vendoring your consumables and crafting materials.",
 ["SYSRULE_KEEP_UNKNOWNAPPEARANCE"] = "Uncollected Appearances",
@@ -153,10 +162,24 @@ AddonLocales["enUS"] =
 
 -- Edit Rule Dialog
 ["EDITRULE_CAPTION"] = "Edit Rule",
+["VIEWRULE_CAPTION"] = "View Rule",
+["CREATE_BUTTON"] = "Create",
 ["EDITRULE_NAME_LABEL"] = "Name:",
+["EDITRULE_NAME_HELPTEXT"] = "type the name of your rule here",
+["EDITRULE_FILTER_LABEL"] = "Filter:",
+["EDITRULE_FILTER_HELPTEXT"] = "click here to filter the help",
 ["EDITRULE_DESCR_LABEL"] = "Description:",
+["EDITRULE_DESCR_HELPTEXT"] = "type the description of your rule here",
 ["EDITRULE_SCRIPT_LABEL"] = "Script:",
-["EDITRULE_EXPAND_TOOLTIP"] = "Expand the dialog showing the API help",
-["EDITRULE_COLLAPSE_TOOLTIP"] = "Collapse the dialog hiding the API help",
+["EDITRULE_SCRIPT_HELPTEXT"] = "enter the script for your rule here, see 'Help' for a list of available functions along with relational operators: and, or, >, >=, <, <=, ==, ~=",
+["EDITRULE_HELP_TAB_NAME"] = "Help",
+["EDITRULE_MATCHES_TAB_NAME"] = "Matches",
+["EDITRULE_MATCHES_TAB_TEXT"] = "Below you can see all of the items currently in your inventory which would be matched by this rules text.",
+["EDITRULE_ITEMINFO_TAB_NAME"] = "Item Info",
+["EDITRULE_ITEMINFO_TAB_TEXT"] = "Drag an item into the space below to view all of the functions available to your script.",
+["EDITRULE_SCRIPT_OKAY"] = "Your script parses successfully, please check the matches tab to be sure it does what you expect.",
+["EDITRULE_SCRIPT_ERROR"] = "There was an error parsing your rule: %s",
+
+
 
 } -- END OF LOCALIZATION TABLE

@@ -20,8 +20,8 @@ end
 --*****************************************************************************
 function Addon.ConfigPanel.Repair.Set(self, config)
     Addon:Debug("Setting repair panel config")
-    self.AutoRepair.State:SetChecked(not not config:GetValue("autorepair"))
-    self.GuildRepair.State:SetChecked(not not config:GetValue("guildrepair"))
+    self.AutoRepair.State:SetChecked(not not config:GetValue(Addon.c_Config_AutoRepair))
+    self.GuildRepair.State:SetChecked(not not config:GetValue(Addon.c_Config_GuildRepair))
 end
 
 --*****************************************************************************
@@ -31,8 +31,8 @@ function Addon.ConfigPanel.Repair.Apply(self, config)
     Addon:Debug("Applying repair options")
 
     local autorepair = self.AutoRepair.State:GetChecked()
-    config:SetValue("autorepair", autorepair)
-    config:SetValue("guildrepair", autorepair and self.GuildRepair.State:GetChecked())
+    config:SetValue(Addon.c_Config_AutoRepair, autorepair)
+    config:SetValue(Addon.c_Config_GuildRepair, autorepair and self.GuildRepair.State:GetChecked())
 end
 
 --*****************************************************************************

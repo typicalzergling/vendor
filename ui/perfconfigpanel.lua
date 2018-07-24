@@ -15,11 +15,11 @@ local TIME_MULT = 10
 function Addon.ConfigPanel.Perf.Set(self, config)
     Addon:Debug("Setting performance panel config")
 
-    local time = math.max(MIN_TIME_THROTTLE, math.min(MAX_TIME_THROTTLE, config:GetValue("throttle_time") or 0))
+    local time = math.max(MIN_TIME_THROTTLE, math.min(MAX_TIME_THROTTLE, config:GetValue(Addon.c_Config_ThrottleTime) or 0))
     self.TimeThrottle.Value:SetValue(time * TIME_MULT)
     self.TimeThrottle.DisplayValue:SetFormattedText("%0.2f", time)
 
-    local sell = math.max(MIN_SELL_THROTTLE, math.min(MAX_SELL_THROTTLE, config:GetValue("sell_throttle") or 0))
+    local sell = math.max(MIN_SELL_THROTTLE, math.min(MAX_SELL_THROTTLE, config:GetValue(Addon.c_Config_SellThrottle) or 0))
     self.SellThrottle.Value:SetValue(sell)
     self.SellThrottle.DisplayValue:SetFormattedText("%0d", sell)
 end
@@ -29,8 +29,8 @@ end
 --*****************************************************************************
 function Addon.ConfigPanel.Perf.Apply(self, config)
     Addon:Debug("Applying performance options")
-    config:SetValue("sell_throttle", self.SellThrottle.Value:GetValue())
-    config:SetValue("throttle_time", self.TimeThrottle.Value:GetValue() / TIME_MULT)
+    config:SetValue(Addon.c_Config_SellThrottle, self.SellThrottle.Value:GetValue())
+    config:SetValue(Addon.c_Config_ThrottleTime, self.TimeThrottle.Value:GetValue() / TIME_MULT)
 end
 
 --*****************************************************************************

@@ -110,11 +110,11 @@
 				<Texture parentKey="scrollbarBack">
 					<Color r="0" g="0" b="0" a="0.50"/>
 				</Texture>
-				<FontString parentKey="helpText" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+				<FontString parentKey="helpText" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP">
 					<Color r="0.6" g="0.6" b="0.6" a="0.6"/>
 					<Anchors>
-						<Anchor point="LEFT" x="12" y="0"/>
-						<Anchor point="RIGHT" x="-12" y="0"/>
+						<Anchor point="TOPLEFT" x="12" y="-6"/>
+						<Anchor point="BOTTOMRIGHT" x="-12" y="6"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -234,7 +234,7 @@
                 		<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="468" y="38"/>
                 	</Anchors>
                 </FontString>
-                <FontString inherits="GameFontGreen" parentKey="successText" justfyH="LEFT" justifyV="TOP" text="SUCCESS">
+                <FontString inherits="GameFontGreen" parentKey="successText" justifyH="LEFT" justifyV="TOP" text="SUCCESS">
                 	<Size x="1" y="64"/>
                 	<Anchors>
                 		<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parentErrorText"/>
@@ -398,7 +398,7 @@
             <Frame parentKey="helpPane" parentArray="Panels" name="$parent.HelpPane" hidden="true" id="3">
             	<Layers>
 		   			<Layer level="ARTWORK">
-						<FontString  parentKey="filterLabel" inherits="GameFontHighlight" justifyV="CENTER" justifyH="LEFT" text="[FILTER]">
+						<FontString  parentKey="filterLabel" inherits="GameFontHighlight" justifyV="CENTER" justifyH="LEFT">
 							<Size x="1" y="14"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="10" y="-10"/>
@@ -469,7 +469,7 @@
            	<Frame parentkey="itemInfoPanel" name="$parent.ItemInfoPane" parentArray="Panels" id="1" hidden="true" enableMouse="true">
            		<Layers>
            			<Layer level="ARTWORK">
-           				<FontString parentKey="topText" name="$parentTopText" inherits="GameFontNormal" justifyV="TOP" justifyH="LEFT" text="You can drag an item to this panel to display the value of it's properites">
+           				<FontString parentKey="topText" name="$parentTopText" inherits="GameFontNormal" justifyV="TOP" justifyH="LEFT">
            					<Size x="1" y="36"/>
            					<Anchors>
            						<Anchor point="TOPLEFT" x="10" y="-10"/>
@@ -495,7 +495,7 @@
            	<Frame parentkey="matchesInfoPanel" name="$parent.matchesInfoPanel" parentArray="Panels" id="2" hidden="true">
            		<Layers>
            			<Layer level="ARTWORK">
-           				<FontString parentKey="topText" name="$parentTopText" inherits="GameFontNormal" justifyV="TOP" justifyH="LEFT" text="You can drag an item to this panel to display the value of it's properites">
+           				<FontString parentKey="topText" name="$parentTopText" inherits="GameFontNormal" justifyV="TOP" justifyH="LEFT">
            					<Size x="1" y="36"/>
            					<Anchors>
            						<Anchor point="TOPLEFT" x="10" y="-10"/>

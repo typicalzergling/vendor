@@ -3,7 +3,7 @@ local Addon, L, Config = _G[select(1,...).."_GET"]()
 local SETTING_AUTOSELL = Addon.c_Config_AutoSell
 local SETTING_TOOLTIP = Addon.c_Config_Tooltip
 local SETTING_TOOLTIP_RULE = Addon.c_Config_Tooltip_Rule;
-local SETTING_ENABLE_BUYBACK = Addon.c_Config_SellLimit; 
+local SETTING_ENABLE_BUYBACK = Addon.c_Config_SellLimit;
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
 Addon.ConfigPanel.General = {}
@@ -38,14 +38,6 @@ function GeneralPanel.OnOpenRules()
 end
 
 --*****************************************************************************
--- Called to handle a click on the "open bindings" button
---*****************************************************************************
-function GeneralPanel.OnOpenBindings()
-    Addon:Debug("Showing key bindings")
-    Vendor.OpenKeybindings_Cmd()
-end
-
---*****************************************************************************
 -- Called to push the settings from our page into the addon
 --*****************************************************************************
 function GeneralPanel.Apply(self)
@@ -65,7 +57,7 @@ function GeneralPanel.Set(self)
     self.Tooltip.State:SetChecked(not not Config:GetValue(SETTING_TOOLTIP));
     self.TooltipRule.State:SetChecked(not not Config:GetValue(SETTING_TOOLTIP_RULE));
     self.enableBuyback.State:SetChecked(not not Config:GetValue(SETTING_ENABLE_BUYBACK));
-    GeneralPanel.updateSubItems(self, self.Tooltip.State:GetChecked());    
+    GeneralPanel.updateSubItems(self, self.Tooltip.State:GetChecked());
 end
 
 --*****************************************************************************
@@ -77,11 +69,11 @@ function GeneralPanel.Init(self)
 
     self.AutoSell.Text:SetText(L["OPTIONS_SETTINGDESC_AUTOSELL"]);
     self.AutoSell.Label:SetText(L["OPTIONS_SETTINGNAME_AUTOSELL"]);
-    self.enableBuyback.Label:SetText(L.OPTIONS_SETTINGNAME_MAXITEMS);
-    self.enableBuyback.Text:SetText(L.OPTIONS_SETTINGDESC_MAXITEMS);
-    self.AutoSell.OnStateChange = 
+    self.enableBuyback.Label:SetText(L.OPTIONS_SETTINGNAME_BUYBACK);
+    self.enableBuyback.Text:SetText(L.OPTIONS_SETTINGDESC_BUYBACK);
+    self.AutoSell.OnStateChange =
         function(checkbox, state)
-           GeneralPanel.updateSubItems(self);               
+           GeneralPanel.updateSubItems(self);
         end,
 
     self.Tooltip.Text:SetText(L["OPTIONS_SETTINGDESC_TOOLTIP"]);

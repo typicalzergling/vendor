@@ -38,6 +38,7 @@
             </Layer>
         </Layers>
         <Frames>
+            <!-- Buttons, Okay, Cancel, New Rule, Defaults -->
             <Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
                 <Size>
                     <AbsDimension x="96" y="22"/>
@@ -60,7 +61,18 @@
                     <OnClick>Vendor.RulesDialog.OnOk(VendorRulesDialog)</OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentDefaults" inherits="UIPanelButtonTemplate" text="DEFAULTS">
+            <Button name="$parentNewRule" parentKey="createNewRule" inherits="UIPanelButtonTemplate" text="CREATE" hidden="true">
+                <Size>
+                    <AbsDimension x="96" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentOkay" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>VendorEditRuleDialog:CreateRule()</OnClick>
+                </Scripts>
+            </Button>            
+            <Button name="$parentDefaults" inherits="UIPanelButtonTemplate" text="DEFAULTS">            
                 <Size x="96" y="22"/>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" x="22" y="16"/>
@@ -156,7 +168,7 @@
                     </Layer>
                 </Layers>
                 <Frames>
-                    <Frame name="$parentSellList" parentKey="List" inherits="VendorCustomRuleList">
+                    <Frame name="$parentCustomList" parentKey="List" inherits="VendorCustomRuleList">
                         <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" bgFile="Interface\Tooltips\UI-Tooltip-Background">
                             <EdgeSize><AbsValue val="16"/></EdgeSize>
                             <TileSize><AbsValue val="16"/></TileSize>
@@ -170,6 +182,10 @@
                         </Anchors>
                     </Frame>
                 </Frames>
+                <Scripts>
+                    <OnShow>self:GetParent().createNewRule:Show();</OnShow>
+                    <OnHide>self:GetParent().createNewRule:Hide();</OnHide>
+                </Scripts>
             </Frame>
 
             <!-- Panels are sized to this frame when shown -->

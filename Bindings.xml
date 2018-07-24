@@ -1,13 +1,18 @@
 <Bindings>
-    <Binding 
-        name="VENDORALWAYSSELL" 
+    <Binding
+        name="VENDORALWAYSSELL"
         description="BINDING_DESC_VENDORALWAYSSELL" header="VENDORQUICKLIST" category="BINDING_CATEGORY_VENDOR">
         Vendor:AddTooltipItemToAlwaysSellList()
     </Binding>
-    <Binding 
-        name="VENDORNEVERSELL" 
+    <Binding
+        name="VENDORNEVERSELL"
         description="BINDING_DESC_VENDORNEVERSELL" category="BINDING_CATEGORY_VENDOR">
         Vendor:AddTooltipItemToNeverSellList()
+    </Binding>
+    <Binding
+        name="VENDORRUNAUTOSELL"
+        description="BINDING_DESC_VENDORRUNAUTOSELL" category="BINDING_CATEGORY_VENDOR">
+        Vendor:AutoSell_Cmd()
     </Binding>
     <!--@do-not-package@-->
     <Binding 

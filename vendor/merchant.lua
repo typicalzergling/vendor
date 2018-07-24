@@ -1,17 +1,21 @@
 -- Merchant event handling.
-local Addon, L = _G[select(1,...).."_GET"]()
+local Addon, L, Config = _G[select(1,...).."_GET"]()
 
 local threadName = "ItemSeller"
 
 -- When the merchant window is opened, we will attempt to auto repair and sell.
 function Addon:OnMerchantShow()
-    self:Debug("Merchant opened.");
+    self:Debug("Merchant opened.")
 
-    -- Do auto-repair
-    self:AutoRepair()
+    -- Do auto-repair if enabled
+    if Config:GetValue(Addon.c_Config_AutoRepair) then
+        self:AutoRepair()
+    end
 
-    -- Do auto-selling
-    self:AutoSell()
+    -- Do auto-selling if enabled
+    if Config:GetValue(Addon.c_Config_AutoSell) then
+        self:AutoSell()
+    end
 end
 
 -- For checking to make sure merchant window is open prior to selling anything.
@@ -26,12 +30,9 @@ end
 
 -- Do Autorepair. If using guild funds and guild funds don't cover the repair, we will use our own funds.
 function Addon:AutoRepair()
-    local config = self:GetConfig()
-    if not config:GetValue("autorepair") then return end
-
     local cost, canRepair = GetRepairAllCost()
     if canRepair then
-        if config:GetValue("guildrepair") and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
+        if Config:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
             -- use guild repairs
             RepairAllItems(true)
             self:Print(string.format(L["MERCHANT_REPAIR_FROM_GUILD_BANK"], self:GetPriceString(cost)))
@@ -49,6 +50,12 @@ function Addon:IsAutoSelling()
     return not not self:GetThread(threadName)
 end
 
+local function PrintSellSummary(num, value)
+    if num > 0 then
+        Addon:Print(L["MERCHANT_SOLD_ITEMS"], tostring(num), Addon:GetPriceString(value))
+    end
+end
+
 -- Selling happens on a thread (coroutine) for UI responsiveness and to avoid being throttled by Blizzard.
 -- We have to be careful of two scenarios when selling:
 -- 1) The user is moving things around in the bag. This can mess up our selling. The mitigation is to wait anytime something
@@ -58,9 +65,8 @@ end
 --    skipped from the sell if it moved from a yet-to-be-checked slot to an already-checked slot. We could be more robust here
 --    and watch for these events and re-scan, but that's making things significantly more complex for an edge case that doesnt
 --    really matter. Worst-case, the user re-opens the merchant window.
+-- Tiggered manually flag is to give additional feedback during the auto-selling.
 function Addon:AutoSell()
-    if not self:GetConfig():GetValue("autosell") then return end
-
     -- Start selling on a thread.
     -- If coroutine already exists no need to create another one.
     if self:GetThread(threadName) then
@@ -71,8 +77,10 @@ function Addon:AutoSell()
     local thread = coroutine.create( function ()
         local numSold = 0
         local totalValue = 0
-        local config = self:GetConfig()
-
+        local sellLimitEnabled = Config:GetValue(Addon.c_Config_SellLimit)
+        local sellLimitMaxItems = Config:GetValue(Addon.c_Config_MaxSellItems)
+        local sellThrottle = Config:GetValue(Addon.c_Config_SellThrottle)
+        
         -- Loop through every bag slot once.
         for bag=0, NUM_BAG_SLOTS do
             for slot=1, GetContainerNumSlots(bag) do
@@ -83,9 +91,7 @@ function Addon:AutoSell()
 
                     -- It is possible the merchant window closes while the user is holding an item, so check for termination condition before yielding.
                     if not self:IsMerchantOpen() then
-                        if numSold > 0 then
-                            self:Print(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue))
-                        end
+                        PrintSellSummary(numSold, totalValue)
                         return
                     end
 
@@ -105,29 +111,32 @@ function Addon:AutoSell()
                     -- UseContainerItem is really just a limited auto-right click, and it will equip/use the item if we are not in a merchant window!
                     -- So before we do this, make sure the Merchant frame is still open. If not, terminate the coroutine.
                     if not self:IsMerchantOpen() then
-                        if numSold > 0 then
-                            self:Print(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue))
-                        end
+                        PrintSellSummary(numSold, totalValue)
                         return
                     end
 
                     -- Still open, so OK to sell it.
-                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Properties.Link), self:GetPriceString(item.Properties.NetValue))
                     UseContainerItem(bag, slot)
+                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Properties.Link), self:GetPriceString(item.Properties.NetValue))
                     numSold = numSold + 1
                     totalValue = totalValue + item.Properties.NetValue
+                    
+                    -- Check for sell limit
+                    if sellLimitEnabled and sellLimitMaxItems <= numSold then
+                        self:Print(L["MERCHANT_SELL_LIMIT_REACHED"], sellLimitMaxItems)
+                        PrintSellSummary(numSold, totalValue)
+                        return
+                    end
 
                     -- Yield per throttling setting.
-                    if numSold % config:GetValue("sell_throttle") == 0 then
+                    if numSold % sellThrottle == 0 then
                         coroutine.yield()
                     end
                 end
             end
         end
 
-        if numSold > 0 then
-            self:Print(L["MERCHANT_SOLD_ITEMS"], tostring(numSold), self:GetPriceString(totalValue))
-        end
+        PrintSellSummary(numSold, totalValue)
     end)  -- Coroutine end
 
     -- Add thread to the thread queue and start it.

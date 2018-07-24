@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
-    <!-- 
+    <!--
         Vendor.OptionsPanel.Template
             Base optional panel template, this includes the title and help text, along with a version
             anchored to the lower right
@@ -35,9 +35,9 @@
         </Layers>
     </Frame>
 
-    <!-- 
+    <!--
         Vendor.Options.SliderTemplate
-            Template used for a slider (value contained to range) this contains the label, instructional text, 
+            Template used for a slider (value contained to range) this contains the label, instructional text,
             slider which includes max/min and value text
     -->
     <Frame name="Vendor.Options.SliderTemplate" virtual="true">
@@ -108,9 +108,9 @@
         </Frames>
     </Frame>
 
-    <!-- 
+    <!--
         Vendor.Options.SmallSlider.Template
-            Template used for a slider (value contained to range) this contains the label, instructional text, 
+            Template used for a slider (value contained to range) this contains the label, instructional text,
             slider which includes max/min and value text, this is a smaller version of the slider
     -->
     <Frame name="Vendor.Options.SmallSlider.Template" virtual="true">
@@ -181,8 +181,8 @@
         </Frames>
     </Frame>
 
-    <!-- 
-        Vendor.Options.CheckTemplate    
+    <!--
+        Vendor.Options.CheckTemplate
             Standard toggle option template, includes checkbox, label and instructional text
     -->
     <Frame name="Vendor.Options.CheckTemplate" virtual="true">
@@ -223,10 +223,10 @@
         </Frames>
     </Frame>
 
-    <!-- 
+    <!--
         Vendor.Options.SmallCheckTemplate.WithText
             This template is a smaller version of the check template, which contains both a label
-            and also the description text. are rendered in the normal font color to indicate 
+            and also the description text. are rendered in the normal font color to indicate
             that it's a secondary option.
     -->
     <Frame name="Vendor.Options.SmallCheckTemplate.WithText" virtual="true">
@@ -267,9 +267,9 @@
         </Frames>
     </Frame>
 
-    <!-- 
+    <!--
         Vendor.Options.SmallCheckTemplate
-            This template is a smaller version of the check template, which contains only a label in the 
+            This template is a smaller version of the check template, which contains only a label in the
             normal font color. We use this for secondary options which don't need additional display text
     -->
     <Frame name="Vendor.Options.SmallCheckTemplate" virtual="true">
@@ -302,14 +302,14 @@
         </Frames>
     </Frame>
 
-    <!-- 
+    <!--
         VendorGeneralConfigPanel
             This is the main config panel for vendor, this contains the options that most likely
             will need to be changed.
     -->
     <Frame name="VendorGeneralConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
-            
+
             <!-- Auto sell settings -->
             <Frame name="$parent.AutoSell" parentKey="AutoSell" inherits="Vendor.Options.CheckTemplate">
                 <Size x="250" y="54"/>
@@ -321,7 +321,7 @@
             <Frame name="$parent.EnableBuyback" parentKey="enableBuyback" inherits="Vendor.Options.SmallCheckTemplate.WithText">
                 <Size x="250" y="54"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="32" y="0"/>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="0" y="0"/>
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
@@ -330,7 +330,7 @@
             <Frame name="$parent.Tooltip" parentKey="Tooltip" inherits="Vendor.Options.CheckTemplate">
                 <Size x="250" y="54"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.EnableBuyback" relativePoint="BOTTOMLEFT" x="-32" y="-12"/>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.EnableBuyback" relativePoint="BOTTOMLEFT" x="0" y="0"/>
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
@@ -341,7 +341,7 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
-         
+
             <!-- Open rules / bindings buttons -->
             <Button name="$parent.OpenRulesDialog" parentKey="OpenRules" inherits="UIPanelButtonTemplate">
                 <Size x="172" y="28"/>
@@ -377,7 +377,7 @@
         </Scripts>
     </Frame>
 
-    <!-- 
+    <!--
         VendorRepairConfigPanel
             Panel which contains options for repair.
     -->
@@ -407,9 +407,9 @@
         </Scripts>
     </Frame>
 
-    <!-- 
+    <!--
         VendorPerfConfigPanel
-            Contains the settings which affect the resources / performance 
+            Contains the settings which affect the resources / performance
     -->
     <Frame name="VendorPerfConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
@@ -438,11 +438,11 @@
     </Frame>
 
     <!--@do-not-package@-->
-    <!-- 
+    <!--
         VendorDebugConfigPanel
-            The debugging options for vendor, on used by active developers not available to 
+            The debugging options for vendor, on used by active developers not available to
             release versions
-    -->    
+    -->
     <Frame name="VendorDebugConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
         <Frames>
             <Frame name="$parent.Debug" parentKey="Debug" inherits="Vendor.Options.CheckTemplate">

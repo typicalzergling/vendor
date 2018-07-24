@@ -62,12 +62,18 @@ Addon.RulesDialog = {
         Addon.RulesDialog.InitTab(self, 1, "CONFIG_DIALOG_KEEPRULES_TAB", "CONFIG_DIALOG_KEEPRULES_TEXT")
         Addon.RulesDialog.InitTab(self, 2, "CONFIG_DIALOG_SELLRULES_TAB", "CONFIG_DIALOG_SELLRULES_TEXT")
         Addon.RulesDialog.InitTab(self, 3, "CONFIG_DIALOG_CUSTOMRULES_TAB", "CONFIG_DIALOG_CUSTOMRULES_TEXT")
+        self.createNewRule:SetText(L.CREATE_BUTTON);
 
         -- Initialize the tabs
         PanelTemplates_SetNumTabs(self, table.getn(self.Tabs))
         self.selectedTab = 2
         PanelTemplates_UpdateTabs(self)
         Addon.RulesDialog.ShowTab(self, self.selectedTab)
+
+        -- Called from the edit rule dialog if we are visible
+        self.UpdateCustomRules = function()
+                Vendor.RulesUI.InitRuleList(self.CustomPanel.List, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
+            end;
     end,
 
     --=========================================================================
