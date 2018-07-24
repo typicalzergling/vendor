@@ -435,7 +435,7 @@ Addon.EditRuleDialog =
         -- If we're read-only disable all the fields.
         if (readOnly) then
             Addon.EditRuleDialog.SetMode(self, MODE_READONLY);
-            Addon.EditRuleDialog.UpdateButtonState(self);            
+            Addon.EditRuleDialog.UpdateButtonState(self);
         else
             Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
             Addon.EditRuleDialog.ValidateScript(self);
@@ -596,6 +596,8 @@ function EditRuleDialog.ValidateScript(self)
             self.scriptValid = true;
         end
     else
+        self.errorText:Hide();
+        self.successText:Hide();
         self.scriptValid = false;
     end
 
@@ -603,12 +605,12 @@ function EditRuleDialog.ValidateScript(self)
 end
 
 --[[===========================================================================
-    | Called when the user clicks OKAY, this will create  a new custom 
+    | Called when the user clicks OKAY, this will create  a new custom
     | rule definition and place it into the saved variable.
     ===========================================================================--]]
 function EditRuleDialog.HandleOk(self)
     Addon:Debug("Creating new custom rule definition");
-    
+
     local newRuleDef = {};
     local name, realm = UnitFullName("player");
     newRuleDef.Id = self.ruleDef.Id;
