@@ -126,6 +126,16 @@ local function ruleNeeds(rule, inset)
 end
 
 --*****************************************************************************
+-- Helper function which sets up the rule item, this can be called multiple
+-- times for custom rules.
+--*****************************************************************************
+local function setRuleItem(frame, rule)
+    frame.Rule = rule
+    frame.RuleName:SetText(rule.Name)
+    frame.RuleDescription:SetText(rule.Description)
+end
+
+--*****************************************************************************
 -- Create a new frame for a rule item in the provided list. This will setup
 -- the item for all of the proeprties of the rule
 --
@@ -137,10 +147,8 @@ local function createRuleItem(parent, ruleId, rule)
     end
 
     local frame = CreateFrame("Frame", ("$parent" .. ruleId), parent, template)
-    frame.Rule = rule
-    frame.RuleId = ruleId
-    frame.RuleName:SetText(rule.Name)
-    frame.RuleDescription:SetText(rule.Description)
+    frame.RuleId = ruleId;
+    setRuleItem(frame, rule);
 
    -- if (parent.Rules and ((#parent.Rules % 2) ~= 0)) then
    --   frame.OddBackground:Show()
@@ -231,6 +239,21 @@ local function setRuleConfigFromList(frame, config)
 end
 
 --*****************************************************************************
+-- Helper function which looks for the frame which corresponds to the 
+-- particular rule ID.
+--*****************************************************************************
+local function findRuleFrameByRuleId(frame, ruleId)
+    if (frame.Rules) then
+        for _, ruleFrame in ipairs(frame.Rules) do
+            if (ruleFrame.RuleId == ruleId) then
+                return ruleFrame
+            end
+        end
+    end        
+    return nil;
+end
+
+--*****************************************************************************
 -- Called when a rules list is loaded in order to populate the list of
 -- frames which represent the rules contained in the list.
 --*****************************************************************************
@@ -245,20 +268,19 @@ function Addon.RulesUI.InitRuleList(frame, ruleType, ruleList, ruleConfig)
 
     assert(frame.RuleList, "Rule List frame needs to have the rule list set")
     assert(frame.RuleType, "Rule List frame needs to have the rule type set")
-    --if (self.Rules and ruleType == Addon.c_RuleType_Custom) then
-    --    Addon:Debug("Clearing old rule frames (count=%d)", #self.Rules);
-    --    while (#self.Rules ~= 0) do
-    --        table.remove(self.Rules);
-    --    end
-    --end
 
     -- Create the frame for each of our rules.
     for id, rule in pairs(ruleList) do
-    print("ruleId:", id);
-    table.foreach(rule, print);
         if (not rule.Locked) then
-            local ruleFrame = createRuleItem(frame, id, rule)
-            print("ruleFrame", ruleFrame);
+            -- See if we already have a frame for this rule, if we do
+            -- then we can just reuse it.
+            local ruleFrame = findRuleFrameByRuleId(frame, id);
+            if (not ruleFrame) then
+                ruleFrame = createRuleItem(frame, id, rule)
+            else
+                setRuleItem(ruleFrame, rule);
+            end
+            
             frame.RuleFrameSize = math.max(frame.RuleFrameSize, ruleFrame:GetHeight())
         end
     end
