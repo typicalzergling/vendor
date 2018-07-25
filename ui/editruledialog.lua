@@ -5,10 +5,10 @@ local EDIT_WIDTH = READONLY_WIDTH + 360 + 32;
 local SCROLL_PADDING_X = 4;
 local SCROLL_PADDING_Y = 17;
 local SCROLL_BUTTON_PADDING = 4;
-local ITEM_INFO_HTML_BODY_FMT = "<html><body><h1>%s</h1>%s</body></html>";
-local ITEM_HTML_FMT = "<p>%s() = %s%s%s</p>";
+local ITEM_INFO_HTML_BODY_FMT = "<!DOCTYPE html><html><body><h1>%s</h1>%s</body></html>";
+local ITEM_HTML_FMT = "<p>%s() == %s%s%s</p>";
 local NIL_ITEM_STRING = GRAY_FONT_COLOR_CODE .. "nil" .. FONT_COLOR_CODE_CLOSE;
-local MATCHES_HTML_START = "<html><body>";
+local MATCHES_HTML_START = "<!DOCTYPE html><html><body>";
 local MATCHES_HTML_END = "</body></html>";
 local MATCHES_LINK_FMT1 = "<p>%s</p>";
 local MODE_READONLY = 1;
@@ -68,10 +68,10 @@ Addon.RuleDocumentation =
     CreateHeader = function(name, item)
         if (type(item) == "table") then
             if (item.Args) then
-                return string.format("<h1>%s(%s)</h1>", name, item.Args);
+                return string.format("<h1>%s%s(%s)%s</h1>", BATTLENET_FONT_COLOR_CODE, name, item.Args, FONT_COLOR_CODE_CLOSE);
             end
         end
-        return string.format("<h1>%s()</h1>", name);
+        return string.format("<h1>%s%s()%s</h1>", BATTLENET_FONT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE);
      end,
 
     CreateValues = function(item)
