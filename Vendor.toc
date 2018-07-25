@@ -36,6 +36,7 @@ vendor\bagitemcache.lua
 vendor\merchant.lua
 
 # Rules
+RulesEngine\rules.xml
 rules\maps.lua
 rules\functions.lua
 rules\definitions.lua
@@ -52,6 +53,7 @@ ui\perfconfigpanel.lua
 ui\debugconfigpanel.lua
 ui\configpanels.lua
 ui\configpanels.xml
+ui\customrules.xml
 ui\rulesdialog.lua
 ui\rulesdialog.xml
 ui\editruledialog.xml
