@@ -32,6 +32,7 @@ sys\core.lua
 vendor\blocklists.lua
 vendor\tooltipscan.lua
 vendor\itemproperties.lua
+rules\rulehelp.lua
 vendor\bagitemcache.lua
 vendor\merchant.lua
 

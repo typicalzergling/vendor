@@ -1,0 +1,30 @@
+local Addon, L = _G[select(1,...).."_GET"]()
+
+Addon.ScriptReference = Addon.ScriptReference or {}
+Addon.ScriptReference.ItemProperties =
+{
+    Name = { Html = L["HELP_NAME_HTML"] },
+    Link = { Html = L["HELP_LINK_HTML"] },
+    Id = { Html = L["HELP_ID_HTML"] },
+    Count = { Html = L["HELP_COUNT_HTML"] },
+    Quality = { Html = L["HELP_QUALITY_HTML"] },
+    Level = { Html = L["HELP_LEVEL_HTML"] },
+    Type = { Html = L["HELP_TYPE_HTML"] },
+    TypeId = { Html = L["HELP_TYPEID_HTML"] },
+    SubType = { Html = L["HELP_SUBTYPE_HTML"] },
+    SubTypeId = { Html = L["HELP_SUBTYPEID_HTML"] },
+    EquipLoc = { Html = L["HELP_EQUIPLOC_HTML"] },
+    BindType = { Html = L["HELP_BINDTYPE_HTML"] },
+    StackSize = { Html = L["HELP_STACKSIZE_HTML"] },
+    UnitValue = { Html = L["HELP_UNITVALUE_HTML"] },
+    NetValue = { Html = L["HELP_NETVALUE_HTML"] },
+    ExpansionPackId  = { Html = L["HELP_EXPANSIONPACKID_HTML"] },
+    IsEquipment = { Html = L["HELP_ISEQUIPMENT_HTML"] },
+    IsSoulbound = { Html = L["HELP_ISSOULBOUND_HTML"] },
+    IsBindOnEquip = { Html = L["HELP_ISBINDONEQUIP_HTML"] },
+    IsBindOnUse = { Html = L["HELP_ISBINDONUSE_HTML"] },
+    IsArtifactPower = { Html = L["HELP_ISARTIFACTPOWER_HTML"] },
+    IsUnknownAppearance = { Html = L["HELP_ISUNKNOWNAPPEARANCE_HTML"] },
+    IsToy = { Html = L["HELP_ISTOY_HTML"] },
+    IsAlreadyKnown  = { Html = L["HELP_ISALREADYKNOWN_HTML"] },
+}

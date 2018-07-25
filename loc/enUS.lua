@@ -181,5 +181,189 @@ AddonLocales["enUS"] =
 ["EDITRULE_SCRIPT_ERROR"] = "There was an error parsing your rule: %s",
 
 
+-- Rule Help
+
+["HELP_NAME_HTML"] = [[
+<p>The item name, as it appears in the tooltip. This is a localized string.</p>
+]],
+["HELP_LINK_HTML"] = [[
+<p>The item link, including all color codes and the item string. This may be useful if you want to string.find specific ids in the item string.</p>
+]],
+["HELP_ID_HTML"] = [[
+<p>The item ID, as a number.</p>
+]],
+["HELP_COUNT_HTML"] = [[
+<p>The quantity of the item, as a number.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This will always be 1 for links to items. When we scan items in your bag it will be the actual quantity for the slot. This means if you make a rule 
+that sells based on quantity that the tooltip for Vendor selling it will not be accurate when mousing over an item since that uses its tootip link, not 
+the bag slot information. The matches tab uses items in your bag, so it will be correct for what Vendor will sell.
+</p>
+]],
+["HELP_QUALITY_HTML"] = [[
+<p>The quality of the item:<br/>
+<br/>0 = Poor<br/>1 = Common<br/>2 = Uncommon<br/>3 = Rare<br/>4 = Epic<br/>5 = Legendary<br/>6 = Artifact<br/>7 = Heirloom<br/>8 = Wow Token<br/>
+</p>
+]],
+["HELP_LEVEL_HTML"] = [[
+<p>The item level (iLvl) of the item.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This will be the item's effective item level if it is Equipment, otherwise it will be the base item level if it does not have an effective item level.
+</p>
+]],
+["HELP_TYPE_HTML"] = [[
+<p>The name of the item's Type. This is a localized string. You can use this in conjunction with SubType to zero in on specific types of items.</p>
+]],
+["HELP_TYPEID_HTML"] = [[
+<p>The numeric ID of the item's Type.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This is not localized so it will be portable to players using other locales. It's also faster than a string compare, so you should use this over Type() if possible.
+</p>
+]],
+["HELP_SUBTYPE_HTML"] = [[
+<p>The name of the item's SubType. This is a localized string. You can use this in conjunction with Type to zero in on specific types of items.</p>
+]],
+["HELP_SUBTYPEID_HTML"] = [[
+<p>The numeric ID of the item's SubType.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This is not localized so it will be portable to players using other locales. It's also faster than a string compare, so you should use this over SubType() if possible.
+</p>
+]],
+["HELP_EQUIPLOC_HTML"] = [[
+<p>The equip location of this item. This will be nil if the item is not equipment.</p>
+]],
+["HELP_BINDTYPE_HTML"] = [[
+<p>The binding behavior for the item.</p>
+<p>
+<br/>0 = None
+<br/>1 = On Pickup
+<br/>2 = On Equip
+<br/>3 = On Use
+<br/>4 = Quest
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This is the base behavior of the item itself, not the current bind state of the item. This does NOT accurately tell you if the item is SoulBound or Bind-on-Equip by itself. 
+If you want to know if an item is BoE or Soulbound, use IsBindOnEquip() and IsSoulbound()
+</p>
+]],
+["HELP_STACKSIZE_HTML"] = [[
+<p>The max stack size of this item.</p>
+]],
+["HELP_UNITVALUE_HTML"] = [[
+<p>The vendor price in copper for one of these items.<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+Items with UnitValue == 0 cannot be sold to a vendor. Such items will never match any rules because you cannot possibly sell them.
+</p>
+]],
+["HELP_NETVALUE_HTML"] = [[
+<p>The vendor price in copper for this stack. This is equivalent to Count() * UnitValue()</p>
+]],
+["HELP_EXPANSIONPACKID_HTML"] = [[
+<p>The expansion pack ID to which this item belongs.</p>
+<p>
+<br/>0 = Default / None (this matches many items)
+<br/>1 = BC
+<br/>2 = WoTLK
+<br/>3 = Cata
+<br/>4 = MoP
+<br/>5 = WoD
+<br/>6 = Legion
+<br/>7 = BFA
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+Use caution when using this to identify items of previous expansions. Not every item is tagged with an expansion ID. It appears that generally only wearable equipment is tagged. Zero is the default for everything, 
+including many items from Expansion packs (like reagants and Dalaran Hearthstones). 
+We recommend that you only use this for rules involving wearable equipment. Checking ExpansionPackId() == 0 intending to match Vanilla will not do what you want, as it will include non-Vanilla things. Likewise, 
+ExpansionPackId() &lt; 7 will match a great many items. If you want to be safe, use this in conjunction with IsEquipment(), and have some items from Vanilla and several expansion packs to verify.
+</p>
+]],
+["HELP_ISEQUIPMENT_HTML"] = [[
+<p>True if the item is wearable equipment. This is equivalent to EquipLoc() ~= nil
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This does NOT tell you if your character can equip the item. This tells you whether the item is equippable gear.
+</p>
+]],
+["HELP_ISSOULBOUND_HTML"] = [[
+<p>True if this specific item is currently "Soulbound" to you.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+If the item's bind type is Bind-on-pickup then this will always report true, even for items you have not yet picked up if you are mousing over them. This is becuase the item will be Soulbound if you were to pick it up, 
+so we are accurately representing the resulting behavior of the item. If an item is Binds-when-equipped or on use, then IsSoulbound() will return false unless you actually have the item in your possession and we can 
+verify it's true state.
+</p>
+]],
+["HELP_ISBINDONEQUIP_HTML"] = [[
+<p>True if this specific item is currently "Binds-when-equipped".
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+If the item's bind type is Bind-on-pickup then this will always report false, even for items you have not yet picked up if you are mousing over them. This is becuase the item cannot possibly be Binds-when-equipped. If the
+item has yet to be picked up and it has a bind type of On-Equip, then we will always report it as true. If it is in your possession and Soulbound to you, then this will return false.
+</p>
+]],
+["HELP_ISBINDONUSE_HTML"] = [[
+<p>True if this specific item is currently "Binds-when-used".
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+If the item is not yet in your possession, then it will always return true if its bind type is On-Use. If it is in your possession and Soulbound to you then this will return false.
+</p>
+]],
+["HELP_ISARTIFACTPOWER_HTML"] = [[
+<p>True if this item is Artifact Power.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This is obsolete with the 8.0.1 patch, as Blizzard removed Artifact Power as an item of this type and changed them all to grey items. As such, this value will likely be removed in the future.
+</p>
+]],
+["HELP_ISUNKNOWNAPPEARANCE_HTML"] = [[
+<p>True if the item you have not yet collected this item Appearance AND the item is not Bind-on-Pickup.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This will correctly detect items which are unknown appearances (i.e. transmogs you have not yet acquired). However, if the item is BoP, it will not be treated as an Unknown Appearance. This is because the moment you pick up the 
+item it will become a known appearance. Therefore, it is safe to sell and this inforamtion is irrelevant. This method is used to filter on Bind-on-Equip items that are Unknown Appearances and is generally useful for preventing 
+you from accidentally selling them. We have a built-in Keep rule for this purpose, so generally you won't need to use this.
+</p>
+]],
+["HELP_ISTOY_HTML"] = [[
+<p>True if the item is a toy.</p>
+]],
+["HELP_ISALREADYKNOWN_HTML"] = [[
+<p>True if the item is "Already known", such as a Toy or Recipe you have already learned.</p>
+]],
+
 
 } -- END OF LOCALIZATION TABLE
+
+-- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.
+
+
