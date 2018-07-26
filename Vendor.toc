@@ -46,6 +46,7 @@ rules\evaluate.lua
 
 # User Interface
 ui\tooltip.lua
+ui\listbase.lua
 ui\ruleslist.lua
 ui\ruleslist.xml
 ui\generalconfigpanel.lua
