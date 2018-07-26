@@ -108,7 +108,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" parentKey="TopText">
+                        <FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" parentKey="TopText">
                             <Anchors>
                                 <Anchor point="TOPLEFT" x="16" y="-16"/>
                                 <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
@@ -117,19 +117,21 @@
                     </Layer>
                 </Layers>
                 <Frames>
-                    <Frame name="$parentSellList" parentKey="List" inherits="VendorKeepSystemRuleList">
-                        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" bgFile="Interface\Tooltips\UI-Tooltip-Background">
-                            <EdgeSize><AbsValue val="16"/></EdgeSize>
-                            <TileSize><AbsValue val="16"/></TileSize>
-                            <BackgroundInsets>
-                                <AbsInset left="5" right="5" top="5" bottom="5"/>
-                            </BackgroundInsets>
-                        </Backdrop>
-                        <Anchors>
-                            <Anchor point="TOPLEFT" relativeTo="$parentHeaderText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+	                <Frame parentKey="outline" inherits="Vendor_List_Container">
+		                <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.TopText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
                             <Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
-                        </Anchors>
-                    </Frame>
+		                </Anchors>
+	                </Frame>
+	                <ScrollFrame inherits="Vendor_Rules_List" parentKey="list">
+		                <KeyValues>
+			                <KeyValue key="ruleType" value="Keep" type="string"/>
+		                </KeyValues>
+	                    <Anchors>
+		                    <Anchor point="TOPLEFT" relativeKey="$parent.outline" relatvePoint="TOPLEFT" x="4" y="-5"/>
+		                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.outline" relativePoint="BOTTOMRIGHT" x="-4" y="3"/>
+	                    </Anchors>
+	                </ScrollFrame>
                 </Frames>
             </Frame>
 

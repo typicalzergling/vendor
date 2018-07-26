@@ -216,9 +216,27 @@
     </Frame>
 
 
-
+    <Button name="Vendor_Tooltip_Button" virtual="true">
+        <Scripts>
+            <OnEnter>
+                if (self.tooltip) then
+                    GameTooltip:SetOwner(self, "ANCHOR_BOTTOM");
+                    GameTooltip:SetText(self.tooltip);
+                    GameTooltip:Show();
+                end
+            </OnEnter>
+            <OnLeave>
+                if (GameTooltip:GetOwner() == self) then
+                    GameTooltip:Hide()
+                end
+            </OnLeave>
+        </Scripts>
+    </Button>
 
    	<ScrollFrame name="Vendor_Rules_List" virtual="true" inherits="FauxScrollFrameTemplate">
+        <KeyValues>
+            <KeyValue key="itemHeight" value="64" type="number"/>
+        </KeyValues>            
 		<Layers>
 			<Layer level="BORDER" textureSubLevel="-2">
 				<Texture parentKey="scrollbarBackground">
@@ -236,12 +254,12 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>Vendor.RulesList.OnLoad(self);</OnLoad>
-			<OnShow>Vendor.RulesList.OnShow(self);</OnShow>
-			<OnVerticalScroll>FauxScrollFrame_OnVerticalScroll(self, offset, 64, function(self) Vendor.RulesList.Update(self) end);</OnVerticalScroll>
+			<OnShow>self:OnShow(self);</OnShow>
+			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
 		</Scripts>
 	</ScrollFrame>
 
-	<Button name="Vendor_Rule_Template" virtual="true" parentArray="items">
+	<Button name="Vendor_Rule_Template" virtual="true">
 		<Size x="400" y="64"/>
 		<Anchors>
 			<Anchor point="CENETER"/>
@@ -258,39 +276,71 @@
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY" textureSubLevel="-1">
-				<Texture parentKey="highlight" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+				<Texture parentKey="highlight" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.3" alphaMode="ADD" hidden="true">
 					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture parentKey="selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.4" alphaMode="ADD" hidden="true">
+				<Texture parentKey="selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.2" alphaMode="ADD" hidden="true">
 					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString parentKey="name" inherits="GameFontHighlightLarge" justifyH="LEFT" text="Rule Name">
+                <Texture parentKey="check" file="Interface\Buttons\UI-CheckBox-Check">
+                    <Size x="20" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-4"/>
+                    </Anchors>
+                </Texture>
+				<FontString parentKey="name" inherits="GameFontHighlightLarge" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT"  x="12" y="-4"/>
-						<Anchor point="TOPRIGHT" x="-12" y="-24"/>
+						<Anchor point="TOPLEFT" relativeKey="$parent.check" relativePoint="TOPRIGHT"  x="4" y="0"/>
+						<Anchor point="TOPRIGHT" x="-32" y="-24"/>
 					</Anchors>
 				</FontString>
 				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
-						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-12" y="4"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-32" y="4"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
+        <Frames>
+            <Button parentKey="moveUp" inherits="Vendor_Tooltip_Button">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="32"/>
+                </Anchors>
+				<NormalTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollUp-Up"/>
+				<PushedTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollUp-Down"/>
+				<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollUp-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+                <Scripts>
+                    <OnClick>self:GetParent():Move(-1)</OnClick>
+                </Scripts>
+            </Button>
+			<Button parentKey="moveDown" inherits="Vendor_Tooltip_Button">
+                <Size x="24" y="24"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="32"/>
+				</Anchors>
+				<NormalTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up"/>
+				<PushedTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down"/>
+				<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>self:GetParent():Move(1)</OnClick>
+<!--						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+                        Vendor.RulesList.MoveRule(self:GetParent():GetParent(), self:GetParent(), 1)
+					</OnClick>-->
+				</Scripts>
+			</Button>            
+        </Frames>
 		<Scripts>
-			<OnEnter>
-				self.highlight:Show();
-			</OnEnter>
-			<OnLeave>
-				if (not self:IsMouseOver()) then
-					self.highlight:Hide();
-				end
-			</OnLeave>
+			<OnEnter>self:OnEnter();</OnEnter>
+			<OnLeave>if (not self:IsMouseOver()) then self:OnLeave(); end</OnLeave>
+            <OnClick>self:OnClick(button)</OnClick>
 		</Scripts>
 	</Button>
 

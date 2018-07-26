@@ -81,7 +81,7 @@ Addon.RulesDialog = {
     -- Handles making sure everything is updated when the dialog is shown.
     --=========================================================================
     PrepareToShow = function(self)
-        self.SellPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_SELL))
+        --self.SellPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_SELL))
         self.KeepPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_KEEP))
         --Vendor.RulesUI.InitRuleList(self.CustomPanel.List, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
         --self.CustomPanel.List:SetRuleConfig(Config:GetRulesConfig(Vendor.c_RuleType_Custom))
