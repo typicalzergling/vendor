@@ -28,7 +28,7 @@
                     <Color r="1.0" g="0.0" b="0" a="9.5"/>
                     <Size x="32" y="60"/>
                     <Anchors>
-                        <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="8" y="2"/>                        
+                        <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="8" y="2"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -214,4 +214,84 @@
             </OnLoad>
         </Scripts>
     </Frame>
+
+
+
+
+   	<ScrollFrame name="Vendor_Rules_List" virtual="true" inherits="FauxScrollFrameTemplate">
+		<Layers>
+			<Layer level="BORDER" textureSubLevel="-2">
+				<Texture parentKey="scrollbarBackground">
+					<Color r="0" g="0" b="0" a="0.65"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText" text="There are no rules defined.">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>Vendor.RulesList.OnLoad(self);</OnLoad>
+			<OnShow>Vendor.RulesList.OnShow(self);</OnShow>
+			<OnVerticalScroll>FauxScrollFrame_OnVerticalScroll(self, offset, 64, function(self) Vendor.RulesList.Update(self) end);</OnVerticalScroll>
+		</Scripts>
+	</ScrollFrame>
+
+	<Button name="Vendor_Rule_Template" virtual="true" parentArray="items">
+		<Size x="400" y="64"/>
+		<Anchors>
+			<Anchor point="CENETER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture ParentKey="divider">
+					<Size x="1" y="1"/>
+					<Color r="0.6" g="0.6" b="0.6" a="0.3"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="16" />
+						<Anchor point="BOTTOMRIGHT" x="-16" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="highlight" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="name" inherits="GameFontHighlightLarge" justifyH="LEFT" text="Rule Name">
+					<Anchors>
+						<Anchor point="TOPLEFT"  x="12" y="-4"/>
+						<Anchor point="TOPRIGHT" x="-12" y="-24"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-12" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				self.highlight:Show();
+			</OnEnter>
+			<OnLeave>
+				if (not self:IsMouseOver()) then
+					self.highlight:Hide();
+				end
+			</OnLeave>
+		</Scripts>
+	</Button>
+
 </Ui>

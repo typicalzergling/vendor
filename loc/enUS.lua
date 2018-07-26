@@ -114,6 +114,8 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SELLRULES_TEXT"] = "These rules govern what will be auto-sold to the merchant. Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept. Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work, check the Keep Rules to see if something is preventing it.",
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Rules",
 ["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "The custom rules you have defined (account wide) are shown below.  You can create a new one by using the button on the bottom or edit your rule by double clicking it.",
+["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"] = "Deleting '%s' will make in unavailable to all of your characters you sure you want to delete this rule?";
+["CONFIG_DIALOG_SHARE_TOOLTIP"] = "Share";
 
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",

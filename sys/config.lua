@@ -42,32 +42,27 @@ Addon.DefaultConfig.Settings =
 Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
-    version = 4,
+    version = 5,
     
     -- Current interface version of the client
     interfaceversion = select(4, GetBuildInfo()),
 
     -- The default rules to enable which cause items to be kept
     keep = {
-        "legendaryandup",
-        "equipmentset",
-        "soulboundgear",
-        "unknownappearance",
+        "keep.legendaryandup",
+        "keep.equipmentset",
+        "keep.soulboundgear",
+        "keep.unknownappearance",
     },
 
     -- The default rules to enable which cause items to be sold.
     sell =
     {
-        "poor",
-        "oldfood",
-        "artifactpower",
-        "knowntoys",
+        "sell.poor",
+        "sell.oldfood",
+        "sell.artifactpower",
+        "sell.knowntoys",
     },
-
-    -- Custom rules provied by the user
-    custom = {},
-    customDefinitions = {},
-
 }
 
 -- NOTE: Per character isn't fully implemented
@@ -328,7 +323,6 @@ function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
     Addon:Debug("[Config]: +Begin migrating rules from v=%d to v=%d", oldSettings.version, newSettings.version)
 
     if (oldSettings.version == 3) and (newSettings.version == 4) then
-
         if (rawget(oldSettings, KEEP_RULES)) then
             Addon:Debug("[Config]: |         Copying keep rules with with %d items", #rawget(oldSettings, KEEP_RULES))
             rawset(newSettings, KEEP_RULES, rawget(oldSettings, KEEP_RULES))
@@ -340,7 +334,26 @@ function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
             Addon:Debug("[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
             rawset(newSettings, SELL_RULES, rawget(oldSettings, SELL_RULES))
         end
+    end
 
+    if (oldSettings.version < 5) then
+        Addon:Debug("[Config]: |         Need to migrate rule ids")
+
+        local function migrateIds(prefix, list)
+            local l = {};
+            for _, entry in ipairs(list) do
+                if (type(entry) == "string") then
+                    table.insert(l, prefix .. entry);
+                elseif (type(entry) == "table") then
+                    entry.rule = (prefix .. entry.rule);
+                    table.insert(l, entry);
+                end
+            end
+            return l;            
+        end;
+
+        rawset(newSettings, SELL_RULES, migrateIds("sell.", rawget(oldSettings, SELL_RULES)));
+        rawset(newSettings, KEEP_RULES, migrateIds("keep.", rawget(oldSettings, KEEP_RULES)));
     end
 
     Addon:Debug("[Config] +Rules migration complete");

@@ -1,5 +1,7 @@
 local Addon, L = _G[select(1,...).."_GET"]()
 Addon.RulesUI = {}
+Addon.Rules = Addon.Rules or {};
+local Rules = Addon.Rules;
 
 function table.swap(T, i, j)
     local tmp = rawget(T, i)
@@ -143,38 +145,6 @@ end
 -- the item for all of the proeprties of the rule
 --
 --*****************************************************************************
-local function createRuleItem(parent, ruleId, rule)
-    local template = "VendorSimpleRuleTemplate"
-    if ruleNeeds(rule, "itemlevel") then
-        template = "VendorRuleTemplateWithItemLevel"
-    end
-
-    local frame = CreateFrame("Frame", ("$parent" .. ruleId), parent, template)
-    frame.RuleId = ruleId;
-    setRuleItem(frame, rule);
-
-   -- if (parent.Rules and ((#parent.Rules % 2) ~= 0)) then
-   --   frame.OddBackground:Show()
-   --  end
-
-    if (frame.ItemLevel) then
-        frame.ItemLevel.Label:SetText(L["RULEUI_LABEL_ITEMLEVEL"])
-        frame.ToggleRuleState = toggleRuleWithItemLevel
-    end
-
-    -- If this rule has an error then update the error items to reflect 
-    -- the error state.
-    if (rule.InError) then
-        frame.hasError:Show();
-        frame.errorBack:Show();
-    else
-        frame.hasError:Hide();
-        frame.errorBack:Hide();
-    end
-
-    updateRuleEnabledState(frame, parent.RuleConfig)
-    return frame
-end
 
 --*****************************************************************************
 -- Builds a list of rules which shoudl be enalbed based on the state of
@@ -356,6 +326,133 @@ function Addon.RulesUI.UpdateRuleList(frame)
 end
 
 local RulesList = Addon.RulesList;
+
+local function createItem(self, ruleDef)
+    local template = "Vendor_Rule_Template"
+    if (ruleDef.NeedsParams and ruleDef.NeedsParams.ITEMLEVEL) then
+        template = "Vendor_Rule_Template_ItemLevel"
+    end
+
+    local item = CreateFrame("Button", nil, self, template)
+    item.ruleId = ruleDef.Id;
+    item.enabled = false;
+
+    item.name:SetText(ruleDef.Name);
+    item.text:SetText(ruleDef.Description);
+
+    if (item.ItemLevel) then
+        item.ItemLevel.Label:SetText(L["RULEUI_LABEL_ITEMLEVEL"])
+        --item.ToggleRuleState = toggleRuleWithItemLevel
+    end
+
+    --updateRuleEnabledState(frame, parent.RuleConfig)
+    return item;
+end
+
+local function findItem(self, ruleId)
+    if (self.items) then
+        local id = string.lower(ruleId);
+        for _, item in ipairs(self.items) do
+            if (string.lower(item.ruleId) == id) then
+                return item;
+            end
+        end
+    end
+end
+
+local function ensureItems(self, ruleDefs)
+    local ids = {}
+    for i, ruleDef in ipairs(ruleDefs) do
+        print("--- rule:", ruleDef.Id);
+        table.insert(ids, string.lower(ruleDef.Id));
+
+        local item = findItem(self, ruleDef.Id);
+        if (not item) then
+            item = createItem(self, ruleDef);
+            item.order = i;
+        end
+    end
+
+    table.sort(self.items, 
+        function(itemA, itemB)
+            if (itemA.enabled and not itemB.enabled) then
+                return true;
+            elseif (not itemA.enabled and itemB.enabled) then
+                return false;
+            end        
+            return (itemA.order < itemB.order);
+        end);
+end
+
+function RulesList.OnLoad(self)
+    print("ruleList: onLoad");
+    local scrollbar = self.ScrollBar;
+    if (scrollbar) then
+        local buttonHeight = scrollbar.ScrollUpButton:GetHeight();
+        local background = self.scrollbarBackground;
+        if (background) then
+            background:ClearAllPoints();
+            background:SetPoint("TOPLEFT", scrollbar.ScrollUpButton, "BOTTOMLEFT", 0, buttonHeight / 2);
+            background:SetPoint("BOTTOMRIGHT", scrollbar.ScrollDownButton, "TOPRIGHT", 0, -buttonHeight / 2);
+        end
+        scrollbar:ClearAllPoints();
+        scrollbar:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -buttonHeight);
+        scrollbar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, buttonHeight);
+    end    
+end
+
+function RulesList.OnShow(self)
+    print("ruleList: onShow(", self.ruleType, ")");
+    if (self.ruleType) then
+        ensureItems(self, Rules.GetDefinitions(self.ruleType));
+        RulesList.Update(self);
+    end
+end
+
+function RulesList.Update(self)
+    print("ruleList: update");
+    local items = self.items or {};
+
+    -- Show/Hide the empty text
+    if (#items == 0) then
+        self.emptyText:Show();
+    else
+        self.emptyText:Hide();
+    end        
+
+    -- Update the visible custom rules
+    local offset = FauxScrollFrame_GetOffset(self);
+    local visible = math.floor(self:GetHeight() / 64);
+    local anchor = nil;
+    local first = (1 + offset);
+    local last = (first + visible);
+    local width = (self:GetWidth() - self.ScrollBar:GetWidth() - 1);
+
+    FauxScrollFrame_Update(self, #items, visible, 64, nil, nil, nil, nil, nil, nil, true);
+    for index,item in ipairs(items) do
+        item:ClearAllPoints();
+        if ((index >= first) and (index < last)) then
+            item:Show();
+            item:SetWidth(width);
+
+            if (not anchor) then
+                item:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0);
+            else
+                item:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, 0);
+            end
+
+            if (index == last) then
+                item.divider:Hide();
+            else
+                item.divider:Show();
+            end                
+
+            anchor = item
+        else
+            item:Hide();
+        end
+    end    
+end
 
 function RulesList.OnRuleItemMouseUp(ruleItem, mouseButton)
     local ruleType = ruleItem:GetParent().RuleType;

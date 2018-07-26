@@ -1,9 +1,6 @@
 local Addon, L = _G[select(1,...).."_GET"]()
 Addon.RuleFunctions = {}
-Addon.RuleFunctions.NO_ACTION = 1
-Addon.RuleFunctions.KEEP = 2
-Addon.RuleFunctions.SELL = 3
-Addon.RuleFunctions.SELL_WITH_PROMPT = 4
+Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH;
 
 --*****************************************************************************
 -- Given a set of values this searches for them in the map to see if they map
