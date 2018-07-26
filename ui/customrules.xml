@@ -1,0 +1,184 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="customrules.lua"/>
+
+	<Button name="Vendor_CustomRule_CommandButton" virtual="true">
+		<Size x="20" y="20"/>
+		<Scripts>
+			<OnLoad>self.texture:SetAlpha(0.5)</OnLoad>
+			<OnEnter>
+				if (self:IsEnabled()) then
+					self.texture:SetAlpha(1.0);
+					if (self.tooltip) then
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(self.tooltip);
+						GameTooltip:Show();
+					end
+				end
+			</OnEnter>
+			<OnLeave>
+				if (self:IsEnabled()) then
+					self.texture:SetAlpha(0.5);
+					if (GameTooltip:GetOwner() == self) then
+						GameTooltip:Hide();
+					end
+				end
+			</OnLeave>
+			<OnMouseDown>
+				if (self:IsEnabled()) then
+					self.texture:SetPoint("TOPLEFT", 1, -1);
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if (self:IsEnabled()) then
+					self.texture:SetPoint("TOPLEFT", 0, 0);
+				end
+			</OnMouseUp>
+		</Scripts>
+	</Button>
+
+	<Button name="Vendor_CustomRule_Template" virtual="true" parentArray="items">
+		<Size x="400" y="64"/>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture ParentKey="divider">
+					<Size x="1" y="1"/>
+					<Color r="0.6" g="0.6" b="0.6" a="0.3"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="16" />
+						<Anchor point="BOTTOMRIGHT" x="-16" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="highlight" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="name" inherits="GameFontHighlightLarge" justifyH="LEFT" text="Rule Name">
+					<Anchors>
+						<Anchor point="TOPLEFT"  x="12" y="-4"/>
+						<Anchor point="TOPRIGHT" x="-12" y="-24"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true" text="this is hte rule description">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="12" y="-26"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-12" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="BACKGROUND">>
+				<!-- debug only show the author -->
+				<FontString parentKey="author" inherits="GameFontDisableTiny" justifyH="LEFT" justifyV="BOTTOM" text="Wuntina / Windrunner">
+					<Size x="1" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="16" y="2"/>
+						<Anchor point="BOTTOMRIGHT" x="-16" y="2"/>
+					</Anchors>>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="deleteButton" inherits="Vendor_CustomRule_CommandButton" visible="false">
+				<KeyValues>
+					<KeyValue key="tooltip" value="DELETE" type="global"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-12" y="4"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\COMMON\VOICECHAT-MUTED" alpha="0.5" parentKey="texture"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>Vendor.CustomRuleList.DeleteRule(self:GetParent());</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="editButton" inherits="Vendor_CustomRule_CommandButton" visible="false">
+				<KeyValues>
+					<KeyValue key="tooltip" value="EDIT" type="global"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.deleteButton" relativePoint="BOTTOMLEFT" x="-2" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\WorldMap\GEAR_64GREY" alpha="0.5" parentKey="texture"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>Vendor.CustomRuleList.EditRule(self:GetParent());</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="shareButton" inherits="Vendor_CustomRule_CommandButton" visible="fasle">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.editButton" relativePoint="BOTTOMLEFT" x="-2" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\WorldMap\ChatBubble_64Grey" alpha="0.5" parentKey="texture"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>Vendor.CustomRuleList.ShareRule(self:GetParent());</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Vendor.CustomRuleList.SetShareButton(self.shareButton);
+				if (self.author) then
+					local font, size = self.author:GetFont();
+					self.author:SetFont(font, 6.0, "MONOCHROME");
+					self.author:SetAlpha(0.25);
+				end
+			</OnLoad>
+			<OnEnter>
+				self.highlight:Show();
+				self.shareButton:Hide();
+				self.editButton:Show();
+				self.deleteButton:Show();
+			</OnEnter>
+			<OnLeave>
+				if (not self:IsMouseOver()) then
+					self.highlight:Hide();
+					self.shareButton:Hide();
+					self.editButton:Hide();
+					self.deleteButton:Hide();
+				end
+			</OnLeave>
+			<OnDoubleClick>Vendor.CustomRuleList.EditRule(self);</OnDoubleClick>
+		</Scripts>
+	</Button>
+
+	<ScrollFrame name="Vendor_CustomRule_List" virtual="true" inherits="FauxScrollFrameTemplate">
+		<Layers>
+			<Layer level="BORDER" textureSubLevel="-2">
+				<Texture parentKey="scrollbarBackground">
+					<Color r="0" g="0" b="0" a="0.65"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText" text="There are no custom rules defined">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>Vendor.CustomRuleList.OnLoad(self);</OnLoad>
+			<OnShow>Vendor.CustomRuleList.OnShow(self);</OnShow>
+			<OnVerticalScroll>FauxScrollFrame_OnVerticalScroll(self, offset, 64, function(self) Vendor.CustomRuleList.Update(self) end);</OnVerticalScroll>
+		</Scripts>
+	</ScrollFrame>
+
+</Ui>
