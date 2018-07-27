@@ -95,7 +95,7 @@ function Addon:DumpTooltipItemProperties()
             if type(v) == "table" then
                 val = "{"..table.concat(v, ", ").."}"
             end
-            self:Print("    ["..tostring(i).."] "..tostring(val))
+            self:Print("    [%s] %s", tostring(i), tostring(val))
         end
     end
 

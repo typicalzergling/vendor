@@ -310,9 +310,9 @@ This does NOT tell you if your character can equip the item. This tells you whet
 </p>
 <h2>Notes:</h2>
 <p>
-If the item's bind type is Bind-on-pickup then this will always report true, even for items you have not yet picked up if you are mousing over them. This is becuase the item will be Soulbound if you were to pick it up, 
+If the item's bind type is Bind-on-pickup then this will always report true, even for items you have not yet picked up if you are mousing over them. This is because the item will be Soulbound if you were to pick it up, 
 so we are accurately representing the resulting behavior of the item. If an item is Binds-when-equipped or on use, then IsSoulbound() will return false unless you actually have the item in your possession and we can 
-verify it's true state.
+verify its true state.
 </p>
 ]],
 ["HELP_ISBINDONEQUIP_HTML"] = [[
@@ -360,7 +360,9 @@ you from accidentally selling them. We have a built-in Keep rule for this purpos
 ["HELP_ISALREADYKNOWN_HTML"] = [[
 <p>True if the item is "Already known", such as a Toy or Recipe you have already learned.</p>
 ]],
-
+["HELP_ISUSABLE_HTML"] = [[
+<p>True if the item can be used, such as if it has a "Use:" effect described in its tooltip.</p>
+]],
 
 } -- END OF LOCALIZATION TABLE
 

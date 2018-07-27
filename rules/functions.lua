@@ -119,6 +119,30 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
     end
 end
 
+--*****************************************************************************
+-- This function allows testing the tooltip text for string values
+--*****************************************************************************
+function Addon.RuleFunctions.TooltipContains(...)
+    local str, side, line = ...
+    assert(str and type(str) == "string", "Text must be specified.")
+    assert(not side or (side == "left" or side == "right"), "Side must be 'left' or 'right' if present.")
+    assert(not line or type(line) == "number", "Line must be a number if present.")
+
+    local function checkSide(textSide, textTable)
+        if not side or side == textSide then
+            for lineNumber, text in ipairs(textTable) do
+                if not line or line == lineNumber then
+                    if text and string.find(text, str) then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+
+    return checkSide("left", TooltipLeft()) or checkSide("right", TooltipRight())
+end
+
 Addon.ScriptReference = Addon.ScriptReference or {}
 Addon.ScriptReference.Functions =
 {
@@ -145,9 +169,20 @@ Addon.ScriptReference.Functions =
         Args = "[setName0 .. setNameN]",
         Html = "<p>Checks if the item is a memmber of a Blizzard equipment set and returns true if found." ..
                "If no arguments are provied then all of the chracters equipment sets are check, otherwise" ..
-               "this checks only the specified sets.</p><br/>" ..
-               "<p>Examples:<br/>" ..
+               "this checks only the specified sets.<br/><br/>" ..
+               "Examples:<br/>" ..
                "Any: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet()<br/>" .. FONT_COLOR_CODE_CLOSE ..
                "Specific: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet(\"Tank\")</p>" .. FONT_COLOR_CODE_CLOSE,
+    },
+    
+    TooltipContains =
+    {
+        Args = "text [, side, line]",
+        Html = "<p>Checks if specified text is in the item's tooltip." ..
+               "Which side of the tooltip (left or right), and a specific line to check are optional." ..
+               "If no line or side is specified, the entire tooltip will be checked.<br/><br/>" ..
+               "Examples:<br/>" ..
+               "Anywhere: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Rogue\")<br/>" .. FONT_COLOR_CODE_CLOSE ..
+               "Check left side line 1: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Vanq\", \"left\", 1)</p>" .. FONT_COLOR_CODE_CLOSE,
     },
 }
