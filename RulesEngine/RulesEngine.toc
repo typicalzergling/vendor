@@ -1,0 +1,6 @@
+## Interface: 80000
+## Title: RulesEngine
+## Version: 1.0.7.24
+## SavedVariables: RulesEngine_Stats
+## Author: Wuntvor
+rules.xml

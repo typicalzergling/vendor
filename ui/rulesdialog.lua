@@ -81,10 +81,10 @@ Addon.RulesDialog = {
     -- Handles making sure everything is updated when the dialog is shown.
     --=========================================================================
     PrepareToShow = function(self)
-        self.SellPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_SELL))
+        --self.SellPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_SELL))
         self.KeepPanel.List:SetRuleConfig(Config:GetRulesConfig(RULE_TYPE_KEEP))
-        Vendor.RulesUI.InitRuleList(self.CustomPanel.List, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
-        self.CustomPanel.List:SetRuleConfig(Config:GetRulesConfig(Vendor.c_RuleType_Custom))
+        --Vendor.RulesUI.InitRuleList(self.CustomPanel.List, Vendor.c_RuleType_Custom, Vendor_CustomRuleDefinitions or {});
+        --self.CustomPanel.List:SetRuleConfig(Config:GetRulesConfig(Vendor.c_RuleType_Custom))
     end,
 
     --=========================================================================
@@ -123,7 +123,7 @@ Addon.RulesDialog = {
         Addon:DebugRules("Restoring rule configuration to the default")
         self.SellPanel.List:SetRuleConfig(Config:GetDefaultRulesConfig(RULE_TYPE_SELL))
         self.KeepPanel.List:SetRuleConfig(Config:GetDefaultRulesConfig(RULE_TYPE_KEEP))
-        self.CustomPanel.List:SetRuleConfig({});
+--        self.CustomPanel.List:SetRuleConfig({});
     end,
 
     --=========================================================================
@@ -134,7 +134,7 @@ Addon.RulesDialog = {
         Config:BeginBatch()
             Addon.RulesDialog.UpdateRuleConfig(self.SellPanel.List);
             Addon.RulesDialog.UpdateRuleConfig(self.KeepPanel.List);
-            Addon.RulesDialog.UpdateRuleConfig(self.CustomPanel.List);
+--            Addon.RulesDialog.UpdateRuleConfig(self.CustomPanel.List);
         Config:EndBatch()
         HideParentPanel(self.Container)
     end,

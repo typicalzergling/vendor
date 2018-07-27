@@ -1,353 +1,419 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local Addon, L, Config = _G[select(1,...).."_GET"]()
+Addon.Rules = Addon.Rules or {}
+local Rules = Addon.Rules;
+local SELL_RULE = Addon.c_RuleType_Sell;
+local KEEP_RULE = Addon.c_RuleType_Keep;
 
-Addon.SystemRules =
+Rules.SystemRules =
 {
     --*****************************************************************************
-    --
-    --
+    -- Sell Rules
     --*****************************************************************************
 
-    Sell =
     {
-        alwayssell =
-        {
-            Name = L["SYSRULE_SELL_ALWAYSSELL"],
-            Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
-            ScriptText = "IsAlwaysSellItem()",
-            Script =
-                function()
-                    if IsAlwaysSellItem() then
-                        return SELL
-                    end
-                end,
-            Locked = true,
-            Order = -1000,
-        },
+        Id = "sell.alwayssell",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_ALWAYSSELL"],
+        Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
+        ScriptText = "IsAlwaysSellItem()",
+        Script = function() return IsAlwaysSellItem() end,
+        Locked = true,
+        Order = -1000,
+    },
 
-        poor =
-        {
-            Name = L["SYSRULE_SELL_POORITEMS"],
-            Description = L["SYSRULE_SELL_POORITEMS_DESC"],
-            ScriptText = "Quality() == 0",
-            Script = function()
-                    return Quality() == 0;
-                end,
-            Order = 1000,
-        },
-
-        oldfood =
-        {
-            Name = L["SYSRULE_SELL_OLDFOOD"],
-            Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
-            ScriptText = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
-            Script = function()
-                return (TypeId() == 0) and (SubType() == 5) and (Level() <= (PlayerLevel() - 10));
+    {           
+        Id = "sell.poor",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_POORITEMS"],
+        Description = L["SYSRULE_SELL_POORITEMS_DESC"],
+        ScriptText = "Quality() == 0",
+        Script = function()
+                return Quality() == 0;
             end,
-            Order = 1100,
-        },
+        Order = 1000,
+    },
 
-        artifactpower =
-        {
-            Name = L["SYSRULE_SELL_ARTIFACTPOWER"],
-            Description = L["SYSRULE_SELL_ARTIFACTPOWER_DESC"],
-            Script = "IsArtifactPower() and IsFromExpansion(6) and (PlayerLevel() >= 110)",
-            Order = 1200,
-        },
+    {
+        Id = "sell.oldfood",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_OLDFOOD"],
+        Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
+        ScriptText = "TypeId() == 0 and SubTypeId() == 5 and Level() <= (PlayerLevel() - 10)",
+        Script = function()
+            return (TypeId() == 0) and (SubType() == 5) and (Level() <= (PlayerLevel() - 10));
+        end,
+        Order = 1100,
+    },
 
-        knowntoys =
-        {
-            Name = L["SYSRULE_SELL_KNOWNTOYS"],
-            Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
-            ScriptText = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
-            Script = function()
-                    return IsSoulbound() and IsToy() and IsAlreadyKnown();
-                end,
-            Order = 1300,
-        },
+    {
+        Id = "sell.artifactpower",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_ARTIFACTPOWER"],
+        Description = L["SYSRULE_SELL_ARTIFACTPOWER_DESC"],
+        Script = "IsArtifactPower() and IsFromExpansion(6) and (PlayerLevel() >= 110)",
+        Order = 1200,
+    },
 
-        uncommongear =
-        {
-            Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
-            Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
-            ScriptText = "IsEquipment() and Quality() == 2 and Level() < {itemlevel}",
-            Script = function()
-                    return IsEquipment() and (Quality() == 2) and (Level() < RULE_PARAMS.ITEMLEVEL);
-                end,
-            InsetsNeeded = { "itemlevel" },
-            Order = 1400,
-        },
+    {
+        Id = "sell.knowntoys",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_KNOWNTOYS"],
+        Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
+        ScriptText = "IsSoulbound() and IsToy() and IsAlreadyKnown()",
+        Script = function()
+                return IsSoulbound() and IsToy() and IsAlreadyKnown();
+            end,
+        Order = 1300,
+    },
 
-        raregear =
-        {
-            Name = L["SYSRULE_SELL_RAREGEAR"],
-            Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
-            ScriptText = "IsEquipment() and Quality() == 3 and Level() < {itemlevel}",
-            Script = function()
-                    return IsEquipment() and (Quality() == 3) and (Level() < RULE_PARAMS.ITEMLEVEL);
-                end,
-            InsetsNeeded = { "itemlevel" },
-            Order = 1500,
-        },
+    {
+        Id = "sell.uncommongear",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
+        Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
+        ScriptText = "IsEquipment() and Quality() == 2 and Level() < {itemlevel}",
+        Script = function()
+                return IsEquipment() and (Quality() == 2) and (Level() < RULE_PARAMS.ITEMLEVEL);
+            end,
+        InsetsNeeded = { "itemlevel" },
+        Order = 1400,
+    },
 
-        epicgear =
-        {
-            Name = L["SYSRULE_SELL_EPICGEAR"],
-            Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
-            ScriptText = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
-            Script = function()
-                    return IsEquipment() and IsSoulbound() and (Quality() == 4) and (Level() < RULE_PARAMS.ITEMLEVEL);
-                end,
-            InsetsNeeded = { "itemlevel" },
-            Order = 1600,
-        },
+    {
+        Id = "sell.raregear",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_RAREGEAR"],
+        Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
+        ScriptText = "IsEquipment() and Quality() == 3 and Level() < {itemlevel}",
+        Script = function()
+                return IsEquipment() and (Quality() == 3) and (Level() < RULE_PARAMS.ITEMLEVEL);
+            end,
+        InsetsNeeded = { "itemlevel" },
+        Order = 1500,
+    },
+
+    {
+        Id = "sell.epicgear",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_EPICGEAR"],
+        Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
+        ScriptText = "IsEquipment() and IsSoulbound() and Quality() == 4 and Level() < {itemlevel}",
+        Script = function()
+                return IsEquipment() and IsSoulbound() and (Quality() == 4) and (Level() < RULE_PARAMS.ITEMLEVEL);
+            end,
+        InsetsNeeded = { "itemlevel" },
+        Order = 1600,
     },
 
     --*****************************************************************************
-    --
-    --
+    -- Keep Rules
     --*****************************************************************************
 
-    Keep =
+    -- Item is in the Never Sell list.
     {
-        -- Item is in the Never Sell list.
-        neversell =
-        {
-            Name = L["SYSRULE_KEEP_NEVERSELL"],
-            Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
-            ScriptText = "IsNeverSellItem()",
-            Script =
-                function()
-                    if IsNeverSellItem() then
-                        return KEEP
-                    end
-                end,
-            Locked = true,
-            Order = -2000,
-        },
+        Id = "keep.neversell",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_NEVERSELL"],
+        Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
+        ScriptText = "IsNeverSellItem()",
+        Script = function() return IsNeverSellItem() end,
+        Locked = true,
+        Order = -2000,
+    },
 
-        -- This is an unsellable item if value is 0
-        unsellable =
-        {
-            Name = L["SYSRULE_KEEP_UNSELLABLE"],
-            Description = L["SYSRULE_KEEP_UNSELLABLE_DESC"],
-            ScriptText = "UnitValue() == 0",
-            Script = function() return UnitValue() == 0; end,
-            Locked = true,
-            Order = -9999,
-        },
+    -- This is an unsellable item if value is 0
+    {
+        Id = "keep.unsellable",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_UNSELLABLE"],
+        Description = L["SYSRULE_KEEP_UNSELLABLE_DESC"],
+        ScriptText = "UnitValue() == 0",
+        Script = function() return UnitValue() == 0; end,
+        Locked = true,
+        Order = -9999,
+    },
 
-        -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
-        legendaryandup =
-        {
-            Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
-            Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
-            ScriptText = "Quality() >= 5",
-            Script = function() return Quality() >= 5; end,
-            Order = 1000,
-        },
+    -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
+    {
+        Id = "keep.legendaryandup",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
+        Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
+        ScriptText = "Quality() >= 5",
+        Script = function() return Quality() >= 5; end,
+        Order = 1000,
+    },
 
-        -- Safeguard rule - Keep soulbound equipment.
-        soulboundgear =
-        {
-            Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
-            Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
-            ScriptText = "IsEquipment() and IsSoulbound()",
-            Script = function()
-                    return IsEquipment() and IsSoulbound();
-                end,
-            Order = 1100,
-        },
+    -- Safeguard rule - Keep soulbound equipment.
+    {
+        Id = "keep.soulboundgear",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
+        Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
+        ScriptText = "IsEquipment() and IsSoulbound()",
+        Script = function()
+                return IsEquipment() and IsSoulbound();
+            end,
+        Order = 1100,
+    },
 
-        -- Safeguard rule - Keep BoE Equipment
-        bindonequipgear =
-        {
-            Name = L["SYSRULE_KEEP_BINDONEQUIPGEAR"],
-            Description = L["SYSRULE_KEEP_BINDONEQUIPGEAR_DESC"],
-            Script = "IsEquipment() and IsBindOnEquip()",
-            Order = 1150,
-        },
+    -- Safeguard rule - Keep BoE Equipment
+    {
+        Id = "keep.bindonequipgear",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_BINDONEQUIPGEAR"],
+        Description = L["SYSRULE_KEEP_BINDONEQUIPGEAR_DESC"],
+        Script = "IsEquipment() and IsBindOnEquip()",
+        Order = 1150,
+    },
 
-        -- Safeguard rule - Protect those transmogs!
-        unknownappearance =
-        {
-            Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
-            Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
-            ScriptText = "IsUnknownAppearance()",
-            Script = function() return IsUnknownAppearance() end,
-            Order = 1200,
-        },
+    -- Safeguard rule - Protect those transmogs!
+    {
+        Id = "keep.unknownappearance",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
+        Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
+        ScriptText = "IsUnknownAppearance()",
+        Script = function() return IsUnknownAppearance() end,
+        Order = 1200,
+    },
 
-        -- Safeguard rule - Common items are usually important and useful.
-        common =
-        {
-            Name = L["SYSRULE_KEEP_COMMON"],
-            Description = L["SYSRULE_KEEP_COMMON_DESC"],
-            ScriptText = "Quality() == 1",
-            Script = function() return (Quality() == 1) end,
-            Order = 1300,
-        },
+    -- Safeguard rule - Common items are usually important and useful.
+    {
+        Id = "keep.common",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_COMMON"],
+        Description = L["SYSRULE_KEEP_COMMON_DESC"],
+        ScriptText = "Quality() == 1",
+        Script = function() return (Quality() == 1) end,
+        Order = 1300,
+    },
 
-        -- Optional Safeguard - Might be useful for leveling.
-        uncommongear =
-        {
-            Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
-            Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
-            ScriptText = "IsEquipment() and Quality() == 2",
-            Script = function()
-                    return IsEquipment() and (Quality() == 2);
-                end,
-            Order = 1400,
-        },
+    -- Optional Safeguard - Might be useful for leveling.
+    {
+        Id = "keep.uncommongear",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
+        Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
+        ScriptText = "IsEquipment() and Quality() == 2",
+        Script = function()
+                return IsEquipment() and (Quality() == 2);
+            end,
+        Order = 1400,
+    },
 
-        -- Optional Safeguard - Might be useful for leveling or early max-level.
-        raregear =
-        {
-            Name = L["SYSRULE_KEEP_RAREGEAR"],
-            Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
-            ScriptText = "IsEquipment() and Quality() == 3",
-            Script = function()
-                    return IsEquipment() and (Quality() == 3);
-                end,
-            Order = 1500,
-        },
+    -- Optional Safeguard - Might be useful for leveling or early max-level.
+    {
+        Id = "keep.raregear",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_RAREGEAR"],
+        Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
+        ScriptText = "IsEquipment() and Quality() == 3",
+        Script = function()
+                return IsEquipment() and (Quality() == 3);
+            end,
+        Order = 1500,
+    },
 
-        -- Optional Safeguard - If you're a bit paranoid.
-        epicgear =
-        {
-            Name = L["SYSRULE_KEEP_EPICGEAR"],
-            Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
-            ScriptText = "IsEquipment() and Quality() == 4",
-            Script = function()
-                    return IsEquipment() and (Quality() == 4);
-                end,
-            Order = 1600,
-        },
+    -- Optional Safeguard - If you're a bit paranoid.
+    {
+        Id = "keep.epicgear",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_EPICGEAR"],
+        Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
+        ScriptText = "IsEquipment() and Quality() == 4",
+        Script = function()
+                return IsEquipment() and (Quality() == 4);
+            end,
+        Order = 1600,
+    },
 
-        -- Safeguard against selling item sets, even if it matches some
-        -- other rule, for example, a fishing or transmog set.
-        equipmentset =
-        {
-            Name = L["SYSRULE_KEEP_EQUIPMENTSET_NAME"],
-            Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
-            ScriptText = "IsInEquipmentSet()",
-            Script = function() return IsInEquipmentSet() end,
-            Order = 1050,
-        },
-    }
-}
+    -- Safeguard against selling item sets, even if it matches some
+    -- other rule, for example, a fishing or transmog set.
+    {
+        Id = "keep.equipmentset",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_EQUIPMENTSET_NAME"],
+        Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
+        ScriptText = "IsInEquipmentSet()",
+        Script = function() return IsInEquipmentSet() end,
+        Order = 1050,
+    },
+};
 
---*****************************************************************************
--- Gets the rule definitions of the specified type,or returns an empty
--- table if there aren't any available.
---*****************************************************************************
-local function getSystemRuleDefinitons(ruleType)
-    return Addon.SystemRules[ruleType] or {}
-end
+-- While creating this closure sort the rules table by order, this prevents us from 
+-- Having to do it each time we traverse the list.
+table.sort(Rules.SystemRules,
+    function (ruleA, ruleB) 
+        --@debug@
+        assert(tonumber(ruleA.Order), "All system rules must have an order field: " .. ruleA.Id);
+        assert(tonumber(ruleB.Order), "All system rules must have an order field: " .. ruleB.Id);
+        --@debug-end@
+        return (ruleA.Order < ruleB.Order);
+    end);
 
---*****************************************************************************
--- Subsitutes every instance of "{inset}" with the value specified by
--- insetValue as a string.
---*****************************************************************************
-local function replaceInset(source, inset, insetValue)
-    local searchTerm = string.format("{%s}", string.lower(inset))
-    local replaceValue = tostring(insetValue)
-    return string.gsub(source, searchTerm, replaceValue)
-end
 
---*****************************************************************************
--- Executes a subsitution on all the values within the "insets" table, this table
--- can be null or empty.
---*****************************************************************************
-local function replaceInsets(source, insets)
-    if (type(source) == "string") then
-        if (Addon:TableSize(insets) ~= 0) then
-            for inset, value in pairs(insets) do
-                source = replaceInset(source, inset, value);
+--[[===========================================================================
+    | findCustomDefinition (local)
+    |   Simple local helper function which finds a custom rule definition
+    |   or it returns nil meaning it doesn't exist.
+    ========================================================================--]]
+local function findCustomDefinition(ruleId)
+    if (Vendor_CustomRuleDefinitions) then
+        for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
+            if (string.lower(ruleDef.Id) == ruleId) then
+                return ruleDef;
             end
         end
+    end        
+end
+
+-- This is event is fired when our custom rule definitions have changed.
+Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
+
+--[[===========================================================================
+    | DeleteDefinition:
+    |   This will remove the custom rule definition from the list and fire
+    |   the changed event. You can only delete custom definitions, trying
+    |   to delete a non-existing rule is a no-op.
+    ========================================================================--]]
+function Rules.DeleteDefinition(ruleId)
+    if (Vendor_CustomRuleDefinitions) then
+        local id = string.lower(ruleId);
+
+        for i,ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
+            if (string.lower(ruleDef.Id) == id) then
+                table.remove(Vendor_CustomRuleDefinitions, i);
+                Rules.OnDefinitionsChanged("DELETE", ruleDef.Id);
+                break;
+            end
+        end
+    end        
+end
+
+--[[===========================================================================
+    | UpdateDefinition:
+    |   This will update the fields which change be changed by the user in
+    |   the custom rule definitions, along with maintaining the edit field.
+    |   
+    |   Updating a rule which doesn't yet exist will create a new custom
+    |   rule with the specified parameters.
+    ========================================================================--]]
+function Rules.UpdateDefinition(ruleDef)
+    local editedBy = string.format("%s / %s", UnitFullName("player"));
+    local custom = findCustomDefinition(ruleDef.Id);
+    if (custom) then
+        custom.EditedBy = editedBy;
+        custom.Name = ruleDef.Name;
+        custom.Description = ruleDef.Description;
+        custom.Script = ruleDef.Script;
+        custom.Type = ruleDef.Type or SELL_RULE;
+        Rules.OnDefinitionsChanged("UPDATE", custom.Id);
     else
-        assert(type(source) == "function", "If the source is not a string then it must be a function!");
-        assert(Addon:TableSize(inset) == 0, "If the source is a function it should not have insets!");
+        Vendor_CustomRuleDefinitions = Vendor_CustomRuleDefinitions or {};
+        table.insert(Vendor_CustomRuleDefinitions,
+            {
+                Id = ruleDef.Id,
+                Name = ruleDef.Name,
+                Script = ruleDef.Script,
+                Type = ruleDef.Type,
+                Description = ruleDef.Description,
+                EditedBy = editedBy,
+            });
+        Rules.OnDefinitionsChanged("CREATE", ruleDef.Id);
     end
-    return source
 end
 
---*****************************************************************************
--- Creates a new id using the rule type and id which is uniuqe for the
--- given set of insets.
---
--- Example: makeRuleId("Sell", "Epic", { itemlevel=700 })
---           creates the following "sell.epic(itemlevel:700)"
---*****************************************************************************
-local function makeRuleId(ruleType, ruleId, insets)
-    local id = string.format("%s.%s", string.lower(ruleType), string.lower(ruleId))
-    if (Addon:TableSize(insets) ~= 0) then
-        for inset, value in pairs(insets) do
-            if (string.lower(ruleId) ~= string.lower(value)) then
-                id  = (id .. string.format("(%s:%s)", string.lower(inset), tostring(value)))
+--[[===========================================================================
+    | GetAllDefinitions:
+    |   This returns the list of all rule definitions, order the way the 
+    |   should be presented the user. typeFilter is optional, and only
+    |   needed to filter to a single type of rule.
+    ========================================================================--]]
+function Rules.GetDefinitions(typeFilter)
+    local defs = {};
+
+    -- Gather system rules
+    for _, ruleDef in ipairs(Rules.SystemRules) do
+        if (not typeFilter) or (ruleDef.Type == typeFilter) then
+            table.insert(defs, ruleDef);
+        end
+    end
+
+    -- Gather custom rules
+    if (Vendor_CustomRuleDefinitions) then
+        for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
+            if (not typeFilter) or (ruleDef.Type == typeFilter) then
+                table.insert(defs, ruleDef);
+            end                
+        end
+    end
+
+    return defs;
+end
+
+--[[===========================================================================
+    | GetDefinition:
+    |   Given a rule ID this will return the definition of the rule, this 
+    |   does not search locked rules, and will also search for a custom rule.
+    |
+    |   Note: ruleType is optional and is not required.
+    ========================================================================--]]
+function Rules.GetDefinition(ruleId, ruleType)
+    local id = string.lower(ruleId);
+
+    -- Check the system rules.
+    for _, ruleDef in ipairs(Rules.SystemRules) do
+        if (not ruleDef.Locked) then
+            if (string.lower(ruleDef.Id) == id) then
+                if ((not ruleType) or (ruleType == ruleDef.Type)) then
+                    return ruleDef;
+                end                    
             end
         end
     end
-    return id
-end
 
---*****************************************************************************
--- Creates an instance of the rule from the specified definition
---*****************************************************************************
-local function createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
-    local rule = {
-                RawId = ruleId,
-                Id = makeRuleId(ruleType, ruleId, insets),
-                Name =  ruleDef.Name,
-                Description = ruleDef.Description,
-                Script = replaceInsets(ruleDef.Script, insets),
-                InsetsNeeded = ruleDef.InsetsNeeded,
-                Locked = ruleDef.Locked,
-                Type = ruleType,
-                Order = ruleDef.Order,
-            }
-
-    -- If it's not a locked rule, then the user controls the order
-    if (not ruleDef.Locked) then
-        rule.Order = nil
-    end
-
-    return rule
-end
-
---*****************************************************************************
--- Gets the definition of the specified rule checking the tables of rules
--- returns the id and the script of the rule. this will format the item level
--- into the rule of needed.
---
--- insets is an optional parameter which is a table of items which shuold
--- be formated into both the ruleId and script.
---*****************************************************************************
-function Addon.SystemRules.GetDefinition(ruleType, ruleId, insets)
-    local ruleDef = getSystemRuleDefinitons(ruleType)[string.lower(ruleId)]
-    if (ruleDef ~= nil) then
-        return createRuleFromDefinition(ruleType, ruleId, ruleDef, insets)
-    end
-    return nil
-end
-
---*****************************************************************************
---  Gets the list of system rules which are considered locked, meaning they
--- cannot be added/removed by the user as part of the config.
---*****************************************************************************
-function Addon.SystemRules.GetLockedRules()
-    lockedRules = {}
-    -- Handle sell rules
-    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Addon.c_RuleType_Sell)) do
-        if (ruleDef.Locked) then
-            table.insert(lockedRules, createRuleFromDefinition(Addon.c_RuleType_Sell, ruleId, ruleDef))
+    -- Check the custom rules.
+    local custom = findCustomDefinition(id);
+    if (custom) then 
+        if ((not ruleType) or (custom.Type == ruleType)) then
+            return custom;
         end
     end
-    -- Handle keep rules
-    for ruleId, ruleDef in pairs(getSystemRuleDefinitons(Addon.c_RuleType_Keep)) do
+  
+    -- No match
+    return nil;
+end
+
+--[[===========================================================================
+    | GetLockedRules:
+    |   This returns the list of locked rules, in priority order from our system
+    |   table, users cannot build locked rules so we don't also need to traverse
+    |   the custom definitions here.
+    ========================================================================--]]
+function Rules.GetLockedRules()
+    lockedRules = {}
+    for _, ruleDef in ipairs(Rules.SystemRules) do
         if (ruleDef.Locked) then
-            table.insert(lockedRules, createRuleFromDefinition(Addon.c_RuleType_Keep, ruleId, ruleDef))
+            table.insert(lockedRules, ruleDef);
         end
     end
     return lockedRules
+end
+
+--[[===========================================================================
+    | GetCustomDefinitions
+    |   Returns all of the custom definitions, optionally filtering for
+    |   specified type.
+    ========================================================================--]]
+function Rules.GetCustomDefinitions(filter)
+    local defs = {};
+    if (Vendor_CustomRuleDefinitions) then
+        for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
+            if (not filter or (filter == ruleDef.Type)) then
+                table.insert(defs, ruleDef);
+            end
+        end
+    end
+    return defs;
 end
