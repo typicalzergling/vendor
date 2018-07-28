@@ -75,7 +75,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment() and (Quality() == 2) and (Level() < RULE_PARAMS.ITEMLEVEL);
             end,
-        InsetsNeeded = { "itemlevel" },
+        Params = { ITEMLEVEL=true },
         Order = 1400,
     },
 
@@ -88,7 +88,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment() and (Quality() == 3) and (Level() < RULE_PARAMS.ITEMLEVEL);
             end,
-        InsetsNeeded = { "itemlevel" },
+        Params = { ITEMLEVEL=true },
         Order = 1500,
     },
 
@@ -101,7 +101,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment() and IsSoulbound() and (Quality() == 4) and (Level() < RULE_PARAMS.ITEMLEVEL);
             end,
-        InsetsNeeded = { "itemlevel" },
+        Params = { ITEMLEVEL=true },
         Order = 1600,
     },
 
@@ -260,8 +260,9 @@ table.sort(Rules.SystemRules,
     ========================================================================--]]
 local function findCustomDefinition(ruleId)
     if (Vendor_CustomRuleDefinitions) then
+        local id = string.lower(ruleId);
         for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
-            if (string.lower(ruleDef.Id) == ruleId) then
+            if (string.lower(ruleDef.Id) == id) then
                 return ruleDef;
             end
         end
@@ -313,12 +314,13 @@ function Rules.UpdateDefinition(ruleDef)
         Vendor_CustomRuleDefinitions = Vendor_CustomRuleDefinitions or {};
         table.insert(Vendor_CustomRuleDefinitions,
             {
-                Id = ruleDef.Id,
+                Id = string.lower(ruleDef.Id),
                 Name = ruleDef.Name,
                 Script = ruleDef.Script,
-                Type = ruleDef.Type,
+                Type = ruleDef.Type or SELL_RULE;
                 Description = ruleDef.Description,
                 EditedBy = editedBy,
+                Custom = true,
             });
         Rules.OnDefinitionsChanged("CREATE", ruleDef.Id);
     end
@@ -335,7 +337,7 @@ function Rules.GetDefinitions(typeFilter)
 
     -- Gather system rules
     for _, ruleDef in ipairs(Rules.SystemRules) do
-        if (not typeFilter) or (ruleDef.Type == typeFilter) then
+        if (not ruleDef.Locked and ((not typeFilter) or (ruleDef.Type == typeFilter))) then
             table.insert(defs, ruleDef);
         end
     end

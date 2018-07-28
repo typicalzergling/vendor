@@ -613,6 +613,7 @@ function EditRuleDialog.HandleOk(self)
 
     local newRuleDef = {};
     newRuleDef.Id = self.ruleDef.Id;
+    newRuleDef.Type = Addon.c_RuleType_Sell;
     newRuleDef.Script = self.script.content:GetText();
     newRuleDef.Name = self.name:GetText();
     newRuleDef.Description = self.description.content:GetText();

@@ -46,8 +46,6 @@ rules\evaluate.lua
 
 # User Interface
 ui\tooltip.lua
-ui\listbase.lua
-ui\ruleslist.lua
 ui\ruleslist.xml
 ui\generalconfigpanel.lua
 ui\repairconfigpanel.lua
@@ -56,7 +54,6 @@ ui\debugconfigpanel.lua
 ui\configpanels.lua
 ui\configpanels.xml
 ui\customrules.xml
-ui\rulesdialog.lua
 ui\rulesdialog.xml
 ui\editruledialog.xml
 

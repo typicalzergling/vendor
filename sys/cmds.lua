@@ -127,7 +127,7 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
-    Addon.RulesDialog.Toggle()
+    VendorRulesDialog:Toggle()
 end
 
 -- Initiates a manual Auto-Sell. This ignores the auto-sell configuration setting.

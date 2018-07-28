@@ -36,7 +36,7 @@
 		</Scripts>
 	</Button>
 
-	<Button name="Vendor_CustomRule_Template" virtual="true" parentArray="items">
+	<Button name="Vendor_CustomRule_Template" virtual="true">
 		<Size x="400" y="64"/>
 		<Layers>
 			<Layer level="BORDER">
@@ -98,7 +98,7 @@
 					</Layer>
 				</Layers>
 				<Scripts>
-					<OnClick>Vendor.CustomRuleList.DeleteRule(self:GetParent());</OnClick>
+					<OnClick>self:GetParent():DeleteRule();</OnClick>
 				</Scripts>
 			</Button>
 			<Button parentKey="editButton" inherits="Vendor_CustomRule_CommandButton" visible="false">
@@ -114,10 +114,10 @@
 					</Layer>
 				</Layers>
 				<Scripts>
-					<OnClick>Vendor.CustomRuleList.EditRule(self:GetParent());</OnClick>
+					<OnClick>self:GetParent():EditRule();</OnClick>
 				</Scripts>
 			</Button>
-			<Button parentKey="shareButton" inherits="Vendor_CustomRule_CommandButton" visible="fasle">
+			<Button parentKey="shareButton" inherits="Vendor_CustomRule_CommandButton" visible="false">
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.editButton" relativePoint="BOTTOMLEFT" x="-2" y="0"/>
 				</Anchors>
@@ -127,38 +127,38 @@
 					</Layer>
 				</Layers>
 				<Scripts>
-					<OnClick>Vendor.CustomRuleList.ShareRule(self:GetParent());</OnClick>
+					<OnClick>self:GetParent():ShareRule(self:GetParent());</OnClick>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad>
-				Vendor.CustomRuleList.SetShareButton(self.shareButton);
-				if (self.author) then
-					local font, size = self.author:GetFont();
-					self.author:SetFont(font, 6.0, "MONOCHROME");
-					self.author:SetAlpha(0.25);
-				end
-			</OnLoad>
 			<OnEnter>
-				self.highlight:Show();
 				self.shareButton:Hide();
 				self.editButton:Show();
 				self.deleteButton:Show();
 			</OnEnter>
 			<OnLeave>
 				if (not self:IsMouseOver()) then
-					self.highlight:Hide();
 					self.shareButton:Hide();
 					self.editButton:Hide();
 					self.deleteButton:Hide();
 				end
 			</OnLeave>
-			<OnDoubleClick>Vendor.CustomRuleList.EditRule(self);</OnDoubleClick>
+			<OnDoubleClick>self:EditRule();</OnDoubleClick>
 		</Scripts>
+		<HighlightTexture file="Interface\PVPFrame\PvPMegaQueue" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="12" y="0"/>
+				<Anchor point="BOTTOMRIGHT" x="-12" y="0"/>
+			</Anchors>
+			<TexCoords left="0.00195313" right="0.63867188" top="0.70703125" bottom="0.76757813"/>
+		</HighlightTexture>
 	</Button>
 
 	<ScrollFrame name="Vendor_CustomRule_List" virtual="true" inherits="FauxScrollFrameTemplate">
+        <KeyValues>
+            <KeyValue key="itemHeight" value="64" type="number"/>
+        </KeyValues>
 		<Layers>
 			<Layer level="BORDER" textureSubLevel="-2">
 				<Texture parentKey="scrollbarBackground">
@@ -176,8 +176,8 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>Vendor.CustomRuleList.OnLoad(self);</OnLoad>
-			<OnShow>Vendor.CustomRuleList.OnShow(self);</OnShow>
-			<OnVerticalScroll>FauxScrollFrame_OnVerticalScroll(self, offset, 64, function(self) Vendor.CustomRuleList.Update(self) end);</OnVerticalScroll>
+			<OnShow>self:OnShow();</OnShow>
+			<OnVerticalScroll>self:OnVerticalScroll(offset);</OnVerticalScroll>
 		</Scripts>
 	</ScrollFrame>
 
