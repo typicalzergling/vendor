@@ -34,7 +34,7 @@ end
 --*****************************************************************************
 function GeneralPanel.OnOpenRules()
     Addon:Debug("Showing rules dialog")
-    Addon.RulesDialog.Toggle()
+    Addon.RulesDialog:Toggle()
 end
 
 --*****************************************************************************
