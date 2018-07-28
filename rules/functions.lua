@@ -137,7 +137,7 @@ function Addon.RuleFunctions.TooltipContains(...)
         end
     end
 
-    return checkSide("left", TooltipLeft()) or checkSide("right", TooltipRight())
+    return checkSide("left", OBJECT.TooltipLeft) or checkSide("right", OBJECT.TooltipRight)
 end
 
 Addon.ScriptReference = Addon.ScriptReference or {}

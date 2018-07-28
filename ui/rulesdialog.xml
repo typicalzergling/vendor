@@ -91,7 +91,7 @@
 
     <!-- Rules dialog Frame -->
     <Frame name="VendorRulesDialog" parent="UIParent" hidden="true" inherits="Vendor_Dialog_Template">
-        <Size x="858" y="616"/>
+        <Size x="600" y="616"/>
         <Anchors>
             <Anchor point="CENTER"/>
         </Anchors>
@@ -185,7 +185,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" parentKey="TopText">
+                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="TopText">
                             <Anchors>
                                 <Anchor point="TOPLEFT" x="16" y="-16"/>
                                 <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
