@@ -6,7 +6,7 @@ local SCROLL_PADDING_X = 4;
 local SCROLL_PADDING_Y = 17;
 local SCROLL_BUTTON_PADDING = 4;
 local ITEM_INFO_HTML_BODY_FMT = "<!DOCTYPE html><html><body><h1>%s</h1>%s</body></html>";
-local ITEM_HTML_FMT = "<p>%s() == %s%s%s</p>";
+local ITEM_HTML_FMT = "<p>%s == %s%s%s</p>";
 local NIL_ITEM_STRING = GRAY_FONT_COLOR_CODE .. "nil" .. FONT_COLOR_CODE_CLOSE;
 local MATCHES_HTML_START = "<!DOCTYPE html><html><body>";
 local MATCHES_HTML_END = "</body></html>";
@@ -335,12 +335,15 @@ Addon.EditRuleDialog =
         local props = {}
         if (itemProps) then
             for name, value in spairs(itemProps) do
-                local valStr = tostring(value);
-                if ((value == nil) or (valStr == "") or (string.len(valStr) == 0)) then
-                    valStr = NIL_ITEM_STRING;
-                end
+                if ((type(name) == "string") and 
+                    ((type(value) ~= "table") and (type(value) ~= "function"))) then
+                    local valStr = tostring(value);
+                    if ((value == nil) or (valStr == "") or (string.len(valStr) == 0)) then
+                        valStr = NIL_ITEM_STRING;
+                    end
 
-                table.insert(props, string.format(ITEM_HTML_FMT, name, GREEN_FONT_COLOR_CODE, htmlEncode(valStr), FONT_COLOR_CODE_CLOSE));
+                    table.insert(props, string.format(ITEM_HTML_FMT, name, GREEN_FONT_COLOR_CODE, htmlEncode(valStr), FONT_COLOR_CODE_CLOSE));
+                end                    
             end
 
             infoPane.propHtml.scrollFrame.content:SetText(string.format(ITEM_INFO_HTML_BODY_FMT, link, table.concat(props)));

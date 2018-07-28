@@ -171,7 +171,7 @@ end
 
 -- Publish our utility functions so the rest of the package can see them
 Package.CreateObject = create_object;
-Package.CreateEvent = crate_event;
+Package.CreateEvent = create_event;
 
 -- TEMP
 local Addon =  _G[select(1,...).."_GET"]();

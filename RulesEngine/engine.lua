@@ -190,7 +190,7 @@ end
     |   true/false if we found a match, the rule and category along with
     |   the number of rules we ran.
     =======================================================================--]]
-local function evaluateRules(log, categories, ruleEnv, ...)
+local function evaluateRules(self, log, categories, ruleEnv, ...)
     local rulesRun = 0;
     local result = false;
     local rule;
@@ -199,7 +199,7 @@ local function evaluateRules(log, categories, ruleEnv, ...)
     for _, cat in ipairs(categories) do
 
         log:StartBlock("Category(%d, '%s')", cat:GetId(), cat:GetName());
-        local r, ran, message = cat:Evaluate(log, ruleEnv, ...);
+        local r, ran, message = cat:Evaluate(self, log, ruleEnv, ...);
         rulesRun = (rulesRun + ran);
         log:EndBlock(" End [ran=%d]", ran);
 
@@ -241,16 +241,23 @@ end
     |   for example, overriding a global function, the are searched in the 
     |   order they are specified to this function.
     =======================================================================--]]
-local function createRestrictedEnvironment(...)
+local function createRestrictedEnvironment(readOnly, ...)
     local envs = { ... };
     return setmetatable({}, 
         { 
             __newindex = 
                 function(self, key, value)
-                    error("You cannot modifiy the restricted environment", 2);
+                    if (readOnly) then
+                        error("The environment is read-only and cannot be changed", 2);
+                    end
+                    rawset(self, key, value);
                 end,
             __index = 
                 function(self, key)
+                    local v = rawget(self, key);
+                    if (v ~= nil) then
+                        return v;
+                    end
                     for _, env in ipairs(envs) do
                         local v = rawget(env, key);
                         if (v ~= nil) then
@@ -285,8 +292,8 @@ local function engine_Evaluate(self, object, ...)
     -- all the functions we've got in our local environment
     --   Rules - Can see in this order, Our environment, the object accessors, and imported globals.
     --   Function -- Can see in this order, the object accessors and the globals
-    local ruleEnv = createRestrictedEnvironment(accessors, self.environment, self.globals);
-    local functionEnv = createRestrictedEnvironment(accessors, { OBJECT = object },  _G);
+    local ruleEnv = createRestrictedEnvironment(false, accessors, self.environment, self.globals);
+    local functionEnv = createRestrictedEnvironment(true, accessors, { OBJECT = object },  _G);
     for _, value in pairs(self.environment) do
         if (type(value) == "function") then
             setfenv(value, functionEnv);
@@ -302,7 +309,7 @@ local function engine_Evaluate(self, object, ...)
     local categoryId = nil;
 
     self.log:StartBlock("Evaluating \"%s\"", object.Name or "<unknown>")
-    local result, rule, category, rulesRun = evaluateRules(self.log, self.categories, ruleEnv, ...)
+    local result, rule, category, rulesRun = evaluateRules(self, self.log, self.categories, ruleEnv, ...)
     if (result and rule and category) then
         matchedRuleId = rule:GetId();
         matchedRuleName = rule:GetName();
@@ -327,6 +334,38 @@ local function engine_CreateRuleId(self, categoryId, uniqueName)
     return string.format("%d.%s", tostring(categoryId), uniqueName);
 end    
 
+--[[===========================================================================
+    | engine_GetRuleStatus
+    |   Returns the status of any rule which matches the specified arguments
+    |   and returns the results in a table.
+    =======================================================================--]]
+local function engine_GetRuleStatus(self, ...)
+    local status = {}
+    for _, category in ipairs(self.categories) do
+        category:GetRuleStatus(status, ...);    
+    end
+    return status;
+end
+
+--[[===========================================================================
+    | engine_CLearRules
+    |   Removes all rules from the engine, preserves the environment and 
+    |   the status.
+    =======================================================================--]]
+local function engine_ClearRules(self)
+    for _, category in ipairs(self.categories) do
+        category:Reset();
+    end
+end
+
+--[[===========================================================================
+    | engine_CreateRuleId
+    |   Toggles the verbosity of the engine.
+    =======================================================================--]]
+local function engine_SetVerbose(self, verbose)
+    self.log = Package.CreateLog(self.id, verbose);
+end
+
 -- Define the API we expose
 local engine_API =
 {
@@ -338,6 +377,9 @@ local engine_API =
     AddConstants = engine_AddConstants,
     CreateCategory = engine_CreateCategory,
     GetId = function(self) return self.id end,
+    GetRuleStatus = engine_GetRuleStatus,
+    ClearRules = engine_ClearRules,
+    SetVerbose = engine_SetVerbose,
 };
 
 --[[===========================================================================
@@ -355,6 +397,7 @@ local function new_Engine(environment, verbose)
         environment = {},
         globals = {},
         log = Package.CreateLog(g_engineId, verbose);
+        OnRuleStatusChange = Package.CreateEvent("OnRuleStatusChange"),
     }
    
     instance.log:StartBlock("Start create [%04d]", instance.id);
