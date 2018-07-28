@@ -15,7 +15,7 @@ function RuleManager:Create()
     self.__index = self;
 
     -- Initialize the rule engine
-    instance.rulesEngine = CreateRulesEngine(Addon.RuleFunctions);
+    instance.rulesEngine = CreateRulesEngine(Addon.RuleFunctions, Config:GetValue("debugrules"));
     instance.rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     instance.rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
     instance.rulesEngine:CreateCategory(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);

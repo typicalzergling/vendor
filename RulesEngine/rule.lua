@@ -19,15 +19,15 @@ local function rule_Execute(self, environment)
 
         if status then
             self.healthy = true;
-            return true, result;
+            return true, result, nil;
         elseif not status then
             self.healthy = false;
-            return false, msg;
+            return false, false, msg;
         end
     end
 
     -- if get here something went wrong
-    return false, nil;
+    return false, nil, nil;
 end
 
 --[[===========================================================================

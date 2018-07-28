@@ -54,7 +54,7 @@ local function category_Evaluate(self, log, environment)
             log:Write("Evaluating rule '%s'", rule:GetId());
             local status, result, message = rule:Execute(environment);
             if (not status) then
-                log:Write("Rule '%s' failed to evaluate: %s", rule:GetId(), message);
+                log:Write("Rule '%s' failed to execute: %s", rule:GetId(), message or "<unknown error>");
             elseif (status and (result ~= nil) and result) then
                 return rule, count, nil;
             end
