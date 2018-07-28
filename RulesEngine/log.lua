@@ -25,7 +25,7 @@ local function log_Write(self, text, ...)
 end
 
 local function new_Log(engineId, verbose)
-    if (g_verbose) then
+    if (g_verbose or verbose) then
         local instance =
         {
             base = string.format("%s[RuleEngine:%04d] ", GRAY_FONT_COLOR_CODE, engineId),

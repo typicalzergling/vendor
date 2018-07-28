@@ -352,7 +352,7 @@ local function new_Engine(environment, verbose)
         categories = {},
         environment = {},
         globals = {},
-        log = Package.CreateLog(g_engineId, true);
+        log = Package.CreateLog(g_engineId, verbose);
     }
    
     instance.log:StartBlock("Start create [%04d]", instance.id);
