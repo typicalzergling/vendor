@@ -27,4 +27,5 @@ Addon.ScriptReference.ItemProperties =
     IsUnknownAppearance = { Html = L["HELP_ISUNKNOWNAPPEARANCE_HTML"] },
     IsToy = { Html = L["HELP_ISTOY_HTML"] },
     IsAlreadyKnown  = { Html = L["HELP_ISALREADYKNOWN_HTML"] },
+    IsUsable  = { Html = L["HELP_ISUSABLE_HTML"] },
 }

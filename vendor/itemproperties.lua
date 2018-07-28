@@ -93,6 +93,7 @@ function Addon:GetItemProperties(arg1, arg2)
     if #getItemInfo == 0 then return nil end
     
     -- Initialize properties to boolean false for easier rule ingestion.
+    item.IsUsable = false
     item.IsEquipment = false
     item.IsSoulbound = false
     item.IsBindOnEquip = false
@@ -122,6 +123,9 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Net Value is net value including quantity.
     item.NetValue = (item.UnitValue or 0) * item.Count
 
+    -- Check for usability
+    item.IsUsable = IsUsableItem(item.Id)
+    
     -- Save string compares later.
     item.IsEquipment = item.EquipLoc ~= ""
 
@@ -184,6 +188,10 @@ function Addon:GetItemProperties(arg1, arg2)
             item.IsAlreadyKnown = true
         end
     end
+    
+    -- Import the tooltip text as item properties for custom rules.
+    item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
+    item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
 
     return item
 end
