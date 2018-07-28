@@ -2,6 +2,7 @@ local _, Package = ...;
 local LEVEL_PREFIX = "|     ";
 local OPEN_LEVEL = (YELLOW_FONT_COLOR_CODE .. "+ " .. FONT_COLOR_CODE_CLOSE);
 local CLOSE_LEVEL = (YELLOW_FONT_COLOR_CODE .. "- " .. FONT_COLOR_CODE_CLOSE);
+local g_verbose = false;
 
 local function log_Print(self, ...)
     print(table.concat({ self.current, FONT_COLOR_CODE_CLOSE, ...}));
@@ -24,21 +25,33 @@ local function log_Write(self, text, ...)
 end
 
 local function new_Log(engineId, verbose)
-    local instance =
+    if (g_verbose) then
+        local instance =
+        {
+            base = string.format("%s[RuleEngine:%04d] ", GRAY_FONT_COLOR_CODE, engineId),
+            prefix = { GREEN_FONT_COLOR_CODE },
+            current = string.format("%s[RuleEngine:%04d] ", GRAY_FONT_COLOR_CODE, engineId),
+        };
+        
+        local mt =
+        {
+            StartBlock = log_StartBlock,
+            EndBlock = log_EndBlock,
+            Write = log_Write,
+        };
+
+        return setmetatable(instance, { __index=mt });    
+    end
+
+    local function noop() end;
+    local noop_mt =
     {
-        base = string.format("%s[RuleEngine:%04d] ", GRAY_FONT_COLOR_CODE, engineId),
-        prefix = { GREEN_FONT_COLOR_CODE },
-        current = string.format("%s[RuleEngine:%04d] ", GRAY_FONT_COLOR_CODE, engineId),
-    };
-    
-    local mt =
-    {
-        StartBlock = log_StartBlock,
-        EndBlock = log_EndBlock,
-        Write = log_Write,
+        StartBlock = noop,
+        EndBlock = noop,
+        Write = noop,
     };
 
-    return setmetatable(instance, { __index=mt });
+    return setmetatable({}, { __index=noop_mt });
 end
 
 Package.CreateLog = new_Log;
