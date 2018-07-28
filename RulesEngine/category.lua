@@ -31,7 +31,7 @@ local function category_Add(self, rule)
 end
 
 --[[===========================================================================
-    | new_Reset
+    | category_Reset
     |   This clears all of the rules within this category
     =======================================================================--]]
 local function category_Reset(self)
@@ -39,14 +39,14 @@ local function category_Reset(self)
 end
 
 --[[===========================================================================
-    | new_Evaluate
+    | category_Evaluate
     |   This is called to evaluate the rules in this category.  This will
     |   return the rule which evaluated to true otherwise it returns nil.
     |
     |   This only executes healthy rules, the first rule to return a non
     |   false value breaks the loop stops evaluation
     =======================================================================--]]
-local function category_Evaluate(self, log, environment)
+local function category_Evaluate(self, engine, log, environment)
     local count = 0;
     for _, rule in ipairs(self.rules) do
         if (rule:IsHealthy()) then
@@ -55,6 +55,9 @@ local function category_Evaluate(self, log, environment)
             local status, result, message = rule:Execute(environment);
             if (not status) then
                 log:Write("Rule '%s' failed to execute: %s", rule:GetId(), message or "<unknown error>");
+                if (not rule:IsHealthy()) then
+                    engine.OnRuleStatusChange("UNHEALTHY", self.id, rule:GetId(), rule:GetError());
+                end
             elseif (status and (result ~= nil) and result) then
                 return rule, count, nil;
             end
@@ -69,6 +72,23 @@ local function category_Evaluate(self, log, environment)
     return nil, count, nil;
 end
 
+--[[===========================================================================
+    | category_GetRuleStatus
+    |   Queries the health of any rule that matches the arguments and adds
+    |   an entry to the table for the health of the rule.
+    =======================================================================--]]
+local function category_GetRuleStatus(self, status, ...)
+    for _, rule in ipairs(self.rules) do
+        if (rule:CheckMatch(...)) then
+            local health = "HEALTHY";
+            if (not rule:IsHealthy()) then
+                health = "ERROR";
+            end
+            table.insert(status, { self.id, rule:GetId(), health, rule:GetExecuteCount(), rule:GetError() });
+        end
+    end
+end
+
 -- Define the category API
 local category_API =
 {
@@ -77,6 +97,7 @@ local category_API =
     Evaluate = category_Evaluate,
     GetName = function(self) return self.name end,
     GetId = function(self) return self.id end,
+    GetRuleStatus = category_GetRuleStatus,
 };
 
 --[[===========================================================================

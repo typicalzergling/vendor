@@ -9,8 +9,10 @@ local RULE_PARAMS_KEY = "RULE_PARAMS";
     |    on what happend.
     ========================================================================--]]
 local function rule_Execute(self, environment)
-    if (self.healthy and self.script) then
-
+    if (not self.script) then
+        self.healthy = false;
+    elseif (self.healthy) then
+        self.executed = (self.executed + 1);
         -- Adjust the environment to for the rule
         rawset(environment, RULE_PARAMS_KEY, self.params);
         setfenv(self.script, environment)
@@ -22,6 +24,7 @@ local function rule_Execute(self, environment)
             return true, result, nil;
         elseif not status then
             self.healthy = false;
+            self.error = result;
             return false, nil, result;
         end
     end
@@ -57,6 +60,8 @@ local rule_API =
     GetId = function(self) return self.id end,
     IsHealthy = function(self) return self.healthy end,
     GetName = function(self) return self.name end,
+    GetExecuteCount = function(self) return self.executed end,
+    GetError = function(self) return self.error end,
 };
 
 --[[===========================================================================
@@ -74,8 +79,8 @@ local function rule_new(id, name, script, params)
     {
         id = string.lower(id),
         name = name,
-        script = nil,
         healthy = true,
+        executed = 0,
     };
 
     -- We also need to wrap the rule script text in return.
@@ -84,6 +89,8 @@ local function rule_new(id, name, script, params)
     else
         local script, _,  msg = loadstring(string.format("return (%s)", script))
         if (not script) then
+            instance.error = msg;
+            instance.healthy = false;
             return nil, msg;
         else
             instance.script = script
