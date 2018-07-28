@@ -224,9 +224,11 @@ local function createAccessorFunctions(object)
     local accessors = {};
     if (object) then
         for name, value in pairs(object) do
-            local valueType = type(value);
-            if ((valueType ~= "table") and (valueType ~= "function")) then
-                rawset(accessors, name, function() return value; end);
+            if (type(name) == "string") then
+                local valueType = type(value);
+                if ((valueType ~= "table") and (valueType ~= "function")) then
+                    rawset(accessors, name, function() return value; end);
+                end                
             end                
         end
     end        
@@ -284,7 +286,7 @@ local function engine_Evaluate(self, object, ...)
     --   Rules - Can see in this order, Our environment, the object accessors, and imported globals.
     --   Function -- Can see in this order, the object accessors and the globals
     local ruleEnv = createRestrictedEnvironment(accessors, self.environment, self.globals);
-    local functionEnv = createRestrictedEnvironment(accessors, _G);
+    local functionEnv = createRestrictedEnvironment(accessors, { OBJECT = object },  _G);
     for _, value in pairs(self.environment) do
         if (type(value) == "function") then
             setfenv(value, functionEnv);
