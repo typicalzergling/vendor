@@ -21,7 +21,7 @@ Addon.Maps.Quality = {
     ["legendary"] = LE_ITEM_QUALITY_LEGENDARY,
     ["artifact"] = LE_ITEM_QUALITY_ARTIFACT,
     ["heirloom"] = LE_ITEM_QUALITY_HEIRLOOM,    
-    ["token"] = LE_ITEM_QUALITY_HEIRLOOM,
+    ["token"] = LE_ITEM_QUALITY_TOKEN,
 }
 
 --*****************************************************************************

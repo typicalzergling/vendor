@@ -215,19 +215,18 @@ local function evaluateRules(self, log, categories, ruleEnv, ...)
 end
 
 --[[===========================================================================
-    | createAccessorFunctions (local)
-    |   Given an object, this will wrap all of its propeties in a function
-    |   for example turing object.Id in "Id()" for the script functions/
-    |   rule functions.
+    | createAccessors (local)
+    |   Given an object, this push all of the non-table and non-function
+    |   key/values into a table, for exmaple: object.Id -> Id.
     =======================================================================--]]
-local function createAccessorFunctions(object)
+local function createAccessors(object)
     local accessors = {};
     if (object) then
         for name, value in pairs(object) do
             if (type(name) == "string") then
                 local valueType = type(value);
                 if ((valueType ~= "table") and (valueType ~= "function")) then
-                    rawset(accessors, name, function() return value; end);
+                    rawset(accessors, name, value);
                 end                
             end                
         end
@@ -286,14 +285,14 @@ end
     =======================================================================--]]
 local function engine_Evaluate(self, object, ...)
     -- Create a table of functions that allow you to access the the provided object
-    local accessors = createAccessorFunctions(object);
+    local accessors = createAccessors(object);
 
     -- Create the environment we want to run the rules against.  Then update the environment of 
     -- all the functions we've got in our local environment
     --   Rules - Can see in this order, Our environment, the object accessors, and imported globals.
     --   Function -- Can see in this order, the object accessors and the globals
-    local ruleEnv = createRestrictedEnvironment(false, accessors, self.environment, self.globals);
-    local functionEnv = createRestrictedEnvironment(true, accessors, { OBJECT = object },  _G);
+    local ruleEnv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
+    local functionEnv = createRestrictedEnvironment(false, accessors, { OBJECT = object },  _G);
     for _, value in pairs(self.environment) do
         if (type(value) == "function") then
             setfenv(value, functionEnv);

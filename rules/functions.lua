@@ -1,6 +1,15 @@
 local Addon, L = _G[select(1,...).."_GET"]()
 Addon.RuleFunctions = {}
 Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH;
+Addon.RuleFunctions.POOR = LE_ITEM_QUALITY_POOR;
+Addon.RuleFunctions.COMMON = LE_ITEM_QUALITY_COMMON;
+Addon.RuleFunctions.UNCOMMON = LE_ITEM_QUALITY_UNCOMMON;
+Addon.RuleFunctions.RARE = LE_ITEM_QUALITY_RARE;
+Addon.RuleFunctions.EPIC = LE_ITEM_QUALITY_EPIC;
+Addon.RuleFunctions.LEGENDARY = LE_ITEM_QUALITY_LEGENDARY;
+Addon.RuleFunctions.ARTIFACT = LE_ITEM_QUALITY_ARTIFACT;
+Addon.RuleFunctions.HEIRLOOM = LE_ITEM_QUALITY_HEIRLOOM;    
+Addon.RuleFunctions.TOKEN = LE_ITEM_QUALITY_TOKEN;
 
 --*****************************************************************************
 -- Given a set of values this searches for them in the map to see if they map
@@ -28,8 +37,7 @@ end
 -- which can be either strings or numbers.
 --*****************************************************************************
 function Addon.RuleFunctions.ItemQuality(...)
-    assert((Quality() >= LE_ITEM_QUALITY_POOR) and (Quality() <= LE_ITEM_QUALITY_WOW_TOKEN), "Item quality is out of range")
-    return checkMap(Addon.Maps.Quality, Quality(), {...})
+    return checkMap(Addon.Maps.Quality, Quality, {...})
 end
 
 --*****************************************************************************
@@ -38,7 +46,7 @@ end
 -- above.
 --*****************************************************************************
 function Addon.RuleFunctions.ItemType(...)
-    return checkMap(Addon.Maps.ItemType, TypeId(), {...})
+    return checkMap(Addon.Maps.ItemType, TypeId, {...})
 end
 
 --*****************************************************************************
@@ -48,9 +56,9 @@ end
 --       this will always evaluate to false.
 --*****************************************************************************
 function Addon.RuleFunctions.IsFromExpansion(...)
-    local xpackId = ExpansionPackId();
+    local xpackId = ExpansionPackId;
     if (xpackId ~= 0) then
-        return checkMap(Addon.Maps.Expansion, ExpansionPackId(), {...})
+        return checkMap(Addon.Maps.Expansion, xpackId, {...})
     end
 end
 
@@ -59,7 +67,7 @@ end
 -- list of items which should never be sold.
 --*****************************************************************************
 function Addon.RuleFunctions.IsNeverSellItem()
-    if Addon:IsItemIdInNeverSellList(Id()) then
+    if Addon:IsItemIdInNeverSellList(Id) then
         return true
     end
 end
@@ -69,7 +77,7 @@ end
 -- should always be sold.
 --*****************************************************************************
 function Addon.RuleFunctions.IsAlwaysSellItem()
-    if Addon:IsItemIdInAlwaysSellList(Id()) then
+    if Addon:IsItemIdInAlwaysSellList(Id) then
         return true
     end
 end
@@ -96,7 +104,7 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
     end
 
     local sets = { ... };
-    local itemId = Id();
+    local itemId = Id;
     if (#sets == 0) then
         -- No sets provied, so enumerate and check all of the characters item sets
         local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
