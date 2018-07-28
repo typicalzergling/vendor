@@ -29,12 +29,33 @@ function Addon:DumpLink_Cmd(arg)
 end
 
 function Addon:Test_Cmd(...)
-    local iteminfo = self:GetAllBagItemInformation()
-    for k, item in pairs(iteminfo) do
-        local v = item.Properties
-        self:Print(string.format("Item %s [%s] %s - %s (%s) / %s (%s)  Xpac=%s", tostring(v.Link), tostring(v.Level),tostring(v.Quality), tostring(v.Type), tostring(v.TypeId), tostring(v.SubType), tostring(v.SubTypeId), tostring(v.ExpansionPackId)))
-        self:Print(string.format("   SB=%s BOE=%s BOU=%s AP=%s XMOG=%s Value=%s", tostring(v.IsSoulbound), tostring(v.IsBindOnEquip), tostring(v.IsBindOnUse), tostring(v.IsArtifactPower), tostring(v.IsUnknownAppearance), tostring(v.UnitValue)))
-    end
+    local Item = PawnGetItemData(select(1,...))
+    local UpgradeInfo, BestItemFor, SecondBestItemFor, NeedsEnhancements = PawnIsItemAnUpgrade(Item)
+    
+    self:Print("UpgradeInfo: %s", tostring(UpgradeInfo))
+        if UpgradeInfo then
+            for key, data in pairs(UpgradeInfo) do
+                self:Print("Key: %s  Value: %s", tostring(key), tostring(data))
+                for key1, data1 in pairs(data) do
+                    self:Print("Key: %s  Value: %s", tostring(key1), tostring(data1))
+                end
+            end
+        end
+    self:Print("BestItemFor: %s", tostring(BestItemFor))
+    self:Print("SecondBestItemFor: %s", tostring(SecondBestItemFor))
+    self:Print("NeedsEnhancements: %s", tostring(NeedsEnhancements))
+    
+    
+    --[[local upgradeInfo = {PawnIsItemAnUpgrade(Item)}
+    for _, v in ipairs(upgradeInfo) do
+        if type(v) == "table" then
+            for key, data in pairs(v) do
+                self:Print("Key: %s  Value: %s", tostring(key), tostring(data))
+            end
+        else
+            self:Print("Info: %s", tostring(v))
+        end
+    end]]
 end
 
 function Addon:GetAllBagItemInformation()

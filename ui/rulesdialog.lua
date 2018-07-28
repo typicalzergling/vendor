@@ -53,7 +53,7 @@ end
 
 function RulesDialog:Toggle()
     if (self:IsShown()) then
-        dialog:Hide()
+        self:Hide()
     else
         self:Show()
     end

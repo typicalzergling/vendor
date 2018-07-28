@@ -139,6 +139,15 @@
                     <OnClick>self:GetParent():SetDefaults()</OnClick>
                 </Scripts>
             </Button>
+            <Button name="$parentSettings" inherits="UIPanelButtonTemplate" text="SETTINGS">
+                <Size x="96" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Vendor.OpenSettings_Cmd()</OnClick>
+                </Scripts>
+            </Button>
 
             <!-- Keep Panel -->
             <Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="1">
@@ -149,7 +158,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" parentKey="TopText">
+                        <FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="TopText">
                             <Anchors>
                                 <Anchor point="TOPLEFT" x="16" y="-16"/>
                                 <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
@@ -221,7 +230,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal" parentKey="TopText">
+                        <FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="TopText">
                             <Anchors>
                                 <Anchor point="TOPLEFT" x="16" y="-16"/>
                                 <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>

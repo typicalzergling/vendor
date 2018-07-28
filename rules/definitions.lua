@@ -46,15 +46,6 @@ Rules.SystemRules =
     },
 
     {
-        Id = "sell.artifactpower",
-        Type = SELL_RULE,
-        Name = L["SYSRULE_SELL_ARTIFACTPOWER"],
-        Description = L["SYSRULE_SELL_ARTIFACTPOWER_DESC"],
-        Script = "IsArtifactPower() and IsFromExpansion(6) and (PlayerLevel() >= 110)",
-        Order = 1200,
-    },
-
-    {
         Id = "sell.knowntoys",
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_KNOWNTOYS"],

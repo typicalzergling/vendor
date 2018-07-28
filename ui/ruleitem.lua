@@ -151,7 +151,7 @@ end
 function RuleItem:OnClick(button)
     if (button == "LeftButton") then
         self:SetSelected(not self.selected);
-    elseif ((button == "RightButton") and IsShiftKeyDown()) then
+    elseif (button == "RightButton") then
         -- You can view "definition" of system rules.       
         local ruleDef = self:GetModel();
         if (ruleDef) then

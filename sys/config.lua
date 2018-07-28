@@ -51,7 +51,6 @@ Addon.DefaultConfig.Rules =
     keep = {
         "keep.legendaryandup",
         "keep.equipmentset",
-        "keep.soulboundgear",
         "keep.unknownappearance",
     },
 
@@ -60,7 +59,6 @@ Addon.DefaultConfig.Rules =
     {
         "sell.poor",
         "sell.oldfood",
-        "sell.artifactpower",
         "sell.knowntoys",
     },
 }
