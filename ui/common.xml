@@ -1,0 +1,39 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="tabbedframe.lua"/>
+
+    <Frame name="Vendor_Dialog_Template" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true">
+        <Backdrop edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <EdgeSize>
+                <AbsValue val="32"/>
+            </EdgeSize>
+        </Backdrop>
+        <Layers>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<Texture parentKey="InsetBg" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-4" />
+						<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
+					</Anchors>
+				</Texture>
+			</Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="header" file="Interface\DialogFrame\UI-DialogBox-Header">
+                    <Size x="300" y="68"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="12"/>
+                    </Anchors>
+                </Texture>
+                <FontString inherits="GameFontNormal" parentKey="Caption">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.header" x="0" y="-14"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.header" x="0" y="-14"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="Vendor_Dialog_Template2" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" inherits="PortraitFrameTemplate">
+    </Frame>
+
+</Ui>

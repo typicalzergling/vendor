@@ -1,7 +1,4 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
-local HELP_WIDTH = 360 + 32;
-local READONLY_WIDTH = 500;
-local EDIT_WIDTH = READONLY_WIDTH + 360 + 32;
 local SCROLL_PADDING_X = 4;
 local SCROLL_PADDING_Y = 17;
 local SCROLL_BUTTON_PADDING = 4;
@@ -13,6 +10,10 @@ local MATCHES_HTML_END = "</body></html>";
 local MATCHES_LINK_FMT1 = "<p>%s</p>";
 local MODE_READONLY = 1;
 local MODE_EDIT = 2;
+
+local ITEMINFO_ID = 1;
+local MATCHES_ID = 2;
+local HELP_ID = 3;
 
 local RuleManager = Addon.RuleManager;
 --Addon.EditRuleDialog = {};
@@ -178,7 +179,7 @@ Addon.ScrollFrame =
 
         scrollbar.Hide = function(self)
                 local frame = self:GetParent();
-                local width = frame:GetWidth();
+                local width = frame:GetWidth()
                 frame:GetScrollChild():SetWidth(width);
                 frame.content:SetWidth(width);
                 if (self.scrollbarBack) then
@@ -192,8 +193,8 @@ Addon.ScrollFrame =
 Addon.EditRuleDialog =
 {
     OnLoad = function(self)
-        self.CreateRule = Addon.EditRuleDialog.CreateNewRule
-        self.EditRule = Addon.EditRuleDialog.EditRule
+        Mixin(self, Addon.EditRuleDialog);
+        SetPortraitToTexture(self.portrait, "Interface\\Spellbook\\Spellbook-Icon");
         self:SetClampedToScreen(true)
 
         Addon.EditRuleDialog.SetEditLabel(self.name, L.EDITRULE_NAME_LABEL);
@@ -204,65 +205,17 @@ Addon.EditRuleDialog =
         Addon.EditRuleDialog.SetEditHelpText(self.description, L.EDITRULE_DESCR_HELPTEXT);
 
         -- Initialize the tabs
-        Addon.EditRuleDialog.InitTab(self, self.helpTab, L.EDITRULE_HELP_TAB_NAME)
-        Addon.EditRuleDialog.InitTab(self, self.itemInfoTab, L.EDITRULE_ITEMINFO_TAB_NAME, L.EDITRULE_ITEMINFO_TAB_TEXT);
-        Addon.EditRuleDialog.InitTab(self, self.matchesTab,  L.EDITRULE_MATCHES_TAB_NAME, L.EDITRULE_MATCHES_TAB_TEXT);
-        PanelTemplates_SetNumTabs(self, table.getn(self.Tabs))
-        self.selectedTab = self.helpTab:GetID()
-        PanelTemplates_UpdateTabs(self);
+        self.helpButton.text:SetText(L.EDITRULE_HELP_TAB_NAME);
+        self.infoButton.text:SetText(L.EDITRULE_ITEMINFO_TAB_NAME);
+        self.itemInfoPanel.topText:SetText(L.EDITRULE_ITEMINFO_TAB_TEXT);
+        self.matchesButton.text:SetText(L.EDITRULE_MATCHES_TAB_NAME); 
+        self.matchesPanel.topText:SetText(L.EDITRULE_MATCHES_TAB_TEXT);
         Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
+
+        self:SetupRuleType();
 
         -- Setup callbacks from the parts.
         self.script.content:SetScript("OnTextChanged", function() Addon.EditRuleDialog.OnScriptChanged(self); end);
-    end,
-
-    ShowTab = function(self, tabId)
-        -- Update the state of the tab and it's children
-        for _, tab in pairs(self.Tabs) do
-            for _, spacer in pairs(tab.Spacers) do
-                if (tab:GetID() ~= tabId) then
-                    spacer:Hide()
-                else
-                    spacer:Show()
-                end
-            end
-        end
-
-        -- Udpate the state of the panels
-        for _, panel in pairs(self.Panels) do
-            if (panel:GetID() == tabId) then
-                panel:ClearAllPoints();
-                panel:SetAllPoints(self.tabContainer);
-                panel:Show();
-            else
-                panel:Hide();
-            end
-        end
-    end,
-
-    InitTab = function(self, tab, name, topText)
-        tab:SetText(name)
-        PanelTemplates_TabResize(tab, 0)
-        for _, spacer in ipairs(tab.Spacers) do
-            spacer:SetVertexColor(0.8, 0.8, 0.8, 0.50);
-            spacer:Hide();
-        end
-
-        if (topText) then
-            for _, panel in pairs(self.Panels) do
-                if ((panel:GetID() == tab:GetID()) and panel.topText) then
-                    panel.topText:SetText(topText);
-                    break;
-                end
-            end
-        end
-    end,
-
-    OnTabClicked = function(self, tab)
-        local tabId = tab:GetID()
-        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
-        PanelTemplates_Tab_OnClick(tab, self);
-        Addon.EditRuleDialog.ShowTab(self,  self.selectedTab)
     end,
 
     OnScriptTextLoad = function(self, scrollFrame)
@@ -401,51 +354,6 @@ Addon.EditRuleDialog =
         self.SetHelpText = Addon.EditRuleDialog.SetEditHelpText;
         Addon.EditRuleDialog.OnEditEnable(self);
     end,
-
-    --*****************************************************************************
-    -- Create a new rule (Generates a unique new id for it) and then opens the
-    -- dialog to the rule (read only is considered false)
-    --*****************************************************************************
-    CreateNewRule = function(self)
-        self:EditRule({ Id = RuleManager.CreateCustomRuleId() })
-    end,
-
-    --*****************************************************************************
-    -- Called when our "filter" focus state changes, we want to show/hide our
-    -- help text if we've got content.
-    --*****************************************************************************
-    EditRule = function(self, ruleDef, readOnly)
-        self.ruleDef = ruleDef;
-        self.readOnly = readOnly or false;
-        self.scriptValid = false;
-
-        -- Set the name / description
-        self.name:SetText(ruleDef.Name or "")
-        Vendor.EditRuleDialog.OnEditFocusChange(self.name);
-        self.description.content:SetText(ruleDef.Description or "")
-        Vendor.EditRuleDialog.OnEditFocusChange(self.description.content);
-
-        -- Set the script text
-        if (ruleDef.ScriptText) then
-            self.script.content:SetText(ruleDef.ScriptText)
-        elseif (ruleDef.Script) then
-            self.script.content:SetText(ruleDef.Script)
-        else
-            self.script.content:SetText("")
-        end
-        Vendor.EditRuleDialog.OnEditFocusChange(self.script.content, false);
-
-        -- If we're read-only disable all the fields.
-        if (readOnly) then
-            Addon.EditRuleDialog.SetMode(self, MODE_READONLY);
-            Addon.EditRuleDialog.UpdateButtonState(self);
-        else
-            Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
-            Addon.EditRuleDialog.ValidateScript(self);
-        end
-
-        self:Show()
-    end,
 };
 
 local EditRuleDialog = Addon.EditRuleDialog;
@@ -480,43 +388,20 @@ function EditRuleDialog.SetMode(self, mode)
     if (mode ~= self.mode) then
         self.mode = mode;
         if (mode == MODE_READONLY) then
-            self:SetWidth(READONLY_WIDTH)
-            self.Caption:SetText(L["VIEWRULE_CAPTION"]);
-
-            -- ReadOnly hides the panels to the right
-            for _, panel in ipairs(self.Panels) do
-                panel:Hide();
-            end
-            for _, tab in ipairs(self.Tabs) do
-                tab:Hide();
-            end
-
-            self.tabContainer:Hide();
+            self.TitleText:SetText(L["VIEWRULE_CAPTION"]);
             self.script.content:Disable();
             self.name:Disable();
             self.description.content:Disable();
-            self.ok:Hide();
-            self.cancel:Hide();
-            self.close:Show();
+            self.save:Disable();
+            EditRuleDialog.SetInfoContent(self, MATCHES_ID);
             self.errorText:Hide();
             self.successText:Hide();
         else
-        	self:SetWidth(EDIT_WIDTH)
-            self.Caption:SetText(L.EDITRULE_CAPTION);
-
-            -- Full mode shows everything
-            for _, tab in ipairs(self.Tabs) do
-                tab:Show();
-            end
-
+            self.TitleText:SetText(L.EDITRULE_CAPTION);
             self.script.content:Enable();
             self.name:Enable();
             self.description.content:Enable();
-            self.tabContainer:Show();
-            EditRuleDialog.ShowTab(self, self.selectedTab)
-            self.ok:Show();
-            self.cancel:Show();
-            self.close:Hide();
+            EditRuleDialog.SetInfoContent(self, HELP_ID);
             self.errorText:Hide();
             self.successText:Hide();
         end
@@ -543,17 +428,20 @@ function EditRuleDialog.UpdateButtonState(self)
     local ruleScript = self.script.content:GetText();
     local ruleDescription = self.description.content:GetText();
 
-    if (self.ok:IsShown()) then
+    if (self.mode ~= MODE_READONLY) then
         if (self.scriptValid and
             (ruleName and (string.len(ruleName) ~= 0)) and
             (ruleScript and (string.len(ruleScript) ~= 0)) and
             (ruleDescription and (string.len(ruleDescription) ~= 0))) then
-            EditRuleDialog.UpdateMatches(self.matchesInfoPanel);
-            self.ok:Enable()
+            self.save:Enable()
         else
-            self.ok:Disable();
+            self.save:Disable();
         end
+    else
+        self.save:Disable();
     end
+
+    EditRuleDialog.UpdateMatches(self.matchesPanel);    
 end
 
 --[[===========================================================================
@@ -621,4 +509,103 @@ function EditRuleDialog.HandleOk(self)
     newRuleDef.Name = self.name:GetText();
     newRuleDef.Description = self.description.content:GetText();
     Vendor.Rules.UpdateDefinition(newRuleDef);
+end
+
+function EditRuleDialog.SetInfoContent(self, id)
+    assert(#self.infoPanels == #self.infoButtons);
+    local grayFont = GRAY_FONT_COLOR;
+    local activeFont = NORMAL_FONT_COLOR;
+
+    print("setting mode: ", id);
+
+    for i=1,#self.infoPanels do
+        local panel = self.infoPanels[i];
+        local button = self.infoButtons[i];
+
+        if (panel:GetID() == id) then
+            panel:SetAllPoints(self.infoArea);
+            panel:Show();
+        else
+            panel:Hide();
+        end
+
+        if (button:GetID() == id) then
+            button.text:SetTextColor(activeFont.r, activeFont.g, activeFont.b);
+            button.icon:SetAlpha(1.0);
+        else            
+            button.text:SetTextColor(grayFont.r, grayFont.g, grayFont.b);
+            button.icon:SetAlpha(0.5);
+        end
+    end
+end
+
+local function initializeTypeDropdown()
+    local info = UIDropDownMenu_CreateInfo();
+    print("---- initDropDown");
+
+    for _, typeInfo in ipairs(RULE_TYPE_INFO) do
+        info.isTitle = false;
+        info.disabled = nil;
+        info.checked = nil;
+        info.notCheckable = 1;
+        info.tooltipOnButton = nil;
+        info.tooltipWhileDisabled = nil;
+        info.func = nil;
+        for key, value in pairs(typeInfo) do
+            info[key] = value;
+        end
+
+        print("addbutton---", info.text);
+        UIDropDownMenu_AddButton(info);
+    end
+end
+
+function EditRuleDialog:SetupRuleType()
+end
+
+
+
+--*****************************************************************************
+-- Create a new rule (Generates a unique new id for it) and then opens the
+-- dialog to the rule (read only is considered false)
+--*****************************************************************************
+function EditRuleDialog:CreateRule()
+    self:EditRule({ Id = RuleManager.CreateCustomRuleId() })
+end
+
+--*****************************************************************************
+-- Called when our "filter" focus state changes, we want to show/hide our
+-- help text if we've got content.
+--*****************************************************************************
+function EditRuleDialog:EditRule(ruleDef, readOnly)
+    self.ruleDef = ruleDef;
+    self.readOnly = readOnly or false;
+    self.scriptValid = false;
+
+    -- Set the name / description
+    self.name:SetText(ruleDef.Name or "")
+    Vendor.EditRuleDialog.OnEditFocusChange(self.name);
+    self.description.content:SetText(ruleDef.Description or "")
+    Vendor.EditRuleDialog.OnEditFocusChange(self.description.content);
+
+    -- Set the script text
+    if (ruleDef.ScriptText) then
+        self.script.content:SetText(ruleDef.ScriptText)
+    elseif (ruleDef.Script) then
+        self.script.content:SetText(ruleDef.Script)
+    else
+        self.script.content:SetText("")
+    end
+    Vendor.EditRuleDialog.OnEditFocusChange(self.script.content, false);
+
+    -- If we're read-only disable all the fields.
+    if (readOnly) then
+        Addon.EditRuleDialog.SetMode(self, MODE_READONLY);
+        Addon.EditRuleDialog.UpdateButtonState(self);
+    else
+        Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
+        Addon.EditRuleDialog.ValidateScript(self);
+    end
+
+    self:Show()
 end
