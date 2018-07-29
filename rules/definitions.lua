@@ -233,6 +233,16 @@ Rules.SystemRules =
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
     },
+    
+    {
+        Id = "keep.pawnupgrade",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_PAWNUPGRADE_NAME"],
+        Description = L["SYSRULE_KEEP_PAWNUPGRADE_DESC"],
+        ScriptText = "IsEquipment and IsPawnUpgrade()",
+        Script = function() return IsEquipment and IsPawnUpgrade() end,
+        Order = 1600,
+    },
 };
 
 -- While creating this closure sort the rules table by order, this prevents us from 

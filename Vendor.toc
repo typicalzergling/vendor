@@ -57,6 +57,9 @@ ui\customrules.xml
 ui\rulesdialog.xml
 ui\editruledialog.xml
 
+# Interop with other Addons
+interop\pawn.lua
+
 #@do-not-package@
 # Debug
 ui\debugconfig.lua

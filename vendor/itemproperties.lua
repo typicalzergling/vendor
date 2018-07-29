@@ -153,15 +153,6 @@ function Addon:GetItemProperties(arg1, arg2)
         -- None, leave nil
     end
 
-    -- Determine if this is Artifact Power.
-    -- AP items are type Consumable - Other, and have Artifact Power in the tooltip. 
-    -- Avoid scanning the tooltip if it isn't that type.
-    if item.TypeId == 0 and item.SubTypeId == 8 then
-        if self:IsItemArtifactPowerInTooltip(tooltip, bag, slot) then
-            item.IsArtifactPower = true
-        end
-    end
-
     -- Determine if this item is an uncollected transmog appearance
     -- We can save the scan by skipping if it is Soulbound (would already have it) or not equippable
     if not item.IsSoulbound and item.IsEquipment then

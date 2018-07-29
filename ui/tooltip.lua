@@ -29,9 +29,6 @@ end
 
 -- Hooks for item tooltips
 function Addon:OnTooltipSetItem(tooltip, ...)
-    -- If we are not auto-selling, do nothing.
-    if not self:GetConfig():GetValue("autosell") then return end
-
     local name, link = tooltip:GetItem()
     if name then
         self:AddItemTooltipLines(tooltip, link)
