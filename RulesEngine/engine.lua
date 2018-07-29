@@ -154,7 +154,7 @@ local function validateRule(rule)
 end
 
 --[[===========================================================================
-    | new_AddRule
+    | engine_AddRule
     |   Adds creates and adds a rule with the specified definition to the 
     |   given category.  The definition must have at least the following
     |   properties:
@@ -169,11 +169,11 @@ function engine_AddRule(self, categoryId, ruleDef, params)
     assert(type(categoryId) == "number", "The category id must be numeric identifier");
     validateRule(ruleDef);
     if (params and type(params) ~= "table") then 
-        error("THe rule parameters must be a table, providing the parameters as key-value pairs", 2);
+        error("The rule parameters must be a table, providing the parameters as key-value pairs", 2);
     end
     
     local category = assert(findCategory(self, categoryId), "The specified categoryId (" .. tostring(categoryId) .. ") is invalid, remember to call AddCategory first");
-    local rule, message = Package.CreateRule(ruleDef.Id, ruleDef.Name, ruleDef.Script);
+    local rule, message = Package.CreateRule(ruleDef.Id, ruleDef.Name, ruleDef.Script, params);
     if (not rule) then
         self.log:Write("Failed to add '%s' to category=%d due to error: %s", ruleDef.Id, categoryId, message);
         return false, message;
