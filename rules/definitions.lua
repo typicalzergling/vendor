@@ -40,7 +40,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
         ScriptText = "TypeId == 0 and SubTypeId == 5 and Level <= (PlayerLevel() - 10)",
         Script = function()
-            return (TypeId == 0) and (SubType == 5) and (Level <= (PlayerLevel() - 10));
+            return (TypeId == 0) and (SubTypeId == 5) and (Level <= (PlayerLevel() - 10));
         end,
         Order = 1100,
     },
