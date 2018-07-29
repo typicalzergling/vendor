@@ -72,6 +72,10 @@ function RulesList:CreateItem(ruleDef)
     return item;
 end
 
+function RulesList:RefreshItem(item, ruleDef)
+    item:SetRule(ruleDef);
+end
+
 function RulesList:OnUpdateItem(item, isFirst, isLast)
    item:ShowDivider(not isLast);
     item:SetMove(not isFirst, not isLast);

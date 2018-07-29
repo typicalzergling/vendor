@@ -155,6 +155,7 @@ end
 function ListBase:EnsureItems(model)
     assert(type(model) == "table");
     local createItemCallback = self.CreateItem or __noop;
+    local refreshItemCallback = self.RefreshItem or __noop;
 
     -- Make sure we've got an item for each element of our model, if
     -- not then we'll call the create function to make one.
@@ -169,7 +170,10 @@ function ListBase:EnsureItems(model)
             rawset(item, MODEL_KEY, element);
             item = Mixin(item, ItemBase);
             table.insert(self.items, item);
+        else
+            refreshItemCallback(self, item, element);
         end
+
         rawset(item, MODEL_INDEX_KEY, modelIndex)
         modelIndex = (modelIndex + 1);
     end

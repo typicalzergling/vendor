@@ -45,7 +45,7 @@ local function rule_CheckMatch(self, ...)
     end
 
     for _, name in ipairs(names) do
-        if (string.lower(name) == self.Id) then
+        if (string.lower(name) == self.id) then
             return true
         end
     end

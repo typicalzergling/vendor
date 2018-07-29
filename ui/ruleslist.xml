@@ -84,6 +84,15 @@
 			<Anchor point="CENETER"/>
 		</Anchors>
 		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="background" setAllPoints="true" hidden="true"/>
+				<Texture parentKey="unhealthy" hidden="true" file="Interface\RAIDFRAME\ReadyCheck-NotReady" alpha="0.6">
+					<Size x="54" y="54"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
 			<Layer level="BORDER">
 				<Texture ParentKey="divider">
 					<Size x="1" y="1"/>

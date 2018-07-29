@@ -93,11 +93,11 @@
    		</Layers>
 		<Scripts>
 			<OnEscapePressed function="EditBox_ClearFocus"/>
-			<OnEditFocusLost function="EditBox_ClearHighlight"/>
-			<OnEditFocusGained function="EditBox_HighlightText"/>
 			<OnEnable>Vendor.EditRuleDialog.OnEditEnable(self)</OnEnable>
 			<OnDisable>Vendor.EditRuleDialog.OnEditDisable(self)</OnDisable>
 			<OnLoad>Vendor.EditRuleDialog.OnEditLoad(self);</OnLoad>
+			<OnEditFocusGained>EditBox_ClearHighlight(self);Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
+			<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
 		</Scripts>
 		<FontString inherits="ChatFontNormal"/>
 		<TextInsets>
@@ -288,6 +288,7 @@
 	</Frame>
 
 	<Button name="Vendor_InfoButton_Template" virtual="true">
+	<!-- Interface\BUTTONS\BlueGrad64_faded -->
 		<Size x="116" y="40"/>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -322,28 +323,42 @@
 		</Scripts>
 	</Button>
 
-	<CheckButton name="Vendor_RadioButton" parentIndex="radioButtons" virtual="true">
-		<Size x="24" y="24"/>
-		<NormalTexture file="Interface\Buttons\UI-RadioButton">
-			<TexCoords left="0" right="0.25" top="0" bottom="1"/>
-		</NormalTexture>
-		<HighlightTexture file="Interface\Buttons\UI-RadioButton" alphaMode="ADD">
-			<TexCoords left="0.5" right="0.75" top="0" bottom="1"/>
-		</HighlightTexture>
-		<CheckedTexture file="Interface\Buttons\UI-RadioButton">
-			<TexCoords left="0.25" right="0.5" top="0" bottom="1"/>
-		</CheckedTexture>
+	<Frame name="Vendor_Rule_Status_Template" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" text="[LABEL]">
-					<Size x="116" y="24"/>
+				<Texture parentKey="icon">
+					<Size x="48" y="48"/>
 					<Anchors>
-						<Anchor point="LEFT" x="24" y="2"/>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<FontString inherits="GameFontNormalLarge" parentKey="title" justifyH="LEFT" justifyV="TOP">
+					<Size x="1" y="18"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="0" y="-4"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontNormalSmall" parentKey="text" justifyH="LEFT" justifyV="TOP" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.title" x="0" y="-2"/>
+						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
-	</CheckButton>
+		<Scripts>
+			<OnLoad>
+				if (self.textureFile) then
+					self.icon:SetTexture(self.textureFile);
+				end
+				if (self.textColor) then
+					self.text:SetTextColor(self.textColor.r, self.textColor.g, self.textColor.b);
+					self.title:SetTextColor(self.textColor.r, self.textColor.g, self.textColor.b);
+				end
+			</OnLoad>
+		</Scripts>
+	</Frame>
 
     <!-- Edit Rules Dialog (includes help flyout -->
     <Frame name="VendorEditRuleDialog" inherits="Vendor_Dialog_Template2" parent="UIParent" hidden="true">
@@ -351,24 +366,6 @@
         <Anchors>
             <Anchor point="CENTER"/>
         </Anchors>
-        <Layers>
-            <Layer level="ARTWORK">
-                <FontString name="$parentErrorText" inherits="GameFontRed" parentKey="errorText" justifyH="LEFT" justifyV="TOP">
-                	<Size x="1" y="64"/>
-                	<Anchors>
-                		<Anchor point="BOTTOMLEFT" x="22" y="38"/>
-                		<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="468" y="38"/>
-                	</Anchors>
-                </FontString>
-                <FontString inherits="GameFontGreen" parentKey="successText" justifyH="LEFT" justifyV="TOP">
-                	<Size x="1" y="64"/>
-                	<Anchors>
-                		<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parentErrorText"/>
-                		<Anchor point="BOTTOMRIGHT" relativePoint="BOTTTOMRIGHT" relativeTo="$parentErrorText"/>
-                	</Anchors>
-                </FontString>
-            </Layer>
-        </Layers>
         <Frames>
 
 	        <!-- Edit Rule / Define rule ara -->
@@ -379,16 +376,77 @@
 				</Anchors>
 
 				<Frames>
-					<CheckButton parentKey="keepRule" inherits="Vendor_RadioButton">
+					<!-- Rule Properties -->
+					<EditBox parentKey="name" name="$parent.NameEdit" multiLine="false" inherits="Vendor.EditRules.Edit.Template">
+						<Size x="1" y="30"/>
 						<Anchors>
-							<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-124" y="-12"/>
+							<Anchor point="TOPLEFT"  x="22" y="-64"/>
+							<Anchor point="TOPRIGHT" x="-22" y="-64"/>
 						</Anchors>
-					</CheckButton>
-					<CheckButton parentKey="sellRule" inherits="Vendor_RadioButton">
+					</EditBox>
+					<ScrollFrame name="$parent.Description" parentKey="description"  inherits="Vendor.EditRules.ScrollingEdit.Template">
+						<Size x="1" y="90"/>
 						<Anchors>
-							<Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.keepRule" x="-96" y="0"/>
+							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.name" x="0" y="-24"/>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.name" x="0" y="-24"/>
 						</Anchors>
-					</CheckButton>
+					</ScrollFrame>
+					<ScrollFrame name="$parent.ScriptText" parentKey="script"  inherits="Vendor.EditRules.ScrollingEdit.Template">
+						<Size x="1" y="120"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.description" x="0" y="-24"/>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.description" x="0" y="-24"/>
+						</Anchors>
+					</ScrollFrame>
+
+					<!-- ruleType radio buttons -->
+					<Frame parentKey="keepRule" inherits="Vendor_RadioButton">
+						<Size x="1" y="48"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.script" y="-6"/>>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.script" y="-6"/>>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="sellRule" inherits="Vendor_RadioButton">
+						<Size x="1" y="48"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.keepRule" x="0" y="-6"/>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.keepRule" x="0" y="-6"/>
+						</Anchors>
+					</Frame>
+
+					<!-- Status Area -->
+					<Frame parentKey="errorStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
+						<Size x="1" y="96"/>
+						<KeyValues>
+							<KeyValue key="textColor" value="RED_FONT_COLOR" type="global"/>
+							<KeyValue key="textureFile" value="Interface\RAIDFRAME\ReadyCheck-NotReady" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="24"/>
+							<Anchor point="BOTTOMRIGHT" x="-24"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="okStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
+						<KeyValues>
+							<KeyValue key="textColor" value="GREEN_FONT_COLOR" type="global"/>
+							<KeyValue key="textureFile" value="Interface\RAIDFRAME\ReadyCheck-Ready" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.errorStatus"/>
+							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.errorStatus"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="unhealthyStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
+						<KeyValues>
+							<KeyValue key="textColor" value="ORANGE_FONT_COLOR" type="global"/>
+							<KeyValue key="textureFile" value="Interface\RAIDFRAME\ReadyCheck-Waiting" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.errorStatus"/>
+							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.errorStatus"/>
+						</Anchors>
+					</Frame>
 				</Frames>
 
 			</Frame>
@@ -456,29 +514,6 @@
                     <OnClick>Vendor.EditRuleDialog.HandleOk(self:GetParent());PortraitFrameCloseButton_OnClick(self);</OnClick>
                 </Scripts>
             </Button>
-
-            <!-- Rule definition / Anchored to the edit rule area  -->
-			<EditBox parentKey="name" name="$parent.NameEdit" multiLine="false" inherits="Vendor.EditRules.Edit.Template">
-				<Size x="200" y="30"/>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.editRule" relativePoint="TOPLEFT" x="22" y="-64"/>
-					<Anchor point="TOPRIGHT" relativeKey="$parent.editRule" relativePoint="TOPRIGHT" x="-22" y="-64"/>
-				</Anchors>
-			</EditBox>
-			<ScrollFrame name="$parent.Description" parentKey="description"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-				<Size x="200" y="90"/>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.NameEdit" x="0" y="-28"/>
-					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent.NameEdit" x="0" y="-28"/>
-				</Anchors>
-			</ScrollFrame>
-			<ScrollFrame name="$parent.ScriptText" parentKey="script"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-				<Size x="200" y="160"/>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.Description" x="0" y="-28"/>
-					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent.Description" x="0" y="-28"/>
-				</Anchors>
-			</ScrollFrame>
 
 			<!-- Help Panel -->
             <Frame parentKey="helpPanel"  name="$parent.HelpPane" hidden="true" id="3" parentArray="infoPanels">
@@ -598,17 +633,14 @@
 						</Anchors>
 					</Frame>
            		</Frames>
-           		<Scripts>
-           			<OnShow>Vendor.EditRuleDialog.UpdateMatches(self);</OnShow>
-           		</Scripts>
            	</Frame>
 
 
         </Frames>
         <Scripts>
             <OnLoad>self:RegisterForDrag("LeftButton");Vendor.EditRuleDialog.OnLoad(self)</OnLoad>
-            <OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)</OnShow>
-            <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
+			<OnShow>self:OnShow();</OnShow>
+            <OnHide>self:OnHide();</OnHide>
             <OnDragStart>self:StartMoving()</OnDragStart>
             <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
         </Scripts>

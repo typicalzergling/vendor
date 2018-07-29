@@ -11,7 +11,7 @@ local RULE_TYPE_SELL = 4
 -- environment they run in.
 --*****************************************************************************
 function RuleManager:Create()
-    local instance = setmetatable({}, self);
+    local instance = setmetatable({ unhealthy = {} }, self);
     self.__index = self;
 
     -- Initialize the rule engine
@@ -22,7 +22,9 @@ function RuleManager:Create()
     rulesEngine:CreateCategory(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
     rulesEngine.OnRuleStatusChange:Add(
         function(what, categoryId, ruleId, message)
-            print(RED_FONT_COLOR_CODE, what, categoryId, ruleId, message, FONT_COLOR_CODE_CLOSE);
+            if (what == "UNHEALTHY") then
+                instance:CacheRuleStatus(ruleId);
+            end 
         end);
     instance.rulesEngine = rulesEngine;    
 
@@ -33,6 +35,39 @@ function RuleManager:Create()
     instance:Update();
     
     return instance
+end
+
+--[[===========================================================================
+    | CacheRuleStatus:
+    |   Cache's the status of a rule, we have a table of rules which have
+    |   reported errors.
+    ========================================================================--]]
+function RuleManager:CacheRuleStatus(ruleId)
+    if (not ruleId) then
+        self.unhealthy = {};
+        if (self.rulesEngine) then
+            for _, ruleStatus in ipairs(self.rulesEngine:GetRuleStatus()) do
+                local _, id, status = unpack(ruleStatus);
+                if (status == "ERROR") then
+                    self.unhealthy[string.lower(id)] = true;
+                end
+            end
+        end
+    else
+        self.unhealthy[string.lower(ruleId)] = true;
+    end
+end
+
+--[[===========================================================================
+    | CheckRuleHealth:
+    |   Queries our cache for the specified rule and return false if it
+    |   is unhealthy.
+    ========================================================================--]]
+function RuleManager:CheckRuleHealth(ruleId)
+    if (self.unhealthy[string.lower(ruleId)]) then
+        return false;
+    end
+    return true;
 end
 
 --[[===========================================================================
@@ -78,6 +113,8 @@ end
     ========================================================================--]]
 function RuleManager:Update()
     local rulesEngine = self.rulesEngine;
+    
+    self.unhealthy = {};
     rulesEngine:ClearRules();
     rulesEngine:SetVerbose(Config:GetValue("debugrules"));
 

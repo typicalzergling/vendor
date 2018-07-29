@@ -76,6 +76,16 @@ function RuleItem:SetRule(ruleDef)
         itemLevel:Disable();
         itemLevel:SetText(0);
     end
+
+    -- If the rule is unhealthy then toggle the unhealthy background.
+    if (Addon.ruleManager and not Addon.ruleManager:CheckRuleHealth(ruleDef.Id)) then
+        self.background:Show();
+        self.background:SetColorTexture(ORANGE_FONT_COLOR.r, ORANGE_FONT_COLOR.g, ORANGE_FONT_COLOR.b, 0.25);
+        self.unhealthy:Show();
+    else
+        self.background:Hide();
+        self.unhealthy:Hide();
+    end
 end
 
 function RuleItem:GetRuleId()

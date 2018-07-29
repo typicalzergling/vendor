@@ -182,9 +182,17 @@ AddonLocales["enUS"] =
 ["EDITRULE_MATCHES_TAB_TEXT"] = "Below you can see all of the items currently in your inventory which would be matched by this rules text.",
 ["EDITRULE_ITEMINFO_TAB_NAME"] = "Item Info",
 ["EDITRULE_ITEMINFO_TAB_TEXT"] = "Drag an item into the space below to view all of the functions available to your script.",
-["EDITRULE_SCRIPT_OKAY"] = "Your script parses successfully, please check the matches tab to be sure it does what you expect.",
-["EDITRULE_SCRIPT_ERROR"] = "There was an error parsing your rule: %s",
 
+["EDITRULE_SELLRULE_LABEL"] = "Sell Rule",
+["EDITRULE_SELLRULE_TEXT"] = "A sell rule determines if Vendor will auto sell the item for you when the script evaluates to true",
+["EDITRULE_KEEPRULE_LABEL"] = "Keep Rule",
+["EDITRULE_KEEPRULE_TEXT"] = "A keep rule determines if Vendor will keep the item when the rule evaluates to true",
+["EDITRULE_UNHEALTHY_RULE"] = "Unhealthy Rule",
+["EDITRULE_ERROR_RULE"] = "Validation Error",
+["EDITRULE_OK_TEXT"] = "Rule Ok",
+["EDITRULE_RULEOK_TEXT"] = "Your rule passed validation, You should please check the matches tab to be sure it does what you expect.",
+["EDITRULE_SCRIPT_ERROR"] = "The following error was found validating our rule:\n",
+["EDITRULE_NO_MATCHES"] = "<p>This rule currently not match anything in your inventory.</p>",
 
 -- Rule Help
 

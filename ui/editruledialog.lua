@@ -1,4 +1,6 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
+local Package = select(2, ...);
+
 local SCROLL_PADDING_X = 4;
 local SCROLL_PADDING_Y = 17;
 local SCROLL_BUTTON_PADDING = 4;
@@ -14,6 +16,8 @@ local MODE_EDIT = 2;
 local ITEMINFO_ID = 1;
 local MATCHES_ID = 2;
 local HELP_ID = 3;
+
+local EditRule = {};
 
 local RuleManager = Addon.RuleManager;
 --Addon.EditRuleDialog = {};
@@ -197,12 +201,8 @@ Addon.EditRuleDialog =
         SetPortraitToTexture(self.portrait, "Interface\\Spellbook\\Spellbook-Icon");
         self:SetClampedToScreen(true)
 
-        Addon.EditRuleDialog.SetEditLabel(self.name, L.EDITRULE_NAME_LABEL);
-        Addon.EditRuleDialog.SetEditHelpText(self.name, L.EDITRULE_NAME_HELPTEXT);
-        Addon.EditRuleDialog.SetEditLabel(self.script, L.EDITRULE_SCRIPT_LABEL);
-        Addon.EditRuleDialog.SetEditHelpText(self.script, L.EDITRULE_SCRIPT_HELPTEXT);
-        Addon.EditRuleDialog.SetEditLabel(self.description, L.EDITRULE_DESCR_LABEL);
-        Addon.EditRuleDialog.SetEditHelpText(self.description, L.EDITRULE_DESCR_HELPTEXT);
+        -- Setup Edit Rule
+        Mixin(self.editRule, EditRule):Setup();
 
         -- Initialize the tabs
         self.helpButton.text:SetText(L.EDITRULE_HELP_TAB_NAME);
@@ -210,12 +210,8 @@ Addon.EditRuleDialog =
         self.itemInfoPanel.topText:SetText(L.EDITRULE_ITEMINFO_TAB_TEXT);
         self.matchesButton.text:SetText(L.EDITRULE_MATCHES_TAB_NAME); 
         self.matchesPanel.topText:SetText(L.EDITRULE_MATCHES_TAB_TEXT);
+
         Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
-
-        self:SetupRuleType();
-
-        -- Setup callbacks from the parts.
-        self.script.content:SetScript("OnTextChanged", function() Addon.EditRuleDialog.OnScriptChanged(self); end);
     end,
 
     OnScriptTextLoad = function(self, scrollFrame)
@@ -277,7 +273,7 @@ Addon.EditRuleDialog =
             return;
         end
 
-        local _, _, link = GetCursorInfo();
+            local _, _, link = GetCursorInfo();
         ClearCursor();
 
         local function htmlEncode(str)
@@ -363,22 +359,45 @@ local EditRuleDialog = Addon.EditRuleDialog;
     | Called to handle updating the matches panel, this is called whenever
     | the panel is shown, or the rule has been updated.
     ===========================================================================--]]
-function EditRuleDialog.UpdateMatches(self)
-    if (self:IsShown()) then
-        local ruleDialog = self:GetParent();
-        if (ruleDialog.scriptValid) then
-            local matches = Addon:GetMatchesForRule(ruleDialog.ruleDef.Id, ruleDialog.script.content:GetText());
-            local sb = Addon.Utils.StringBuilder:Create();
+function EditRuleDialog:UpdateMatches()
+    local ruleDef = self.ruleDef;
+    local matchContent = self.matchesPanel.propMatches.scrollFrame.content;
+    local hasMatches = false;
+    
+    if (self.scriptValid) then
+        local params = nil;
+        local _, _, _, script = self.editRule:GetValues();
+        if (self.mode == MODE_READONLY) then
+            script = ruleDef.Script;
 
+            -- To be read only this is a system rule, so that means it could possibly
+            -- have parameters, so we need to get the params from our current config.
+            for _, config in ipairs(Config:GetRulesConfig(ruleDef.Type)) do
+                if ((type(config) == "table") and config.rule) then
+                    if (string.lower(config.rule) == string.lower(ruleDef.Id)) then
+                        params = config;
+                        break;
+                    end
+                end
+            end
+        end
+
+        local matches = Addon:GetMatchesForRule(ruleDef.Id, script, params);
+        if (matches) then
+            local sb = Addon.Utils.StringBuilder:Create();
             sb:Add(MATCHES_HTML_START);
             for _, link in ipairs(matches) do
+                hasMatches = true;
                 sb:AddFormatted(MATCHES_LINK_FMT1, link);
             end
             sb:Add(MATCHES_HTML_END);
+            matchContent:SetText(sb:Get());
+        end            
+    end
 
-            self.propMatches.scrollFrame.content:SetText(sb:Get());
-        end
-     end
+    if (not hasMatches) then
+       matchContent:SetText(MATCHES_HTML_START .. L["EDITRULE_NO_MATCHES"] .. MATCHES_HTML_END);
+    end
 end
 
 --[[===========================================================================
@@ -387,23 +406,16 @@ end
 function EditRuleDialog.SetMode(self, mode)
     if (mode ~= self.mode) then
         self.mode = mode;
+        self.editRule:ShowStatus();
         if (mode == MODE_READONLY) then
             self.TitleText:SetText(L["VIEWRULE_CAPTION"]);
-            self.script.content:Disable();
-            self.name:Disable();
-            self.description.content:Disable();
+            self.editRule:SetReadOnly(true);
             self.save:Disable();
-            EditRuleDialog.SetInfoContent(self, MATCHES_ID);
-            self.errorText:Hide();
-            self.successText:Hide();
+            EditRuleDialog.SetInfoContent(self, MATCHES_ID);            
         else
             self.TitleText:SetText(L.EDITRULE_CAPTION);
-            self.script.content:Enable();
-            self.name:Enable();
-            self.description.content:Enable();
+            self.editRule:SetReadOnly(false);
             EditRuleDialog.SetInfoContent(self, HELP_ID);
-            self.errorText:Hide();
-            self.successText:Hide();
         end
     end
 end
@@ -424,15 +436,13 @@ end
     | dialog is not currently in editing mode then we simply bail out.
     ===========================================================================--]]
 function EditRuleDialog.UpdateButtonState(self)
-    local ruleName = self.name:GetText();
-    local ruleScript = self.script.content:GetText();
-    local ruleDescription = self.description.content:GetText();
+    local _, name, description, script = self.editRule:GetValues();
 
     if (self.mode ~= MODE_READONLY) then
         if (self.scriptValid and
-            (ruleName and (string.len(ruleName) ~= 0)) and
-            (ruleScript and (string.len(ruleScript) ~= 0)) and
-            (ruleDescription and (string.len(ruleDescription) ~= 0))) then
+            (string.len(name) ~= 0) and
+            (string.len(script) ~= 0) and
+            (string.len(description) ~= 0)) then
             self.save:Enable()
         else
             self.save:Disable();
@@ -441,27 +451,7 @@ function EditRuleDialog.UpdateButtonState(self)
         self.save:Disable();
     end
 
-    EditRuleDialog.UpdateMatches(self.matchesPanel);    
-end
-
---[[===========================================================================
-    | Called when the text of the rule edit field has changed, this will queue
-    | a timer to delay evaluation until the user has stopped typing. If the
-    | dialog is not currently in editing mode then we simply bail out.
-    ===========================================================================--]]
-function EditRuleDialog.OnScriptChanged(self)
-    -- If we are not editing we are done.
-    if (self.mode ~= MODE_EDIT) then
-        return;
-    end
-
-    -- If we are currently waiting to evaluate then cancel
-    self.scriptValid = false;
-    if (self.timer) then
-        self.timer:Cancel();
-    end
-
-    self.timer = C_Timer.NewTimer(0.60, function() EditRuleDialog.ValidateScript(self); end);
+    EditRuleDialog.UpdateMatches(self);    
 end
 
 --[[===========================================================================
@@ -469,30 +459,35 @@ end
     | to user which validates the script is OK, if we find an error, we show
     | and error widget (with the message).
     ===========================================================================--]]
-function EditRuleDialog.ValidateScript(self)
-    Addon:Debug("Validating script");
+function EditRuleDialog:ValidateScript()
+    local validated = false;
+    if (self.mode ~= MODE_READONLY) then
+        local lastValidated = self._lastValidatedScript;
+        local _, _, _, scriptText = self.editRule:GetValues();
+        if (lastValidated ~= scriptText) then
+            Addon:Debug("Validating script");
+            self._lastValidatedScript = scripttext;
 
-    local scriptText = self.script.content:GetText();
-    if (scriptText and (string.len(scriptText) ~= 0)) then
-        local result, message = RuleManager.CreateRuleFunction(scriptText);
-        if (not result) then
-            self.errorText:Show();
-            self.errorText:SetFormattedText(L.EDITRULE_SCRIPT_ERROR, message);
-            self.successText:Hide();
-            self.scriptValid = false;
-        else
-            self.errorText:Hide();
-            self.successText:SetText(L.EDITRULE_SCRIPT_OKAY);
-            self.successText:Show();
-            self.scriptValid = true;
+            if (scriptText and (string.len(scriptText) ~= 0)) then
+                local result, message = RuleManager.CreateRuleFunction(scriptText);
+                if (not result) then
+                    self.editRule:ShowStatus("ERROR", message);
+                    self.scriptValid = false;
+                    validated = true;
+                else
+                    self.editRule:ShowStatus("OK");
+                    self.scriptValid = true;
+                    validated = true;
+                end
+            else
+                self.scriptValid = false;
+                self.editRule:ShowStatus();
+            end
+
+            EditRuleDialog.UpdateButtonState(self);
         end
-    else
-        self.errorText:Hide();
-        self.successText:Hide();
-        self.scriptValid = false;
     end
-
-    EditRuleDialog.UpdateButtonState(self);
+    return validated;
 end
 
 --[[===========================================================================
@@ -500,23 +495,26 @@ end
     | rule definition and place it into the saved variable.
     ===========================================================================--]]
 function EditRuleDialog.HandleOk(self)
-    Addon:Debug("Creating new custom rule definition");
+    if (not self.readOnly) then
+        Addon:Debug("Creating new custom rule definition");
+        local rtype, name, description, script = self.editRule:GetValues();
+        local newRuleDef = 
+        {
+            Id = self.ruleDef.Id,
+            Type = rtype,
+            Name = name,
+            Description = description,
+            Script = script,
+        };
 
-    local newRuleDef = {};
-    newRuleDef.Id = self.ruleDef.Id;
-    newRuleDef.Type = Addon.c_RuleType_Sell;
-    newRuleDef.Script = self.script.content:GetText();
-    newRuleDef.Name = self.name:GetText();
-    newRuleDef.Description = self.description.content:GetText();
-    Vendor.Rules.UpdateDefinition(newRuleDef);
+        Vendor.Rules.UpdateDefinition(newRuleDef);
+    end        
 end
 
 function EditRuleDialog.SetInfoContent(self, id)
     assert(#self.infoPanels == #self.infoButtons);
     local grayFont = GRAY_FONT_COLOR;
     local activeFont = NORMAL_FONT_COLOR;
-
-    print("setting mode: ", id);
 
     for i=1,#self.infoPanels do
         local panel = self.infoPanels[i];
@@ -539,38 +537,13 @@ function EditRuleDialog.SetInfoContent(self, id)
     end
 end
 
-local function initializeTypeDropdown()
-    local info = UIDropDownMenu_CreateInfo();
-    print("---- initDropDown");
-
-    for _, typeInfo in ipairs(RULE_TYPE_INFO) do
-        info.isTitle = false;
-        info.disabled = nil;
-        info.checked = nil;
-        info.notCheckable = 1;
-        info.tooltipOnButton = nil;
-        info.tooltipWhileDisabled = nil;
-        info.func = nil;
-        for key, value in pairs(typeInfo) do
-            info[key] = value;
-        end
-
-        print("addbutton---", info.text);
-        UIDropDownMenu_AddButton(info);
-    end
-end
-
-function EditRuleDialog:SetupRuleType()
-end
-
-
 
 --*****************************************************************************
 -- Create a new rule (Generates a unique new id for it) and then opens the
 -- dialog to the rule (read only is considered false)
 --*****************************************************************************
 function EditRuleDialog:CreateRule()
-    self:EditRule({ Id = RuleManager.CreateCustomRuleId() })
+    self:EditRule({ Id = RuleManager.CreateCustomRuleId(), Type = Addon.c_RuleType_Sell })
 end
 
 --*****************************************************************************
@@ -578,34 +551,150 @@ end
 -- help text if we've got content.
 --*****************************************************************************
 function EditRuleDialog:EditRule(ruleDef, readOnly)
+    -- Save the parameters we need.
     self.ruleDef = ruleDef;
     self.readOnly = readOnly or false;
     self.scriptValid = false;
 
-    -- Set the name / description
-    self.name:SetText(ruleDef.Name or "")
-    Vendor.EditRuleDialog.OnEditFocusChange(self.name);
-    self.description.content:SetText(ruleDef.Description or "")
-    Vendor.EditRuleDialog.OnEditFocusChange(self.description.content);
-
-    -- Set the script text
-    if (ruleDef.ScriptText) then
-        self.script.content:SetText(ruleDef.ScriptText)
-    elseif (ruleDef.Script) then
-        self.script.content:SetText(ruleDef.Script)
-    else
-        self.script.content:SetText("")
-    end
-    Vendor.EditRuleDialog.OnEditFocusChange(self.script.content, false);
+    -- Set the name / description / script
+    self.editRule:SetValues(
+        ruleDef.Type or Addon.c_RuleType_Sell,
+        ruleDef.Name, ruleDef.Description,
+        ruleDef.ScriptText or ruleDef.Script,
+        ruleDef.Id);
 
     -- If we're read-only disable all the fields.
     if (readOnly) then
         Addon.EditRuleDialog.SetMode(self, MODE_READONLY);
-        Addon.EditRuleDialog.UpdateButtonState(self);
+        self.scriptValid = true;
+
+        if (self:CheckRuleHealth(ruleDef)) then
+            self:UpdateMatches();
+        end
     else
         Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
-        Addon.EditRuleDialog.ValidateScript(self);
+        if (self:CheckRuleHealth(ruleDef)) then
+           self:ValidateScript();
+            self:UpdateMatches();
+        end            
     end
 
+     Addon.EditRuleDialog.UpdateButtonState(self);
     self:Show()
 end
+
+function EditRuleDialog:CheckRuleHealth(ruleDef)
+    if (ruleDef and ruleDef.Script) then
+        local _, _, status, _, message = Addon:GetRuleStatus(ruleDef.Id);
+        if (status == "ERROR" and message) then
+            self.editRule:ShowStatus("UNHEALTHY", message);
+            return false;
+        end
+    end
+    return true;
+end
+
+function EditRuleDialog:OnShow()
+    PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
+    if (self.timer) then
+        self.timer:Cancel();
+    end
+    
+    self.timer = C_Timer.NewTicker(0.60, function() self:OnTicker(); end);
+end
+
+function EditRuleDialog:OnHide()
+    PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
+    if (self.timer) then
+        self.timer:Cancel();
+        self.timer = nil;
+    end        
+end
+
+function EditRuleDialog:OnTicker()
+    if (self.mode ~= MODE_READONLY) then
+        local validated = self:ValidateScript();
+        if (validated) then
+            self:UpdateMatches();
+             Addon.EditRuleDialog.UpdateButtonState(self);
+        end
+    end        
+end
+
+function EditRule:SetupRuleType()
+    Package.InitializeRadioButton(self.sellRule, Addon.c_RuleType_Sell, L["EDITRULE_SELLRULE_LABEL"], L["EDITRULE_SELLRULE_TEXT"]);
+    Package.InitializeRadioButton(self.keepRule, Addon.c_RuleType_Keep, L["EDITRULE_KEEPRULE_LABEL"], L["EDITRULE_KEEPRULE_TEXT"]);
+    self.sellRule:SetSelected(Addon.c_RuleType_SellRule);
+end
+
+function EditRule:Setup()
+    Addon.EditRuleDialog.SetEditLabel(self.name, L.EDITRULE_NAME_LABEL);
+    Addon.EditRuleDialog.SetEditHelpText(self.name, L.EDITRULE_NAME_HELPTEXT);
+    Addon.EditRuleDialog.SetEditLabel(self.script, L.EDITRULE_SCRIPT_LABEL);
+    Addon.EditRuleDialog.SetEditHelpText(self.script, L.EDITRULE_SCRIPT_HELPTEXT);
+    Addon.EditRuleDialog.SetEditLabel(self.description, L.EDITRULE_DESCR_LABEL);
+    Addon.EditRuleDialog.SetEditHelpText(self.description, L.EDITRULE_DESCR_HELPTEXT);
+    self:SetupRuleType();
+
+    self.okStatus.title:SetText(L["EDITRULE_OK_TEXT"]);
+    self.okStatus.text:SetText(L["EDITRULE_RULEOK_TEXT"]);
+    self.errorStatus.title:SetText(L["EDITRULE_ERROR_RULE"]);
+    self.unhealthyStatus.title:SetText(L["EDITRULE_UNHEALTHY_RULE"]);
+end
+
+function EditRule:GetValues()
+    local rtype = self.sellRule:GetSelected() or Addon.c_RuleType_Sell;
+    local name = self.name:GetText() or "";
+    local description = self.description.content:GetText() or "";
+    local script = self.script.content:GetText() or "";
+    return rtype, name, description, script;
+end
+
+function EditRule:SetValues(rtype, name, description, script, id)
+    local edit = self.name;
+    edit:SetText(name or "");
+    Vendor.EditRuleDialog.OnEditFocusChange(edit);
+
+    edit = self.description.content;
+    edit:SetText(description or "");
+    Vendor.EditRuleDialog.OnEditFocusChange(edit);
+
+    edit = self.script.content;
+    edit:SetText(script or "");
+    Vendor.EditRuleDialog.OnEditFocusChange(edit);
+
+    self.sellRule:SetSelected(rtype);
+end
+
+function EditRule:ShowStatus(status, text)
+    self.okStatus:Hide();
+    self.unhealthyStatus:Hide();
+    self.errorStatus:Hide();
+
+    if (status == "OK") then
+        self.okStatus:Show();
+    elseif (status == "ERROR") then
+        self.errorStatus.text:SetText(L["EDITRULE_SCRIPT_ERROR"] .. text);
+        self.errorStatus:Show();
+    elseif (status == "UNHEALTHY") then
+        self.unhealthyStatus.text:SetText(text);
+        self.unhealthyStatus:Show();
+    end        
+end
+
+function EditRule:SetReadOnly(readonly)
+    if (readonly) then
+        self.name:Disable();
+        self.script.content:Disable();
+        self.description.content:Disable();
+        self.sellRule:Disable();
+        self.keepRule:Disable();
+    else
+        self.name:Enable();
+        self.script.content:Enable();
+        self.description.content:Enable();
+        self.sellRule:Enable();
+        self.keepRule:Enable();
+    end
+end
+

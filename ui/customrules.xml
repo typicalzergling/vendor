@@ -66,7 +66,7 @@
 						<Anchor point="TOPRIGHT" x="-12" y="-24"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true" text="this is hte rule description">
+				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="12" y="-26"/>
 						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-12" y="4"/>
@@ -75,7 +75,7 @@
 			</Layer>
 			<Layer level="BACKGROUND">>
 				<!-- debug only show the author -->
-				<FontString parentKey="author" inherits="GameFontDisableTiny" justifyH="LEFT" justifyV="BOTTOM" text="Wuntina / Windrunner">
+				<FontString parentKey="author" inherits="GameFontDisableTiny" justifyH="LEFT" justifyV="BOTTOM">
 					<Size x="1" y="8"/>
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" x="16" y="2"/>

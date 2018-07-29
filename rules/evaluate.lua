@@ -48,3 +48,15 @@ function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
     Addon:DebugRules("Complete evaluation of rule '%s' with %d matches", ruleId, #results);
     return results;
 end
+
+-- Retrieves the status of the secified rule
+function Addon:GetRuleStatus(ruleId)
+    if (not self.ruleManager or not self.ruleManager.rulesEngine) then
+        return nil;
+    end
+
+    local status = self.ruleManager.rulesEngine:GetRuleStatus(ruleId);
+    if (status and (#status == 1)) then
+        return unpack(status[1]);
+    end        
+end
