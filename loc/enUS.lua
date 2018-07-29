@@ -29,7 +29,7 @@ AddonLocales["enUS"] =
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
-["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be auto-sold by Vendor",
+["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be sold by Vendor",
 ["TOOLTIP_RULEMATCH_SELL"] = "Sell: %s",
 ["TOOLTIP_RULEMATCH_KEEP"] = "Keep: %s",
 
@@ -159,6 +159,8 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_EPICGEAR_DESC"] = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Epic quality.",
 ["SYSRULE_KEEP_EQUIPMENTSET_NAME"] = "Equipment Sets",
 ["SYSRULE_KEEP_EQUIPMENTSET_DESC"] = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
+["SYSRULE_KEEP_PAWNUPGRADE_NAME"] = "Pawn Upgrades",
+["SYSRULE_KEEP_PAWNUPGRADE_DESC"] = "Any equipment items that the Pawn addon considers an upgrade.",
 
 -- Data Migration
 ["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
