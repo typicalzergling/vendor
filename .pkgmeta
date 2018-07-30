@@ -1,7 +1,7 @@
 package-as: Vendor
 
 move-folders:
-    Extensions/Vendor_Pawn: Vendor_Pawn
+    Vendor/Extensions/Vendor_Pawn: Vendor_Pawn
 
 ignore:
     - README.md
