@@ -400,7 +400,6 @@ function Rules.GetDefinition(ruleId, ruleType)
     end
 
     -- Check for extensions
-    print("Checking for ext: ", ruleId);
    local ext = findExtensionDefinition(id)
    if (ext) then
         if ((not ruleType) or (ext.Type == ruleType)) then

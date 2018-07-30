@@ -19,7 +19,8 @@ local function registerPawnExtension()
 
     local pawnExtension =
     {
-        Source = select(2, GetAddOnInfo("Pawn"));
+        Source = "Pawn",
+       
         Functions = 
         {
             IsPawnUpgrade=isPawnUpgrade,
