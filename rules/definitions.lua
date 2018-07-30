@@ -4,6 +4,13 @@ local Rules = Addon.Rules;
 local SELL_RULE = Addon.c_RuleType_Sell;
 local KEEP_RULE = Addon.c_RuleType_Keep;
 
+local addon_Functions = {};
+local addon_Definitions = {};
+
+-- This is event is fired when our custom rule definitions have changed.
+Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
+Rules.OnFunctionsChanged = Addon.CreateEvent("Rules.OnFunctionsChanged");
+
 Rules.SystemRules =
 {
     --*****************************************************************************
@@ -233,16 +240,6 @@ Rules.SystemRules =
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
     },
-    
-    {
-        Id = "keep.pawnupgrade",
-        Type = KEEP_RULE,
-        Name = L["SYSRULE_KEEP_PAWNUPGRADE_NAME"],
-        Description = L["SYSRULE_KEEP_PAWNUPGRADE_DESC"],
-        ScriptText = "IsEquipment and IsPawnUpgrade()",
-        Script = function() return IsEquipment and IsPawnUpgrade() end,
-        Order = 1600,
-    },
 };
 
 -- While creating this closure sort the rules table by order, this prevents us from 
@@ -273,8 +270,14 @@ local function findCustomDefinition(ruleId)
     end        
 end
 
--- This is event is fired when our custom rule definitions have changed.
-Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
+local function findExtensionDefinition(ruleId)
+    local id = string.lower(ruleId);
+    for _, ruleDef in ipairs(addon_Definitions) do
+        if (string.lower(ruleDef.Id) == id) then
+            return ruleDef;
+        end
+    end
+end
 
 --[[===========================================================================
     | DeleteDefinition:
@@ -355,6 +358,15 @@ function Rules.GetDefinitions(typeFilter)
         end
     end
 
+    -- Gather extensions
+    if (#addon_Definitions) then
+        for _, ruleDef in ipairs(addon_Definitions) do
+            if (not typeFilter or (ruleDef.Type == typeFilter)) then
+                table.insert(defs, ruleDef);
+            end
+        end
+    end
+
     return defs;
 end
 
@@ -386,6 +398,15 @@ function Rules.GetDefinition(ruleId, ruleType)
             return custom;
         end
     end
+
+    -- Check for extensions
+    print("Checking for ext: ", ruleId);
+   local ext = findExtensionDefinition(id)
+   if (ext) then
+        if ((not ruleType) or (ext.Type == ruleType)) then
+            return ext;
+        end
+   end
   
     -- No match
     return nil;
@@ -422,4 +443,69 @@ function Rules.GetCustomDefinitions(filter)
         end
     end
     return defs;
+end
+
+function Rules.GetExtensionFunctions()
+    local funcs = {};
+    for name,func in pairs(addon_Functions) do
+        assert(type(name) == "string");
+        assert(type(func) == "function");
+        funcs[name] = func;
+    end
+    return funcs;
+end
+
+-- PUBLIC API 
+-- this registers function/constants
+--
+-- Table looks like this:
+--  { 
+--      Name = <String>,
+--      Function = { },
+--      Rules = { },
+-- }
+function Addon:RegisterExtension(extension)
+    if (not assert(type(extension) == "table", "Extensions are registered as tables")) then
+        return
+    end
+    
+    if (not assert(extension.Source ~= nil, "Extension must provide a source")) then
+        return;
+    end
+
+    Addon:Print("Registering extension '%s'", extension.Source);
+
+    -- Register extensions function.
+    local extFunctions = extension.Functions;
+    if (extFunctions and (type(extFunctions) == "table")) then
+        for name,value in pairs(extFunctions) do
+            if ((type(name) == "string") and (type(value) == "function")) then
+                if (addon_Functions[name]) then
+                    Addon:Print("An extension function with the name '%s' already exists [SKIPPING]", name);
+                else            
+                    if (Addon.RuleFunctions[name]) then
+                        Addon:Print("An extension is trying to replace '%s' [SKIPPING]", name);                            
+                    else
+                        addon_Functions[name] = value;
+                    end                        
+                end
+            end                
+        end
+        Rules.OnFunctionsChanged("EXTENSION");
+    end
+
+    -- Register extension definitions
+    local extRules = extension.Rules;
+    if (extRules and (type(extRules) == "table")) then
+        for _,rule in ipairs(extRules) do
+            -- TODO: Validate the definition contains enough stuff
+                
+            local ruleDef = Addon.DeepTableCopy(rule);
+            ruleDef.ReadOnly = true;
+            ruleDef.Extension = true;
+            ruleDef.Source = extension.Name;
+            table.insert(addon_Definitions, ruleDef);
+        end
+        Rules.OnDefinitionsChanged("EXTENSION");
+    end
 end

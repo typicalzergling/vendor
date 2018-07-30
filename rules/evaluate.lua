@@ -24,8 +24,14 @@ end
 -- manager since we know exactly what we're evaluating. 
 function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
     Addon:DebugRules("Evaluating '%s' against bags (no-cache)", ruleId);
-    local rulesEngine = CreateRulesEngine(Addon.RuleFunctions);
+    local rulesEngine = CreateRulesEngine(Addon.RuleFunctions, false);
     local results = {};
+
+    -- Add any extension functions to the instance.
+    local exts = Addon.Rules.GetExtensionFunctions();
+    if (exts) then
+        rulesEngine:AddFunctions(exts);
+    end        
 
     rulesEngine:CreateCategory(1, "<text>");
     local result, message = rulesEngine:AddRule(1, { Id = ruleId, Name = ruleId, Script = ruleScript }, parameters);

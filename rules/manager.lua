@@ -26,7 +26,13 @@ function RuleManager:Create()
                 instance:CacheRuleStatus(ruleId);
             end 
         end);
-    instance.rulesEngine = rulesEngine;    
+    instance.rulesEngine = rulesEngine;
+
+    -- Check for extension functions
+    local exts = Addon.Rules.GetExtensionFunctions();
+    if (exts) then
+        rulesEngine:AddFunctions(exts);
+    end
 
     -- Subscribe to events we need to update our state when the definitions change
     -- we might have scrub rules, etc.

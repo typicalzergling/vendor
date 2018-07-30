@@ -1,27 +1,49 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
 
-function Addon:IsPawnAvailable()
-    return IsAddOnLoaded("Pawn")
-end
-
-function Addon:PawnIsItemUpgrade(link)
-    self:Debug("In PawnIsItemUpgrade, for item: ", tostring(link))
+local function isPawnUpgrade()
     -- Make sure Pawn API hasn't changed
     if not PawnGetItemData or not PawnIsItemAnUpgrade then return false end
 
     -- Use Pawn as they do in the tooltip handler.
-    local Item = PawnGetItemData(link)
+    local Item = PawnGetItemData(Link)
     if not Item then return false end
 
     -- Get Upgrade Info
     local UpgradeInfo = PawnIsItemAnUpgrade(Item)
-    self:Debug("Pawn UpgradeInfo: %s", tostring(UpgradeInfo))
     return not not UpgradeInfo
 end
 
-function Addon.RuleFunctions.IsPawnUpgrade()
-    if Addon:IsPawnAvailable() then
-        return Addon:PawnIsItemUpgrade(OBJECT.Link)
+local function registerPawnExtension()
+    if (not IsAddOnLoaded("Pawn")) then
+        return;
     end
-    return false
+
+    local pawnExtension =
+    {
+        Source = select(2, GetAddOnInfo("Pawn"));
+        Functions = 
+        {
+            IsPawnUpgrade=isPawnUpgrade,
+        },
+
+        Documentation = 
+        {
+            IsPawnUpgrade = "Checks if the item is an upgraded according the Pawn",
+        },
+
+        Rules =
+        {
+            {
+                Id = "pawn.isupgrade",
+                Type = "Keep",
+                Name = "Pawn Upgrades",
+                Description = "Any equipment items that the Pawn addon considers an upgrade.",
+                Script = "IsEquipment and IsPawnUpgrade()",
+                Order = 1000,
+            },        
+        },
+    }
+
+    Vendor:RegisterExtension(pawnExtension);
 end
+
+Vendor:RegisterEvent("PLAYER_ENTERING_WORLD", registerPawnExtension);

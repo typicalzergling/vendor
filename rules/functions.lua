@@ -155,6 +155,13 @@ Addon.ScriptReference.Functions =
     IsAlwaysSellItem = "Returns the state of the item in the always sell list.  A return value of tue indicates it belongs to the list while false indicates it does not.",
     IsNeverSellItem = "Retruns the state of the item in the never sell list.  A return value of true indicates it belongs to the list false indicates it does not.",
 
+    ItemQuality =
+    {
+        Args = "qual [, qual1..qualN]",
+        Map = Addon.Maps.ItemQuality,
+        Text = "Determines the item quality",
+    },
+
     IsFromExpansion =
     {
         Args = "xpack0 [, xpack1 .. xpackN]",
