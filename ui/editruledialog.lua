@@ -462,11 +462,11 @@ end
 function EditRuleDialog:ValidateScript()
     local validated = false;
     if (self.mode ~= MODE_READONLY) then
-        local lastValidated = self._lastValidatedScript;
+        local lastValidated = self._lastScript;
         local _, _, _, scriptText = self.editRule:GetValues();
         if (lastValidated ~= scriptText) then
             Addon:Debug("Validating script");
-            self._lastValidatedScript = scripttext;
+            self._lastScript = scriptText;
 
             if (scriptText and (string.len(scriptText) ~= 0)) then
                 local result, message = RuleManager.CreateRuleFunction(scriptText);
