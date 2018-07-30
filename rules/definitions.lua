@@ -28,7 +28,7 @@ Rules.SystemRules =
         Order = -1000,
     },
 
-    {           
+    {
         Id = "sell.poor",
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_POORITEMS"],
@@ -242,14 +242,12 @@ Rules.SystemRules =
     },
 };
 
--- While creating this closure sort the rules table by order, this prevents us from 
+-- While creating this closure sort the rules table by order, this prevents us from
 -- Having to do it each time we traverse the list.
 table.sort(Rules.SystemRules,
-    function (ruleA, ruleB) 
-        --@debug@
+    function (ruleA, ruleB)
         assert(tonumber(ruleA.Order), "All system rules must have an order field: " .. ruleA.Id);
         assert(tonumber(ruleB.Order), "All system rules must have an order field: " .. ruleB.Id);
-        --@debug-end@
         return (ruleA.Order < ruleB.Order);
     end);
 
@@ -267,7 +265,7 @@ local function findCustomDefinition(ruleId)
                 return ruleDef;
             end
         end
-    end        
+    end
 end
 
 local function findExtensionDefinition(ruleId)
@@ -296,14 +294,14 @@ function Rules.DeleteDefinition(ruleId)
                 break;
             end
         end
-    end        
+    end
 end
 
 --[[===========================================================================
     | UpdateDefinition:
     |   This will update the fields which change be changed by the user in
     |   the custom rule definitions, along with maintaining the edit field.
-    |   
+    |
     |   Updating a rule which doesn't yet exist will create a new custom
     |   rule with the specified parameters.
     ========================================================================--]]
@@ -335,7 +333,7 @@ end
 
 --[[===========================================================================
     | GetAllDefinitions:
-    |   This returns the list of all rule definitions, order the way the 
+    |   This returns the list of all rule definitions, order the way the
     |   should be presented the user. typeFilter is optional, and only
     |   needed to filter to a single type of rule.
     ========================================================================--]]
@@ -354,7 +352,7 @@ function Rules.GetDefinitions(typeFilter)
         for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
             if (not typeFilter) or (ruleDef.Type == typeFilter) then
                 table.insert(defs, ruleDef);
-            end                
+            end
         end
     end
 
@@ -372,7 +370,7 @@ end
 
 --[[===========================================================================
     | GetDefinition:
-    |   Given a rule ID this will return the definition of the rule, this 
+    |   Given a rule ID this will return the definition of the rule, this
     |   does not search locked rules, and will also search for a custom rule.
     |
     |   Note: ruleType is optional and is not required.
@@ -386,14 +384,14 @@ function Rules.GetDefinition(ruleId, ruleType)
             if (string.lower(ruleDef.Id) == id) then
                 if ((not ruleType) or (ruleType == ruleDef.Type)) then
                     return ruleDef;
-                end                    
+                end
             end
         end
     end
 
     -- Check the custom rules.
     local custom = findCustomDefinition(id);
-    if (custom) then 
+    if (custom) then
         if ((not ruleType) or (custom.Type == ruleType)) then
             return custom;
         end
@@ -406,7 +404,7 @@ function Rules.GetDefinition(ruleId, ruleType)
             return ext;
         end
    end
-  
+
     -- No match
     return nil;
 end
@@ -454,11 +452,11 @@ function Rules.GetExtensionFunctions()
     return funcs;
 end
 
--- PUBLIC API 
+-- PUBLIC API
 -- this registers function/constants
 --
 -- Table looks like this:
---  { 
+--  {
 --      Name = <String>,
 --      Function = { },
 --      Rules = { },
@@ -467,7 +465,7 @@ function Addon:RegisterExtension(extension)
     if (not assert(type(extension) == "table", "Extensions are registered as tables")) then
         return
     end
-    
+
     if (not assert(extension.Source ~= nil, "Extension must provide a source")) then
         return;
     end
@@ -481,14 +479,14 @@ function Addon:RegisterExtension(extension)
             if ((type(name) == "string") and (type(value) == "function")) then
                 if (addon_Functions[name]) then
                     Addon:Print("An extension function with the name '%s' already exists [SKIPPING]", name);
-                else            
+                else
                     if (Addon.RuleFunctions[name]) then
-                        Addon:Print("An extension is trying to replace '%s' [SKIPPING]", name);                            
+                        Addon:Print("An extension is trying to replace '%s' [SKIPPING]", name);
                     else
                         addon_Functions[name] = value;
-                    end                        
+                    end
                 end
-            end                
+            end
         end
         Rules.OnFunctionsChanged("EXTENSION");
     end
@@ -498,7 +496,7 @@ function Addon:RegisterExtension(extension)
     if (extRules and (type(extRules) == "table")) then
         for _,rule in ipairs(extRules) do
             -- TODO: Validate the definition contains enough stuff
-                
+
             local ruleDef = Addon.DeepTableCopy(rule);
             ruleDef.ReadOnly = true;
             ruleDef.Extension = true;
