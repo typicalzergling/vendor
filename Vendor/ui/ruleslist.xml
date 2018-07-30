@@ -1,0 +1,232 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="listbase.lua"/>
+	<Script file="ruleitem.lua"/>
+	<Script file="ruleslist.lua"/>
+
+
+    <EditBox name="Vendor_Rule_Numeric_Param" virtual="true" visble="false" inherits="InputBoxTemplate" letters="4" numeric="true" autoFocus="false" multiLne="false" enabled="false" parentKey="params">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="label" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormalSmall" text="ITEM_LEVEL_LABEL">
+                    <Size x="1" y="10"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" y="2"/>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" y="2"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+			<OnEscapePressed function="EditBox_ClearFocus"/>
+			<OnEnterPressed function="EditBox_ClearFocus"/>
+            <OnDisable>
+                self:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+                self.label:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+	            self:SetAlpha(0.5);
+	            self.label:SetAlpha(0.5)
+            </OnDisable>
+            <OnEnable>
+                self:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+                self.label:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	            self:SetAlpha(1.0);
+	            self.label:SetAlpha(1.0)
+            </OnEnable>
+        </Scripts>
+    </EditBox>
+
+    <Button name="Vendor_Tooltip_Button" virtual="true">
+        <Scripts>
+            <OnEnter>
+                if (self.tooltip) then
+                    GameTooltip:SetOwner(self, "ANCHOR_BOTTOM");
+                    GameTooltip:SetText(self.tooltip);
+                    GameTooltip:Show();
+                end
+            </OnEnter>
+            <OnLeave>
+                if (GameTooltip:GetOwner() == self) then
+                    GameTooltip:Hide()
+                end
+            </OnLeave>
+        </Scripts>
+    </Button>
+
+   	<ScrollFrame name="Vendor_Rules_List" virtual="true" inherits="FauxScrollFrameTemplate">
+        <KeyValues>
+            <KeyValue key="itemHeight" value="64" type="number"/>
+        </KeyValues>
+		<Layers>
+			<Layer level="BORDER" textureSubLevel="-2">
+				<Texture parentKey="scrollbarBackground">
+					<Color r="0" g="0" b="0" a="0.65"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>Vendor.RulesList.OnLoad(self);</OnLoad>
+			<OnShow>self:OnShow(self);</OnShow>
+			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
+		</Scripts>
+	</ScrollFrame>
+
+	<!-- -->
+	<Button name="Vendor_Rule_Template_Base" virtual="true">
+		<Size x="396" y="64"/>
+		<Anchors>
+			<Anchor point="CENETER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="background" setAllPoints="true" hidden="true"/>
+				<Texture parentKey="unhealthy" hidden="true" file="Interface\RAIDFRAME\ReadyCheck-NotReady" alpha="0.6">
+					<Size x="54" y="54"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture ParentKey="divider">
+					<Size x="1" y="1"/>
+					<Color r="0.6" g="0.6" b="0.6" a="0.3"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="8" />
+						<Anchor point="BOTTOMRIGHT" x="-8" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="highlight" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.3" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="selectedBackground" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.2" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+                <Texture parentKey="check" file="Interface\Buttons\UI-CheckBox-Check">
+                    <Size x="20" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-4"/>
+                    </Anchors>
+                </Texture>
+				<FontString parentKey="name" inherits="GameFontHighlightLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.check" relativePoint="TOPRIGHT"  x="4" y="0"/>
+						<Anchor point="TOPRIGHT" x="-32" y="-24"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-32" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+        <Frames>
+            <Button parentKey="moveUp" inherits="Vendor_Tooltip_Button">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="32"/>
+                </Anchors>
+				<NormalTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollUp-Up"/>
+				<PushedTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollUp-Down"/>
+				<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollUp-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+                <Scripts>
+					<OnClick>local parent = self:GetParent();parent:GetParent():ChangeRuleOrder(parent, -1)</OnClick>
+                </Scripts>
+            </Button>
+			<Button parentKey="moveDown" inherits="Vendor_Tooltip_Button">
+                <Size x="24" y="24"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="32"/>
+				</Anchors>
+				<NormalTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up"/>
+				<PushedTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down"/>
+				<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+				<Scripts>
+					<OnClick>local parent = self:GetParent();parent:GetParent():ChangeRuleOrder(parent, 1)</OnClick>
+				</Scripts>
+			</Button>
+        </Frames>
+		<HighlightTexture file="Interface\PVPFrame\PvPMegaQueue" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="12" y="0"/>
+				<Anchor point="BOTTOMRIGHT" x="-12" y="0"/>
+			</Anchors>
+			<TexCoords left="0.00195313" right="0.63867188" top="0.70703125" bottom="0.76757813"/>
+		</HighlightTexture>
+		<Scripts>
+			<OnLoad>self:RegisterForClicks("LeftButtonUp","RightButtonUp");</OnLoad>
+            <OnClick>self:OnClick(button)</OnClick>
+            <OnDoubleClick>
+				local model = self:GetModel();
+				if (model and model.Custom) then
+					VendorEditRuleDialog:EditRule(model, false);
+				end
+            </OnDoubleClick>
+		</Scripts>
+	</Button>
+
+	<!--
+	-->
+	<Button name="Vendor_Rule_Template" inherits="Vendor_Rule_Template_Base" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="name" inherits="GameFontHighlightLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.check" relativePoint="TOPRIGHT"  x="4" y="0"/>
+						<Anchor point="TOPRIGHT" x="-32" y="-24"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-32" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<Button name="Vendor_Rule_Template_ItemLevel" inherits="Vendor_Rule_Template_Base" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="name" inherits="GameFontHighlightLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.check" relativePoint="TOPRIGHT"  x="4" y="0"/>
+						<Anchor point="TOPRIGHT" x="-92" y="-24"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-92" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="itemLevel" inherits="Vendor_Rule_Numeric_Param">
+                <Size x="58" y="18"/>
+                <Anchors>
+	                <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-32" y="6"/>
+                </Anchors>
+			</EditBox>
+		</Frames>
+	</Button>
+
+</Ui>
