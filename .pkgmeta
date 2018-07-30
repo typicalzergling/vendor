@@ -1,4 +1,4 @@
-package-as: Vendor-@project-version@
+package-as: Vendor
 
 move-folders:
     #source\Vendor:Vendor
