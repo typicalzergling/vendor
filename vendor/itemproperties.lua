@@ -127,7 +127,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsUsable = IsUsableItem(item.Id)
     
     -- Save string compares later.
-    item.IsEquipment = item.EquipLoc ~= ""
+    item.IsEquipment = item.EquipLoc ~= "" and item.EquipLoc ~= "INVTYPE_BAG"
 
     -- For additional bind information we can be smart and only check the tooltip if necessary. This saves us string compares.
     -- 0 = none, 1 = on pickup, 2 = on equip, 3 = on use, 4 = quest
