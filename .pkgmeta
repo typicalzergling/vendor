@@ -1,11 +1,11 @@
 package-as: Vendor
 
 move-folders:
-    #source\Vendor:Vendor
-    #source\Vendor_Pawn:Vendor_Pawn
+    source\Vendor:Vendor
+    source\Vendor_Pawn:Vendor_Pawn
 
 ignore:
     - README.md
     - CHANGES.txt
     - LICENSE.txt
-    - Vendor\ui\debugconfig.lua
+    #- Vendor\ui\debugconfig.lua
