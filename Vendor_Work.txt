@@ -17,5 +17,10 @@ Work Items:
         
     5) Run the function to verify it works.
           
+    6) Add rule type to custom definitions list
+    
+    7) Remove defaults button in Rule list
+    
+
 Future:
 ===============================================================================

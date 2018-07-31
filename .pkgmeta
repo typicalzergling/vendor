@@ -7,4 +7,5 @@ ignore:
     - README.md
     - CHANGES.txt
     - LICENSE.txt
+    - Vendor_Work.txt
     - /ui/debugconfig.lua
