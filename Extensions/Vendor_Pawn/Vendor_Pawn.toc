@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: Vendor_Pawn
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
-## Version: 1
+## Version: 1.1.0
 ## Author: Severin & Umferth of Windrunner
 ## Dependencies: Vendor, Pawn
 

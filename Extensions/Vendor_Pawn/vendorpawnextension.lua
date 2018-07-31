@@ -34,6 +34,8 @@ local function registerPawnExtension()
         -- Function names cannot overwrite built-in Vendor functions.
         -- This is what appears in the "Help" page for View/Edit rule for your functions that are
         -- added. You must add documentation for each function you add.
+        -- The actual name of the function will be prefixed by the Source.
+        -- For example, this function will be called "Pawn_IsUpgrade()"
         Functions =
         {
             {
@@ -43,8 +45,7 @@ local function registerPawnExtension()
             },
         },
 
-        -- Rule IDs must be unique, and they are not allowed to overwrite built-in Vendor rules.
-        -- It is recommended to put the extending addon name in the rule ID as we have below.
+        -- Rule IDs must be unique. The "Source" will be prefixed to the id.
         Rules =
         {
             {
@@ -53,6 +54,14 @@ local function registerPawnExtension()
                 Name = "Pawn Upgrades",
                 Description = "Any equipment items that the Pawn addon considers an upgrade.",
                 Script = "IsEquipment and Pawn_IsUpgrade()",
+                Order = 1000,
+            },
+            {
+                Id = "isnotupgrade",
+                Type = "Sell",
+                Name = "Not Pawn Upgrades",
+                Description = "Any equipment items that are not considered upgrades by the Pawn addon.",
+                Script = "IsEquipment and not Pawn_IsUpgrade()",
                 Order = 1000,
             },
         },
