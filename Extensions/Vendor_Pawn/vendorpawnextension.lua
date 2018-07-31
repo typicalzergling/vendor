@@ -41,7 +41,7 @@ local function registerPawnExtension()
             {
                 Name="IsUpgrade",
                 Function=isPawnUpgrade,
-                Help="Checks if the item is an upgraded according to Pawn.",
+                Help="Checks if the item is an upgrade according to Pawn.",
             },
         },
 
