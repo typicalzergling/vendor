@@ -86,6 +86,12 @@ function RuleItem:SetRule(ruleDef)
         self.background:Hide();
         self.unhealthy:Hide();
     end
+
+    if (ruleDef.Custom) then
+        self.custom:Show();
+    else
+        self.custom:Hide();
+    end
 end
 
 function RuleItem:GetRuleId()

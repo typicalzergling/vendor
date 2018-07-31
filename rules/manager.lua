@@ -7,6 +7,21 @@ local RULE_TYPE_LOCKED_SELL = 2
 local RULE_TYPE_KEEP = 3
 local RULE_TYPE_SELL = 4
 
+--[[===========================================================================
+    | CreateRulesEngine:
+    |   Create and initialize a RulesEngine object.
+    =======================================================================--]]
+function Addon:CreateRulesEngine(verbose)
+    local rulesEngine = CreateRulesEngine(Addon.RuleFunctions, verbose);
+
+    -- Check for extension functions
+    if (Package.Extensions) then
+        rulesEngine:AddFunctions(Package.Extensions:GetFunctions());
+    end
+
+    return rulesEngine;
+end
+
 --*****************************************************************************
 -- Create a new RuleManager which is a container to manage rules and the
 -- environment they run in.
@@ -16,7 +31,7 @@ function RuleManager:Create()
     self.__index = self;
 
     -- Initialize the rule engine
-    local rulesEngine = CreateRulesEngine(Addon.RuleFunctions, Config:GetValue("debugrules"));
+    local rulesEngine = Addon:CreateRulesEngine(Config:GetValue("debugrules"));
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
     rulesEngine:CreateCategory(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
@@ -28,11 +43,6 @@ function RuleManager:Create()
             end
         end);
     instance.rulesEngine = rulesEngine;
-
-    -- Check for extension functions
-    if (Package.Extensions) then
-        rulesEngine:AddFunctions(Package.Extensions:GetFunctions());
-    end
 
     -- Subscribe to events we need to update our state when the definitions change
     -- we might have scrub rules, etc.

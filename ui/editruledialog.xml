@@ -33,6 +33,12 @@
 			<OnLoad>Vendor.EditRuleDialog.OnEditLoad(self);</OnLoad>
 			<OnEditFocusGained>EditBox_ClearHighlight(self);Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
 			<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
+            <OnTabPressed>
+                local handler = self:GetParent();
+                if (handler.OnTabPressed) then
+                    handler:OnTabPressed();
+                end
+            </OnTabPressed>
 		</Scripts>
 		<FontString inherits="ChatFontNormal"/>
 		<TextInsets>
@@ -84,6 +90,12 @@
 					<OnLoad>Vendor.EditRuleDialog.OnEditLoad(self)</OnLoad>
 					<OnEditFocusGained>Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
 					<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
+                    <OnTabPressed>
+                        local handler = self:GetParent():GetParent();
+                        if (handler.OnTabPressed) then
+                            handler:OnTabPressed();
+                        end
+                    </OnTabPressed>
 				</Scripts>
 				<FontString inherits="ChatFontNormal"/>
 				<TextInsets>
@@ -254,7 +266,7 @@
 					self.icon:SetTexture(self.textureFile);
 				end
 			</OnLoad>
-			<OnClick>Vendor.EditRuleDialog.SetInfoContent(self:GetParent(), self:GetID());</OnClick>
+			<OnClick>self:GetParent():SetInfoContent(self:GetID());</OnClick>
 		</Scripts>
 	</Button>
 
@@ -458,7 +470,7 @@
                     <Anchor point="TOP" y="-2" relativeKey="$parent.infoArea" relativePoint="BOTTOM"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick>Vendor.EditRuleDialog.HandleOk(self:GetParent());PortraitFrameCloseButton_OnClick(self);</OnClick>
+                    <OnClick>self:GetParent():HandleOk();PortraitFrameCloseButton_OnClick(self);</OnClick>
                 </Scripts>
             </Button>
 
@@ -555,8 +567,8 @@
 					</Frame>
            		</Frames>
            		<Scripts>
-           			<OnMouseUp>Vendor.EditRuleDialog.UpdateItemProperties(self);</OnMouseUp>
-           			<OnMouseDown>Vendor.EditRuleDialog.UpdateItemProperties(self)</OnMouseDown>
+           			<OnMouseUp>self:GetParent():UpdateItemProperties();</OnMouseUp>
+           			<OnMouseDown>self:GetParent():UpdateItemProperties()</OnMouseDown>
            		</Scripts>
            	</Frame>
 

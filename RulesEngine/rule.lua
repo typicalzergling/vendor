@@ -24,8 +24,9 @@ local function rule_Execute(self, environment)
             return true, result, nil;
         elseif not status then
             self.healthy = false;
-            self.error = result;
-            return false, nil, result;
+            local _, _, _, _, message = result:find("^(.*:)(%d+:)(.*)$")
+            self.error = message;
+            return false, nil, message;
         end
     end
 
@@ -87,11 +88,9 @@ local function rule_new(id, name, script, params)
     if (type(script) == "function") then
         instance.script = script;
     else
-        local script, _,  msg = loadstring(string.format("return (%s)", script))
+        local script, msg = loadstring(string.format("return (%s)", script))
         if (not script) then
-            instance.error = msg;
-            instance.healthy = false;
-            return nil, msg;
+            return nil, msg:gsub("%[string.*:%d+:%s*", "");
         else
             instance.script = script
         end
@@ -105,7 +104,7 @@ local function rule_new(id, name, script, params)
             rawset(instance.params, string.upper(name), value);
         end
     end
-    
+
     -- Initialize the objects metatable
     return Package.CreateObject(RULE_OBJECT_NAME, instance, rule_API), nil;
 end

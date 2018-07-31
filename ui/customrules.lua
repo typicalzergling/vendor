@@ -13,11 +13,19 @@ local VENDOR_STATICPOPUP_CONFIRM_DELETE="VENDOR_CONFIRM_DELETE_CUSTOM_RULE";
 function CustomRule:Init(ruleDef)
     if (self.author) then
         local font, size = self.author:GetFont();
-        self.author:SetFont(font, 6.0, "MONOCHROME");
+        self.author:SetFont(font, 8.0, "MONOCHROME");
         self.author:SetAlpha(0.25);
         if (ruleDef.EditedBy) then
             self.author:SetText(ruleDef.EditedBy);
-        end            
+        end
+
+        if (ruleDef.Type == Addon.c_RuleType_Keep) then
+            self.sellRule:Hide();
+            self.keepRule:Show();
+        else
+            self.sellRule:Show();
+            self.keepRule:Hide();
+        end
     end
 
     self.name:SetText(ruleDef.Name);
@@ -96,12 +104,12 @@ function CustomRuleList:OnShow()
 end
 
 -- Add a static popup so we can show it.
-StaticPopupDialogs[VENDOR_STATICPOPUP_CONFIRM_DELETE] = 
+StaticPopupDialogs[VENDOR_STATICPOPUP_CONFIRM_DELETE] =
 {
 	text = L["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"];
 	button1 = YES,
 	button2 = NO,
-	OnAccept = function (self) 
+	OnAccept = function (self)
             Rules.DeleteDefinition(self.data);
         end,
 	OnCancel = function (self) end,

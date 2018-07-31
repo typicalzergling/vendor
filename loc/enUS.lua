@@ -180,7 +180,6 @@ AddonLocales["enUS"] =
 ["EDITRULE_MATCHES_TAB_TEXT"] = "Below you can see all of the items currently in your inventory which would be matched by this rules text.",
 ["EDITRULE_ITEMINFO_TAB_NAME"] = "Item Info",
 ["EDITRULE_ITEMINFO_TAB_TEXT"] = "Drag an item into the space below to view all of the functions available to your script.",
-
 ["EDITRULE_SELLRULE_LABEL"] = "Sell Rule",
 ["EDITRULE_SELLRULE_TEXT"] = "A sell rule determines if Vendor will auto sell the item for you when the script evaluates to true",
 ["EDITRULE_KEEPRULE_LABEL"] = "Keep Rule",
@@ -191,6 +190,8 @@ AddonLocales["enUS"] =
 ["EDITRULE_RULEOK_TEXT"] = "Your rule passed validation, You should please check the matches tab to be sure it does what you expect.",
 ["EDITRULE_SCRIPT_ERROR"] = "The following error was found validating our rule:\n",
 ["EDITRULE_NO_MATCHES"] = "<p>This rule currently not match anything in your inventory.</p>",
+["EDITRULE_MATCHES_HEADER_FMT"] = "<h1>This rule matched %d items in your inventory</h1><br/>",
+["EDITRULE_RULE_SOURCE_FMT"] = "Source: %s",
 
 -- Rule Help
 
@@ -209,8 +210,8 @@ AddonLocales["enUS"] =
 </p>
 <h2>Notes:</h2>
 <p>
-This will always be 1 for links to items. When we scan items in your bag it will be the actual quantity for the slot. This means if you make a rule 
-that sells based on quantity that the tooltip for Vendor selling it will not be accurate when mousing over an item since that uses its tootip link, not 
+This will always be 1 for links to items. When we scan items in your bag it will be the actual quantity for the slot. This means if you make a rule
+that sells based on quantity that the tooltip for Vendor selling it will not be accurate when mousing over an item since that uses its tootip link, not
 the bag slot information. The matches tab uses items in your bag, so it will be correct for what Vendor will sell.
 </p>
 ]],
@@ -267,7 +268,7 @@ This is not localized so it will be portable to players using other locales. It'
 </p>
 <h2>Notes:</h2>
 <p>
-This is the base behavior of the item itself, not the current bind state of the item. This does NOT accurately tell you if the item is SoulBound or Bind-on-Equip by itself. 
+This is the base behavior of the item itself, not the current bind state of the item. This does NOT accurately tell you if the item is SoulBound or Bind-on-Equip by itself.
 If you want to know if an item is BoE or Soulbound, use IsBindOnEquip() and IsSoulbound()
 </p>
 ]],
@@ -300,9 +301,9 @@ Items with UnitValue == 0 cannot be sold to a vendor. Such items will never matc
 </p>
 <h2>Notes:</h2>
 <p>
-Use caution when using this to identify items of previous expansions. Not every item is tagged with an expansion ID. It appears that generally only wearable equipment is tagged. Zero is the default for everything, 
-including many items from Expansion packs (like reagants and Dalaran Hearthstones). 
-We recommend that you only use this for rules involving wearable equipment. Checking ExpansionPackId() == 0 intending to match Vanilla will not do what you want, as it will include non-Vanilla things. Likewise, 
+Use caution when using this to identify items of previous expansions. Not every item is tagged with an expansion ID. It appears that generally only wearable equipment is tagged. Zero is the default for everything,
+including many items from Expansion packs (like reagants and Dalaran Hearthstones).
+We recommend that you only use this for rules involving wearable equipment. Checking ExpansionPackId() == 0 intending to match Vanilla will not do what you want, as it will include non-Vanilla things. Likewise,
 ExpansionPackId() &lt; 7 will match a great many items. If you want to be safe, use this in conjunction with IsEquipment(), and have some items from Vanilla and several expansion packs to verify.
 </p>
 ]],
@@ -321,8 +322,8 @@ This does NOT tell you if your character can equip the item. This tells you whet
 </p>
 <h2>Notes:</h2>
 <p>
-If the item's bind type is Bind-on-pickup then this will always report true, even for items you have not yet picked up if you are mousing over them. This is because the item will be Soulbound if you were to pick it up, 
-so we are accurately representing the resulting behavior of the item. If an item is Binds-when-equipped or on use, then IsSoulbound() will return false unless you actually have the item in your possession and we can 
+If the item's bind type is Bind-on-pickup then this will always report true, even for items you have not yet picked up if you are mousing over them. This is because the item will be Soulbound if you were to pick it up,
+so we are accurately representing the resulting behavior of the item. If an item is Binds-when-equipped or on use, then IsSoulbound() will return false unless you actually have the item in your possession and we can
 verify its true state.
 </p>
 ]],
@@ -360,8 +361,8 @@ This is obsolete with the 8.0.1 patch, as Blizzard removed Artifact Power as an 
 </p>
 <h2>Notes:</h2>
 <p>
-This will correctly detect items which are unknown appearances (i.e. transmogs you have not yet acquired). However, if the item is BoP, it will not be treated as an Unknown Appearance. This is because the moment you pick up the 
-item it will become a known appearance. Therefore, it is safe to sell and this inforamtion is irrelevant. This method is used to filter on Bind-on-Equip items that are Unknown Appearances and is generally useful for preventing 
+This will correctly detect items which are unknown appearances (i.e. transmogs you have not yet acquired). However, if the item is BoP, it will not be treated as an Unknown Appearance. This is because the moment you pick up the
+item it will become a known appearance. Therefore, it is safe to sell and this inforamtion is irrelevant. This method is used to filter on Bind-on-Equip items that are Unknown Appearances and is generally useful for preventing
 you from accidentally selling them. We have a built-in Keep rule for this purpose, so generally you won't need to use this.
 </p>
 ]],
