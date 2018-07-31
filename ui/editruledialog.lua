@@ -427,7 +427,6 @@ function EditRuleDialog.SetMode(self, mode, infoId)
     else
         self.TitleText:SetText(L.EDITRULE_CAPTION);
         self.editRule:SetReadOnly(false);
-        print("infoPanelId:", infoId);
         EditRuleDialog.SetInfoContent(self, infoId or MATCHES_ID);
     end
 end
@@ -595,7 +594,7 @@ function EditRuleDialog:EditRule(ruleDef, readOnly, infoPanelId)
     else
         Addon.EditRuleDialog.SetMode(self, MODE_EDIT, infoPanelId);
         if (self:CheckRuleHealth(ruleDef)) then
-           self:ValidateScript();
+            self:ValidateScript();
             self:UpdateMatches();
         end
     end
@@ -617,6 +616,7 @@ end
 
 function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
+    self._lastScript = nil;
     if (self.timer) then
         self.timer:Cancel();
     end
