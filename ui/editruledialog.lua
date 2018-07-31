@@ -416,20 +416,19 @@ end
 --[[===========================================================================
     | Toggle the layout of the dialog to either the read-only or edit layout
     ===========================================================================--]]
-function EditRuleDialog.SetMode(self, mode)
-    if (mode ~= self.mode) then
-        self.mode = mode;
-        self.editRule:ShowStatus();
-        if (mode == MODE_READONLY) then
-            self.TitleText:SetText(L["VIEWRULE_CAPTION"]);
-            self.editRule:SetReadOnly(true);
-            self.save:Disable();
-            EditRuleDialog.SetInfoContent(self, MATCHES_ID);
-        else
-            self.TitleText:SetText(L.EDITRULE_CAPTION);
-            self.editRule:SetReadOnly(false);
-            EditRuleDialog.SetInfoContent(self, HELP_ID);
-        end
+function EditRuleDialog.SetMode(self, mode, infoId)
+    self.mode = mode;
+    self.editRule:ShowStatus();
+    if (mode == MODE_READONLY) then
+        self.TitleText:SetText(L["VIEWRULE_CAPTION"]);
+        self.editRule:SetReadOnly(true);
+        self.save:Disable();
+        EditRuleDialog.SetInfoContent(self, MATCHES_ID);
+    else
+        self.TitleText:SetText(L.EDITRULE_CAPTION);
+        self.editRule:SetReadOnly(false);
+        print("infoPanelId:", infoId);
+        EditRuleDialog.SetInfoContent(self, infoId or MATCHES_ID);
     end
 end
 
@@ -556,14 +555,14 @@ end
 -- dialog to the rule (read only is considered false)
 --*****************************************************************************
 function EditRuleDialog:CreateRule()
-    self:EditRule({ Id = RuleManager.CreateCustomRuleId(), Type = Addon.c_RuleType_Sell })
+    self:EditRule({ Id = RuleManager.CreateCustomRuleId(), Type = Addon.c_RuleType_Sell }, false, HELP_ID)
 end
 
 --*****************************************************************************
 -- Called when our "filter" focus state changes, we want to show/hide our
 -- help text if we've got content.
 --*****************************************************************************
-function EditRuleDialog:EditRule(ruleDef, readOnly)
+function EditRuleDialog:EditRule(ruleDef, readOnly, infoPanelId)
     -- Save the parameters we need.
     self.ruleDef = ruleDef;
     self.readOnly = readOnly or false;
@@ -594,7 +593,7 @@ function EditRuleDialog:EditRule(ruleDef, readOnly)
             self:UpdateMatches();
         end
     else
-        Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
+        Addon.EditRuleDialog.SetMode(self, MODE_EDIT, infoPanelId);
         if (self:CheckRuleHealth(ruleDef)) then
            self:ValidateScript();
             self:UpdateMatches();
