@@ -3,6 +3,7 @@ Bugs:
     1) Grammar/Spelling pass
     
     2) Save button on custom rules not working consistently. Example: Change rule type for an existing rule
+        Appears as though rules are not being validated when the edit rule window pops up
 
 Work Items:
 ===============================================================================
