@@ -1,0 +1,21 @@
+Bugs:
+===============================================================================
+    1) Grammar/Spelling pass
+
+Work Items:
+===============================================================================
+    1) Switch over LOC/API/INIT to new mode (aka Public)
+    
+    2) Interface settings should save with OK, Cancel or close window.
+
+    3) Remove Cancel/Ok from rules dialog. Save when closed.
+
+    4) Update the extension mode:
+        - Combine function/name/doc
+        - Prohibit "Vendor" as a name
+        - Source prefix functions
+        
+    5) Run the function to verify it works.
+          
+Future:
+===============================================================================

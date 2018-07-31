@@ -132,6 +132,7 @@
 			</Button>
 		</Frames>
 		<Scripts>
+            <OnLoad>self.shareButton:Hide()</OnLoad>
 			<OnEnter>
 				self.shareButton:Hide();
 				self.editButton:Show();

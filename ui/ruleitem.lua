@@ -98,7 +98,7 @@ function RuleItem:SetConfig(config, index)
 
     if (self.itemLevel) then
         self.itemLevel:SetNumber(0);
-    end        
+    end
 
     if (config and (type(config) == "table")) then
         for paramName, paramValue in pairs(config) do
@@ -106,9 +106,9 @@ function RuleItem:SetConfig(config, index)
                 if (self.itemLevel) then
                     local value = tonumber(paramValue) or 0;
                     self.itemLevel:SetNumber(value);
-                end                    
+                end
             end
-        end            
+        end
     end
 end
 
@@ -142,7 +142,7 @@ function RuleItem:SetSelected(selected)
 
         if (self.itemLevel) then
             self.itemLevel:Enable();
-        end            
+        end
     else
         self.check:Hide();
         self.selectedBackground:Hide();
@@ -150,7 +150,7 @@ function RuleItem:SetSelected(selected)
 
         if (self.itemLevel) then
             self.itemLevel:Disable();
-        end            
+        end
     end
 end
 
@@ -162,11 +162,12 @@ function RuleItem:OnClick(button)
     if (button == "LeftButton") then
         self:SetSelected(not self.selected);
     elseif (button == "RightButton") then
-        -- You can view "definition" of system rules.       
+        -- You can view "definition" of system rules, and extension rules
+        -- you can edit custom rules.
         local ruleDef = self:GetModel();
         if (ruleDef) then
-            VendorEditRuleDialog:EditRule(ruleDef, not ruleDef.Custom);
-        end            
+            VendorEditRuleDialog:EditRule(ruleDef, ruleDef.ReadOnly or not ruleDef.Custom);
+        end
     end
 end
 

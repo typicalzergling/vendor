@@ -1,4 +1,5 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
+local Package = select(2, ...);
 Addon.RuleManager = {}
 local RuleManager = Addon.RuleManager;
 local RULE_TYPE_LOCKED_KEEP = 1
@@ -7,7 +8,7 @@ local RULE_TYPE_KEEP = 3
 local RULE_TYPE_SELL = 4
 
 --*****************************************************************************
--- Create a new RuleManager which is a container to manage rules and the 
+-- Create a new RuleManager which is a container to manage rules and the
 -- environment they run in.
 --*****************************************************************************
 function RuleManager:Create()
@@ -24,14 +25,13 @@ function RuleManager:Create()
         function(what, categoryId, ruleId, message)
             if (what == "UNHEALTHY") then
                 instance:CacheRuleStatus(ruleId);
-            end 
+            end
         end);
     instance.rulesEngine = rulesEngine;
 
     -- Check for extension functions
-    local exts = Addon.Rules.GetExtensionFunctions();
-    if (exts) then
-        rulesEngine:AddFunctions(exts);
+    if (Package.Extensions) then
+        rulesEngine:AddFunctions(Package.Extensions:GetFunctions());
     end
 
     -- Subscribe to events we need to update our state when the definitions change
@@ -39,7 +39,7 @@ function RuleManager:Create()
     Addon.Rules.OnDefinitionsChanged:Add(function() instance:Update(); end);
     Config:AddOnChanged(function() instance:Update(); end);
     instance:Update();
-    
+
     return instance
 end
 
@@ -93,7 +93,7 @@ function RuleManager:ApplyConfig(categoryId, ruleType)
                 local ruleDef = Addon.Rules.GetDefinition(entry, ruleType);
                 if (ruleDef) then
                     Addon:DebugRules("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
-                    rulesEngine:AddRule(categoryId, ruleDef);                        
+                    rulesEngine:AddRule(categoryId, ruleDef);
                 else
                     Addon:DebugRules("Rule '%s' [%s] was not found", entry, ruleType);
                 end
@@ -114,17 +114,17 @@ end
 
 --[[===========================================================================
     | Update:
-    |   Updates the internal state of the rules to reflect what the user 
-    |   has listed in the configuration. 
+    |   Updates the internal state of the rules to reflect what the user
+    |   has listed in the configuration.
     ========================================================================--]]
 function RuleManager:Update()
     local rulesEngine = self.rulesEngine;
-    
+
     self.unhealthy = {};
     rulesEngine:ClearRules();
     rulesEngine:SetVerbose(Config:GetValue("debugrules"));
 
-    -- Step 1: We want to add all of the locked rules into the 
+    -- Step 1: We want to add all of the locked rules into the
     --         engine as those are always added independent of the config.
     for _, ruleDef in ipairs(Addon.Rules.GetLockedRules()) do
         Addon:DebugRules("Adding LOCKED rule '%s' [%s]", ruleDef.Id, ruleDef.Type);
@@ -140,12 +140,12 @@ function RuleManager:Update()
     -- Step 2: Add the keep rules from our configuration
     self:ApplyConfig(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
 
-    -- Step 3: Add the sell rules from our configuration 
+    -- Step 3: Add the sell rules from our configuration
     self:ApplyConfig(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
 end
 
 --*****************************************************************************
---  Evaluates all of then rules (or a specific rule) and returns true of 
+--  Evaluates all of then rules (or a specific rule) and returns true of
 --  and the name of the that matches it.
 --
 -- ruleName is optional, if provided it will only run that rule.
@@ -160,7 +160,7 @@ function RuleManager:Run(object, ...)
             return true, ruleId, name;
         end
     end
-    
+
     return false, nil, nil
 end
 

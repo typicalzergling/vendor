@@ -43,6 +43,7 @@ rules\functions.lua
 rules\definitions.lua
 rules\manager.lua
 rules\evaluate.lua
+rules\extensions.lua
 
 # User Interface
 ui\common.xml

@@ -70,13 +70,18 @@ end
 
 Addon.RuleDocumentation =
 {
-    CreateHeader = function(name, item)
+    CreateHeader = function(name, item, ext)
+        local postfix = "";
+        if (ext) then
+            postfix = string.format(" %s[Extension]%s", ORANGE_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE);
+        end
+
         if (type(item) == "table") then
             if (item.Args) then
-                return string.format("<h1>%s%s(%s)%s</h1>", BATTLENET_FONT_COLOR_CODE, name, item.Args, FONT_COLOR_CODE_CLOSE);
+                return string.format("<h1>%s%s(%s)%s%s</h1>", BATTLENET_FONT_COLOR_CODE, name, item.Args, FONT_COLOR_CODE_CLOSE, postfix);
             end
         end
-        return string.format("<h1>%s%s()%s</h1>", BATTLENET_FONT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE);
+        return string.format("<h1>%s%s()%s%s</h1>", BATTLENET_FONT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, postfix);
      end,
 
     CreateValues = function(item)
@@ -103,8 +108,8 @@ Addon.RuleDocumentation =
         return "";
     end,
 
-    CreateSingleItem = function(name, item)
-        return  Addon.RuleDocumentation.CreateHeader(name, item) ..
+    CreateSingleItem = function(name, item, ext)
+        return  Addon.RuleDocumentation.CreateHeader(name, item, ext) ..
                 Addon.RuleDocumentation.CreateContent(item) ..
                 Addon.RuleDocumentation.CreateValues(item);
 
@@ -119,6 +124,14 @@ Addon.RuleDocumentation =
                     docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, content);
                 end
             end
+
+            -- Document extension functons.
+            if (Package.Extensions) then
+                for name,help in pairs(Package.Extensions:GetFunctionDocs()) do
+                    docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, help, true);
+                end
+            end
+
             Addon.RuleDocumentation.__docs = docs;
         end
         return Addon.RuleDocumentation.__docs;
@@ -208,7 +221,7 @@ Addon.EditRuleDialog =
         self.helpButton.text:SetText(L.EDITRULE_HELP_TAB_NAME);
         self.infoButton.text:SetText(L.EDITRULE_ITEMINFO_TAB_NAME);
         self.itemInfoPanel.topText:SetText(L.EDITRULE_ITEMINFO_TAB_TEXT);
-        self.matchesButton.text:SetText(L.EDITRULE_MATCHES_TAB_NAME); 
+        self.matchesButton.text:SetText(L.EDITRULE_MATCHES_TAB_NAME);
         self.matchesPanel.topText:SetText(L.EDITRULE_MATCHES_TAB_TEXT);
 
         Addon.EditRuleDialog.SetMode(self, MODE_EDIT);
@@ -284,7 +297,7 @@ Addon.EditRuleDialog =
         local props = {}
         if (itemProps) then
             for name, value in spairs(itemProps) do
-                if ((type(name) == "string") and 
+                if ((type(name) == "string") and
                     ((type(value) ~= "table") and (type(value) ~= "function"))) then
                     local valStr = tostring(value);
                     if ((value == nil) or (valStr == "") or (string.len(valStr) == 0)) then
@@ -292,7 +305,7 @@ Addon.EditRuleDialog =
                     end
 
                     table.insert(props, string.format(ITEM_HTML_FMT, name, GREEN_FONT_COLOR_CODE, htmlEncode(valStr), FONT_COLOR_CODE_CLOSE));
-                end                    
+                end
             end
 
             infoPane.propHtml.scrollFrame.content:SetText(string.format(ITEM_INFO_HTML_BODY_FMT, link, table.concat(props)));
@@ -363,7 +376,7 @@ function EditRuleDialog:UpdateMatches()
     local ruleDef = self.ruleDef;
     local matchContent = self.matchesPanel.propMatches.scrollFrame.content;
     local hasMatches = false;
-    
+
     if (self.scriptValid) then
         local params = nil;
         local _, _, _, script = self.editRule:GetValues();
@@ -392,7 +405,7 @@ function EditRuleDialog:UpdateMatches()
             end
             sb:Add(MATCHES_HTML_END);
             matchContent:SetText(sb:Get());
-        end            
+        end
     end
 
     if (not hasMatches) then
@@ -411,7 +424,7 @@ function EditRuleDialog.SetMode(self, mode)
             self.TitleText:SetText(L["VIEWRULE_CAPTION"]);
             self.editRule:SetReadOnly(true);
             self.save:Disable();
-            EditRuleDialog.SetInfoContent(self, MATCHES_ID);            
+            EditRuleDialog.SetInfoContent(self, MATCHES_ID);
         else
             self.TitleText:SetText(L.EDITRULE_CAPTION);
             self.editRule:SetReadOnly(false);
@@ -451,7 +464,7 @@ function EditRuleDialog.UpdateButtonState(self)
         self.save:Disable();
     end
 
-    EditRuleDialog.UpdateMatches(self);    
+    EditRuleDialog.UpdateMatches(self);
 end
 
 --[[===========================================================================
@@ -498,7 +511,7 @@ function EditRuleDialog.HandleOk(self)
     if (not self.readOnly) then
         Addon:Debug("Creating new custom rule definition");
         local rtype, name, description, script = self.editRule:GetValues();
-        local newRuleDef = 
+        local newRuleDef =
         {
             Id = self.ruleDef.Id,
             Type = rtype,
@@ -508,7 +521,7 @@ function EditRuleDialog.HandleOk(self)
         };
 
         Vendor.Rules.UpdateDefinition(newRuleDef);
-    end        
+    end
 end
 
 function EditRuleDialog.SetInfoContent(self, id)
@@ -530,7 +543,7 @@ function EditRuleDialog.SetInfoContent(self, id)
         if (button:GetID() == id) then
             button.text:SetTextColor(activeFont.r, activeFont.g, activeFont.b);
             button.icon:SetAlpha(1.0);
-        else            
+        else
             button.text:SetTextColor(grayFont.r, grayFont.g, grayFont.b);
             button.icon:SetAlpha(0.5);
         end
@@ -563,6 +576,15 @@ function EditRuleDialog:EditRule(ruleDef, readOnly)
         ruleDef.ScriptText or ruleDef.Script,
         ruleDef.Id);
 
+    -- If the rule came from an extension setup the widget.
+    -- TODO move to edit rule.
+    if (ruleDef.Extension and (type(ruleDef.Extension) == "table")) then
+        self.editRule.extension:Show();
+        self.editRule.extension:SetFormattedText("Source: %s", ruleDef.Extension.Name);
+    else
+        self.editRule.extension:Hide();
+    end
+
     -- If we're read-only disable all the fields.
     if (readOnly) then
         Addon.EditRuleDialog.SetMode(self, MODE_READONLY);
@@ -576,7 +598,7 @@ function EditRuleDialog:EditRule(ruleDef, readOnly)
         if (self:CheckRuleHealth(ruleDef)) then
            self:ValidateScript();
             self:UpdateMatches();
-        end            
+        end
     end
 
      Addon.EditRuleDialog.UpdateButtonState(self);
@@ -599,7 +621,7 @@ function EditRuleDialog:OnShow()
     if (self.timer) then
         self.timer:Cancel();
     end
-    
+
     self.timer = C_Timer.NewTicker(0.60, function() self:OnTicker(); end);
 end
 
@@ -608,7 +630,7 @@ function EditRuleDialog:OnHide()
     if (self.timer) then
         self.timer:Cancel();
         self.timer = nil;
-    end        
+    end
 end
 
 function EditRuleDialog:OnTicker()
@@ -618,7 +640,7 @@ function EditRuleDialog:OnTicker()
             self:UpdateMatches();
              Addon.EditRuleDialog.UpdateButtonState(self);
         end
-    end        
+    end
 end
 
 function EditRule:SetupRuleType()
@@ -640,6 +662,8 @@ function EditRule:Setup()
     self.okStatus.text:SetText(L["EDITRULE_RULEOK_TEXT"]);
     self.errorStatus.title:SetText(L["EDITRULE_ERROR_RULE"]);
     self.unhealthyStatus.title:SetText(L["EDITRULE_UNHEALTHY_RULE"]);
+    self.extension:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+    self.extension:Hide();
 end
 
 function EditRule:GetValues()
@@ -679,7 +703,7 @@ function EditRule:ShowStatus(status, text)
     elseif (status == "UNHEALTHY") then
         self.unhealthyStatus.text:SetText(text);
         self.unhealthyStatus:Show();
-    end        
+    end
 end
 
 function EditRule:SetReadOnly(readonly)

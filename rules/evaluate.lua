@@ -1,4 +1,5 @@
 local Addon, L = _G[select(1,...).."_GET"]()
+local Package = select(2, ...);
 
 -- Evaluating items for selling.
 
@@ -19,21 +20,20 @@ function Addon:EvaluateItemForSelling(item)
     return self.ruleManager:Run(item)
 end
 
--- Evaluate the given parameters against all the items your bag, this used to show matches in the 
+-- Evaluate the given parameters against all the items your bag, this used to show matches in the
 -- edit rule dialog. The return value is a table with all the links in.  This bypasses the rule
--- manager since we know exactly what we're evaluating. 
+-- manager since we know exactly what we're evaluating.
 function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
     Addon:DebugRules("Evaluating '%s' against bags (no-cache)", ruleId);
     local rulesEngine = CreateRulesEngine(Addon.RuleFunctions, false);
     local results = {};
 
     -- Add any extension functions to the instance.
-    local exts = Addon.Rules.GetExtensionFunctions();
-    if (exts) then
-        rulesEngine:AddFunctions(exts);
-    end        
+    if (Package.Extensions) then
+        rulesEngine:AddFunctions(Package.Extensions:GetFunctions());
+    end
 
-    rulesEngine:CreateCategory(1, "<text>");
+    rulesEngine:CreateCategory(1, "<test>");
     local result, message = rulesEngine:AddRule(1, { Id = ruleId, Name = ruleId, Script = ruleScript }, parameters);
     if (result) then
         for bag=0,NUM_BAG_SLOTS do
@@ -44,7 +44,7 @@ function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
                     if (result) then
                         table.insert(results, item.Link);
                     end
-                end                
+                end
             end
         end
     else
@@ -64,5 +64,5 @@ function Addon:GetRuleStatus(ruleId)
     local status = self.ruleManager.rulesEngine:GetRuleStatus(ruleId);
     if (status and (#status == 1)) then
         return unpack(status[1]);
-    end        
+    end
 end
