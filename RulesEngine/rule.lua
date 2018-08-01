@@ -22,11 +22,10 @@ local function rule_Execute(self, environment)
         if status then
             self.healthy = true;
             return true, result, nil;
-        elseif not status then
+        else
             self.healthy = false;
-            local _, _, _, _, message = result:find("^(.*:)(%d+:)(.*)$")
-            self.error = message;
-            return false, nil, message;
+            self.error = result;
+            return false, false, result;
         end
     end
 

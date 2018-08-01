@@ -7,12 +7,37 @@ local RULE_TYPE_LOCKED_SELL = 2
 local RULE_TYPE_KEEP = 3
 local RULE_TYPE_SELL = 4
 
+local ITEM_CONSTANTS =
+{
+    -- INV types
+    "INVTYPE_AMMO",     "INVTYPE_HEAD",     "INVTYPE_NECK",             "INVTYPE_SHOULDER",
+    "INVTYPE_BODY",     "INVTYPE_CHEST",    "INVTYPE_ROBE",             "INVTYPE_WAIST",
+    "INVTYPE_LEGS",     "INVTYPE_FEET",     "INVTYPE_WRIST",            "INVTYPE_HAND",
+    "INVTYPE_FINGER",   "INVTYPE_TRINKET",  "INVTYPE_CLOAK",            "INVTYPE_WEAPON",
+    "INVTYPE_SHIELD",   "INVTYPE_2HWEAPON", "INVTYPE_WEAPONMAINHAND",   "INVTYPE_WEAPONOFFHAND",
+    "INVTYPE_HOLDABLE", "INVTYPE_RANGED",   "INVTYPE_THROWN",           "INVTYPE_RANGEDRIGHT",
+    "INVTYPE_RELIC",    "INVTYPE_TABARD",   "INVTYPE_BAG",              "INVTYPE_QUIVER",
+
+    -- Invslots
+    "INVSLOT_AMMO",         "INVSLOT_FIRST_EQUIPPED",       "INVSLOT_HEAD",
+    "INVSLOT_NECK",         "INVSLOT_SHOULDER",             "INVSLOT_BODY",
+    "INVSLOT_CHEST",        "INVSLOT_WAIST",                "INVSLOT_LEGS",
+    "INVSLOT_FEET",         "INVSLOT_WRIST",                 "INVSLOT_HAND",
+    "INVSLOT_FINGER1",      "INVSLOT_FINGER2",              "INVSLOT_TRINKET1",
+    "INVSLOT_TRINKET2",     "INVSLOT_BACK",                 "INVSLOT_MAINHAND",
+    "INVSLOT_OFFHAND",      "INVSLOT_RANGED",               "INVSLOT_TABARD",
+    "INVSLOT_LAST_EQUIPPED",
+};
+
 --[[===========================================================================
     | CreateRulesEngine:
     |   Create and initialize a RulesEngine object.
     =======================================================================--]]
 function Addon:CreateRulesEngine(verbose)
     local rulesEngine = CreateRulesEngine(Addon.RuleFunctions, verbose);
+
+    -- Import constants
+    rulesEngine:ImportGlobals(unpack(ITEM_CONSTANTS));
 
     -- Check for extension functions
     if (Package.Extensions) then

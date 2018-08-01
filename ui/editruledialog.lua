@@ -411,7 +411,7 @@ function EditRuleDialog:UpdateMatches()
             params = findRuleParams(ruleDef);
         end
 
-        local matches = Addon:GetMatchesForRule(ruleDef.Id, script, params);
+        local matches = Addon:GetMatchesForRule(self.rulesEngine, ruleDef.Id, script, params);
         if (matches) then
             local sb = Addon.Utils.StringBuilder:Create();
             sb:Add(MATCHES_HTML_START);
@@ -597,13 +597,12 @@ end
 
 function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-    self._lastScript = nil;
-    self._rulesEngine = nil;
+    self.rulesEngine = Addon:CreateRulesEngine(false);
 end
 
 function EditRuleDialog:OnHide()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
-    self.editRule:Cleanup();
+    self.rulesEngine = nil;
 end
 
 -- Move this to it's own place (file)
@@ -653,7 +652,6 @@ function EditRule:Setup()
 end
 
 function EditRule:Cleanup()
-    self._rulesEngine = nil;
     if (self.delayTimer) then
         self.delayTimer:Cancel();
         self.delayTimer = nil;
@@ -794,18 +792,18 @@ function EditRule:OnValidateScript(force)
 
     if (force or (not last) or ((now - last > VALIDATE_THRESHOLD))) then
         self.scriptIsValid = false;
+        if (self.scriptTimer) then
+            self.scriptTimer:Cancel();
+            self.scriptTimer = nil;
+        end
 
         local script = self.script.content:GetText();
         if (script and string.len(script) ~= 0) then
             Addon:Debug("Validating script: %s", script);
-            if (not self._rulesEngine) then
-                self._rulesEngine = Addon:CreateRulesEngine();
-            end
-
-            local valid, message = self._rulesEngine:ValidateScript(self:getSampleObject(), script);
+            local valid, message = Addon:ValidateRuleAgainstBags(self:GetParent().rulesEngine, script);
             if (not valid) then
                 self:ShowStatus("ERROR", message);
-                Addon:Debug("Script failed to validate: ", message);
+                Addon:Debug("Script failed to validate: %s", message);
             else
                 self:ShowStatus("OK");
                 self.scriptIsValid = true;
@@ -815,11 +813,6 @@ function EditRule:OnValidateScript(force)
         else
             Addon:Debug("There was not script to validate");
             self:ShowStatus();
-        end
-
-        if (self.scriptTimer) then
-            self.scriptTimer:Cancel();
-            self.scriptTimer = nil;
         end
 
         self.OnScriptValidated(self.scriptIsValid);
