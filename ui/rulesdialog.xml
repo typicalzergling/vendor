@@ -76,7 +76,7 @@
                     <OnClick function="PortraitFrameCloseButton_OnClick"/>
                 </Scripts>
             </Button>
-            <Button parentKey="createNewRule" inherits="MagicButtonTemplate" text="CREATE" hidden="true">
+            <Button parentKey="createNewRule" inherits="MagicButtonTemplate" text="CREATE">
                 <Size>
                     <AbsDimension x="132" y="22"/>
                 </Size>
@@ -209,10 +209,6 @@
 	                    </Anchors>
                     </ScrollFrame>
                 </Frames>
-                <Scripts>
-                    <OnShow>self:GetParent().createNewRule:Show();</OnShow>
-                    <OnHide>self:GetParent().createNewRule:Hide();</OnHide>
-                </Scripts>
             </Frame>
 
             <!-- Panels are sized to this frame when shown -->
