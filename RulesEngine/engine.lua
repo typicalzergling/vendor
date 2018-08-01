@@ -1,6 +1,7 @@
 local PackageName, Package = ...;
 local ENGINE_OBEJCT_TYPE = (PackageName .. "::Engine");
 local g_engineId = 0;
+local NIL_ACCESSOR_VALUE = {};
 
 --[[===========================================================================
     | insertCategory (local)
@@ -30,8 +31,17 @@ local function findCategory(self, categoryId)
     end
 end
 
+-- Given a table of possible functions this assigns the given environment to each function.
+local function assignFunctionEnv(functions, env)
+    for _, v in pairs(functions) do
+        if (type(v) == "function") then
+            setfenv(v, env);
+        end;
+    end
+end
+
 --[[===========================================================================
-    | eninge_CreateCategory
+    | engine_CreateCategory
     |   Creates a new category in the engine with the specified ID, if the
     |   category alreay exists this raises an error.
     =======================================================================--]]
@@ -226,7 +236,7 @@ local function createAccessors(object)
             if (type(name) == "string") then
                 local valueType = type(value);
                 if ((valueType ~= "table") and (valueType ~= "function")) then
-                    rawset(accessors, name, value);
+                    rawset(accessors, name, value or NIL_ACCESSOR_VALUE);
                 end
             end
         end
@@ -296,12 +306,7 @@ local function engine_Evaluate(self, object, ...)
     --   Rules - Can see in this order, Our environment, the object accessors, and imported globals.
     --   Function -- Can see in this order, the object accessors and the globals
     local ruleEnv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
-    local functionEnv = createRestrictedEnvironment(false, accessors, { OBJECT = object },  _G);
-    for _, value in pairs(self.environment) do
-        if (type(value) == "function") then
-            setfenv(value, functionEnv);
-        end
-    end
+    assignFunctionEnv(self.environment, createRestrictedEnvironment(false, accessors, { OBJECT = object },  _G));
 
     -- Iterate over all of our lists and determine what the action is based of the
     -- the value of the rules.  The first rule which returns something other than no-action
@@ -369,6 +374,43 @@ local function engine_SetVerbose(self, verbose)
     self.log = Package.CreateLog(self.id, verbose);
 end
 
+--[[===========================================================================
+    | engine_ValidateScript:
+    |   Given script text and an object this will validate the script against
+    |   the current environment.
+    |
+    |   Step 1:
+    |       Make a rule from the specified script/parameters.
+    |
+    |   Step 2:
+    |       Evaluate the rule against the sample object.
+    |
+    |   Returns true if validation succeeds, or false and an error message
+    |   we are unable to validate the script.
+    =======================================================================--]]
+local function engine_ValidateScript(self, object, script, params)
+    assert(object and (type(object) == "table"), "A valid object must be provided to evaluate against.");
+    assert(script and (type(script) == "string") and (string.len(script) ~= 0), "A valid script must be provided to validate.");
+
+    -- Step 1 - Create the rule
+    local id =  string.format("vr_%s", time());
+    local rule, message = Package.CreateRule(id, id, script, params);
+    if (not rule) then
+        return false, message;
+    end
+
+    -- Step 2 - Evaluate it against the test object
+    local accessors = createAccessors(object);
+    local renv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
+    assignFunctionEnv(self.environment, createRestrictedEnvironment(false, accessors, { OBJECT = object }, _G));
+    local status, _, message = rule:Execute(renv);
+    if (not status) then
+        return false, message;
+    end
+
+    return true;
+end
+
 -- Define the API we expose
 local engine_API =
 {
@@ -383,6 +425,7 @@ local engine_API =
     GetRuleStatus = engine_GetRuleStatus,
     ClearRules = engine_ClearRules,
     SetVerbose = engine_SetVerbose,
+    ValidateScript = engine_ValidateScript,
 };
 
 --[[===========================================================================
@@ -406,7 +449,7 @@ local function new_Engine(environment, verbose)
     instance.log:StartBlock("Start create [%04d]", instance.id);
     -- If the caller gave us functions which should be available then
     -- important them into our environment along with certain globals
-    engine_ImportGlobals(instance, "string", "math", "tonumber", "tostring")
+    engine_ImportGlobals(instance, "string", "math", "table", "tonumber", "tostring")
     if (environment and (type(environment) == "table")) then
         for name, value in pairs(environment) do
             if (type(value) == "function") then

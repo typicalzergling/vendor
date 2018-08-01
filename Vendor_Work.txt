@@ -2,9 +2,6 @@ Bugs:
 ===============================================================================
     1) Grammar/Spelling pass
     
-    2) Save button on custom rules not working consistently. Example: Change rule type for an existing rule
-        Appears as though rules are not being validated when the edit rule window pops up
-
 Work Items:
 ===============================================================================
     1) Switch over LOC/API/INIT to new mode (aka Public)
@@ -14,14 +11,8 @@ Work Items:
     3) Remove Cancel/Ok from rules dialog. Save when closed.
 
     4) Update the extension mode:
-        - Combine function/name/doc
         - Prohibit "Vendor" as a name
-        - Source prefix functions
-        
-    5) Run the function to verify it works.
-          
-    6) Add rule type to custom definitions list
-    
+           
     7) Remove defaults button in Rule list
     
     8) Add more player related variables like:  PlayerClass, PlayerIsEngineer, PlayerIsEnchanter, etc
