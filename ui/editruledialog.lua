@@ -737,36 +737,6 @@ function EditRule:SetReadOnly(readonly)
     end
 end
 
--- Items to build the sample object from, We use the various hearthstone hoping that
--- the player keeps at least one of these into their inventory so that the client has
--- the item info cached.
-local SAMPLE_ITEM_IDS =
-{
-    6948, -- Hearthstone (vanilla)
-    110560, -- Garrison Hearthstone (WOD)
-    140192, -- Dalaran Hearthstone. (Legion)
-};
-
---[[===========================================================================
-    | getSampleObject:
-    |   This is called to retrieve a sample object for validating our scripts
-    |   against.
-    =======================================================================--]]
-function EditRule:getSampleObject()
-    if (not self._sampleObject) then
-        for _, id in ipairs(SAMPLE_ITEM_IDS) do
-            local _, link = GetItemInfo(id);
-            if (link) then
-                self._sampleObject = Addon:GetItemPropertiesFromLink(link);
-                if (self._sampleObject) then
-                    break;
-                end
-            end
-        end
-    end
-    return self._sampleObject;
-end
-
 --[[===========================================================================
     | IsScriptValid:
     |   This is called to check our script for validation, this will check
