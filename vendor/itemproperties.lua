@@ -98,7 +98,6 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsSoulbound = false
     item.IsBindOnEquip = false
     item.IsBindOnUse = false
-    item.IsArtifactPower = false
     item.IsUnknownAppearance = false
     item.IsToy = false
     item.IsAlreadyKnown = false
