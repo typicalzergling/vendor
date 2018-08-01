@@ -1,7 +1,6 @@
 local PackageName, Package = ...;
 local ENGINE_OBEJCT_TYPE = (PackageName .. "::Engine");
 local g_engineId = 0;
-local NIL_ACCESSOR_VALUE = {};
 
 --[[===========================================================================
     | insertCategory (local)
@@ -236,7 +235,7 @@ local function createAccessors(object)
             if (type(name) == "string") then
                 local valueType = type(value);
                 if ((valueType ~= "table") and (valueType ~= "function")) then
-                    rawset(accessors, name, value or NIL_ACCESSOR_VALUE);
+                    rawset(accessors, name, value);
                 end
             end
         end

@@ -603,6 +603,7 @@ end
 
 function EditRuleDialog:OnHide()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
+    self.editRule:Cleanup();
 end
 
 -- Move this to it's own place (file)
@@ -649,6 +650,19 @@ function EditRule:Setup()
     -- Create our tab-group so we can handle tabbing
     self.tabgroup = CreateTabGroup(self.name, self.description.content,
         self.script.content, self.sellRule, self.keepRule);
+end
+
+function EditRule:Cleanup()
+    self._rulesEngine = nil;
+    if (self.delayTimer) then
+        self.delayTimer:Cancel();
+        self.delayTimer = nil;
+    end
+
+    if (self.scriptTimer) then
+        self.scriptTimer:Cancel();
+        self.scriptTimer = nil;
+    end
 end
 
 -- Called when tab is pressed in one of our sub-controls.

@@ -204,7 +204,7 @@ local function validateRule(rdef)
     if (not validateString(rdef.Script)) then
         return false, string.format("The rule (%s) did not contain a valid 'Script' field", rdef.Id);
     end
-    local result, message = Addon.RuleManager.CreateRuleFunction(rdef.Script);
+    local result, message = loadstring(string.format("return(%s)", rdef.Script));
     if (not result) then
         return false, string.format("The rule (%s) has an invalid 'Script' field [%s]", rdef.Id, message);
     end
