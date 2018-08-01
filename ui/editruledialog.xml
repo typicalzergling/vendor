@@ -306,7 +306,7 @@
 	        <!-- Edit Rule / Define rule ara -->
 			<Frame parentKey="editRule" inherits="Vendor_BlueInset_Template">
 				<Anchors>
-					<Anchor point="TOPLEFT" x="4" y="-20"/>
+					<Anchor point="TOPLEFT" x="4" y="-24"/>
 					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="396" y="4"/>
 				</Anchors>
 
@@ -402,7 +402,7 @@
 				<Size x="1" y="48"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.editRule" relativePoint="TOPRIGHT" x="2" y="0"/>
-					<Anchor point="TOPRIGHT" x="-6" y="-26"/>
+					<Anchor point="TOPRIGHT" x="-6"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
