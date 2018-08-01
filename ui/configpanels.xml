@@ -318,7 +318,7 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>
-            <Frame name="$parent.EnableBuyback" parentKey="enableBuyback" inherits="Vendor.Options.SmallCheckTemplate.WithText">
+            <Frame name="$parent.EnableBuyback" parentKey="enableBuyback" inherits="Vendor.Options.CheckTemplate">
                 <Size x="250" y="54"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="0" y="0"/>

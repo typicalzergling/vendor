@@ -90,6 +90,14 @@ function Addon.RuleFunctions.PlayerLevel()
 end
 
 --*****************************************************************************
+-- Rule function which returns the localized class of the player.
+--*****************************************************************************
+function Addon.RuleFunctions.PlayerClass()
+    local localizedClassName = UnitClass("player")
+    return localizedClassName --This is intentional to avoid passing back extra args
+end
+
+--*****************************************************************************
 -- This function checks if the specified item is a member of an item set.
 --*****************************************************************************
 function Addon.RuleFunctions.IsInEquipmentSet(...)

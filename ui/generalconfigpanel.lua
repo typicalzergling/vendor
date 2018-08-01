@@ -20,13 +20,6 @@ function GeneralPanel.updateSubItems(self)
     else
         self.TooltipRule.State:Enable()
     end
-
-    -- Buyback sub-setting
-    if (not self.AutoSell.State:GetChecked()) then
-        self.enableBuyback.State:Disable();
-    else
-        self.enableBuyback.State:Enable();
-    end
 end
 
 --*****************************************************************************
@@ -71,10 +64,6 @@ function GeneralPanel.Init(self)
     self.AutoSell.Label:SetText(L["OPTIONS_SETTINGNAME_AUTOSELL"]);
     self.enableBuyback.Label:SetText(L.OPTIONS_SETTINGNAME_BUYBACK);
     self.enableBuyback.Text:SetText(L.OPTIONS_SETTINGDESC_BUYBACK);
-    self.AutoSell.OnStateChange =
-        function(checkbox, state)
-           GeneralPanel.updateSubItems(self);
-        end,
 
     self.Tooltip.Text:SetText(L["OPTIONS_SETTINGDESC_TOOLTIP"]);
     self.Tooltip.Label:SetText(L["OPTIONS_SETTINGNAME_TOOLTIP"]);

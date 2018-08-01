@@ -29,3 +29,44 @@ Addon.ScriptReference.ItemProperties =
     IsAlreadyKnown  = { Html = L["HELP_ISALREADYKNOWN_HTML"] },
     IsUsable  = { Html = L["HELP_ISUSABLE_HTML"] },
 }
+
+Addon.ScriptReference.Functions =
+{
+    PlayerLevel = L["HELP_PLAYERLEVEL"],
+    PlayerClass = L["HELP_PLAYERCLASS"],
+    IsAlwaysSellItem = L["HELP_ISALWAYSSELLITEM"],
+    IsNeverSellItem = L["HELP_ISNEVERSELLITEM"],
+
+    ItemQuality =
+    {
+        Args = L["HELP_ITEMQUALITY_ARGS"],
+        Map = Addon.Maps.ItemQuality,
+        Text = L["HELP_ITEMQUALITY_TEXT"],
+    },
+
+    IsFromExpansion =
+    {
+        Args = L["HELP_ITEMISFROMEXPANSION_ARGS"],
+        Text = L["HELP_ITEMISFROMEXPANSION_TEXT"],
+        Map = Addon.Maps.Expansion,
+    },
+
+    ItemType =
+    {
+        Args = L["HELP_ITEMTYPE_ARGS"],
+        Text = L["HELP_ITEMTYPE_TEXT"],
+        Map = Addon.Maps.Quality,
+    },
+
+    IsInEquipmentSet =
+    {
+        Args = L["HELP_ISINEQUIPMENTSET_ARGS"],
+        Html = L["HELP_ISINEQUIPMENTSET_HTML"],
+    },
+    
+    TooltipContains =
+    {
+        Args = L["HELP_TOOLTIPCONTAINS_ARGS"],
+        Html = L["HELP_TOOLTIPCONTAINS_HTML"],
+    },
+}

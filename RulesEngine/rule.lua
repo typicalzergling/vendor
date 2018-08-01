@@ -97,7 +97,7 @@ local function rule_new(id, name, script, params)
     end
 
     -- If this rule has parameters then create a copy of them so that
-    -- we can setup our enviornment when we need to execute the rule.
+    -- we can setup our environment when we need to execute the rule.
     if ((params ~= nil) and (type(params) == "table")) then
         instance.params = {};
         for name, value in pairs(params) do

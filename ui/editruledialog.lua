@@ -72,18 +72,25 @@ end
 -- Move to rulehelp.lua
 Addon.RuleDocumentation =
 {
-    CreateHeader = function(name, item, ext)
+    CreateHeader = function(name, item, ext, isfunc)
         local postfix = "";
         if (ext) then
             postfix = string.format(" %s[Extension]%s", ORANGE_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE);
         end
 
+        local fmt = "<h1>%s%s%s%s%s</h1>"
+        if isfunc then
+           fmt = "<h1>%s%s(%s)%s%s</h1>"
+        end
+
+        local args = ""
         if (type(item) == "table") then
             if (item.Args) then
-                return string.format("<h1>%s%s(%s)%s%s</h1>", BATTLENET_FONT_COLOR_CODE, name, item.Args, FONT_COLOR_CODE_CLOSE, postfix);
+                args = item.Args
             end
         end
-        return string.format("<h1>%s%s()%s%s</h1>", BATTLENET_FONT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, postfix);
+
+        return string.format(fmt, BATTLENET_FONT_COLOR_CODE, name, args, FONT_COLOR_CODE_CLOSE, postfix);
      end,
 
     CreateValues = function(item)
@@ -110,8 +117,8 @@ Addon.RuleDocumentation =
         return "";
     end,
 
-    CreateSingleItem = function(name, item, ext)
-        return  Addon.RuleDocumentation.CreateHeader(name, item, ext) ..
+    CreateSingleItem = function(name, item, ext, isfunc)
+        return  Addon.RuleDocumentation.CreateHeader(name, item, ext, isfunc) ..
                 Addon.RuleDocumentation.CreateContent(item) ..
                 Addon.RuleDocumentation.CreateValues(item);
 
@@ -121,16 +128,16 @@ Addon.RuleDocumentation =
         -- Create our singleton cache
         if (not Addon.RuleDocumentation.__docs) then
             local docs = {};
-            for _, section in pairs(Addon.ScriptReference) do
+            for cat, section in pairs(Addon.ScriptReference) do
                 for name, content in pairs(section) do
-                    docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, content);
+                    docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, content, false, cat == "Functions");
                 end
             end
 
             -- Document extension functons.
             if (Package.Extensions) then
                 for name,help in pairs(Package.Extensions:GetFunctionDocs()) do
-                    docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, help, true);
+                    docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, help, true, true);
                 end
             end
 
@@ -365,7 +372,7 @@ function EditRuleDialog:UpdateItemProperties()
                 ((type(value) ~= "table") and (type(value) ~= "function"))) then
                 local valStr = tostring(value);
                 if (type(value) == "string") then
-                    valString = string.format("\"%s\"", value);
+                    valStr = string.format("\"%s\"", value);
                 else
                     if ((value == nil) or (valStr == "") or (string.len(valStr) == 0)) then
                         valStr = NIL_ITEM_STRING;
