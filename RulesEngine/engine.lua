@@ -130,33 +130,33 @@ local function engine_AddConstants(self, constants)
 end
 
 --[[===========================================================================
-    | validate_Rule (local)
+    | validateRuleDefinition (package)
     |   Given a table which represents a rule definition tis applies all of
     |   constraints to make sure it adheres to what we need.
     =======================================================================--]]
-local function validateRule(rule)
+function Package.validateRuleDefinition(rule, skip)
     -- Valid the ID
     local id = rule.Id;
     if (not id or (type(id) ~= "string") or (string.len(id) == 0)) then
-        error("The rule identifier is invalid", 3);
+        error("The rule identifier is invalid", skip or 3);
     end
 
     -- Valid the name
     local name = rule.Name;
     if (not name or (type(name) ~= "string") or (string.len(name) == 0)) then
-        error("The rule name must be a valid string", 3);
+        error("The rule name must be a valid string", skip or 3);
     end
 
     -- Validate the script.
     local script = rule.Script;
     if (not script) then
-        error("The rule script must be valid.", 2);
+        error("The rule script must be valid.", skip or 3);
     end
 
     if (type(script) == "string") and (string.len(script) == 0) then
-        error("The rule cannot have an empty script", 3);
+        error("The rule cannot have an empty script", skip or 3);
     elseif (type(script) ~= "function" and type(script) ~= "string") then
-        error("The rule script is an unsupported type: " .. type(script), 3);
+        error("The rule script is an unsupported type: " .. type(script), skip or 3);
     end
 
     return true;
@@ -176,7 +176,7 @@ end
     =======================================================================--]]
 function engine_AddRule(self, categoryId, ruleDef, params)
     assert(type(categoryId) == "number", "The category id must be numeric identifier");
-    validateRule(ruleDef);
+    Package.validateRuleDefinition(ruleDef, 3);
     if (params and type(params) ~= "table") then
         error("The rule parameters must be a table, providing the parameters as key-value pairs", 2);
     end
@@ -411,6 +411,27 @@ local function engine_ValidateScript(self, object, script, params)
     return true;
 end
 
+--[[===========================================================================
+    | engine_AddRuleset:
+    |   Adds a ruleset to the given category. The rule set is created empty
+    |   and rules can be added to it. If we fail to create the object
+    |   the returns "nil".
+    =========================================================================]]
+function engine_AddRuleset(self, categoryId, id, name)
+    assert(type(categoryId) == "number", "The category identifier must be numeric.");
+
+    local category = assert(findCategory(self, categoryId), "The specified categoryId (" .. tostring(categoryId) .. ") is invalid, remember to call AddCategory first");
+    local ruleset = Package.CreateRuleset(self, id, name);
+    if (not ruleset) then
+        self.log:Write("Failed to add set '%s' to category=%d", id, categoryId);
+        return nil;
+    end
+
+    category:Add(ruleset);
+    self.log:Write("Added set '%s' [%d]", ruleset:GetId(), categoryId);
+    return ruleset;
+end
+
 -- Define the API we expose
 local engine_API =
 {
@@ -426,6 +447,7 @@ local engine_API =
     ClearRules = engine_ClearRules,
     SetVerbose = engine_SetVerbose,
     ValidateScript = engine_ValidateScript,
+    AddRuleset = engine_AddRuleset,
 };
 
 --[[===========================================================================

@@ -3,7 +3,7 @@ local CATEGORY_OBJECT_TYPE = (PackageName .. "::Category");
 
 --[[===========================================================================
     | category_Find
-    |   Searches this category for a rule which matches the specified id, if 
+    |   Searches this category for a rule which matches the specified id, if
     |   such a rule is found then this returns it, otherwise nil is returned.
     =======================================================================--]]
 local function category_Find(self, id)
@@ -12,14 +12,14 @@ local function category_Find(self, id)
     for _, rule in ipairs(self.rules) do
         if (rule:CheckMatch(id)) then
             return rule
-        end            
+        end
     end
 end
 
 --[[===========================================================================
     | category_Add
     |   Adds the specified rule to the category, if the rule is already in
-    |   the category list then this is noop, it will not add the rule a 
+    |   the category list then this is noop, it will not add the rule a
     |   second time.
     =======================================================================--]]
 local function category_Add(self, rule)
@@ -98,24 +98,25 @@ local category_API =
     GetName = function(self) return self.name end,
     GetId = function(self) return self.id end,
     GetRuleStatus = category_GetRuleStatus,
+    Find = category_Find,
 };
 
 --[[===========================================================================
     | new_Category
-    |   Create a new category with the specified name, the name must be a 
+    |   Create a new category with the specified name, the name must be a
     |   non-empty string.
     =======================================================================--]]
 local function new_Category(id, name)
     assert(type(name) == "string" and (string.len(name) ~= 0), "The category name must be a valid string");
     assert(id and type(id) == "number", "The category id must be provided and be non-empty");
 
-    local instance = 
-    { 
+    local instance =
+    {
         name = name,
         id = id,
         rules = {},
     };
-    
+
     return Package.CreateObject(CATEGORY_OBJECT_TYPE, instance, category_API);
 end
 
