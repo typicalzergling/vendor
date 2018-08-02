@@ -48,7 +48,6 @@
 
 local Addon, L, Config = _G[select(1,...).."_GET"]()
 local Package = select(2, ...);
-local AddonName = select(1, ...);
 
 local Extensions =
 {
@@ -236,10 +235,6 @@ local function validateExtension(extension)
 
     if (not validateIdentifier(extension.Source)) then
         return false, string.format("The extension 'Source' field was invalid. (%s)",extension.Addon);
-    end
-
-    if (string.lower(extension.Source) == string.lower(AddonName)) then
-        return false, string.format("The extension 'Source' field was invalid. (%s)", extension.Addon);
     end
 
     local version = GetAddOnMetadata(extension.Addon, "Version");
