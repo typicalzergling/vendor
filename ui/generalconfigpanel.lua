@@ -30,6 +30,15 @@ function GeneralPanel.OnOpenRules()
     VendorRulesDialog:Toggle()
 end
 
+
+--*****************************************************************************
+-- Called to handle a click on the Open Keybindings button
+--*****************************************************************************
+function GeneralPanel.OpenBindings()
+    Addon:Debug("Showing key bindings")
+    Addon:OpenKeybindings_Cmd()
+end
+
 --*****************************************************************************
 -- Called to push the settings from our page into the addon
 --*****************************************************************************
