@@ -256,7 +256,7 @@ local function createRestrictedEnvironment(readOnly, ...)
             __newindex =
                 function(self, key, value)
                     if (readOnly) then
-                        error("The environment is read-only and cannot be changed", 2);
+                        error("The environment is read-only and cannot be changed", 3);
                     end
                     rawset(self, key, value);
                 end,
@@ -274,7 +274,7 @@ local function createRestrictedEnvironment(readOnly, ...)
                     end
 
                     if (readOnly) then
-                        error(string.format("Identifier '%s' was not found", key, 2));
+                        error(string.format("No function or variable named \"%s\" was not found", key), 3);
                     end
                 end
         })
@@ -403,6 +403,7 @@ local function engine_ValidateScript(self, object, script, params)
     local renv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
     assignFunctionEnv(self.environment, createRestrictedEnvironment(false, accessors, { OBJECT = object }, _G));
     local status, _, message = rule:Execute(renv);
+
     if (not status) then
         return false, message;
     end
