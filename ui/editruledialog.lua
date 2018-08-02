@@ -546,6 +546,12 @@ function EditRuleDialog:SetInfoContent(id)
     end
 end
 
+-- Verifies we've got a cached rules engine
+function EditRuleDialog:EnsureRulesEngine()
+    if (not self.rulesEngine) then
+        self.rulesEngine = Addon:CreateRulesEngine(false);
+    end
+end
 
 --*****************************************************************************
 -- Create a new rule (Generates a unique new id for it) and then opens the
@@ -561,6 +567,7 @@ end
 --*****************************************************************************
 function EditRuleDialog:EditRule(ruleDef, readOnly, infoPanelId)
     -- Save the parameters we need.
+    self:EnsureRulesEngine();
     self.ruleDef = ruleDef;
     self.readOnly = readOnly or false;
 
@@ -604,7 +611,7 @@ end
 
 function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-    self.rulesEngine = Addon:CreateRulesEngine(false);
+    self:EnsureRulesEngine();
 end
 
 function EditRuleDialog:OnHide()

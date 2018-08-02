@@ -55,6 +55,22 @@ local function engine_CreateCategory(self, categoryId, categoryName)
 end
 
 --[[===========================================================================
+    | engine_RemoveCategory:
+    |   This removes the specified category if it already exists in the
+    |   engine, removing an non-existing category is a no-op.
+    =========================================================================]]
+local function engine_RemoveCategory(self, categoryId)
+    assert(tonumber(categoryId), "Category IDs must be numeric");
+
+    for i, category in ipairs(self.categories) do
+        if (category:GetId() == categoryId) then
+            self.log:Write("Removing category(%d, %s)", category:GetId(), category:GetName());
+            table.remove(self.categories, i);
+        end
+    end
+end
+
+--[[===========================================================================
     | engine_ImportGlobals
     |   This imports globals which should be exposed to the rule scripts, this
     |   is addative and can be called more than once, but a good selection is
@@ -442,6 +458,7 @@ local engine_API =
     AddFunctions = engine_AddFunctions,
     AddConstants = engine_AddConstants,
     CreateCategory = engine_CreateCategory,
+    RemoveCategory = engine_RemoveCategory,
     GetId = function(self) return self.id end,
     GetRuleStatus = engine_GetRuleStatus,
     ClearRules = engine_ClearRules,

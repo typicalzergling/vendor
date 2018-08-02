@@ -48,7 +48,10 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
     local rulesEngine = engine or self:CreateRulesEngine();
     local results = {};
 
+    -- Make sure we've got a category
+    rulesEngine:RemoveCategory(1);
     rulesEngine:CreateCategory(1, "<test>");
+
     local result, message = rulesEngine:AddRule(1, { Id = ruleId, Name = ruleId, Script = ruleScript }, parameters);
     if (result) then
         withEachBagAndItem(
