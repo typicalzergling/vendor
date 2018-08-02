@@ -1,5 +1,6 @@
 -- Pawn Extension for Vendor
 -- This also doubles as a sample for how to create a Vendor extension with both functions for evaluating, and for adding rules.
+local AddonName = select(1, ...);
 
 
 -- Function definition for the Pawn upgrade query.
@@ -26,32 +27,41 @@ local function registerPawnExtension()
         -- Vendor will check this source is loaded prior to registration.
         -- It will also be displayed in the Vendor UI.
         Source = "Pawn",
-       
+        Addon = AddonName,
+
         -- These are the set of functions that are being added that all Vendor rules can use.
         -- Players will have access to these functions for their own custom rules.
         -- Function names cannot overwrite built-in Vendor functions.
-        Functions = 
-        {
-            IsPawnUpgrade=isPawnUpgrade,
-        },
-
         -- This is what appears in the "Help" page for View/Edit rule for your functions that are
         -- added. You must add documentation for each function you add.
-        Documentation = 
+        -- The actual name of the function will be prefixed by the Source.
+        -- For example, this function will be called "Pawn_IsUpgrade()"
+        Functions =
         {
-            IsPawnUpgrade = "Checks if the item is an upgraded according to Pawn.",
+            {
+                Name="IsUpgrade",
+                Function=isPawnUpgrade,
+                Help="Checks if the item is an upgrade according to Pawn.",
+            },
         },
 
-        -- Rule IDs must be unique, and they are not allowed to overwrite built-in Vendor rules.
-        -- It is recommended to put the extending addon name in the rule ID as we have below.
+        -- Rule IDs must be unique. The "Source" will be prefixed to the id.
         Rules =
         {
             {
-                Id = "pawn.isupgrade",
+                Id = "isupgrade",
                 Type = "Keep",
                 Name = "Pawn Upgrades",
                 Description = "Any equipment items that the Pawn addon considers an upgrade.",
-                Script = "IsEquipment and IsPawnUpgrade()",
+                Script = "IsEquipment and Pawn_IsUpgrade()",
+                Order = 1000,
+            },
+            {
+                Id = "isnotupgrade",
+                Type = "Sell",
+                Name = "Not Pawn Upgrades",
+                Description = "Any equipment items that are not considered upgrades by the Pawn addon.",
+                Script = "IsEquipment and not Pawn_IsUpgrade()",
                 Order = 1000,
             },
         },
@@ -61,7 +71,9 @@ local function registerPawnExtension()
     -- For safety, you should make sure both Vendor and the RegisterExtension method exist before
     -- calling, as done below. If not a clean LUA error will be thrown that can be reported back to players.
     assert(Vendor and Vendor.RegisterExtension, "Vendor RegisterExtension not found, cannot register extension: "..tostring(pawnExtension.Source))
-    Vendor:RegisterExtension(pawnExtension)
+    if (not Vendor:RegisterExtension(pawnExtension)) then
+        -- something went wrong
+    end
 end
 
 -- The only function call this addon does.

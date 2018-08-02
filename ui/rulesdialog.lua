@@ -48,7 +48,7 @@ function RulesDialog:OnOk()
         self.SellPanel.list:UpdateConfig();
         self.KeepPanel.list:UpdateConfig();
     Config:EndBatch()
-    HideParentPanel(self.Container)
+    --HideParentPanel(self.Container)
 end
 
 function RulesDialog:Toggle()

@@ -30,7 +30,7 @@
 	    </Layers>
     </Button>
 
-    <Frame name="Vendor_List_Container" virtual="true"> <!-- Interface\Tooltips\UI-Tooltip-Background -->
+    <Frame name="Vendor_List_Container" virtual="true">
         <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" >
             <EdgeSize><AbsValue val="16"/></EdgeSize>
             <TileSize><AbsValue val="16"/></TileSize>
@@ -65,52 +65,41 @@
         </Anchors>
         <Frames>
             <!-- Buttons, Okay, Cancel, New Rule, Defaults -->
-            <Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+            <Button parentKey="closeButton" inherits="MagicButtonTemplate" text="CLOSE">
                 <Size>
-                    <AbsDimension x="96" y="22"/>
+                    <AbsDimension x="132" y="22"/>
                 </Size>
                 <Anchors>
-                    <Anchor point="BOTTOMRIGHT" x="-22" y="16"/>
+                    <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
                 </Anchors>
                 <Scripts>
                     <OnClick function="PortraitFrameCloseButton_OnClick"/>
                 </Scripts>
             </Button>
-            <Button name="$parentOkay" inherits="UIPanelButtonTemplate" text="OKAY">
+            <Button parentKey="createNewRule" inherits="MagicButtonTemplate" text="CREATE">
                 <Size>
-                    <AbsDimension x="96" y="22"/>
+                    <AbsDimension x="132" y="22"/>
                 </Size>
                 <Anchors>
-                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
-                </Anchors>
-                <Scripts>
-                    <OnClick>self:GetParent():OnOk(VendorRulesDialog)</OnClick>
-                </Scripts>
-            </Button>
-            <Button name="$parentNewRule" parentKey="createNewRule" inherits="UIPanelButtonTemplate" text="CREATE" hidden="true">
-                <Size>
-                    <AbsDimension x="96" y="22"/>
-                </Size>
-                <Anchors>
-                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentOkay" relativePoint="BOTTOMLEFT"/>
+                    <Anchor point="RIGHT" relativeKey="$parent.closeButton" relativePoint="LEFT"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>VendorEditRuleDialog:CreateRule()</OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentDefaults" inherits="UIPanelButtonTemplate" text="DEFAULTS">
-                <Size x="96" y="22"/>
+            <Button parentKey="defaults" inherits="MagicButtonTemplate" text="DEFAULTS">
+                <Size x="132" y="22"/>
                 <Anchors>
-                    <Anchor point="BOTTOMLEFT" x="22" y="16"/>
+                    <Anchor point="BOTTOMLEFT" x="10" y="10"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>self:GetParent():SetDefaults()</OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentSettings" inherits="UIPanelButtonTemplate" text="SETTINGS">
-                <Size x="96" y="22"/>
+            <Button inherits="MagicButtonTemplate" text="SETTINGS">
+                <Size x="132" y="22"/>
                 <Anchors>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="BOTTOMRIGHT"/>
+                    <Anchor point="LEFT" relativeKey="$parent.defaults" relativePoint="RIGHT"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>Vendor.OpenSettings_Cmd()</OnClick>
@@ -121,7 +110,7 @@
             <Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="1">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
                 <Layers>
@@ -157,7 +146,7 @@
             <Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="2">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
                 <Layers>
@@ -193,7 +182,7 @@
             <Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="3">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
                 <Layers>
@@ -220,17 +209,13 @@
 	                    </Anchors>
                     </ScrollFrame>
                 </Frames>
-                <Scripts>
-                    <OnShow>self:GetParent().createNewRule:Show();</OnShow>
-                    <OnHide>self:GetParent().createNewRule:Hide();</OnHide>
-                </Scripts>
             </Frame>
 
             <!-- Panels are sized to this frame when shown -->
             <Frame name="$parentContainer" parentKey="Container">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentDefaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
                 <Layers>
@@ -368,9 +353,9 @@
             </Button>
         </Frames>
         <Scripts>
-            <OnLoad>self:RegisterForDrag("LeftButton"); Vendor.RulesDialog.OnLoad(self)</OnLoad>
+            <OnLoad>table.insert(UISpecialFrames, self:GetName());self:RegisterForDrag("LeftButton");Vendor.RulesDialog.OnLoad(self)</OnLoad>
             <OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);self:OnShow()</OnShow>
-            <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)</OnHide>
+            <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);self:OnOk()</OnHide>
             <OnDragStart>self:StartMoving()</OnDragStart>
             <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
         </Scripts>

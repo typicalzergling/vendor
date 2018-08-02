@@ -22,10 +22,10 @@ local function rule_Execute(self, environment)
         if status then
             self.healthy = true;
             return true, result, nil;
-        elseif not status then
+        else
             self.healthy = false;
             self.error = result;
-            return false, nil, result;
+            return false, false, result;
         end
     end
 
@@ -87,25 +87,23 @@ local function rule_new(id, name, script, params)
     if (type(script) == "function") then
         instance.script = script;
     else
-        local script, _,  msg = loadstring(string.format("return (%s)", script))
+        local script, msg = loadstring(string.format("return (%s)", script))
         if (not script) then
-            instance.error = msg;
-            instance.healthy = false;
-            return nil, msg;
+            return nil, msg:gsub("%[string.*:%d+:%s*", "");
         else
             instance.script = script
         end
     end
 
     -- If this rule has parameters then create a copy of them so that
-    -- we can setup our enviornment when we need to execute the rule.
+    -- we can setup our environment when we need to execute the rule.
     if ((params ~= nil) and (type(params) == "table")) then
         instance.params = {};
         for name, value in pairs(params) do
             rawset(instance.params, string.upper(name), value);
         end
     end
-    
+
     -- Initialize the objects metatable
     return Package.CreateObject(RULE_OBJECT_NAME, instance, rule_API), nil;
 end

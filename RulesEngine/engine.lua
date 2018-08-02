@@ -13,7 +13,7 @@ local function insertCategory(self, category)
 
     while (categories[index] and categories[index]:GetId() < category:GetId()) do
         index = (index + 1);
-    end    
+    end
     table.insert(categories, index, category);
     return index;
 end
@@ -26,13 +26,22 @@ local function findCategory(self, categoryId)
     for _, category in ipairs(self.categories) do
         if (category:GetId() == categoryId) then
             return category;
-        end            
+        end
+    end
+end
+
+-- Given a table of possible functions this assigns the given environment to each function.
+local function assignFunctionEnv(functions, env)
+    for _, v in pairs(functions) do
+        if (type(v) == "function") then
+            setfenv(v, env);
+        end;
     end
 end
 
 --[[===========================================================================
-    | eninge_CreateCategory
-    |   Creates a new category in the engine with the specified ID, if the 
+    | engine_CreateCategory
+    |   Creates a new category in the engine with the specified ID, if the
     |   category alreay exists this raises an error.
     =======================================================================--]]
 local function engine_CreateCategory(self, categoryId, categoryName)
@@ -47,8 +56,8 @@ end
 
 --[[===========================================================================
     | engine_ImportGlobals
-    |   This imports globals which should be exposed to the rule scripts, this 
-    |   is addative and can be called more than once, but a good selection is 
+    |   This imports globals which should be exposed to the rule scripts, this
+    |   is addative and can be called more than once, but a good selection is
     |   already handles in the constructor.
     =======================================================================--]]
 local function engine_ImportGlobals(self, ...)
@@ -65,7 +74,7 @@ end
 
 --[[===========================================================================
     | engine_AddFunction
-    |   Adds a function to environment which is presented to the rule scripts. 
+    |   Adds a function to environment which is presented to the rule scripts.
     =======================================================================--]]
 local function engine_AddFunction(self, functionName, targetFunction)
     assert(type(functionName) == "string", "function name must be a string")
@@ -115,7 +124,7 @@ local function engine_AddConstants(self, constants)
     for name, value in pairs(constants) do
         if (type(value) ~= "function") and (type(value) ~= "table") then
             engine_AddConstant(self, name, value)
-        end            
+        end
     end
     self.log:EndBlock();
 end
@@ -130,7 +139,7 @@ local function validateRule(rule)
     local id = rule.Id;
     if (not id or (type(id) ~= "string") or (string.len(id) == 0)) then
         error("The rule identifier is invalid", 3);
-    end 
+    end
 
     -- Valid the name
     local name = rule.Name;
@@ -155,23 +164,23 @@ end
 
 --[[===========================================================================
     | engine_AddRule
-    |   Adds creates and adds a rule with the specified definition to the 
+    |   Adds creates and adds a rule with the specified definition to the
     |   given category.  The definition must have at least the following
     |   properties:
     |       Id - The unique rule ID for the sepcified rule.
     |       Name - The name of the rule (used for debuging/returns
     |       Script - A string of lua, or function which represents the rule
     |
-    |   In addtion, you can pass a table of parameters available to the 
-    |   rule when it's evaluated. 
+    |   In addtion, you can pass a table of parameters available to the
+    |   rule when it's evaluated.
     =======================================================================--]]
 function engine_AddRule(self, categoryId, ruleDef, params)
     assert(type(categoryId) == "number", "The category id must be numeric identifier");
     validateRule(ruleDef);
-    if (params and type(params) ~= "table") then 
+    if (params and type(params) ~= "table") then
         error("The rule parameters must be a table, providing the parameters as key-value pairs", 2);
     end
-    
+
     local category = assert(findCategory(self, categoryId), "The specified categoryId (" .. tostring(categoryId) .. ") is invalid, remember to call AddCategory first");
     local rule, message = Package.CreateRule(ruleDef.Id, ruleDef.Name, ruleDef.Script, params);
     if (not rule) then
@@ -209,7 +218,7 @@ local function evaluateRules(self, log, categories, ruleEnv, ...)
             result = true;
             break;
         end
-    end        
+    end
 
     return result, rule, category, rulesRun;
 end
@@ -227,31 +236,31 @@ local function createAccessors(object)
                 local valueType = type(value);
                 if ((valueType ~= "table") and (valueType ~= "function")) then
                     rawset(accessors, name, value);
-                end                
-            end                
+                end
+            end
         end
-    end        
+    end
     return accessors;
 end
 
 --[[===========================================================================
     | createRestrictedEnvironment (local)
     |    Builds a table which handles combining the contents of the N tables,
-    |   for example, overriding a global function, the are searched in the 
+    |   for example, overriding a global function, the are searched in the
     |   order they are specified to this function.
     =======================================================================--]]
 local function createRestrictedEnvironment(readOnly, ...)
     local envs = { ... };
-    return setmetatable({}, 
-        { 
-            __newindex = 
+    return setmetatable({},
+        {
+            __newindex =
                 function(self, key, value)
                     if (readOnly) then
-                        error("The environment is read-only and cannot be changed", 2);
+                        error("The environment is read-only and cannot be changed", 3);
                     end
                     rawset(self, key, value);
                 end,
-            __index = 
+            __index =
                 function(self, key)
                     local v = rawget(self, key);
                     if (v ~= nil) then
@@ -263,17 +272,21 @@ local function createRestrictedEnvironment(readOnly, ...)
                             return v;
                         end
                     end
+
+                    if (readOnly) then
+                        error(string.format("No function or variable named \"%s\" was not found", key), 3);
+                    end
                 end
         })
-        
+
 end
 
 
 --[[===========================================================================
     | engine_Evaluate
-    |   Evaluates all of then rules (or a specific rule) and returns true of 
+    |   Evaluates all of then rules (or a specific rule) and returns true of
     |   and the name of the that matches it.
-    |   
+    |
     |   ... is optional, if provided it will only run that rule.
     |   returns:
     |   result (true or false)
@@ -287,19 +300,14 @@ local function engine_Evaluate(self, object, ...)
     -- Create a table of functions that allow you to access the the provided object
     local accessors = createAccessors(object);
 
-    -- Create the environment we want to run the rules against.  Then update the environment of 
+    -- Create the environment we want to run the rules against.  Then update the environment of
     -- all the functions we've got in our local environment
     --   Rules - Can see in this order, Our environment, the object accessors, and imported globals.
     --   Function -- Can see in this order, the object accessors and the globals
     local ruleEnv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
-    local functionEnv = createRestrictedEnvironment(false, accessors, { OBJECT = object },  _G);
-    for _, value in pairs(self.environment) do
-        if (type(value) == "function") then
-            setfenv(value, functionEnv);
-        end
-    end        
+    assignFunctionEnv(self.environment, createRestrictedEnvironment(false, accessors, { OBJECT = object },  _G));
 
-    -- Iterate over all of our lists and determine what the action is based of the 
+    -- Iterate over all of our lists and determine what the action is based of the
     -- the value of the rules.  The first rule which returns something other than no-action
     -- stops the execution of the rules.
     local matchedRuleId = "<none>";
@@ -331,7 +339,7 @@ local function engine_CreateRuleId(self, categoryId, uniqueName)
 
     local category = assert(findCategory(self, categoryId), "The categoryID '" .. tostring(categoryId) .. "' is invalid");
     return string.format("%d.%s", tostring(categoryId), uniqueName);
-end    
+end
 
 --[[===========================================================================
     | engine_GetRuleStatus
@@ -341,14 +349,14 @@ end
 local function engine_GetRuleStatus(self, ...)
     local status = {}
     for _, category in ipairs(self.categories) do
-        category:GetRuleStatus(status, ...);    
+        category:GetRuleStatus(status, ...);
     end
     return status;
 end
 
 --[[===========================================================================
     | engine_CLearRules
-    |   Removes all rules from the engine, preserves the environment and 
+    |   Removes all rules from the engine, preserves the environment and
     |   the status.
     =======================================================================--]]
 local function engine_ClearRules(self)
@@ -365,6 +373,44 @@ local function engine_SetVerbose(self, verbose)
     self.log = Package.CreateLog(self.id, verbose);
 end
 
+--[[===========================================================================
+    | engine_ValidateScript:
+    |   Given script text and an object this will validate the script against
+    |   the current environment.
+    |
+    |   Step 1:
+    |       Make a rule from the specified script/parameters.
+    |
+    |   Step 2:
+    |       Evaluate the rule against the sample object.
+    |
+    |   Returns true if validation succeeds, or false and an error message
+    |   we are unable to validate the script.
+    =======================================================================--]]
+local function engine_ValidateScript(self, object, script, params)
+    assert(object and (type(object) == "table"), "A valid object must be provided to evaluate against.");
+    assert(script and (type(script) == "string") and (string.len(script) ~= 0), "A valid script must be provided to validate.");
+
+    -- Step 1 - Create the rule
+    local id =  string.format("vr_%s", time());
+    local rule, message = Package.CreateRule(id, id, script, params);
+    if (not rule) then
+        return false, message;
+    end
+
+    -- Step 2 - Evaluate it against the test object
+    local accessors = createAccessors(object);
+    local renv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
+    assignFunctionEnv(self.environment, createRestrictedEnvironment(false, accessors, { OBJECT = object }, _G));
+    local status, _, message = rule:Execute(renv);
+
+    if (not status) then
+        return false, message;
+    end
+
+    return true;
+end
+
 -- Define the API we expose
 local engine_API =
 {
@@ -379,17 +425,18 @@ local engine_API =
     GetRuleStatus = engine_GetRuleStatus,
     ClearRules = engine_ClearRules,
     SetVerbose = engine_SetVerbose,
+    ValidateScript = engine_ValidateScript,
 };
 
 --[[===========================================================================
     | new_Engine
-    |   Creates and initializes a new rule engine object, Optionally a 
+    |   Creates and initializes a new rule engine object, Optionally a
     |   table of functions and constants can be passed.
     =======================================================================--]]
 local function new_Engine(environment, verbose)
     g_engineId = (g_engineId + 1);
 
-    local instance = 
+    local instance =
     {
         id = g_engineId,
         categories = {},
@@ -398,22 +445,22 @@ local function new_Engine(environment, verbose)
         log = Package.CreateLog(g_engineId, verbose);
         OnRuleStatusChange = Package.CreateEvent("OnRuleStatusChange"),
     }
-   
+
     instance.log:StartBlock("Start create [%04d]", instance.id);
     -- If the caller gave us functions which should be available then
     -- important them into our environment along with certain globals
-    engine_ImportGlobals(instance, "string", "math", "tonumber", "tostring")
+    engine_ImportGlobals(instance, "string", "math", "table", "tonumber", "tostring")
     if (environment and (type(environment) == "table")) then
         for name, value in pairs(environment) do
             if (type(value) == "function") then
                 engine_AddFunction(instance, name, value);
             elseif (type(value) ~= "table") then
                 engine_AddConstant(instance, name, value);
-            end                
+            end
         end
     end
     instance.log:EndBlock();
-   
+
     return Package.CreateObject(ENGINE_OBEJCT_TYPE, instance, engine_API);
 end
 

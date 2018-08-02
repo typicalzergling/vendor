@@ -1,6 +1,6 @@
 local Addon, L = _G[select(1,...).."_GET"]()
 
--- Gets information about an item 
+-- Gets information about an item
 -- Here is the list of captured item properties.
 --     Name
 --     Link
@@ -19,7 +19,7 @@ local Addon, L = _G[select(1,...).."_GET"]()
 --     NetValue
 --     ExpansionPackId   6=Legion, everything else appears to be 0, including some legion things (Dalaran Hearthstone)
 
--- Boolean Properties that may be nil if false (more efficient). 
+-- Boolean Properties that may be nil if false (more efficient).
 --     IsEquipment
 --     IsSoulbound
 --     IsBindOnEquip
@@ -70,7 +70,7 @@ function Addon:GetItemProperties(arg1, arg2)
             _, item.Link = tooltip:GetItem()
         end
         item.Count = 1
-        
+
     -- Bag and Slot passed in
     elseif type(arg1) == "number" and type(arg2) == "number" then
         bag = arg1
@@ -81,24 +81,23 @@ function Addon:GetItemProperties(arg1, arg2)
         self:Debug("Invalid arguments to GetItemProperties")
         return nil
     end
-    
+
     -- No name or quantity means there is no item in that slot. Nil denotes no item.
     if not item.Link then return nil end
 
     -- Get more id and cache GetItemInfo, because we aren't bad.
     local getItemInfo = {GetItemInfo(item.Link)}
-    
+
     -- Safeguard to make sure GetItemInfo returned something. If not bail.
     -- This will happen if we get this far with a Keystone, because Keystones aren't items. Go figure.
     if #getItemInfo == 0 then return nil end
-    
+
     -- Initialize properties to boolean false for easier rule ingestion.
     item.IsUsable = false
     item.IsEquipment = false
     item.IsSoulbound = false
     item.IsBindOnEquip = false
     item.IsBindOnUse = false
-    item.IsArtifactPower = false
     item.IsUnknownAppearance = false
     item.IsToy = false
     item.IsAlreadyKnown = false
@@ -125,7 +124,7 @@ function Addon:GetItemProperties(arg1, arg2)
 
     -- Check for usability
     item.IsUsable = IsUsableItem(item.Id)
-    
+
     -- Save string compares later.
     item.IsEquipment = item.EquipLoc ~= "" and item.EquipLoc ~= "INVTYPE_BAG"
 
@@ -179,7 +178,7 @@ function Addon:GetItemProperties(arg1, arg2)
             item.IsAlreadyKnown = true
         end
     end
-    
+
     -- Import the tooltip text as item properties for custom rules.
     item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
     item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
@@ -195,6 +194,10 @@ end
 -- Link is optional, will be gotten from the tooltip if not provided.
 function Addon:GetItemPropertiesFromTooltip(tooltip, link)
     return self:GetItemProperties(tooltip, link)
+end
+
+function Addon:GetItemPropertiesFromLink(link)
+    return self:GetItemProperties(GameTooltip, link);
 end
 
 -- Item Helpers

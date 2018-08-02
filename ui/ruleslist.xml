@@ -86,6 +86,12 @@
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="background" setAllPoints="true" hidden="true"/>
+                <Texture parentKey="custom" hidden="true" file="Interface\Worldmap\Gear_64Grey" alpha="0.40">
+                    <Size x="54" y="54"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="10"/>
+                    </Anchors>
+                </Texture>
 				<Texture parentKey="unhealthy" hidden="true" file="Interface\RAIDFRAME\ReadyCheck-NotReady" alpha="0.6">
 					<Size x="54" y="54"/>
 					<Anchors>

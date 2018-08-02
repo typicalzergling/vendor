@@ -1,4 +1,5 @@
 local Addon, L = _G[select(1,...).."_GET"]()
+local Package = select(2, ...);
 
 -- Evaluating items for selling.
 
@@ -19,34 +20,45 @@ function Addon:EvaluateItemForSelling(item)
     return self.ruleManager:Run(item)
 end
 
--- Evaluate the given parameters against all the items your bag, this used to show matches in the 
--- edit rule dialog. The return value is a table with all the links in.  This bypasses the rule
--- manager since we know exactly what we're evaluating. 
-function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
-    Addon:DebugRules("Evaluating '%s' against bags (no-cache)", ruleId);
-    local rulesEngine = CreateRulesEngine(Addon.RuleFunctions, false);
-    local results = {};
-
-    -- Add any extension functions to the instance.
-    local exts = Addon.Rules.GetExtensionFunctions();
-    if (exts) then
-        rulesEngine:AddFunctions(exts);
-    end        
-
-    rulesEngine:CreateCategory(1, "<text>");
-    local result, message = rulesEngine:AddRule(1, { Id = ruleId, Name = ruleId, Script = ruleScript }, parameters);
-    if (result) then
-        for bag=0,NUM_BAG_SLOTS do
-            for slot=1, GetContainerNumSlots(bag) do
-                local item = Addon:GetItemPropertiesFromBag(bag, slot);
-                if (item) then
-                    local result = rulesEngine:Evaluate(item);
-                    if (result) then
-                        table.insert(results, item.Link);
-                    end
-                end                
+-- Simple helper function which handles enumerating bags and running the function.
+local function withEachBagAndItem(func)
+    assert(type(func) == "function");
+    for bag=0,NUM_BAG_SLOTS do
+        for slot=1, GetContainerNumSlots(bag) do
+            local item = Addon:GetItemPropertiesFromBag(bag, slot);
+            if (item) then
+                if not func(item) then
+                    return false;
+                end
             end
         end
+    end
+    return true;
+end
+
+--[[===========================================================================
+    | GetMatchesForRule:
+    |   Evaluate the given parameters against all the items your bag, this used
+    |   to show matches in the edit rule dialog. The return value is a table with
+    |   all the links in.  This bypasses the rule manager since we know exactly
+    |   what we're evaluating.
+    =============================================================================]]
+function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
+    Addon:DebugRules("Evaluating '%s' against bags (no-cache)", ruleId);
+    local rulesEngine = engine or self:CreateRulesEngine();
+    local results = {};
+
+    rulesEngine:CreateCategory(1, "<test>");
+    local result, message = rulesEngine:AddRule(1, { Id = ruleId, Name = ruleId, Script = ruleScript }, parameters);
+    if (result) then
+        withEachBagAndItem(
+            function(item)
+                local result = rulesEngine:Evaluate(item);
+                if (result) then
+                    table.insert(results, item.Link);
+                end
+                return true;
+           end);
     else
         Addon:DebugRules("The rule '%s' failed to parse: %s", ruleId, message);
     end
@@ -55,7 +67,27 @@ function Addon:GetMatchesForRule(ruleId, ruleScript, parameters)
     return results;
 end
 
--- Retrieves the status of the secified rule
+--[[===========================================================================
+    | ValidateRuleAgainstBags:
+    |   Use the players bags to validate the rule, this hopefully catches anything
+    |   wrong with rule.  I am assuming that they want to match an item contained
+    |   inside of their bags.
+    ===========================================================================--]]
+function Addon:ValidateRuleAgainstBags(engine, script)
+    Addon:Debug("Validating script against bags (no-cache)");
+    local rulesEngine = engine or self:CreateRulesEngine();
+    local message = "";
+    local valid = withEachBagAndItem(
+        function(item)
+            local r, m = engine:ValidateScript(item, script);
+            if (not r) then message = m end;
+            return r;
+        end);
+
+    return valid, message;
+end
+
+-- Retrieves the status of the provided rule
 function Addon:GetRuleStatus(ruleId)
     if (not self.ruleManager or not self.ruleManager.rulesEngine) then
         return nil;
@@ -64,5 +96,5 @@ function Addon:GetRuleStatus(ruleId)
     local status = self.ruleManager.rulesEngine:GetRuleStatus(ruleId);
     if (status and (#status == 1)) then
         return unpack(status[1]);
-    end        
+    end
 end
