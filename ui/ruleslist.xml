@@ -183,12 +183,8 @@
 		<Scripts>
 			<OnLoad>self:RegisterForClicks("LeftButtonUp","RightButtonUp");</OnLoad>
             <OnClick>self:OnClick(button)</OnClick>
-            <OnDoubleClick>
-				local model = self:GetModel();
-				if (model and model.Custom) then
-					VendorEditRuleDialog:EditRule(model, false);
-				end
-            </OnDoubleClick>
+            <OnEnter>self:OnMouseEnter()</OnEnter>
+            <OnLeave>self:OnMouseLeave()</OnLeave>
 		</Scripts>
 	</Button>
 </Ui>

@@ -284,4 +284,30 @@ function RuleItem:OnClick(button)
     end
 end
 
+--[[============================================================================
+    | RuleItem:OnMouseEnter:
+    |   Called when the user mouses over the item if our item text is truncated
+    |   then we will show a tooltip for the item.
+    ==========================================================================]]
+function RuleItem:OnMouseEnter()
+    if (self.text:IsTruncated()) then
+        local nameColor = { self.name:GetTextColor() };
+        local textColor = { self.text:GetTextColor() };
+        GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
+        GameTooltip:AddLine(self.name:GetText(), unpack(nameColor));
+        GameTooltip:AddLine(self.text:GetText(), unpack(textColor));
+        GameTooltip:Show();
+    end
+end
+
+--[[============================================================================
+    | RuleItem:OnMouseLeave:
+    |   Called when the user mouses off the item
+    ==========================================================================]]
+function RuleItem:OnMouseLeave()
+    if (GameTooltip:GetOwner() == self) then
+        GameTooltip:Hide();
+    end
+end
+
 Package.RuleItem = RuleItem;
