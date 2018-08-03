@@ -597,7 +597,7 @@
 
         </Frames>
         <Scripts>
-            <OnLoad>self:RegisterForDrag("LeftButton");Vendor.EditRuleDialog.OnLoad(self)</OnLoad>
+            <OnLoad>table.insert(UISpecialFrames, self:GetName());self:RegisterForDrag("LeftButton");Vendor.EditRuleDialog.OnLoad(self)</OnLoad>
 			<OnShow>self:OnShow();</OnShow>
             <OnHide>self:OnHide();</OnHide>
             <OnDragStart>self:StartMoving()</OnDragStart>

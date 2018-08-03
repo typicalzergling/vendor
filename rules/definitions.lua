@@ -12,6 +12,16 @@ local addon_Definitions = {};
 Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
 Rules.OnFunctionsChanged = Addon.CreateEvent("Rules.OnFunctionsChanged");
 
+-- Param definition for our rules which use ITEMLEVEL
+local ITEM_LEVEL_PARAMS =
+{
+    {
+        Type="numeric",
+        Name=L["RULEUI_LABEL_ITEMLEVEL"],
+        Key="ITEMLEVEL",
+    },
+};
+
 Rules.SystemRules =
 {
     --*****************************************************************************
@@ -74,7 +84,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = { ITEMLEVEL=true },
+        Params = ITEM_LEVEL_PARAMS,
         Order = 1400,
     },
 
@@ -87,7 +97,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment and (Quality == RARE) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = { ITEMLEVEL=true },
+        Params = ITEM_LEVEL_PARAMS,
         Order = 1500,
     },
 
@@ -100,7 +110,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = { ITEMLEVEL=true },
+        Params = ITEM_LEVEL_PARAMS,
         Order = 1600,
     },
 
