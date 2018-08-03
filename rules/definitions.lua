@@ -187,7 +187,7 @@ Rules.SystemRules =
         Name = L["SYSRULE_KEEP_COMMON"],
         Description = L["SYSRULE_KEEP_COMMON_DESC"],
         ScriptText = "Quality == 1",
-        Script = function() return (Quality == 0) end,
+        Script = function() return (Quality == 1) end,
         Order = 1300,
     },
 
