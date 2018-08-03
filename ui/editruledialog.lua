@@ -418,7 +418,7 @@ function EditRuleDialog:UpdateMatches()
             params = findRuleParams(ruleDef);
         end
 
-        local matches = Addon:GetMatchesForRule(ruleDef.Id, script, params);
+        local matches = Addon:GetMatchesForRule(self.rulesEngine, ruleDef.Id, script, params);
         if (matches) then
             local sb = Addon.Utils.StringBuilder:Create();
             sb:Add(MATCHES_HTML_START);
@@ -546,6 +546,12 @@ function EditRuleDialog:SetInfoContent(id)
     end
 end
 
+-- Verifies we've got a cached rules engine
+function EditRuleDialog:EnsureRulesEngine()
+    if (not self.rulesEngine) then
+        self.rulesEngine = Addon:CreateRulesEngine(false);
+    end
+end
 
 --*****************************************************************************
 -- Create a new rule (Generates a unique new id for it) and then opens the
@@ -561,6 +567,7 @@ end
 --*****************************************************************************
 function EditRuleDialog:EditRule(ruleDef, readOnly, infoPanelId)
     -- Save the parameters we need.
+    self:EnsureRulesEngine();
     self.ruleDef = ruleDef;
     self.readOnly = readOnly or false;
 
@@ -604,13 +611,12 @@ end
 
 function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-    self._lastScript = nil;
-    self._rulesEngine = nil;
+    self:EnsureRulesEngine();
 end
 
 function EditRuleDialog:OnHide()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
-    self.editRule:Cleanup();
+    self.rulesEngine = nil;
 end
 
 -- Move this to it's own place (file)
@@ -660,7 +666,6 @@ function EditRule:Setup()
 end
 
 function EditRule:Cleanup()
-    self._rulesEngine = nil;
     if (self.delayTimer) then
         self.delayTimer:Cancel();
         self.delayTimer = nil;
@@ -746,36 +751,6 @@ function EditRule:SetReadOnly(readonly)
     end
 end
 
--- Items to build the sample object from, We use the various hearthstone hoping that
--- the player keeps at least one of these into their inventory so that the client has
--- the item info cached.
-local SAMPLE_ITEM_IDS =
-{
-    6948, -- Hearthstone (vanilla)
-    110560, -- Garrison Hearthstone (WOD)
-    140192, -- Dalaran Hearthstone. (Legion)
-};
-
---[[===========================================================================
-    | getSampleObject:
-    |   This is called to retrieve a sample object for validating our scripts
-    |   against.
-    =======================================================================--]]
-function EditRule:getSampleObject()
-    if (not self._sampleObject) then
-        for _, id in ipairs(SAMPLE_ITEM_IDS) do
-            local _, link = GetItemInfo(id);
-            if (link) then
-                self._sampleObject = Addon:GetItemPropertiesFromLink(link);
-                if (self._sampleObject) then
-                    break;
-                end
-            end
-        end
-    end
-    return self._sampleObject;
-end
-
 --[[===========================================================================
     | IsScriptValid:
     |   This is called to check our script for validation, this will check
@@ -801,18 +776,18 @@ function EditRule:OnValidateScript(force)
 
     if (force or (not last) or ((now - last > VALIDATE_THRESHOLD))) then
         self.scriptIsValid = false;
+        if (self.scriptTimer) then
+            self.scriptTimer:Cancel();
+            self.scriptTimer = nil;
+        end
 
         local script = self.script.content:GetText();
         if (script and string.len(script) ~= 0) then
             Addon:Debug("Validating script: %s", script);
-            if (not self._rulesEngine) then
-                self._rulesEngine = Addon:CreateRulesEngine();
-            end
-
-            local valid, message = self._rulesEngine:ValidateScript(self:getSampleObject(), script);
+            local valid, message = Addon:ValidateRuleAgainstBags(self:GetParent().rulesEngine, script);
             if (not valid) then
                 self:ShowStatus("ERROR", message);
-                Addon:Debug("Script failed to validate: ", message);
+                Addon:Debug("Script failed to validate: %s", message);
             else
                 self:ShowStatus("OK");
                 self.scriptIsValid = true;
@@ -822,11 +797,6 @@ function EditRule:OnValidateScript(force)
         else
             Addon:Debug("There was not script to validate");
             self:ShowStatus();
-        end
-
-        if (self.scriptTimer) then
-            self.scriptTimer:Cancel();
-            self.scriptTimer = nil;
         end
 
         self.OnScriptValidated(self.scriptIsValid);

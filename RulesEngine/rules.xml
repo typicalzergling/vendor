@@ -2,6 +2,7 @@
     <Script file="log.lua"/>
     <Script file="object.lua"/>
     <Script file="rule.lua"/>
+    <Script file="set.lua"/>
     <Script file="category.lua"/>
     <Script file="engine.lua"/>
 </Ui>

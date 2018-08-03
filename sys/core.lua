@@ -21,6 +21,7 @@ function Addon:OnInitialize()
 
     -- Set up events
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
+    self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
 
