@@ -3,9 +3,12 @@ local Addon, L, Config = _G[select(1,...).."_GET"]()
 
 local threadName = "ItemSeller"
 
+local isMerchantOpen = false
+
 -- When the merchant window is opened, we will attempt to auto repair and sell.
 function Addon:OnMerchantShow()
     self:Debug("Merchant opened.")
+    isMerchantOpen = true
 
     -- Do auto-repair if enabled
     if Config:GetValue(Addon.c_Config_AutoRepair) then
@@ -18,14 +21,14 @@ function Addon:OnMerchantShow()
     end
 end
 
+function Addon:OnMerchantClosed()
+    self:Debug("Merchant closed.")
+    isMerchantOpen = false
+end
+
 -- For checking to make sure merchant window is open prior to selling anything.
 function Addon:IsMerchantOpen()
-    if MerchantFrame and MerchantFrame.IsVisible then
-        return MerchantFrame:IsVisible()
-    else
-        self:Debug("MerchantFrame not found! Assuming it is not visible.")
-        return false
-    end
+    return isMerchantOpen
 end
 
 -- Do Autorepair. If using guild funds and guild funds don't cover the repair, we will use our own funds.

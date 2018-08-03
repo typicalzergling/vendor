@@ -159,7 +159,7 @@ Rules.SystemRules =
         Type = KEEP_RULE,
         Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
         Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
-        ScriptText = "Equipment() and Soulbound()",
+        ScriptText = "IsEquipment and Soulbound",
         Script = function()
                 return IsEquipment and IsSoulbound;
             end,
@@ -197,7 +197,7 @@ Rules.SystemRules =
         Name = L["SYSRULE_KEEP_COMMON"],
         Description = L["SYSRULE_KEEP_COMMON_DESC"],
         ScriptText = "Quality == 1",
-        Script = function() return (Quality == 0) end,
+        Script = function() return (Quality == 1) end,
         Order = 1300,
     },
 
