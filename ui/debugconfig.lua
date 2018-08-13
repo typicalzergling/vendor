@@ -8,6 +8,7 @@ function Addon:SetupDebugConsoleCommands()
     self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Addon:ToggleDebug("debugrules") end)
     self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
     self:AddConsoleCommand("test", "It is a mystery!", "Test_Cmd")
+    self:AddConsoleCommand("lfg", "dumps some lfg info", "Test_lfg")
 end
 
 
@@ -31,7 +32,7 @@ end
 function Addon:Test_Cmd(...)
     local Item = PawnGetItemData(select(1,...))
     local UpgradeInfo, BestItemFor, SecondBestItemFor, NeedsEnhancements = PawnIsItemAnUpgrade(Item)
-    
+
     self:Print("UpgradeInfo: %s", tostring(UpgradeInfo))
         if UpgradeInfo then
             for key, data in pairs(UpgradeInfo) do
@@ -44,8 +45,8 @@ function Addon:Test_Cmd(...)
     self:Print("BestItemFor: %s", tostring(BestItemFor))
     self:Print("SecondBestItemFor: %s", tostring(SecondBestItemFor))
     self:Print("NeedsEnhancements: %s", tostring(NeedsEnhancements))
-    
-    
+
+
     --[[local upgradeInfo = {PawnIsItemAnUpgrade(Item)}
     for _, v in ipairs(upgradeInfo) do
         if type(v) == "table" then
@@ -73,3 +74,22 @@ function Addon:GetAllBagItemInformation()
     return items
 end
 
+function Addon:Test_lfg(...)
+    local tCats = C_LFGList.GetAvailableCategories(LE_LFG_LIST_FILTER_PVE);
+    for _, catId in ipairs(tCats) do
+        print("catId:", catId, C_LFGList.GetCategoryInfo(catId));
+
+
+        tAct = C_LFGList.GetAvailableActivities(catId, nil, LE_LFG_LIST_FILTER_PVE);
+        for _, actId in ipairs(tAct) do
+            print("actId:", actId, C_LFGList.GetActivityInfo(actId));
+
+            --local tGroups = C_LFGList.GetAvailableActivityGroups(tCat, LE_LFG_LIST_FILTER_PVE);
+           -- for _, groupId in ipairs(tGroups) do
+           --     print("groupId:", groupId);
+           -- end
+
+        end
+
+    end
+end

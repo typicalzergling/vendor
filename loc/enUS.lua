@@ -21,7 +21,9 @@ AddonLocales["enUS"] =
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
 ["MERCHANT_SELLING_ITEM"] = "Sold %s for %s",
+["MERCHANT_WITHDRAW_ITEM"] = "Withdrawing %s to sell.",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
+["MERCHANT_WITHDRAWN_ITEMS"] = "Withdrew %s items.",
 ["MERCHANT_SELL_LIMIT_REACHED"] = "Reached the sell limit (%s), stopping auto-sell.",
 ["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
 
@@ -83,6 +85,7 @@ AddonLocales["enUS"] =
 ["CMD_SETTINGS_HELP"] = "Open the settings in the interface options.",
 ["CMD_RULES_HELP"] = "Open the Sell/Keep Rules configuration panel.",
 ["CMD_KEYS_HELP"] = "Open keybindings. Working with blocklists is much easier with keybinds!",
+["CMD_WITHDRAW_HELP"] = "Withdraws any items from you bank which vendor would sell, requires your bank to be open",
 
 ["CMD_SELLITEM_HELP"] = "Adds or removes items from the sell list: sell {always||never} [itemid]",
 ["CMD_SELLITEM_INVALIDARG"] = "Must specify which list to which you want to query or edit an item: {always||never} [item]",
