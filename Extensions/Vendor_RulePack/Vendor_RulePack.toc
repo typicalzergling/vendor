@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Title: Vendor_Pawn
+## Title: Vendor_RulesPack
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
 ## Version: @project-version@
 ## Author: Severin & Umferth of Windrunner
