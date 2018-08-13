@@ -68,13 +68,13 @@
 						<Anchor point="BOTTOMRIGHT" x="-16" y="2"/>
 					</Anchors>>
 				</FontString>
-                <Texture parentKey="sellRule" file="Interface\ICONS\INV_Misc_Coin_19" alpha="0.75" hidden="true">
+                <Texture parentKey="sellRule" file="Interface\ICONS\INV_Misc_Coin_17" alpha="0.75" hidden="true">
                     <Size x="24" y="24"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="4" y="-6"/>
                     </Anchors>
                 </Texture>
-                <Texture parentKey="keepRule" file="Interface\ICONS\INV_Misc_Bag_08" alpha="0.75" hidden="true">
+                <Texture parentKey="keepRule" file="Interface\ICONS\INV_Shield_09" alpha="0.75" hidden="true">
                     <Size x="54" y="54"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeKey="$parent.sellRule"/>
