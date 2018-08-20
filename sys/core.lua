@@ -1,4 +1,4 @@
--- Addon core. Handles initialization and first-run setup. 
+-- Addon core. Handles initialization and first-run setup.
 local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Strings for the binding XML. This must be loaded after all the locales have been initialized.
@@ -24,6 +24,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
+    self:RegisterEvent("SCRAPPING_MACHINE_SHOW", "OnScrappingShown");
 
     -- Tooltip hooks
     self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")

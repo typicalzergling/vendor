@@ -83,7 +83,7 @@ function Addon:AutoSell()
         local sellLimitEnabled = Config:GetValue(Addon.c_Config_SellLimit)
         local sellLimitMaxItems = Config:GetValue(Addon.c_Config_MaxSellItems)
         local sellThrottle = Config:GetValue(Addon.c_Config_SellThrottle)
-        
+
         -- Loop through every bag slot once.
         for bag=0, NUM_BAG_SLOTS do
             for slot=1, GetContainerNumSlots(bag) do
@@ -123,7 +123,7 @@ function Addon:AutoSell()
                     self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Properties.Link), self:GetPriceString(item.Properties.NetValue))
                     numSold = numSold + 1
                     totalValue = totalValue + item.Properties.NetValue
-                    
+
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
                         self:Print(L["MERCHANT_SELL_LIMIT_REACHED"], sellLimitMaxItems)
@@ -194,4 +194,58 @@ function Addon:GetPriceString(price)
 
     -- Return the concatenated string using the efficient function for it
     return table.concat(str)
+end
+
+-- Find a list of items which could be scrapped
+local function findItemsToScrap(ruleManager)
+    local items  = {};
+
+    -- Loop through every bag slot once.
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1, GetContainerNumSlots(bag) do
+
+            -- Get Item properties and run scrap rules
+            local item = Addon:GetItemProperties(bag, slot)
+            if (item) then
+                local scrap, ruleId, ruleName = ruleManager:CheckForScrap(item);
+                if (scrap) then
+                    Addon:Debug("Scrapping \"%s\" due to rule \"%s\" (%s) [%d]", item.Name, ruleName, ruleId, #items);
+                    table.insert(items, { item, bag, slot });
+                end
+            end
+        end
+    end
+
+    return items;
+end
+
+-- Called when the crapping machine UI is opened.
+function Addon:OnScrappingShown()
+    local scrapConfig = Config:GetRulesConfig(Addon.c_RuleType_Scrap);
+    if (#scrapConfig > 0) then
+
+        local ruleManager = self:GetRuleManager();
+        local items = findItemsToScrap(ruleManager);
+
+        if (#items ~= 0) then
+            self:Print(L["MERCHANT_POPULATING_SCRAP"]);
+            C_ScrappingMachineUI.RemoveAllScrapItems();
+            local toScrap = math.min(#items, 9);
+            for i=1,toScrap do
+                local item, bag, slot = unpack(items[i]);
+
+                self:Print(L["MERCHANT_SCRAP_ITEM"], item.Link, i, toScrap);
+                PickupContainerItem(bag, slot);
+                C_ScrappingMachineUI.RemoveItemToScrap(i - 1);
+                C_ScrappingMachineUI.DropPendingScrapItemFromCursor(i - 1);
+            end
+
+            if (toScrap < #items) then
+                self:Print(L["MERCHANT_MORE_SCRAP"]);
+            end
+
+        else
+            self:Print(L["MERCHANT_NO_SCRAP"]);
+        end
+    end
 end

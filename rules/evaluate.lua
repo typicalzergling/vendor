@@ -127,3 +127,14 @@ function Addon:LookForItemsInBank()
         (NUM_BAG_SLOTS + 1),  (NUM_BAG_SLOTS + GetNumBankSlots()));
     return items;
 end
+
+--[[===========================================================================
+    | GetRulesEngine:
+    |   Retrieves the initialized rules engine for this instance.
+    =======================================================================--]]
+function Addon:GetRuleManager()
+    if (not self.ruleManager) then
+        self.ruleManager = Addon.RuleManager:Create();
+    end
+    return self.ruleManager;
+end

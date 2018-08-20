@@ -204,6 +204,20 @@ function RuleManager:Run(object, ...)
     return false, nil, nil
 end
 
+--[[===========================================================================
+    | CheckForScrap:
+    |   Checks if the object should be considered scrap.
+    =======================================================================--]]
+function RuleManager:CheckForScrap(object, ...)
+    local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
+    Addon:DebugRules("CheckScrap \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
+
+    if (result and (categoryId == RULE_TYPE_SCRAP)) then
+        return true, ruleId, name;
+    end
+    return false, nil, nil;
+end
+
 --*****************************************************************************
 -- Generates a new unique custom rule id, this rule encodes the player, realm
 -- and time so it should be very unique.

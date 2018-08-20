@@ -26,6 +26,10 @@ AddonLocales["enUS"] =
 ["MERCHANT_WITHDRAWN_ITEMS"] = "Withdrew %s items.",
 ["MERCHANT_SELL_LIMIT_REACHED"] = "Reached the sell limit (%s), stopping auto-sell.",
 ["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
+["MERCHANT_SCRAP_ITEM"] = "Scrapping %s (%d/%d)",
+["MERCHANT_NO_SCRAP"] = "There are no items to scrap.",
+["MERCHANT_POPULATING_SCRAP"] = "Auto-populating scrapper:",
+["MERCHANT_MORE_SCRAP"] = "There are more items in your inventory which could be scrapped after scrapping these close and re-open the scrapper to continue",
 
 -- Tooltip
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
