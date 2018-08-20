@@ -101,6 +101,9 @@ end
 function RulesList.OnLoad(self)
     Mixin(self, RulesList, Package.ListBase);
     self:AdjustScrollbar();
+    if (not self.ruleType) then
+        self.ruleType = self:GetParent().ruleType;
+    end
     if (self.ruleType) then
         Config:AddOnChanged(function() self:SetConfigState(); end);
         Rules.OnDefinitionsChanged:Add(function() self:UpdateView(Rules.GetDefinitions(self.ruleType)); end);

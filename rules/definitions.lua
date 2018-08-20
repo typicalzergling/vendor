@@ -4,6 +4,7 @@ Addon.Rules = Addon.Rules or {}
 local Rules = Addon.Rules;
 local SELL_RULE = Addon.c_RuleType_Sell;
 local KEEP_RULE = Addon.c_RuleType_Keep;
+local SCRAP_RULE = Addon.c_RuleType_Scrap;
 
 local addon_Functions = {};
 local addon_Definitions = {};
@@ -251,6 +252,21 @@ Rules.SystemRules =
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
     },
+
+    --*****************************************************************************
+    -- Scrap rules
+    --*****************************************************************************
+
+    {
+        Id = "scrap.scrapable",
+        Type = SCRAP_RULE,
+        Name = "Scrappable Items",
+        Description = "Scrappable Items",
+        ScriptText = "IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains(\"Scrapable\")",
+        Script = function() return (IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains("Scrapable")) end,
+        Order = 3000,
+    },
+
 };
 
 -- While creating this closure sort the rules table by order, this prevents us from

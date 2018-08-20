@@ -121,6 +121,8 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SHARE_TOOLTIP"] = "Share";
 ["CONFIG_DIALOG_MOVEUP_TOOLTIP"] = "Click to move the rule sooner in evaluation order";
 ["CONFIG_DIALOG_MOVEDOWN_TOOLTIP"] = "Click to move the rule later in the evaluation order";
+["CONFIG_DIALOG_SCRAPRULES_TAB"] = "Scrap Rules";
+["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "<< Make some useful text >>";
 
 
 -- Sell Rules
@@ -187,6 +189,9 @@ AddonLocales["enUS"] =
 ["EDITRULE_SELLRULE_TEXT"] = "A sell rule determines if Vendor will sell the item when the rule evaluates to true",
 ["EDITRULE_KEEPRULE_LABEL"] = "Keep Rule",
 ["EDITRULE_KEEPRULE_TEXT"] = "A keep rule determines if Vendor will keep the item when the rule evaluates to true",
+["EDITRULE_SCRAPRULE_TEXT"] = " << Needs Text >> ",
+["EDITRULE_SCRAPRULE_LABEL"] = "Scrap Rule",
+
 ["EDITRULE_UNHEALTHY_RULE"] = "Unhealthy Rule",
 ["EDITRULE_ERROR_RULE"] = "Validation Error",
 ["EDITRULE_OK_TEXT"] = "Rule Ok",

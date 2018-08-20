@@ -2,7 +2,8 @@ local Addon, L, Config = _G[select(1,...).."_GET"]()
 local Package = select(2, ...);
 local KEEP_TABID = 1;
 local SELL_TABID = 2;
-local CUSTOM_TABID = 3;
+local CUSTOM_TABID = 4;
+local SCRAP_TABID = 3;
 local RulesDialog = {};
 
 function RulesDialog.OnLoad(self)
@@ -14,6 +15,7 @@ function RulesDialog.OnLoad(self)
     self:SetupTab(KEEP_TABID, "CONFIG_DIALOG_KEEPRULES_TAB", "CONFIG_DIALOG_KEEPRULES_TEXT")
     self:SetupTab(SELL_TABID, "CONFIG_DIALOG_SELLRULES_TAB", "CONFIG_DIALOG_SELLRULES_TEXT")
     self:SetupTab(CUSTOM_TABID, "CONFIG_DIALOG_CUSTOMRULES_TAB", "CONFIG_DIALOG_CUSTOMRULES_TEXT")
+    self:SetupTab(SCRAP_TABID, "CONFIG_DIALOG_SCRAPRULES_TAB", "CONFIG_DIALOG_SCRAPRULES_TEXT")
     self.createNewRule:SetText(L.CREATE_BUTTON);
 
     -- Initialize the tabs
@@ -34,12 +36,13 @@ end
 function RulesDialog:OnShow()
     self.KeepPanel.list:RefreshView();
     self.SellPanel.list:RefreshView();
+    self.ScrapPanel.list:RefreshView();
 end
 
 function RulesDialog:SetDefaults()
     Addon:DebugRules("Restoring rule configuration to the default")
     self.SellPanel.list:SetDefaultConfig();
-    self.KeepPanel.list:SetDefaultConfig();
+    self.ScrapPanel.list:SetDefaultConfig();
 end
 
 function RulesDialog:OnOk()
@@ -47,6 +50,7 @@ function RulesDialog:OnOk()
     Config:BeginBatch()
         self.SellPanel.list:UpdateConfig();
         self.KeepPanel.list:UpdateConfig();
+        self.ScrapPanel.list:UpdateConfig();
     Config:EndBatch()
     --HideParentPanel(self.Container)
 end
