@@ -202,8 +202,7 @@ local function findItemsToScrap(ruleManager)
 
     -- Loop through every bag slot once.
     for bag=0, NUM_BAG_SLOTS do
-        for slot=1, GetContainerNumSlots(bag) do
-
+        for slot=1,GetContainerNumSlots(bag) do
             -- Get Item properties and run scrap rules
             local item = Addon:GetItemProperties(bag, slot)
             if (item) then
