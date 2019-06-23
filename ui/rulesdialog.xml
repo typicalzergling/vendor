@@ -100,9 +100,9 @@
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick function="PortraitFrameCloseButton_OnClick"/>
-                </Scripts>
+				<Scripts>
+					<OnClick function="UIPanelCloseButton_OnClick"/>
+				</Scripts>
             </Button>
             <Button parentKey="createNewRule" inherits="MagicButtonTemplate" text="CREATE">
                 <Size>
