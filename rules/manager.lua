@@ -210,8 +210,7 @@ end
     =======================================================================--]]
 function RuleManager:CheckForScrap(object, ...)
     local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
-    Addon:DebugRules("CheckScrap \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
-
+    Addon:Debug("CheckScrap \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
     if (result and (categoryId == RULE_TYPE_SCRAP)) then
         return true, ruleId, name;
     end
