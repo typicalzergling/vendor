@@ -10,27 +10,28 @@ function Addon:SetupConsoleCommands()
     self:AddConsoleCommand("list", L["CMD_LISTDATA_HELP"], "ListData_Cmd")
     self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
     self:AddConsoleCommand("settings", L["CMD_SETTINGS_HELP"], "OpenSettings_Cmd")
+    self:AddConsoleCommand("withdraw", L["CMD_WITHDRAW_HELP"], "Withdraw_Cmd")
 end
 
 -- Add or remove items from the blacklist or whitelist.
 function Addon:SellItem_Cmd(list, item)
 
     -- need at least one command, should print usage
-    if not list or (list ~= self.c_AlwaysSellList and list ~= self.c_NeverSellList) then 
+    if not list or (list ~= self.c_AlwaysSellList and list ~= self.c_NeverSellList) then
         self:Print(L["CMD_SELLITEM_INVALIDARG"])
-        return 
+        return
     end
-    
+
     -- get item id
     local id = self:GetItemId(item)
-    
+
     -- if id specified, add or remove it
     if id then
         local retval = self:ToggleItemInBlocklist(list, id)
         if retval == 1 then
             self:Print(string.format(L["CMD_SELLITEM_ADDED"], tostring(id), list))
         else
-            self:Print(string.format(L["CMD_SELLITEM_REMOVED"], tostring(id), list))        
+            self:Print(string.format(L["CMD_SELLITEM_REMOVED"], tostring(id), list))
         end
 
     -- otherwise dump the list
@@ -63,7 +64,7 @@ function Addon:ListData_Cmd(arg)
         self:Print(string.format(L["CMD_LISTDATA_INVALIDARG"], arg))
         return
     end
-    
+
     if not arg then
         self:PrintAddonList(self.c_NeverSellList)
         self:PrintAddonList(self.c_AlwaysSellList)
@@ -110,7 +111,7 @@ function Addon:OpenKeybindings_Cmd()
     if not KeyBindingFrame then
         return
     end
-    
+
     -- Make sure the buttons and categories exist, and enumerate them.
     if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
         -- Find our category in the list of categories.
@@ -121,7 +122,7 @@ function Addon:OpenKeybindings_Cmd()
             end
         end
     end
-    
+
     -- Show the keybinding frame. Even if we dont' find it, its closer.
     KeyBindingFrame:Show()
 end
@@ -137,7 +138,7 @@ function Addon:AutoSell_Cmd()
         self:Print(L["CMD_AUTOSELL_MERCHANTNOTOPEN"])
         return
     end
-    
+
     -- Check for sell in progress.
     if self:IsAutoSelling() then
         self:Print(L["CMD_AUTOSELL_INPROGRESS"])
@@ -147,4 +148,39 @@ function Addon:AutoSell_Cmd()
     -- OK to do the auto-sell.
     self:Print(L["CMD_AUTOSELL_EXECUTING"])
     self:AutoSell()
+end
+
+-- Withdraws all items which match your currently enabled rules set
+function Addon:Withdraw_Cmd()
+    local function findBagWithSpace()
+        for i=0,NUM_BAG_SLOTS do
+            if GetContainerNumFreeSlots(i) ~= 0 then
+                return i;
+            end
+        end
+        return -1;
+    end
+
+    local items = self:LookForItemsInBank();
+    local count = 0;
+    if #items then
+        for _, item in ipairs(items) do
+            local bag, slot, link = unpack(item);
+            local tobag = findBagWithSpace();
+            if (tobag > 0) then
+                PickupContainerItem(bag, slot);
+                PutItemInBag(ContainerIDToInventoryID(tobag));
+                Addon:Print(L["MERCHANT_WITHDRAW_ITEM"], link);
+                count = (count + 1);
+            elseif (tobag == 0) then
+                PickupContainerItem(bag, slot);
+                PutItemInBackpack();
+                Addon:Print(L["MERCHANT_WITHDRAW_ITEM"], link);
+                count = (count + 1);
+            else
+                break;
+            end
+        end
+    end
+    Addon:Print(L["MERCHANT_WITHDRAWN_ITEMS"], count);
 end

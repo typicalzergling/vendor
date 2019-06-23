@@ -9,6 +9,9 @@ local Addon, L, Config = _G[select(1,...).."_GET"]()
 local Package = select(2, ...);
 local RuleItem = {};
 
+local NUMERIC_PARAM_TEMPLATE = "Vendor_Rule_Numeric_Param";
+local PARAM_MARGIN_X = 6;
+
 function RuleItem:ShowMoveButtons(show)
     local moveUp = self.moveUp;
     local moveDown = self.moveDown;
@@ -56,6 +59,100 @@ function RuleItem:ShowDivider(show)
     end
 end
 
+--[[============================================================================
+    | RuleItem:CreateParameters
+    |   Create the frames which represent the rule parameters.
+    ==========================================================================]]
+function RuleItem:CreateParameters(params)
+    -- Create/Cleanup our frames.
+    if (self.params) then
+        for _, frame in ipairs(self.params) do
+            frame:Hide();
+            frame:SetParent(nil);
+        end
+    end
+
+    -- Create the new frames.
+    self.params = {};
+    for _, param in ipairs(params) do
+        -- if not validateRuleParam(param) then ... end
+        if (string.upper(param.Type) == "NUMERIC") then
+            local frame = CreateFrame("EditBox", nil, self, NUMERIC_PARAM_TEMPLATE);
+            frame.label:SetText(param.Name or "<unnamed>");
+            frame.paramKey = string.upper(param.Key);
+            frame.paramType = "NUMERIC";
+            frame:SetNumber(0);
+            table.insert(self.params, frame);
+        else
+            Addon:DebugRules("The parameter type '%s' is not valid, skipping parameter '%s'", param.Type, param.Name);
+        end
+    end
+end
+
+--[[============================================================================
+    | RuleItem:LayoutParameters:
+    |   If we've got parameters then we need to give the layout, we have
+    |   "hidden" item in the markup where we anchor them to, but we also
+    |   need to move the text so it properly wraps when we've got a parameter
+    ==========================================================================]]
+function RuleItem:LayoutParameters()
+    if (self.params and table.getn(self.params)) then
+        local anchor;
+        local width = 0;
+        for _, frame in ipairs(self.params) do
+            frame:ClearAllPoints();
+            if (not anchor) then
+                frame:SetPoint("BOTTOMRIGHT", self.paramArea, "BOTTOMRIGHT", 0, 0);
+            else
+                frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMLEFT", -PARAM_MARGIN_X, 0);
+            end
+            frame:Show();
+            anchor = frame;
+            width = (width + frame:GetWidth() + PARAM_MARGIN_X);
+        end
+
+        self.paramArea:SetWidth(width);
+        self.text:SetPoint("BOTTOMRIGHT", self.paramArea, "BOTTOMLEFT", -PARAM_MARGIN_X, 0);
+    else
+        -- Make sure this is the same as the XML
+        self.text:SetPoint("BOTTOMRIGHT", self.paramArea, "BOTTOMLEFT", 0, 0);
+    end
+end
+
+--[[============================================================================
+    | RuleItem:SetParamValue
+    |   Given the name of a parameter, and it's value this will handle setting
+    |   the value on the frame, the first frame with the name is the one
+    |   that gets the value.
+    ==========================================================================]]
+function RuleItem:SetParamValue(name, value)
+    if (self.params) then
+        for _, frame in ipairs(self.params) do
+            if (string.upper(name) == frame.paramKey) then
+                if (frame.paramType == "NUMERIC") then
+                    -- If we numeric then we know the value is an editbox
+                    -- in numeric mode,  just call "SetNumber"
+                    frame:SetNumber(value);
+                end
+            else
+                Addon:DebugRules("The parameter type '%s' is unknown for '%s'", frame.paramType, name);
+            end
+        end
+    end
+end
+
+--[[============================================================================
+    | RuleItem:GetParamValue:
+    |   Given a frame this retrieves the value.
+    ==========================================================================]]
+function RuleItem:GetParamValue(frame)
+    if (frame.paramType == "NUMERIC") then
+        return frame:GetNumber();
+    else
+        Addon:DebugRules("The frame has an invalid parameter type '%s'", frame.paramType);
+    end
+end
+
 function RuleItem:SetRule(ruleDef)
     self.ruleId = ruleDef.Id;
     self.selected = false;
@@ -68,14 +165,6 @@ function RuleItem:SetRule(ruleDef)
     self:ShowMoveButtons(false);
     self.check:Hide();
     self.check:SetVertexColor(0, 1, 0, 1);
-
-    -- Disable item level by default
-    local itemLevel = self.itemLevel;
-    if (itemLevel) then
-        itemLevel.label:SetText(L["RULEUI_LABEL_ITEMLEVEL"])
-        itemLevel:Disable();
-        itemLevel:SetText(0);
-    end
 
     -- If the rule is unhealthy then toggle the unhealthy background.
     if (Addon.ruleManager and not Addon.ruleManager:CheckRuleHealth(ruleDef.Id)) then
@@ -92,44 +181,55 @@ function RuleItem:SetRule(ruleDef)
     else
         self.custom:Hide();
     end
+
+    if (ruleDef.Params) then
+        self:CreateParameters(ruleDef.Params);
+    end
+    self:LayoutParameters();
 end
 
 function RuleItem:GetRuleId()
     return self.ruleId;
 end
 
+--[[============================================================================
+    | RuleItem:SetConfig
+    |   Set the configuration of this item.
+    ==========================================================================]]
 function RuleItem:SetConfig(config, index)
-    self.configIndex = index;
-    self:SetSelected(config ~= nil);
-
-    if (self.itemLevel) then
-        self.itemLevel:SetNumber(0);
-    end
-
     if (config and (type(config) == "table")) then
         for paramName, paramValue in pairs(config) do
-            if (string.upper(paramName) == "ITEMLEVEL") then
-                if (self.itemLevel) then
-                    local value = tonumber(paramValue) or 0;
-                    self.itemLevel:SetNumber(value);
-                end
+            if (string.lower(paramName) ~= "rule") then
+                self:SetParamValue(paramName, paramValue);
             end
         end
     end
+
+    self.configIndex = index;
+    self:SetSelected(config ~= nil);
 end
 
+--[[============================================================================
+    | RuleItem:GetConfig
+    |   Builds and retrieves the config entry for this rule, or return
+    |   nil to indicate this rule isn't enabled.
+    ==========================================================================]]
 function RuleItem:GetConfig()
     if (not self.selected) then
         return nil;
     end
 
-    if (not self.itemLevel) then
-        return string.lower(self:GetRuleId());
+    -- If we've got no parameters then simply want to return the
+    -- rule id, rather building a table.
+    if (not self.params or (table.getn(self.params) == 0)) then
+        return self:GetRuleId();
     end
 
+    -- We've got parameters, so copy each one out into the
+    -- the table we're going to return.
     local config = { rule = self:GetRuleId() };
-    if (self.itemLevel) then
-        config.ITEMLEVEL = self.itemLevel:GetNumber();
+    for _, frame in ipairs(self.params) do
+        rawset(config, frame.paramKey, self:GetParamValue(frame));
     end
 
     return config;
@@ -139,23 +239,30 @@ function RuleItem:GetConfigIndex()
     return self.configIndex;
 end
 
+--[[============================================================================
+    | RuleItem:SetSelected:
+    |   Sets the selected  / enabled state of this item and updates all
+    |   the UI to reflect that state.
+    ==========================================================================]]
 function RuleItem:SetSelected(selected)
     self.selected = selected;
     if (selected) then
         self.check:Show();
         self.selectedBackground:Show();
         self:ShowMoveButtons(true);
-
-        if (self.itemLevel) then
-            self.itemLevel:Enable();
-        end
     else
         self.check:Hide();
         self.selectedBackground:Hide();
         self:ShowMoveButtons(false);
+    end
 
-        if (self.itemLevel) then
-            self.itemLevel:Disable();
+    if (self.params) then
+        for _, frame in ipairs(self.params) do
+            if (selected) then
+                frame:Enable();
+            else
+                frame:Disable();
+            end
         end
     end
 end
@@ -174,6 +281,32 @@ function RuleItem:OnClick(button)
         if (ruleDef) then
             VendorEditRuleDialog:EditRule(ruleDef, ruleDef.ReadOnly or not ruleDef.Custom);
         end
+    end
+end
+
+--[[============================================================================
+    | RuleItem:OnMouseEnter:
+    |   Called when the user mouses over the item if our item text is truncated
+    |   then we will show a tooltip for the item.
+    ==========================================================================]]
+function RuleItem:OnMouseEnter()
+    if (self.text:IsTruncated()) then
+        local nameColor = { self.name:GetTextColor() };
+        local textColor = { self.text:GetTextColor() };
+        GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
+        GameTooltip:AddLine(self.name:GetText(), unpack(nameColor));
+        GameTooltip:AddLine(self.text:GetText(), unpack(textColor));
+        GameTooltip:Show();
+    end
+end
+
+--[[============================================================================
+    | RuleItem:OnMouseLeave:
+    |   Called when the user mouses off the item
+    ==========================================================================]]
+function RuleItem:OnMouseLeave()
+    if (GameTooltip:GetOwner() == self) then
+        GameTooltip:Hide();
     end
 end
 

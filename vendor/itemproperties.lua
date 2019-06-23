@@ -28,6 +28,7 @@ local Addon, L = _G[select(1,...).."_GET"]()
 --     IsUnknownAppearance
 --     IsToy = false
 --     IsAlreadyKnown = false
+--     IsAzeriteItem = false
 
 --[[
 local function GetItemEquipmentSets(itemId)
@@ -101,6 +102,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsUnknownAppearance = false
     item.IsToy = false
     item.IsAlreadyKnown = false
+    item.IsAzeriteItem = false
 
     -- Get the effective item level.
     item.Level = GetDetailedItemLevelInfo(item.Link)
@@ -118,6 +120,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.StackSize = getItemInfo[8]
     item.UnitValue = getItemInfo[11]
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
+    item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
 
     -- Net Value is net value including quantity.
     item.NetValue = (item.UnitValue or 0) * item.Count

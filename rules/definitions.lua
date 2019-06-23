@@ -4,6 +4,7 @@ Addon.Rules = Addon.Rules or {}
 local Rules = Addon.Rules;
 local SELL_RULE = Addon.c_RuleType_Sell;
 local KEEP_RULE = Addon.c_RuleType_Keep;
+local SCRAP_RULE = Addon.c_RuleType_Scrap;
 
 local addon_Functions = {};
 local addon_Definitions = {};
@@ -11,6 +12,16 @@ local addon_Definitions = {};
 -- This is event is fired when our custom rule definitions have changed.
 Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
 Rules.OnFunctionsChanged = Addon.CreateEvent("Rules.OnFunctionsChanged");
+
+-- Param definition for our rules which use ITEMLEVEL
+local ITEM_LEVEL_PARAMS =
+{
+    {
+        Type="numeric",
+        Name=L["RULEUI_LABEL_ITEMLEVEL"],
+        Key="ITEMLEVEL",
+    },
+};
 
 Rules.SystemRules =
 {
@@ -74,7 +85,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = { ITEMLEVEL=true },
+        Params = ITEM_LEVEL_PARAMS,
         Order = 1400,
     },
 
@@ -87,7 +98,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment and (Quality == RARE) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = { ITEMLEVEL=true },
+        Params = ITEM_LEVEL_PARAMS,
         Order = 1500,
     },
 
@@ -100,7 +111,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = { ITEMLEVEL=true },
+        Params = ITEM_LEVEL_PARAMS,
         Order = 1600,
     },
 
@@ -241,6 +252,21 @@ Rules.SystemRules =
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
     },
+
+    --*****************************************************************************
+    -- Scrap rules
+    --*****************************************************************************
+
+    {
+        Id = "scrap.scrapable",
+        Type = SCRAP_RULE,
+        Name = "Scrappable Items",
+        Description = "Scrappable Items",
+        ScriptText = "IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains(\"Scrapable\")",
+        Script = function() return (IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains("Scrapable")) end,
+        Order = 3000,
+    },
+
 };
 
 -- While creating this closure sort the rules table by order, this prevents us from

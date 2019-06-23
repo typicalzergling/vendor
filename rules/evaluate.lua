@@ -21,13 +21,13 @@ function Addon:EvaluateItemForSelling(item)
 end
 
 -- Simple helper function which handles enumerating bags and running the function.
-local function withEachBagAndItem(func)
+local function withEachBagAndItem(func, startBag, endBag)
     assert(type(func) == "function");
-    for bag=0,NUM_BAG_SLOTS do
+    for bag=startBag, endBag do
         for slot=1, GetContainerNumSlots(bag) do
             local item = Addon:GetItemPropertiesFromBag(bag, slot);
             if (item) then
-                if not func(item) then
+                if not func(item, bag, slot) then
                     return false;
                 end
             end
@@ -61,7 +61,7 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
                     table.insert(results, item.Link);
                 end
                 return true;
-           end);
+           end, 0, NUM_BAG_SLOTS);
     else
         Addon:DebugRules("The rule '%s' failed to parse: %s", ruleId, message);
     end
@@ -85,12 +85,15 @@ function Addon:ValidateRuleAgainstBags(engine, script)
             local r, m = engine:ValidateScript(item, script);
             if (not r) then message = m end;
             return r;
-        end);
+        end, 0, NUM_BAG_SLOTS);
 
     return valid, message;
 end
 
--- Retrieves the status of the provided rule
+--[[===========================================================================
+    | GetRuleStatus:
+    |   Returns the status of rules
+    ===========================================================================--]]
 function Addon:GetRuleStatus(ruleId)
     if (not self.ruleManager or not self.ruleManager.rulesEngine) then
         return nil;
@@ -100,4 +103,38 @@ function Addon:GetRuleStatus(ruleId)
     if (status and (#status == 1)) then
         return unpack(status[1]);
     end
+end
+
+--[[===========================================================================
+    | LookForItemsInBank:
+    |   Evaluates all of the items in the bank against the rules, and returns
+    |   the matches.
+    ===========================================================================--]]
+function Addon:LookForItemsInBank()
+    if (not self.ruleManager) then
+        self.ruleManager = Addon.RuleManager:Create();
+    end
+
+    local items = {};
+    withEachBagAndItem(
+        function (item, bag, slot)
+            local sell = self.ruleManager:Run(item);
+            if (sell) then
+                table.insert(items, { bag, slot, item.Link });
+            end
+            return true;
+        end,
+        (NUM_BAG_SLOTS + 1),  (NUM_BAG_SLOTS + GetNumBankSlots()));
+    return items;
+end
+
+--[[===========================================================================
+    | GetRulesEngine:
+    |   Retrieves the initialized rules engine for this instance.
+    =======================================================================--]]
+function Addon:GetRuleManager()
+    if (not self.ruleManager) then
+        self.ruleManager = Addon.RuleManager:Create();
+    end
+    return self.ruleManager;
 end

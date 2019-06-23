@@ -37,14 +37,14 @@ function RulesList:SetConfigState(configState)
                     item:SetConfig();
                 end
             end);
-    end            
+    end
 end
 
 function RulesList:SetDefaultConfig()
     if (self.ruleType) then
         self:SetConfigState(Config:GetDefaultRulesConfig(self.ruleType));
     end
-end    
+end
 
 function RulesList:UpdateConfig()
     if (self.ruleType) then
@@ -54,7 +54,7 @@ function RulesList:UpdateConfig()
                 local entry = item:GetConfig();
                 if (entry) then
                     table.insert(config, entry);
-                end                    
+                end
             end)
 
         Config:SetRulesConfig(self.ruleType, config);
@@ -62,12 +62,7 @@ function RulesList:UpdateConfig()
 end
 
 function RulesList:CreateItem(ruleDef)
-    local template = "Vendor_Rule_Template";
-    if (ruleDef.Params and ruleDef.Params.ITEMLEVEL) then
-        template = "Vendor_Rule_Template_ItemLevel";
-    end
-
-    local item = Mixin(CreateFrame("Button", nil, self, template), Package.RuleItem);
+    local item = Mixin(CreateFrame("Button", nil, self, "Vendor_Rule_Template"), Package.RuleItem);
     item:SetRule(ruleDef);
     return item;
 end
@@ -106,10 +101,13 @@ end
 function RulesList.OnLoad(self)
     Mixin(self, RulesList, Package.ListBase);
     self:AdjustScrollbar();
+    if (not self.ruleType) then
+        self.ruleType = self:GetParent().ruleType;
+    end
     if (self.ruleType) then
         Config:AddOnChanged(function() self:SetConfigState(); end);
         Rules.OnDefinitionsChanged:Add(function() self:UpdateView(Rules.GetDefinitions(self.ruleType)); end);
-    end        
+    end
 end
 
 function RulesList:OnShow()

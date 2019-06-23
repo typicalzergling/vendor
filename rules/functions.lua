@@ -1,6 +1,7 @@
 local Addon, L = _G[select(1,...).."_GET"]()
 Addon.RuleFunctions = {}
 Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH;
+Addon.RuleFunctions.BATTLE_FOR_AZEROTH = LE_EXPANSION_BATTLE_FOR_AZEROTH;
 Addon.RuleFunctions.POOR = LE_ITEM_QUALITY_POOR;
 Addon.RuleFunctions.COMMON = LE_ITEM_QUALITY_COMMON;
 Addon.RuleFunctions.UNCOMMON = LE_ITEM_QUALITY_UNCOMMON;
@@ -8,7 +9,7 @@ Addon.RuleFunctions.RARE = LE_ITEM_QUALITY_RARE;
 Addon.RuleFunctions.EPIC = LE_ITEM_QUALITY_EPIC;
 Addon.RuleFunctions.LEGENDARY = LE_ITEM_QUALITY_LEGENDARY;
 Addon.RuleFunctions.ARTIFACT = LE_ITEM_QUALITY_ARTIFACT;
-Addon.RuleFunctions.HEIRLOOM = LE_ITEM_QUALITY_HEIRLOOM;    
+Addon.RuleFunctions.HEIRLOOM = LE_ITEM_QUALITY_HEIRLOOM;
 Addon.RuleFunctions.TOKEN = LE_ITEM_QUALITY_TOKEN;
 
 --*****************************************************************************
@@ -194,7 +195,7 @@ Addon.ScriptReference.Functions =
                "Any: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet()<br/>" .. FONT_COLOR_CODE_CLOSE ..
                "Specific: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet(\"Tank\")</p>" .. FONT_COLOR_CODE_CLOSE,
     },
-    
+
     TooltipContains =
     {
         Args = "text [, side, line]",

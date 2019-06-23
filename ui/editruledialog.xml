@@ -344,14 +344,14 @@
 						</Anchors>
 					</EditBox>
 					<ScrollFrame name="$parent.Description" parentKey="description"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-						<Size x="1" y="90"/>
+						<Size x="1" y="80"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.name" x="0" y="-24"/>
 							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.name" x="0" y="-24"/>
 						</Anchors>
 					</ScrollFrame>
 					<ScrollFrame name="$parent.ScriptText" parentKey="script"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-						<Size x="1" y="120"/>
+						<Size x="1" y="100"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.description" x="0" y="-24"/>
 							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.description" x="0" y="-24"/>
@@ -373,17 +373,24 @@
 							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.keepRule" x="0" y="-6"/>
 						</Anchors>
 					</Frame>
+					<Frame parentKey="scrapRule" inherits="Vendor_RadioButton">
+						<Size x="1" y="48"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.sellRule" x="0" y="-6"/>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.sellRule" x="0" y="-6"/>
+						</Anchors>
+					</Frame>
 
 					<!-- Status Area -->
 					<Frame parentKey="errorStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
-						<Size x="1" y="96"/>
+						<Size x="1" y="84"/>
 						<KeyValues>
 							<KeyValue key="textColor" value="RED_FONT_COLOR" type="global"/>
 							<KeyValue key="textureFile" value="Interface\RAIDFRAME\ReadyCheck-NotReady" type="string"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="BOTTOMLEFT" x="24"/>
-							<Anchor point="BOTTOMRIGHT" x="-24"/>
+							<Anchor point="BOTTOMLEFT" x="16"/>
+							<Anchor point="BOTTOMRIGHT" x="-16"/>
 						</Anchors>
 					</Frame>
 					<Frame parentKey="okStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
@@ -470,7 +477,7 @@
                     <Anchor point="TOP" y="-2" relativeKey="$parent.infoArea" relativePoint="BOTTOM"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick>self:GetParent():HandleOk();PortraitFrameCloseButton_OnClick(self);</OnClick>
+                    <OnClick>self:GetParent():HandleOk();UIPanelCloseButton_OnClick(self);</OnClick>
                 </Scripts>
             </Button>
 
@@ -597,7 +604,7 @@
 
         </Frames>
         <Scripts>
-            <OnLoad>self:RegisterForDrag("LeftButton");Vendor.EditRuleDialog.OnLoad(self)</OnLoad>
+            <OnLoad>table.insert(UISpecialFrames, self:GetName());self:RegisterForDrag("LeftButton");Vendor.EditRuleDialog.OnLoad(self)</OnLoad>
 			<OnShow>self:OnShow();</OnShow>
             <OnHide>self:OnHide();</OnHide>
             <OnDragStart>self:StartMoving()</OnDragStart>

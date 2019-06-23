@@ -21,9 +21,15 @@ AddonLocales["enUS"] =
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
 ["MERCHANT_REPAIR_FROM_SELF"] = "Repaired all equipment for %s",
 ["MERCHANT_SELLING_ITEM"] = "Sold %s for %s",
+["MERCHANT_WITHDRAW_ITEM"] = "Withdrawing %s to sell.",
 ["MERCHANT_SOLD_ITEMS"] = "Sold %s items for %s",
+["MERCHANT_WITHDRAWN_ITEMS"] = "Withdrew %s items.",
 ["MERCHANT_SELL_LIMIT_REACHED"] = "Reached the sell limit (%s), stopping auto-sell.",
 ["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"] = "Auto-accepted confirmation of making %s non-tradeable.",
+["MERCHANT_SCRAP_ITEM"] = "Scrapping %s (%d/%d)",
+["MERCHANT_NO_SCRAP"] = "There are no items to scrap.",
+["MERCHANT_POPULATING_SCRAP"] = "Auto-populating scrapper:",
+["MERCHANT_MORE_SCRAP"] = "There are more items in your inventory which could be scrapped after scrapping these close and re-open the scrapper to continue",
 
 -- Tooltip
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
@@ -83,6 +89,7 @@ AddonLocales["enUS"] =
 ["CMD_SETTINGS_HELP"] = "Open the settings in the interface options.",
 ["CMD_RULES_HELP"] = "Open the Sell/Keep Rules configuration panel.",
 ["CMD_KEYS_HELP"] = "Open keybindings. Working with blocklists is much easier with keybinds!",
+["CMD_WITHDRAW_HELP"] = "Withdraws any items from you bank which vendor would sell, requires your bank to be open",
 
 ["CMD_SELLITEM_HELP"] = "Adds or removes items from the sell list: sell {always||never} [itemid]",
 ["CMD_SELLITEM_INVALIDARG"] = "Must specify which list to which you want to query or edit an item: {always||never} [item]",
@@ -118,6 +125,8 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SHARE_TOOLTIP"] = "Share";
 ["CONFIG_DIALOG_MOVEUP_TOOLTIP"] = "Click to move the rule sooner in evaluation order";
 ["CONFIG_DIALOG_MOVEDOWN_TOOLTIP"] = "Click to move the rule later in the evaluation order";
+["CONFIG_DIALOG_SCRAPRULES_TAB"] = "Scrap Rules";
+["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "<< Make some useful text >>";
 
 
 -- Sell Rules
@@ -184,6 +193,9 @@ AddonLocales["enUS"] =
 ["EDITRULE_SELLRULE_TEXT"] = "A sell rule determines if Vendor will sell the item when the rule evaluates to true",
 ["EDITRULE_KEEPRULE_LABEL"] = "Keep Rule",
 ["EDITRULE_KEEPRULE_TEXT"] = "A keep rule determines if Vendor will keep the item when the rule evaluates to true",
+["EDITRULE_SCRAPRULE_TEXT"] = " << Needs Text >> ",
+["EDITRULE_SCRAPRULE_LABEL"] = "Scrap Rule",
+
 ["EDITRULE_UNHEALTHY_RULE"] = "Unhealthy Rule",
 ["EDITRULE_ERROR_RULE"] = "Validation Error",
 ["EDITRULE_OK_TEXT"] = "Rule Ok",

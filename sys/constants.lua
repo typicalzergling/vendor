@@ -2,7 +2,7 @@
 -- This will not trigger loc loading because we have not defined the Default Locale yet
 local Addon = _G[select(1,...).."_GET"]()
 
--- Default Constants 
+-- Default Constants
 Addon.c_AddonName = select(1, ...)
 Addon.c_DefaultLocale = "enUS"
 
@@ -12,6 +12,7 @@ Addon.c_NeverSellList = "never"
 Addon.c_RuleType_Sell = "Sell"
 Addon.c_RuleType_Keep = "Keep"
 Addon.c_RuleType_Custom = "Custom";
+Addon.c_RuleType_Scrap = "Scrap";
 
 -- Config Constants
 Addon.c_Config_SellNever = "sell_never"
