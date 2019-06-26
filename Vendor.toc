@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
