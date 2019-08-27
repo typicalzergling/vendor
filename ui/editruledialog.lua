@@ -514,6 +514,7 @@ function EditRuleDialog.HandleOk(self)
             Name = name,
             Description = description,
             Script = script,
+			SupportsClassic = Addon.IsClassic,
         };
 
         Vendor.Rules.UpdateDefinition(newRuleDef);
@@ -558,7 +559,7 @@ end
 -- dialog to the rule (read only is considered false)
 --*****************************************************************************
 function EditRuleDialog:CreateRule()
-    self:EditRule({ Id = string.lower(RuleManager.CreateCustomRuleId()), Type = Addon.c_RuleType_Sell }, false, HELP_ID)
+    self:EditRule({ Id = string.lower(RuleManager.CreateCustomRuleId()), Type = Addon.c_RuleType_Sell, SupportsClassic = Addon.IsClassic }, false, HELP_ID)
 end
 
 --*****************************************************************************
