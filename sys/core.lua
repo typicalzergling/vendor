@@ -24,7 +24,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
-    self:RegisterEvent("SCRAPPING_MACHINE_SHOW", "OnScrappingShown");
+    --self:RegisterEvent("SCRAPPING_MACHINE_SHOW", "OnScrappingShown");
 
     -- Tooltip hooks
     self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
