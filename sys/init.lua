@@ -15,6 +15,7 @@ _G[AddonName]  = {}
 -- Setup our Addon & frame.
 local Addon = _G[AddonName]
 Addon.AddonFrame = CreateFrame("Frame")
+Addon.IsClassic = true;
 
 -- Event Handling
 local events = {}
