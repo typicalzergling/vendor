@@ -18,6 +18,14 @@ function RulesDialog.OnLoad(self)
     self:SetupTab(SCRAP_TABID, "CONFIG_DIALOG_SCRAPRULES_TAB", "CONFIG_DIALOG_SCRAPRULES_TEXT")
     self.createNewRule:SetText(L.CREATE_BUTTON);
 
+	-- For classic disable the scrap tab
+	if (Addon.IsClassic) then
+		local scrapTab = self:FindPanel(SCRAP_TABID);
+		if (scrapTab) then
+			scrapTab:Disable();
+		end
+	end
+
     -- Initialize the tabs
     self:InitTabs(SELL_TABID);
 end
