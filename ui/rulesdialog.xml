@@ -158,7 +158,7 @@
                 </Anchors>
             </Frame>
 
-            <!-- Scrap Panel
+            <!-- Scrap Panel -->
             <Frame name="$parentScrapPanel" parentKey="ScrapPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
                 <KeyValues>
                     <KeyValue key="ruleType" value="Scrap" type="string"/>
@@ -169,7 +169,6 @@
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
             </Frame>
-			-->
 
             <!-- Custom Panel -->
             <Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="4">
