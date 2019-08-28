@@ -64,6 +64,7 @@ Rules.SystemRules =
         Order = 1100,
     },
 
+    --@retail@
     {
         Id = "sell.knowntoys",
         Type = SELL_RULE,
@@ -75,6 +76,7 @@ Rules.SystemRules =
             end,
         Order = 1300,
     },
+    --@end-retail@
 
     {
         Id = "sell.uncommongear",
@@ -181,6 +183,7 @@ Rules.SystemRules =
     },
 
     -- Safeguard rule - Protect those transmogs!
+    --@retail@
     {
         Id = "keep.unknownappearance",
         Type = KEEP_RULE,
@@ -190,6 +193,7 @@ Rules.SystemRules =
         Script = function() return IsUnknownAppearance end,
         Order = 1200,
     },
+    --@end-retail@
 
     -- Safeguard rule - Common items are usually important and useful.
     {
