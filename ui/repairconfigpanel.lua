@@ -46,6 +46,11 @@ function Addon.ConfigPanel.Repair.Init(self)
     self.GuildRepair.Label:SetText(L["OPTIONS_SETTINGNAME_GUILDREPAIR"])
     self.GuildRepair.Text:SetText(L["OPTIONS_SETTINGDESC_GUILDREPAIR"])
 
+	-- If classic hide the guild repair option
+	if (Addon.IsClassic) then
+		self.GuildRepair:Hide();
+	end
+
     self.AutoRepair.OnStateChange =
         function(checkbox, state)
            Addon.ConfigPanel.Repair.updateGuildRepair(self, state)
