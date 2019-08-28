@@ -1,0 +1,20 @@
+sudo: false
+language: c
+ 
+addons:
+  apt:
+    packages:
+    - pandoc
+ 
+script: 
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -m .pkgmeta -p 297511
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -g 1.13.2 -m .pkgmeta-classic -p 297511
+ 
+branches:
+  only:
+  - /^\d+\.\d+(\.\d+)?(-\S*)?$/
+
+notifications:
+  email:
+    on_failure: always
+    on_success: never
