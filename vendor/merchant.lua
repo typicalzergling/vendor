@@ -35,7 +35,8 @@ end
 function Addon:AutoRepair()
     local cost, canRepair = GetRepairAllCost()
     if canRepair then
-        if Config:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
+        -- Guild repair is not supported on Classic. The API method "CanGuidlBankRepair" is missing.
+        if not Addon.IsClassic and Config:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
             -- use guild repairs
             RepairAllItems(true)
             self:Print(string.format(L["MERCHANT_REPAIR_FROM_GUILD_BANK"], self:GetPriceString(cost)))

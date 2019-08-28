@@ -15,7 +15,7 @@ _G[AddonName]  = {}
 -- Setup our Addon & frame.
 local Addon = _G[AddonName]
 Addon.AddonFrame = CreateFrame("Frame")
-Addon.Is`Classic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
+Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
 
 -- Event Handling
 local events = {}
