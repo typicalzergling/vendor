@@ -477,7 +477,7 @@
                     <Anchor point="TOP" y="-2" relativeKey="$parent.infoArea" relativePoint="BOTTOM"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick>self:GetParent():HandleOk();UIPanelCloseButton_OnClick(self);</OnClick>
+                    <OnClick>self:GetParent():HandleOk();self:GetParent():Hide();</OnClick>
                 </Scripts>
             </Button>
 

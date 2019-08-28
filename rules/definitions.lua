@@ -247,6 +247,7 @@ Rules.SystemRules =
 
     -- Safeguard against selling item sets, even if it matches some
     -- other rule, for example, a fishing or transmog set.
+    --@retail@
     {
         Id = "keep.equipmentset",
         Type = KEEP_RULE,
@@ -256,11 +257,13 @@ Rules.SystemRules =
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
     },
+    --@end-retail@
 
     --*****************************************************************************
     -- Scrap rules
     --*****************************************************************************
 
+    --@retail@
     {
         Id = "scrap.scrapable",
         Type = SCRAP_RULE,
@@ -270,6 +273,7 @@ Rules.SystemRules =
         Script = function() return (IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains("Scrapable")) end,
         Order = 3000,
     },
+    --@end-retail@
 
 };
 

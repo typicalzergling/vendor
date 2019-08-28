@@ -679,9 +679,11 @@ function EditRule:Cleanup()
     end
 end
 
--- Called when tab is pressed in one of our sub-controls.
+-- Called when tab is pressed in one of our sub-controls. Does not work on Classic
 function EditRule:OnTabPressed()
+    --@retail@
     self.tabgroup:OnTabPressed();
+    --@end-retail@
 end
 
 function EditRule:GetValues()
