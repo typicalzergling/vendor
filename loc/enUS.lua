@@ -127,6 +127,8 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_MOVEDOWN_TOOLTIP"] = "Click to move the rule later in the evaluation order";
 ["CONFIG_DIALOG_SCRAPRULES_TAB"] = "Scrap Rules";
 ["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "<< Make some useful text >>";
+["CONFIG_DIALOG_LISTS_TAB"] = "Lists";
+["CONFIG_DIALOG_LISTS_TEXT"] =  "<< Make some useful text >>";
 
 
 -- Sell Rules

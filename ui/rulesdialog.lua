@@ -4,6 +4,7 @@ local KEEP_TABID = 1;
 local SELL_TABID = 2;
 local CUSTOM_TABID = 4;
 local SCRAP_TABID = 3;
+local LISTS_TABID = 5;
 local RulesDialog = {};
 
 function RulesDialog.OnLoad(self)
@@ -16,7 +17,16 @@ function RulesDialog.OnLoad(self)
     self:SetupTab(SELL_TABID, "CONFIG_DIALOG_SELLRULES_TAB", "CONFIG_DIALOG_SELLRULES_TEXT")
     self:SetupTab(CUSTOM_TABID, "CONFIG_DIALOG_CUSTOMRULES_TAB", "CONFIG_DIALOG_CUSTOMRULES_TEXT")
     self:SetupTab(SCRAP_TABID, "CONFIG_DIALOG_SCRAPRULES_TAB", "CONFIG_DIALOG_SCRAPRULES_TEXT")
+    self:SetupTab(LISTS_TABID, "CONFIG_DIALOG_LISTS_TAB", "CONFIG_DIALOG_LISTS_TEXT")
     self.createNewRule:SetText(L.CREATE_BUTTON);
+
+	-- For classic disable the scrap tab
+	if (Addon.IsClassic) then
+		local scrapTab = self:FindPanel(SCRAP_TABID);
+		if (scrapTab) then
+			scrapTab:Disable();
+		end
+	end
 
     -- Initialize the tabs
     self:InitTabs(SELL_TABID);
