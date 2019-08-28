@@ -1,14 +1,22 @@
-sudo: false
-language: c
- 
+language: minimal
+
 addons:
   apt:
     packages:
-    - pandoc
+      - luarocks
+
+git:
+  depth: 150
+
+install: luarocks install --local luacheck
+
+script: /home/travis/.luarocks/bin/luacheck . --no-color -q
+
+after_success:
  
 script: 
-  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -m .pkgmeta -p 297511
-  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -g 1.13.2 -m .pkgmeta-classic -p 297511
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.2 -m .pkgmeta-classic -p 297511
  
 branches:
   only:

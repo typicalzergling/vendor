@@ -12,18 +12,10 @@ if _G[AddonName] or _G[AddonName.."_GET"] or _G[AddonName.."_LOC"] then
 end
 _G[AddonName]  = {}
 
-local function isClassicWoW()
-	local version = GetBuildInfo();
-	if (version:match("%d") == "1") then
-		return true
-	end
-	return false
-end
-
 -- Setup our Addon & frame.
 local Addon = _G[AddonName]
 Addon.AddonFrame = CreateFrame("Frame")
-Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
+Addon.Is`Classic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
 
 -- Event Handling
 local events = {}
