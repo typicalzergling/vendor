@@ -15,6 +15,26 @@ local function IsMigrationToBFA()
     return false
 end
 
+local function IsMigrationToShadowlands()
+    local ver = tonumber(select(4, GetBuildInfo()));
+    local currV = tonumber(Vendor_RulesConfig.interfaceversion);
+
+    if ((ven >= 90000) and (currV < 90000)) then
+        Addon:Print("---> Migration to ShadowLands");
+        return true;
+    end
+    return false;
+end
+
+local function IsMigration()
+    if (IsMigrationToShadowlands()) then
+        return true;
+    elseif (IsMigrationToBFA()) then
+        return true;
+    end
+    return false;
+end
+
 --*****************************************************************************
 -- The default settings for Addon.
 --*****************************************************************************
@@ -121,7 +141,7 @@ function Addon.Config:Create()
                 -- For BFA specifically, there is an ilvl squish which necessitates a rule config reset.
                 elseif (Vendor_RulesConfig and 
                         ((Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)
-                         or IsMigrationToBFA())
+                         or IsMigration())
                        ) then
                     local oldRuleConfig = Vendor_RulesConfig
                     local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
@@ -331,6 +351,14 @@ function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
         if (rawget(oldSettings, SELL_RULES)) then
             Addon:Debug("[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
             rawset(newSettings, SELL_RULES, rawget(oldSettings, SELL_RULES))
+        end
+    end
+
+    if ((oldSettings.version == 5) and (newSettings == 6)) then
+        if (newSettings.interfaceversion >= 90000) then
+            Addon:Debug("[Config]: |        Need to migrate from 5->6 (SL)")
+        else
+            newSettings.version = 5;
         end
     end
 

@@ -69,4 +69,15 @@ Addon.ScriptReference.Functions =
         Args = L["HELP_TOOLTIPCONTAINS_ARGS"],
         Html = L["HELP_TOOLTIPCONTAINS_HTML"],
     },
+
+    HasStat = 
+    {
+        Args = "stat [, stat1 .. statN]",
+        Map = Addon.Maps.Stats,
+        Html =  "<p>describe" ..
+                "<br/><br/>Examples:<br/>" ..
+                "Haste:  " .. GREEN_FONT_COLOR_CODE .. "HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "<br/>" ..
+                "Strength no haste:  " .. GREEN_FONT_COLOR_CODE .. "HasStat('str') and not HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "<br/>" ..
+                "Corrupted Items:  " .. GREEN_FONT_COLOR_CODE .. "HasStat('corruption')" .. FONT_COLOR_CODE_CLOSE .. "<br/></p>",
+    },
 }

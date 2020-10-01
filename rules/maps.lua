@@ -56,4 +56,51 @@ Addon.Maps.Expansion =
     ["legion"] = LE_EXPANSION_LEGION,
     ["bfa"] = LE_EXPANSION_8_0, 
     ["bofa"] = LE_EXPANSION_8_0,
+    ["sl"] = 9.0,
+    ["shadowlands"] = 9.0
 }
+
+--*****************************************************************************
+-- Mapping of the various stat abbrviates/names to localized version you can 
+-- find on the actual item.
+--*****************************************************************************
+Addon.Maps.Stats = 
+{
+    ["agi"] = ITEM_MOD_AGILITY_SHORT,
+    ["agility"] = ITEM_MOD_AGILITY_SHORT,
+    ["ap"] = ITEM_MOD_ATTACK_POWER_SHORT,
+    ["attackpower"] = ITEM_MOD_ATTACK_POWER_SHORT,
+    ["attack power"] = ITEM_MOD_ATTACK_POWER_SHORT,
+    ["block"] = ITEM_MOD_BLOCK_RATING_SHORT,
+    ["corruption"] = ITEM_MOD_CORRUPTION,
+    ["crit"] = ITEM_MOD_CRIT_RATING_SHORT,
+    ["critical"] = ITEM_MOD_CRIT_RATING_SHORT,
+    ["critical strike"] = ITEM_MOD_CRIT_RATING_SHORT,
+    ["avoidance"] = ITEM_MOD_CR_AVOIDANCE_SHORT,
+    ["leach"] = ITEM_MOD_CR_LIFESTEAL_SHORT,
+    ["multistrike"] = ITEM_MOD_CR_MULTISTRIKE_SHORT,
+    ["speed"] = ITEM_MOD_CR_SPEED_SHORT,
+    ["industructable"] = ITEM_MOD_CR_STURDINESS_SHORT,
+    ["defense"] = ITEM_MOD_DEFENSE_SKILL_RATING_SHORT,
+    ["dodge"] = ITEM_MOD_DODGE_RATING_SHORT,
+    ["armor"] = ITEM_MOD_EXTRA_ARMOR_SHORT,
+    ["bonusarmor"] = ITEM_MOD_EXTRA_ARMOR_SHORT,
+    ["bonus armor"] = ITEM_MOD_EXTRA_ARMOR_SHORT,
+    ["haste"] = ITEM_MOD_HASTE_RATING_SHORT,
+    ["health"] = ITEM_MOD_HEALTH_SHORT,
+    ["hit"] = ITEM_MOD_HIT_RATING_SHORT,
+    ["int"] = ITEM_MOD_INTELLECT_SHORT,
+    ["intellect"] = ITEM_MOD_INTELLECT_SHORT,
+    ["manaregen"] = ITEM_MOD_MANA_REGENERATION_SHORT,
+    ["mana"] = ITEM_MOD_MANA_SHORT,
+    ["mastery"] = ITEM_MOD_MASTERY_RATING_SHORT,
+    ["parry"] = ITEM_MOD_PARRY_RATING_SHORT,
+    ["bonushealing"] = ITEM_MOD_SPELL_HEALING_DONE_SHORT,
+    ["spirit"] = ITEM_MOD_SPIRIT_SHORT,
+    ["stam"] = ITEM_MOD_STAMINA_SHORT,
+    ["stamina"] = ITEM_MOD_STAMINA_SHORT,
+    ["str"] = ITEM_MOD_STRENGTH_SHORT,
+    ["strength"] = ITEM_MOD_STRENGTH_SHORT,
+    ["vers"] = ITEM_MOD_VERSATILITY,
+    ["vers"] = ITEM_MOD_VERSATILITY, 
+};
