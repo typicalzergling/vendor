@@ -33,7 +33,6 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_SellAlways] = {},
     [Addon.c_Config_Tooltip] = true,
     [Addon.c_Config_SellLimit] = false,
-    [Addon.c_Config_MaxSellItems] = Addon.c_BuybackLimit,
 }
 
 --*****************************************************************************

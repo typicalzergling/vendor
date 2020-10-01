@@ -88,7 +88,7 @@ function Addon:AutoSell()
         local numSold = 0
         local totalValue = 0
         local sellLimitEnabled = Config:GetValue(Addon.c_Config_SellLimit)
-        local sellLimitMaxItems = Config:GetValue(Addon.c_Config_MaxSellItems)
+        local sellLimitMaxItems = Addon.c_BuybackLimit
         local sellThrottle = Config:GetValue(Addon.c_Config_SellThrottle)
 
         -- Loop through every bag slot once.

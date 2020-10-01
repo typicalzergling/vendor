@@ -11,8 +11,9 @@ Addon.c_AlwaysSellList = "always"
 Addon.c_NeverSellList = "never"
 Addon.c_RuleType_Sell = "Sell"
 Addon.c_RuleType_Keep = "Keep"
-Addon.c_RuleType_Custom = "Custom";
-Addon.c_RuleType_Scrap = "Scrap";
+Addon.c_RuleType_Custom = "Custom"
+Addon.c_RuleType_Scrap = "Scrap"
+Addon.c_BuybackLimit = 12
 
 -- Config Constants
 Addon.c_Config_SellNever = "sell_never"
