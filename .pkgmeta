@@ -4,6 +4,7 @@ move-folders:
  Vendor/Extensions/Vendor_Pawn: Vendor_Pawn
  Vendor/Extensions/Vendor_Ark: Vendor_Ark
  Vendor/Extensions/Vendor_RulePack: Vendor_RulePack
+ Vendor/Extensions/Vendor_TSM: Vendor_TSM
 
 ignore:
  - README.md
