@@ -62,8 +62,8 @@ local function isStringInTooltipText(tooltip, text, bag, slot, str)
     -- Scan the tooltip left text.
     for i=1, tooltip:NumLines() do
         local left = _G[tooltipText..i]
-        local text = left:GetText()
-        if text and string.find(text, str) then
+        local txt = left:GetText()
+        if txt and string.find(txt, str) then
             return true
         end
     end
@@ -111,3 +111,11 @@ end
 function Addon:IsItemAlreadyKnownInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ITEM_SPELL_KNOWN"])
 end
+
+-- Crafting Reagent
+function Addon:IsItemCraftingReagentInTooltip(tooltip, bag, slot)
+    -- Look, I don't know why it's called that, but it is. Blizzard has...reasons.
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["PROFESSIONS_USED_IN_COOKING"])
+end
+
+

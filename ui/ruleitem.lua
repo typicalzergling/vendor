@@ -135,7 +135,7 @@ function RuleItem:SetParamValue(name, value)
                     frame:SetNumber(value);
                 end
             else
-                Addon:DebugRules("The parameter type '%s' is unknown for '%s'", frame.paramType, name);
+                Addon:DebugRules("The parameter type '%s' is unknown for '%s' - rule %s", frame.paramType, name, tostring(self.ruleId));
             end
         end
     end

@@ -8,6 +8,10 @@ function Addon:Print(msg, ...)
     DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
 end
 
+function Addon:IsShadowlands()
+    return select(4, GetBuildInfo()) >= 90000
+end
+
 -- Gets the version of the addon
 function Addon:GetVersion()
     local version = GetAddOnMetadata(self.c_AddonName, "version")

@@ -384,6 +384,15 @@ you from accidentally selling them. We have a built-in Keep rule for this purpos
 ["HELP_ISTOY_HTML"] = [[
 <p>True if the item is a toy.</p>
 ]],
+["HELP_ISCRAFTINGREAGENT_HTML"] = [[
+<p>True if this specific item is a crafting reagent.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This is determined by the tooltip text. Note that if you drag a crafting reagent to the item box in a custom rule definition to read its properties, that item may incorrectly report as "false" but it will evaluate correctly with this property.
+</p>
+]],
 ["HELP_ISALREADYKNOWN_HTML"] = [[
 <p>True if the item is "Already known", such as a Toy or Recipe you have already learned.</p>
 ]],

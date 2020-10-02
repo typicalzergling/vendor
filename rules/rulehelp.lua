@@ -25,6 +25,7 @@ Addon.ScriptReference.ItemProperties =
     IsBindOnUse = { Html = L["HELP_ISBINDONUSE_HTML"] },
     IsArtifactPower = { Html = L["HELP_ISARTIFACTPOWER_HTML"] },
     IsUnknownAppearance = { Html = L["HELP_ISUNKNOWNAPPEARANCE_HTML"] },
+    IsCraftingReagent = { Html = L["HELP_ISCRAFTINGREAGENT_HTML"] },
     IsToy = { Html = L["HELP_ISTOY_HTML"] },
     IsAlreadyKnown  = { Html = L["HELP_ISALREADYKNOWN_HTML"] },
     IsUsable  = { Html = L["HELP_ISUSABLE_HTML"] },

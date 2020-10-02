@@ -15,7 +15,15 @@ local rulePackDefs =
             Name = "Tabards",
             Description = "Matches tabards, for example: |cff1eff00|Hitem:43154::::::::110:66::::::|h[Tabard of the Argent Crusade]|h|r",
             Script = "IsEquipment and EquipLoc == \"INVTYPE_TABARD\"",
-            Order = 1000,
+            Order = 1600,
+        },
+        {
+            Id = "craftingreagent",
+            Type = "Keep",
+            Name = "Crafting Reagents",
+            Description = "Matches all crafting reagent items.",
+            Script = "IsCraftingReagent",
+            Order = 1500,
         },
         {
             Id = "cosmetic",
@@ -23,7 +31,7 @@ local rulePackDefs =
             Name = "Keep cosmetic gear ",
             Description = "And gear which is considered cosmetic, for example: |cff1eff00|Hitem:21525:::::::2010962816:110:66::::::|h[Green Winter Hat]|h|r",
             Script = "IsEquipment and SubTypeId == 5",
-            Order = 1000,
+            Order = 1700,
         },
     },
 }

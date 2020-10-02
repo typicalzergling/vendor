@@ -148,6 +148,19 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
     end
 end
 
+--@do-not-package@
+--*****************************************************************************
+-- Debug only functions for testing functions in extensions
+--*****************************************************************************
+function Addon.RuleFunctions.tostring(...)
+    return tostring(...)
+end
+
+function Addon.RuleFunctions.print(...)
+    return Addon:DebugRules(...)
+end
+--@end-do-not-package@
+
 --*****************************************************************************
 -- This function allows testing the tooltip text for string values
 --*****************************************************************************
