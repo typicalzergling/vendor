@@ -2,7 +2,7 @@
 ## Title: Vendor_RulesPack
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
 ## Version: @project-version@
-## Author: Severin & Umferth of Windrunner
+## Author: Malvir & Buskin of Lightbringer
 ## Dependencies: Vendor
 
 vendorrulepack.lua

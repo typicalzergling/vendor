@@ -9,5 +9,5 @@
 ## Title: Vendor_ArkInventory
 ## Notes: ArkInventory extension. Requires both Vendor and ArkInventory
 ## Version: @project-version@
-## Author: Severin & Umferth of Windrunner
+## Author: Malvir & Buskin of Lightbringer
 vendorark.lua

@@ -9,7 +9,7 @@
 ## Version: @project-version@
 ## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings
 ## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_SettingsPerCharacter
-## Author: Severin & Umferth of Windrunner, Blondi & Kalisto of Grobbulus
+## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
 # Load order is very specific and important up until after Config is loaded.
