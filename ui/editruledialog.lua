@@ -613,6 +613,7 @@ end
 function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
     self:EnsureRulesEngine();
+    Addon:LoadAllBagItemLinks()
 end
 
 function EditRuleDialog:OnHide()
@@ -679,9 +680,11 @@ function EditRule:Cleanup()
     end
 end
 
--- Called when tab is pressed in one of our sub-controls.
+-- Called when tab is pressed in one of our sub-controls. Does not work on Classic
 function EditRule:OnTabPressed()
+    --@retail@
     self.tabgroup:OnTabPressed();
+    --@end-retail@
 end
 
 function EditRule:GetValues()

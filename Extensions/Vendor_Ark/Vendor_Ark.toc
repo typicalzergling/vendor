@@ -1,13 +1,13 @@
 #@retail@
-## Interface: 80200
+## Interface: 80300
 ## Dependencies: Vendor, ArkInventoryRules
 #@end-retail@
 #@non-retail@
 # ## Interface: 11302
-## Dependencies: Vendor, ArkInventoryRulesClassic
+# ## Dependencies: Vendor, ArkInventoryClassicRules
 #@end-non-retail@
 ## Title: Vendor_ArkInventory
-## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
+## Notes: ArkInventory extension. Requires both Vendor and ArkInventory
 ## Version: @project-version@
-## Author: Severin & Umferth of Windrunner
+## Author: Malvir & Buskin of Lightbringer
 vendorark.lua

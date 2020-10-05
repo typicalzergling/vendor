@@ -1,0 +1,8 @@
+## Interface: 80300
+## Title: Vendor_TSM
+## Notes: TradeSkillMaster extension for Vendor. Requires both TSM and Vendor.
+## Version: 1.0.0
+## Author: Malvir & Buskin of Lightbringer
+## Dependencies: Vendor, TradeSkillMaster
+
+vendortsmextension.lua

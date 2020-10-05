@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 80200
+## Interface: 80300
 #@end-retail@
 #@non-retail@
 # ## Interface: 11302
@@ -9,7 +9,7 @@
 ## Version: @project-version@
 ## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings
 ## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_SettingsPerCharacter
-## Author: Severin & Umferth of Windrunner, Blondi & Kalisto of Grobbulus
+## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
 # Load order is very specific and important up until after Config is loaded.
@@ -18,7 +18,10 @@ sys\init.lua
 sys\constants.lua
 
 # LOCALES - Locales must be loaded next so they can be used in all subsequent files.
+# Note that Locales that are not used will be thrown out, so it won't waste memory loading strings you don't need.
+# Default locale is always loaded so we support partial localization.
 loc\enUS.lua
+loc\frFR.lua
 
 # Helpers & Configuration loads after loc, giving all core functionality.
 sys\utils.lua

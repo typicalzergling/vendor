@@ -137,9 +137,12 @@ local function addRuleDefinition(ext, rdef)
         Name = rdef.Name,
         Description = rdef.Description,
         Script = rdef.Script,
+        ScriptText = rdef.ScriptText,
         Type = rdef.Type,
         ReadOnly = true,
+        Locked = true,
         Extension = ext,
+        Params = rdef.Params,
         Order = tonumber(rdef.Order) or nil,
     };
 
@@ -201,18 +204,32 @@ local function validateRule(rdef)
         return false, string.format("The rule (%s) did not contain a valid 'Description' field", rdef.Id);
     end
 
-    -- Script
-    if (not validateString(rdef.Script)) then
-        return false, string.format("The rule (%s) did not contain a valid 'Script' field", rdef.Id);
-    end
-    local result, message = loadstring(string.format("return(%s)", rdef.Script));
-    if (not result) then
-        return false, string.format("The rule (%s) has an invalid 'Script' field [%s]", rdef.Id, message);
+    -- Script can be either a function or a string.
+    if type(rdef.Script) == "function" then
+        -- function is OK, but we need a ScriptText value
+        if not rdef.ScriptText and not type(rdef.ScriptText) == "string" then
+            return false, string.format("The rule (%s) is a function script but did not have a ScriptText defined.", rdef.Id)
+        end
+
+    -- If not a function, we need to create one
+    else
+        if (not validateString(rdef.Script)) then
+            return false, string.format("The rule (%s) did not contain a valid 'Script' field", rdef.Id);
+        end
+        local result, message = loadstring(string.format("return(%s)", rdef.Script));
+        if (not result) then
+            return false, string.format("The rule (%s) has an invalid 'Script' field [%s]", rdef.Id, message);
+        end
     end
 
     -- Rule Type
     if (not validateStringValue(rdef.Type, Addon.c_RuleType_Sell, Addon.c_RuleType_Keep)) then
         return false, string.format("The rule (%s) has an invalid 'Type' field", rdef.Id);
+    end
+
+    -- Params
+    if rdef.Params and not type(rdef.Params) == "table" then
+        return false, string.format("The rule (%s) has an invalid 'Params' field", rdef.Id);
     end
 
     -- Order if provided.

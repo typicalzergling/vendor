@@ -29,7 +29,9 @@ local function importTooltipTextToTable(tooltip, text, bag, slot)
     -- Import the tooltip into a table
     tooltipTable = {}
     for i=1, tooltip:NumLines() do
-        table.insert(tooltipTable, _G[tooltipText..i]:GetText())
+        if _G[tooltipText..i] and _G[tooltipText..i]:GetText() then
+            table.insert(tooltipTable, _G[tooltipText..i]:GetText())
+        end
     end
     return tooltipTable
 end
@@ -61,9 +63,12 @@ local function isStringInTooltipText(tooltip, text, bag, slot, str)
 
     -- Scan the tooltip left text.
     for i=1, tooltip:NumLines() do
+        local txt = nil
         local left = _G[tooltipText..i]
-        local text = left:GetText()
-        if text and string.find(text, str) then
+        if left then
+            txt = left:GetText()
+        end
+        if txt and string.find(txt, str) then
             return true
         end
     end
@@ -89,25 +94,33 @@ end
 
 -- Soulbound
 function Addon:IsItemSoulboundInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ITEM_SOULBOUND"])
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_SOULBOUND"])
 end
 
 -- You haven't collected this appearance
 function Addon:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN"])
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_UNKNOWNAPPEARANCE"])
 end
 
 -- Artifact Power
 function Addon:IsItemArtifactPowerInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ARTIFACT_POWER"])
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_ARTIFACTPOWER"])
 end
 
 -- Toy
 function Addon:IsItemToyInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["TOY"])
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_TOY"])
 end
 
 -- Already known
 function Addon:IsItemAlreadyKnownInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, _G["ITEM_SPELL_KNOWN"])
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_ALREADYKNOWN"])
 end
+
+-- Crafting Reagent
+function Addon:IsItemCraftingReagentInTooltip(tooltip, bag, slot)
+    -- Look, I don't know why it's called that, but it is. Blizzard has...reasons.
+    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_CRAFTINGREAGENT"])
+end
+
+

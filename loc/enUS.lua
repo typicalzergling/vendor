@@ -171,6 +171,14 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_EQUIPMENTSET_NAME"] = "Equipment Sets",
 ["SYSRULE_KEEP_EQUIPMENTSET_DESC"] = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
 
+-- Tooltip Scan Overrides - Note for folks of non-English languages. If these scans don't work properly, create a new locale and override them. They have been confirmed to be correct in several languages, so probably dont need to be changed.
+["TOOLTIP_SCAN_SOULBOUND"] = _G["ITEM_SOULBOUND"],
+["TOOLTIP_SCAN_UNKNOWNAPPEARANCE"] = _G["TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN"],
+["TOOLTIP_SCAN_ARTIFACTPOWER"] = _G["ARTIFACT_POWER"],
+["TOOLTIP_SCAN_TOY"] = _G["TOY"],
+["TOOLTIP_SCAN_ALREADYKNOWN"] = _G["ITEM_SPELL_KNOWN"],
+["TOOLTIP_SCAN_CRAFTINGREAGENT"] = _G["PROFESSIONS_USED_IN_COOKING"],
+
 -- Data Migration
 ["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
 
@@ -383,6 +391,15 @@ you from accidentally selling them. We have a built-in Keep rule for this purpos
 ]],
 ["HELP_ISTOY_HTML"] = [[
 <p>True if the item is a toy.</p>
+]],
+["HELP_ISCRAFTINGREAGENT_HTML"] = [[
+<p>True if this specific item is a crafting reagent.
+<br/><br/>
+</p>
+<h2>Notes:</h2>
+<p>
+This is determined by the tooltip text. Note that if you drag a crafting reagent to the item box in a custom rule definition to read its properties, that item may incorrectly report as "false" but it will evaluate correctly with this property.
+</p>
 ]],
 ["HELP_ISALREADYKNOWN_HTML"] = [[
 <p>True if the item is "Already known", such as a Toy or Recipe you have already learned.</p>

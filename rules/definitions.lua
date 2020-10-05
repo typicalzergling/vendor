@@ -57,13 +57,14 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_OLDFOOD"],
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
-        ScriptText = "TypeId == 0 and SubTypeId == 5 and Level <= (PlayerLevel() - 10)",
+        ScriptText = "TypeId == 0 and SubTypeId == 5 and Level ~= 1 and Level <= (PlayerLevel() - 10)",
         Script = function()
-            return (TypeId == 0) and (SubTypeId == 5) and (Level <= (PlayerLevel() - 10));
+            return (TypeId == 0) and (SubTypeId == 5) and (Level ~= 1) and (Level <= (PlayerLevel() - 10));
         end,
         Order = 1100,
     },
 
+    --@retail@
     {
         Id = "sell.knowntoys",
         Type = SELL_RULE,
@@ -75,6 +76,7 @@ Rules.SystemRules =
             end,
         Order = 1300,
     },
+    --@end-retail@
 
     {
         Id = "sell.uncommongear",
@@ -181,6 +183,7 @@ Rules.SystemRules =
     },
 
     -- Safeguard rule - Protect those transmogs!
+    --@retail@
     {
         Id = "keep.unknownappearance",
         Type = KEEP_RULE,
@@ -190,6 +193,7 @@ Rules.SystemRules =
         Script = function() return IsUnknownAppearance end,
         Order = 1200,
     },
+    --@end-retail@
 
     -- Safeguard rule - Common items are usually important and useful.
     {
@@ -243,6 +247,7 @@ Rules.SystemRules =
 
     -- Safeguard against selling item sets, even if it matches some
     -- other rule, for example, a fishing or transmog set.
+    --@retail@
     {
         Id = "keep.equipmentset",
         Type = KEEP_RULE,
@@ -252,11 +257,13 @@ Rules.SystemRules =
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
     },
+    --@end-retail@
 
     --*****************************************************************************
     -- Scrap rules
     --*****************************************************************************
 
+    --@retail@
     {
         Id = "scrap.scrapable",
         Type = SCRAP_RULE,
@@ -266,6 +273,7 @@ Rules.SystemRules =
         Script = function() return (IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains("Scrapable")) end,
         Order = 3000,
     },
+    --@end-retail@
 
 };
 

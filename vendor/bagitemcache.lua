@@ -122,3 +122,15 @@ function Addon:OnBagUpdate(event, bag)
     end ]]
     self:ClearBagItemCache(tonumber(bag))
 end
+
+-- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
+function Addon:LoadAllBagItemLinks()
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1, GetContainerNumSlots(bag) do
+            GetContainerItemInfo(bag, slot)
+        end
+    end
+end
+
+
+

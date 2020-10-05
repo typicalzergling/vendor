@@ -17,6 +17,12 @@ function Addon:OnMerchantShow()
 
     -- Do auto-selling if enabled
     if Config:GetValue(Addon.c_Config_AutoSell) then
+
+        -- On Classic there is a caching issue, clear the cache to be certain.
+        if Addon.IsClassic then
+            self:ClearBagItemCache()
+        end
+
         self:AutoSell()
     end
 end
@@ -35,7 +41,8 @@ end
 function Addon:AutoRepair()
     local cost, canRepair = GetRepairAllCost()
     if canRepair then
-        if Config:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
+        -- Guild repair is not supported on Classic. The API method "CanGuidlBankRepair" is missing.
+        if not Addon.IsClassic and Config:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
             -- use guild repairs
             RepairAllItems(true)
             self:Print(string.format(L["MERCHANT_REPAIR_FROM_GUILD_BANK"], self:GetPriceString(cost)))
@@ -81,7 +88,7 @@ function Addon:AutoSell()
         local numSold = 0
         local totalValue = 0
         local sellLimitEnabled = Config:GetValue(Addon.c_Config_SellLimit)
-        local sellLimitMaxItems = Config:GetValue(Addon.c_Config_MaxSellItems)
+        local sellLimitMaxItems = Addon.c_BuybackLimit
         local sellThrottle = Config:GetValue(Addon.c_Config_SellThrottle)
 
         -- Loop through every bag slot once.

@@ -29,6 +29,7 @@ local Addon, L = _G[select(1,...).."_GET"]()
 --     IsToy = false
 --     IsAlreadyKnown = false
 --     IsAzeriteItem = false
+--     IsCraftingReagent
 
 --[[
 local function GetItemEquipmentSets(itemId)
@@ -103,6 +104,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsToy = false
     item.IsAlreadyKnown = false
     item.IsAzeriteItem = false
+    item.IsCraftingReagent = false
 
     -- Get the effective item level.
     item.Level = GetDetailedItemLevelInfo(item.Link)
@@ -160,6 +162,14 @@ function Addon:GetItemProperties(arg1, arg2)
     if not item.IsSoulbound and item.IsEquipment then
         if self:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot) then
             item.IsUnknownAppearance = true
+        end
+    end
+
+    -- Determine if crafting reagent
+    -- These are typically itemtype 7, which is 'tradeskill' but sometimes item type 15, which is miscellaneous.
+    if item.TypeId == 7 or item.TypeId == 15 then
+        if self:IsItemCraftingReagentInTooltip(tooltip, bag, slot) then
+            item.IsCraftingReagent = true
         end
     end
 
