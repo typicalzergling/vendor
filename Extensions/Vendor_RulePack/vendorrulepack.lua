@@ -30,7 +30,7 @@ local rulePackDefs =
             Type = "Keep",
             Name = "Keep cosmetic gear ",
             Description = "And gear which is considered cosmetic, for example: |cff1eff00|Hitem:21525:::::::2010962816:110:66::::::|h[Green Winter Hat]|h|r",
-            Script = "IsEquipment and SubTypeId == 5",
+            Script = "TypeId == 4 and SubTypeId == 5",
             Order = 1700,
         },
     },

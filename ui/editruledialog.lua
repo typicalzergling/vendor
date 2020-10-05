@@ -613,6 +613,7 @@ end
 function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
     self:EnsureRulesEngine();
+    Addon:LoadAllBagItemLinks()
 end
 
 function EditRuleDialog:OnHide()

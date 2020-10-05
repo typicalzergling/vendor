@@ -171,6 +171,14 @@ AddonLocales["enUS"] =
 ["SYSRULE_KEEP_EQUIPMENTSET_NAME"] = "Equipment Sets",
 ["SYSRULE_KEEP_EQUIPMENTSET_DESC"] = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
 
+-- Tooltip Scan Overrides - Note for folks of non-English languages. If these scans don't work properly, create a new locale and override them. They have been confirmed to be correct in several languages, so probably dont need to be changed.
+["TOOLTIP_SCAN_SOULBOUND"] = _G["ITEM_SOULBOUND"],
+["TOOLTIP_SCAN_UNKNOWNAPPEARANCE"] = _G["TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN"],
+["TOOLTIP_SCAN_ARTIFACTPOWER"] = _G["ARTIFACT_POWER"],
+["TOOLTIP_SCAN_TOY"] = _G["TOY"],
+["TOOLTIP_SCAN_ALREADYKNOWN"] = _G["ITEM_SPELL_KNOWN"],
+["TOOLTIP_SCAN_CRAFTINGREAGENT"] = _G["PROFESSIONS_USED_IN_COOKING"],
+
 -- Data Migration
 ["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
 
