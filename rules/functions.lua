@@ -13,6 +13,23 @@ Addon.RuleFunctions.HEIRLOOM = LE_ITEM_QUALITY_HEIRLOOM;
 Addon.RuleFunctions.TOKEN = LE_ITEM_QUALITY_TOKEN;
 
 --*****************************************************************************
+-- Helper function which given a value, will search the map for the value
+-- and return  the value contained in the map.
+--*****************************************************************************
+local function getValueFromMap(map, value)
+    if (type(map) ~= "table") then
+        return nil;
+    end
+    
+    local mapValue = value;
+    if (type(mapValue) == "string") then
+            mapValue = string.lower(mapValue);
+    end
+
+    return map[mapValue];
+end
+
+--*****************************************************************************
 -- Given a set of values this searches for them in the map to see if they map
 -- the expected value which is passed in.
 --*****************************************************************************
@@ -185,54 +202,35 @@ function Addon.RuleFunctions.TooltipContains(...)
     return checkSide("left", OBJECT.TooltipLeft) or checkSide("right", OBJECT.TooltipRight)
 end
 
-Addon.ScriptReference = Addon.ScriptReference or {}
-Addon.ScriptReference.Functions =
-{
-    PlayerLevel = "Returns the current level of the player",
-	PlayerItemLevel = "Returns the average equipped item level for the player, this is not implemented in classic",
-    IsAlwaysSellItem = "Returns the state of the item in the always sell list.  A return value of tue indicates it belongs to the list while false indicates it does not.",
-    IsNeverSellItem = "Retruns the state of the item in the never sell list.  A return value of true indicates it belongs to the list false indicates it does not.",
+--*****************************************************************************
+-- Checks if the item contains a particular stat.
+--*****************************************************************************
+function Addon.RuleFunctions.HasStat(...)
+    local stats = {...};
+    local itemStats = {};
 
-    ItemQuality =
-    {
-        Args = "qual [, qual1..qualN]",
-        Map = Addon.Maps.ItemQuality,
-        Text = "Determines the item quality",
-    },
+    -- build a table of the stats this item has
+    for st, sv in pairs(GetItemStats(string.format("item:%d", Id))) do
+        if (sv ~= 0) then
+            itemStats[_G[st]] = true;
+        end
+    end
 
-    IsFromExpansion =
-    {
-        Args = "xpack0 [, xpack1 .. xpackN]",
-        Text = "For items which are marked with and expansion this will compare it against the argeuments, they can either be the numeric identifier or one of the strings shown below.",
-        Map = Addon.Maps.Expansion,
-    },
+    if (not itemStats or not table.getn(itemStats)) then
+        return false;
+    end
+    
+    local n = table.getn(stats);
+    for _, iStat in ipairs({...}) do
+        local stat = getValueFromMap(Addon.Maps.Stats, iStat)
+        if (stat and 
+            (type(stat) == "string") and 
+            string.len(stat) and 
+            itemStats[stat]) then
+            print("item has ", stat);
+            return true;
+        end
+    end
 
-    ItemType =
-    {
-        Args = "type0 [, type2...typeN]",
-        Text = "Checks the item type against the string/number passed in which represents the item type",
-        Map = Addon.Maps.Quality,
-    },
-
-    IsInEquipmentSet =
-    {
-        Args = "[setName0 .. setNameN]",
-        Html = "<p>Checks if the item is a memmber of a Blizzard equipment set and returns true if found." ..
-               "If no arguments are provied then all of the chracters equipment sets are check, otherwise" ..
-               "this checks only the specified sets.<br/><br/>" ..
-               "Examples:<br/>" ..
-               "Any: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet()<br/>" .. FONT_COLOR_CODE_CLOSE ..
-               "Specific: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet(\"Tank\")</p>" .. FONT_COLOR_CODE_CLOSE,
-    },
-
-    TooltipContains =
-    {
-        Args = "text [, side, line]",
-        Html = "<p>Checks if specified text is in the item's tooltip." ..
-               "Which side of the tooltip (left or right), and a specific line to check are optional." ..
-               "If no line or side is specified, the entire tooltip will be checked.<br/><br/>" ..
-               "Examples:<br/>" ..
-               "Anywhere: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Rogue\")<br/>" .. FONT_COLOR_CODE_CLOSE ..
-               "Check left side line 1: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Vanq\", \"left\", 1)</p>" .. FONT_COLOR_CODE_CLOSE,
-    },
-}
+    return false;
+end

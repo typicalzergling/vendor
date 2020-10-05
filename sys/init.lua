@@ -7,6 +7,8 @@
 -- If this already exists we will assert, as that means you either screwed up and didn't load this first,
 -- or it means someone else already defined the namespace, and we're in Undefined Behavior land.
 local AddonName = select(1,...)
+
+print(...);
 if _G[AddonName] or _G[AddonName.."_GET"] or _G[AddonName.."_LOC"] then
     assert(false, "Addon conflict detected. Addon already exists with this name: "..AddonName)
 end

@@ -99,7 +99,7 @@ Addon.RuleDocumentation =
             for val, _ in pairs(item.Map) do
                 table.insert(temp, string.format("\"%s\"", val))
             end
-            return "<h2>Possible Values:</h2><p>" .. table.concat(temp, ", ") .. "</p>";
+            return "<br/><h2>Possible Values:</h2><p>" .. table.concat(temp, ", ") .. "</p>";
         end
         return ""
     end,
