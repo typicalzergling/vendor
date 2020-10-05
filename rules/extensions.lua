@@ -55,6 +55,7 @@ local Extensions =
     _exts = {},
     _functions = {},
     _rules = {},
+    _onruleupdate = {},
     OnChanged = Package.CreateEvent("Extensions.OnChanged");
 };
 
@@ -66,6 +67,11 @@ end
 -- Simple helper for validating a table (non-empty)
 local function validateTable(t)
     return (t and (type(t) == "table") and (table.getn(t) ~= 0));
+end
+
+-- Simple helper for validating a function.
+local function isValidFunction(f)
+    return (f and (type(f) == "function"))
 end
 
 -- Simple helper which validates the string is not-only valid but also
@@ -112,7 +118,8 @@ local function addExtension(source, addon)
         Source = source,
         Name = addon,
         Functions = 0,
-        Rules = 0;
+        Rules = 0,
+        OnUpdate = 0
     };
 
     table.insert(Extensions._exts, a);
@@ -149,6 +156,28 @@ local function addRuleDefinition(ext, rdef)
     Addon:Debug("Added rule '%s' from: %s", r.Name, ext.Name);
     table.insert(Extensions._rules, r);
 end
+
+-- Helper function to add an OnRuleUpdate callback to Vendor
+-- This attaches as a config callback, so anytime state is changed in Vendor it will fire.
+local function addOnRuleUpdateCallback(ext, cbdef)
+    local cb =
+    {
+        Source = ext.Source,
+        Function = cbdef,
+    };
+
+    -- Add callback to our list of callbacks in case we want to call them later.
+    Addon:Debug("Added OnRuleUpdate callback from %s", cb.Source);
+    table.insert(Extensions._onruleupdate, cb);
+
+    -- Add the callback to the config table.concat, this is the primary invocation point.
+    local function fn()
+        Addon:Debug("Executing callback from (%s)...", ext.Source)
+        cbdef()
+    end
+    Config:AddOnChanged(fn)
+end
+
 
 -- Function to compare two rule definitions and sort them by "order"
 local function compareRules(a, b)
@@ -310,6 +339,19 @@ function Extensions:GetRules(filter)
 end
 
 --[[===========================================================================
+    | GetOnUpdateCallbacks:
+    |   This gets all the callbacks when a rule change occurs and we need to
+    |   notify other addons.
+    ========================================================================--]]
+function Extensions:GetOnUpdateCallbacks()
+    local callbacks = {};
+    for _, callback in ipairs(self._onruleupdate) do
+        table.insert(callbacks, callback);
+    end
+    return callbacks;
+end
+
+--[[===========================================================================
     | GetRule:
     |   Searches for a particular rule registered by an extension, optinally
     |   making sure it matches the specified filter.
@@ -338,8 +380,8 @@ function Extensions:Register(extension)
     end
 
     -- Make sure we've actually got something to to.
-    if (not validateTable(extension.Functions) and not validateTable(extension.Rules)) then
-        error(string.format("An extension must provide rules and/or functions to be registered. (%s)", extension.Source), 2);
+    if (not validateTable(extension.Functions) and not validateTable(extension.Rules) and not isValidFunction(extension.OnRuleUpdate)) then
+        error(string.format("An extension must provide rules, and/or functions, and or an update callback to be registered. (%s)", extension.Source), 2);
     end
 
 
@@ -366,6 +408,15 @@ function Extensions:Register(extension)
             end
         end
     end
+    
+    -- Validate the OnUpdate function
+    if (extension.OnRuleUpdate) then
+        Addon:Debug("Validating OnRuleUpdate callback for: %s (%s)", extension.Source, name)
+        if not isValidFunction(extension.OnRuleUpdate) then
+            Addon:Debug("Failed validating OnRuleUpdate callback for %s (%s).", extension.Source, name)
+            return false
+        end
+    end
 
     -- Now that we've validated everything register it into our objects.
     local ext = addExtension(extension.Source, name);
@@ -382,9 +433,13 @@ function Extensions:Register(extension)
         end
         table.sort(self._rules, compareRules);
     end
+    if (extension.OnRuleUpdate) then
+        ext.OnRuleUpdate = 1
+        addOnRuleUpdateCallback(ext, extension.OnRuleUpdate)
+    end
 
     self.OnChanged("ADDED", ext);
-    Addon:Print("Completed registration of %s (%s) with %d function(s) and %d rule(s)", ext.Source, ext.Name, ext.Functions, ext.Rules);
+    Addon:Print("Completed registration of %s (%s) with %d function(s), %d rule(s) and %d OnRuleUpdate functions.", ext.Source, ext.Name, ext.Functions, ext.Rules, ext.OnRuleUpdate);
     return true;
 end
 

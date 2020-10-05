@@ -44,12 +44,16 @@ local ruleName = nil
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Addon:ClearTooltipResultCache()
+    Addon:Debug("Clearing tooltip result cache")
     itemLink = nil
     willBeSold = nil
     blocklist = nil
     ruleId = nil
     ruleName = nil
 end
+
+Config:AddOnChanged(Addon.ClearTooltipResultCache)
+
 
 function Addon:AddItemTooltipLines(tooltip, link)
     -- Check Cache if we already have data for this item from a previous update.
