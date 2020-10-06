@@ -227,7 +227,6 @@ function Addon.RuleFunctions.HasStat(...)
             (type(stat) == "string") and 
             string.len(stat) and 
             itemStats[stat]) then
-            print("item has ", stat);
             return true;
         end
     end
