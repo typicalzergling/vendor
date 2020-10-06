@@ -210,7 +210,7 @@ function Addon.RuleFunctions.HasStat(...)
     local itemStats = {};
 
     -- build a table of the stats this item has
-    for st, sv in pairs(GetItemStats(string.format("item:%d", Id))) do
+    for st, sv in pairs(GetItemStats(Link)) do
         if (sv ~= 0) then
             itemStats[_G[st]] = true;
         end
@@ -227,7 +227,6 @@ function Addon.RuleFunctions.HasStat(...)
             (type(stat) == "string") and 
             string.len(stat) and 
             itemStats[stat]) then
-            print("item has ", stat);
             return true;
         end
     end

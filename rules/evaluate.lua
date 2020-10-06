@@ -10,8 +10,6 @@ function Addon:EvaluateItemForSelling(item)
         return false, nil, nil
     end
 
-    -- If have not yet initialized, or the config has changed we need to build our list of "keep" rules
-    -- we always add the check against the neversell list no matter what the options says
     if (not self.ruleManager) then
         self.ruleManager = Addon.RuleManager:Create();
     end
