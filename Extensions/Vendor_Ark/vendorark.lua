@@ -31,13 +31,15 @@ registerArkExtension()
 
 -- Checks if an item is auto-sold by vendor
 function Addon:Vendor_AutoSell()
-    local fn = "Vendor_AutoSell";
+    assert(ArkInventory and ArkInventory.API.InternalIdToBlizzardBagId)
     local object = ArkInventoryRules.Object;
-    if (not object.h or (object.class ~= "item")) then
+    if (not object or not object.loc_id or not object.bag_id or not object.slot_id) then
         return;
     end
 
-    local item = Vendor:GetItemProperties(GameTooltip, object.h);
+    -- Becuase Ark is on another planet and has its own concept of bags, must convert to blizzard bags.
+    local bag = ArkInventory.API.InternalIdToBlizzardBagId( object.loc_id, object.bag_id )
+    local item = Vendor:GetItemProperties(bag, object.slot_id)
     if (item) then
         return Vendor:EvaluateItemForSelling(item);
     end
