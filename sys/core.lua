@@ -33,5 +33,5 @@ function Addon:OnInitialize()
     self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
 
     -- Print version and load confirmation to console.
-    self:Print("%s %sv%s%s is loaded.", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, self:GetVersion(), FONT_COLOR_CODE_CLOSE)
+    self:Print("%s %sv%s%s %s", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, self:GetVersion(), FONT_COLOR_CODE_CLOSE, L["ADDON_LOADED"])
 end

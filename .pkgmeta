@@ -1,14 +1,17 @@
 package-as: Vendor
 
+ignore:
+ - README.md
+ - LICENSE.txt
+ - Vendor_Work.txt
+ - ui/debugconfig.lua
+ - .release/*
+ - *.sh
+
 move-folders:
  Vendor/Extensions/Vendor_Pawn: Vendor_Pawn
  Vendor/Extensions/Vendor_Ark: Vendor_Ark
  Vendor/Extensions/Vendor_RulePack: Vendor_RulePack
  Vendor/Extensions/Vendor_TSM: Vendor_TSM
 
-ignore:
- - README.md
- - CHANGES.txt
- - LICENSE.txt
- - Vendor_Work.txt
- - /ui/debugconfig.lua
+

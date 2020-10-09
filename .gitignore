@@ -39,3 +39,11 @@ luac.out
 *.x86_64
 *.hex
 
+# Release folders
+.release/classic/
+.release/retail/
+!.release/build*
+!.release/devmode*
+.release/.env
+
+
