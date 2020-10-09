@@ -58,6 +58,7 @@ rules\rulehelp.lua
 ui\common.xml
 ui\tooltip.lua
 ui\ruleslist.xml
+ui\itemlist.xml
 ui\generalconfigpanel.lua
 ui\repairconfigpanel.lua
 ui\perfconfigpanel.lua

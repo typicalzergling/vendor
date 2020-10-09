@@ -17,9 +17,9 @@ end
 
 local function IsMigrationToShadowlands()
     local ver = tonumber(select(4, GetBuildInfo()));
-    local currV = tonumber(Vendor_RulesConfig.interfaceversion);
+    local currV = tonumber(Vendor_RulesConfig.interfaceversion) or ver;
 
-    if ((ven >= 90000) and (currV < 90000)) then
+    if ((ver >= 90000) and (currV < 90000)) then
         Addon:Print("---> Migration to ShadowLands");
         return true;
     end

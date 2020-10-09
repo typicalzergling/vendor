@@ -42,6 +42,11 @@ function RulesDialog:SetupTab(tabId, tabName, helpText)
         if (panel.TopText and helpText) then
             panel.TopText:SetText(L[helpText]);
         end
+
+        if (tabId == LISTS_TABID) then
+            panel.alwaysSellLabel:SetText("Always Sell:");
+            panel.alwaysKeepLabel:SetText("Always Keep:");
+        end
     end
 end
 

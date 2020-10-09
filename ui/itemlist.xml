@@ -1,0 +1,64 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="itemlist.lua"/>
+	<Script file="itemlistitem.lua"/>
+    
+	<!-- -->
+   	<ScrollFrame name="Vendor_Item_List" virtual="true" inherits="FauxScrollFrameTemplate">
+        <KeyValues>
+            <KeyValue key="itemHeight" value="64" type="number"/>
+        </KeyValues>
+		<Layers>
+			<Layer level="BORDER" textureSubLevel="-2">
+				<Texture parentKey="scrollbarBackground">
+					<Color r="0" g="0" b="0" a="0.65"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>Vendor.ItemList.OnLoad(self);</OnLoad>
+			<OnShow>self:OnShow(self);</OnShow>
+			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
+		</Scripts>
+	</ScrollFrame>
+
+	<!-- -->
+	<Button name="Vendor_Item_Template" virtual="true">
+		<Size x="396" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="background" setAllPoints="true" hidden="true"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="link" inherits="GameFontHighlight" justifyH="LEFT" justifyV="CENTER" text="item -- item">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="0"/>
+						<Anchor point="TOPRIGHT" x="4" y="-24"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+        <Frames>            
+        </Frames>
+		<HighlightTexture file="Interface\PVPFrame\PvPMegaQueue" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="12" y="0"/>
+				<Anchor point="BOTTOMRIGHT" x="-12" y="0"/>
+			</Anchors>
+			<TexCoords left="0.00195313" right="0.63867188" top="0.70703125" bottom="0.76757813"/>
+		</HighlightTexture>
+		<Scripts>
+			<OnLoad>self:RegisterForClicks("LeftButtonUp","RightButtonUp");</OnLoad>
+            <OnClick>self:OnClick(button)</OnClick>
+            <OnEnter>self:OnMouseEnter()</OnEnter>
+            <OnLeave>self:OnMouseLeave()</OnLeave>
+		</Scripts>
+	</Button>
+</Ui>
