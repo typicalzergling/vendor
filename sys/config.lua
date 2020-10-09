@@ -255,6 +255,16 @@ end
 
 
 --*****************************************************************************
+-- Called to signal changes in the config explicitly.
+--*****************************************************************************
+function Addon.Config:NotifyChanges()
+    Addon:Debug("Notifying Changes")
+    self.changes = true
+    self:notifyChanges()
+end
+
+
+--*****************************************************************************
 -- Returns the configuration value with the specified name, if we cannot find
 -- the specified value then 'nil' is returned
 --
@@ -397,7 +407,6 @@ end
 function Addon:GetConfig()
     if (not self.config) then
         self.config = Addon.Config:Create()
-        self.config:AddOnChanged(function() self:ClearTooltipResultCache() end)
     end
     return self.config
 end

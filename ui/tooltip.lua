@@ -51,6 +51,9 @@ function Addon:ClearTooltipResultCache()
     ruleName = nil
 end
 
+Config:AddOnChanged(Addon.ClearTooltipResultCache)
+
+
 function Addon:AddItemTooltipLines(tooltip, link)
     -- Check Cache if we already have data for this item from a previous update.
     -- If it isn't in the cache, we need to evaluate this item/link.

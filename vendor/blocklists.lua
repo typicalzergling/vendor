@@ -1,4 +1,4 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local Addon, L, Config = _G[select(1,...).."_GET"]()
 
 -- Manages the always-sell and never-sell blocklists.
 -- Consider - adding "toggle" as a method on config can (and should) fire a config change.
@@ -23,17 +23,19 @@ function Addon:ToggleItemInBlocklist(list, item)
     local id = self:GetItemId(item)
     if not id then return nil end
 
-    local config = self:GetConfig()
-
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
     if list == self.c_AlwaysSellList then
-        local ret = toggle(config:GetValue("sell_always"), config:GetValue("sell_never"), id)
-        if (ret) then self:ClearTooltipResultCache() end
+        local ret = toggle(Config:GetValue("sell_always"), Config:GetValue("sell_never"), id)
+        if (ret) then
+            Config:NotifyChanges()
+        end
         return ret
     elseif list == self.c_NeverSellList then
-        local ret = toggle(config:GetValue("sell_never"), config:GetValue("sell_always"), id)
-        if (ret) then  self:ClearTooltipResultCache() end
+        local ret = toggle(Config:GetValue("sell_never"), Config:GetValue("sell_always"), id)
+        if (ret) then
+            Config:NotifyChanges()
+        end
         return ret
     else
         return nil
