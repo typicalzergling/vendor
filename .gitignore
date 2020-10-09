@@ -44,6 +44,6 @@ luac.out
 .release/retail/
 !.release/build*
 !.release/devmode*
-.release/.env
+.env
 
 
