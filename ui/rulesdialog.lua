@@ -44,8 +44,8 @@ function RulesDialog:SetupTab(tabId, tabName, helpText)
         end
 
         if (tabId == LISTS_TABID) then
-            panel.alwaysSellLabel:SetText("Always Sell:");
-            panel.alwaysKeepLabel:SetText("Always Keep:");
+            panel.alwaysSellLabel:SetText(L["CONFIG_DIALOG_LISTS_ALWAYS_LABEL"]);
+            panel.alwaysKeepLabel:SetText(L["CONFIG_DIALOG_LISTS_NEVER_LABEL"]);
         end
     end
 end

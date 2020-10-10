@@ -128,8 +128,11 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SCRAPRULES_TAB"] = "Scrap Rules";
 ["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "<< Make some useful text >>";
 ["CONFIG_DIALOG_LISTS_TAB"] = "Lists";
-["CONFIG_DIALOG_LISTS_TEXT"] =  "<< Make some useful text >>";
-
+["CONFIG_DIALOG_LISTS_TEXT"] =  "View the contents of the always sell and the never sell list.  " ..
+    YELLOW_FONT_COLOR_CODE .. "Left-Click" .. FONT_COLOR_CODE_CLOSE .. " to remove the item from the list.  " ..
+    YELLOW_FONT_COLOR_CODE .. "Right-Click" .. FONT_COLOR_CODE_CLOSE .. " swap the item to the other list.",
+["CONFIG_DIALOG_LISTS_ALWAYS_LABEL"] = "Always Sell:",
+["CONFIG_DIALOG_LISTS_NEVER_LABEL"] = "Never Sell:",
 
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",
@@ -442,6 +445,23 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
                "Anywhere: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Rogue\")<br/>" .. FONT_COLOR_CODE_CLOSE ..
                "Check left side line 1: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Vanq\", \"left\", 1)</p>" .. FONT_COLOR_CODE_CLOSE,
 
+
+["ITEMLIST_REMOVE_FROM_SELL_FMT"] = 
+    "%s has been removed from the " .. RED_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_REMOVE_FROM_KEEP_FMT"] = 
+    "%s has been removed from the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_MOVE_FROM_KEEP_TO_SELL_FMT"] = 
+    "%s has been moved from the " .. 
+    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. 
+    " sell list to the " ..
+    RED_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. 
+    " sell list",
+["ITEMLIST_REMOVE_FROM_SELL_TO_KEEP_FMT"] = 
+    "%s has been moved from the " .. 
+    RED_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. 
+    " sell list to the " ..
+    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. 
+    " sell list",
 
 } -- END OF LOCALIZATION TABLE
 
