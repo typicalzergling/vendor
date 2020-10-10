@@ -243,6 +243,9 @@
 		                </Anchors>
 	                </Frame>
                     <ScrollFrame parentKey="selllist" inherits="Vendor_Item_List">
+                        <KeyValues>
+                            <KeyValue key="listType" value="always" type="string"/>
+                        </KeyValues>                    
                         <Layers>
                             <Layer>
                                 <FontString justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalGraySmall" parentKey="emptyText" 
@@ -268,6 +271,9 @@
 		                </Anchors>
 	                </Frame>
                     <ScrollFrame parentKey="keeplist" inherits="Vendor_Item_List">
+                        <KeyValues>
+                            <KeyValue key="listType" value="never" type="string"/>
+                        </KeyValues>                    
 	                    <Anchors>
 		                    <Anchor point="TOPLEFT" relativeKey="$parent.outlineKeep" relatvePoint="TOPLEFT" x="4" y="-5"/>
 		                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.outlineKeep" relativePoint="BOTTOMRIGHT" x="-4" y="4"/>

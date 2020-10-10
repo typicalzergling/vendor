@@ -106,6 +106,7 @@ function Addon.Config:Create()
         notifyChanges =
             function(self)
                 if ((self.suspend == 0) and self.changes) then
+                    Addon:Debug("Notifying Changes");
                     for _, callback in ipairs(self.handlers) do
                         local status, result = pcall(callback, self)
                         if (not status) then
@@ -258,7 +259,6 @@ end
 -- Called to signal changes in the config explicitly.
 --*****************************************************************************
 function Addon.Config:NotifyChanges()
-    Addon:Debug("Notifying Changes")
     self.changes = true
     self:notifyChanges()
 end

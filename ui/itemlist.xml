@@ -5,7 +5,7 @@
 	<!-- -->
    	<ScrollFrame name="Vendor_Item_List" virtual="true" inherits="FauxScrollFrameTemplate">
         <KeyValues>
-            <KeyValue key="itemHeight" value="64" type="number"/>
+            <KeyValue key="itemHeight" value="24" type="number"/>
         </KeyValues>
 		<Layers>
 			<Layer level="BORDER" textureSubLevel="-2">
@@ -31,34 +31,37 @@
 
 	<!-- -->
 	<Button name="Vendor_Item_Template" virtual="true">
-		<Size x="396" y="20"/>
+		<Size x="396" y="24"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="background" setAllPoints="true" hidden="true"/>
+				<Texture parentKey="background" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1"/>
+					</Anchors>
+				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString parentKey="link" inherits="GameFontHighlight" justifyH="LEFT" justifyV="CENTER" text="item -- item">
+				<FontString parentKey="text" inherits="GameFontHighlight" justifyH="LEFT" justifyV="MIDDLE">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="4" y="0"/>
-						<Anchor point="TOPRIGHT" x="4" y="-24"/>
+						<Anchor point="TOPLEFT" x="8" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="2"/>
 					</Anchors>
 				</FontString>
 			</Layer>
+			<Layer level="OVERLAY">
+				<Texture file="Interface\RAIDFRAME\ReadyCheck-NotReady" parentKey="remove" hidden="true">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-2"/>
+					</Anchors>
+				</Texture>			
+			</Layer>
 		</Layers>
-        <Frames>            
-        </Frames>
-		<HighlightTexture file="Interface\PVPFrame\PvPMegaQueue" alphaMode="ADD">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="12" y="0"/>
-				<Anchor point="BOTTOMRIGHT" x="-12" y="0"/>
-			</Anchors>
-			<TexCoords left="0.00195313" right="0.63867188" top="0.70703125" bottom="0.76757813"/>
-		</HighlightTexture>
 		<Scripts>
-			<OnLoad>self:RegisterForClicks("LeftButtonUp","RightButtonUp");</OnLoad>
-            <OnClick>self:OnClick(button)</OnClick>
             <OnEnter>self:OnMouseEnter()</OnEnter>
             <OnLeave>self:OnMouseLeave()</OnLeave>
+			<OnClick>self:OnClick(button)</OnClick>
 		</Scripts>
 	</Button>
 </Ui>

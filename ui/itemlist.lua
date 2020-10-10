@@ -9,23 +9,21 @@
 	local Package = select(2, ...);
 	
 	function ItemList:CreateItem(itemId)
-		print("-----> item", itemId);
 		local item = Mixin(CreateFrame("Button", nil, self, "Vendor_Item_Template"), Package.ItemListItem);
-		self.itemHeight = item:GetHeight();
+		item:SetItem(itemId);
 		return item;
 	end
 
-	function ItemList:createModel(listType)
-		local list = Addon:GetBlocklist(listType);
+	function ItemList:createModel()
+		local list = Addon:GetList(self.listType);
 		local model = {};
 
-		for id, v in pairs(list) do
+		for id, v in pairs(list:GetContents()) do
 			if (v) then
 				table.insert(model, id);
 			end
 		end
 
-		print("table:", model, table.getn(model));
 		return model;
 	end
 		
@@ -38,11 +36,17 @@
 	function ItemList.OnLoad(self)
 		Mixin(self, ItemList, Package.ListBase);
 		self:AdjustScrollbar();
+		Config:AddOnChanged(
+			function()
+				if (self:IsShown()) then
+					self:UpdateView(self:createModel());
+				end
+			end
+		);
 	end
 	
 	function ItemList:OnShow()
-		print("---- list always show");
-		self:UpdateView(self:createModel(Addon.c_AlwaysSellList));
+		self:UpdateView(self:createModel());
 	end
 	
 	function ItemList:RefreshView()
