@@ -13,10 +13,13 @@
 		|   Create the frames which represent the rule parameters.
 		==========================================================================]]	
 	function ItemListItem:SetItem(itemId)
-		local name, link, quality = GetItemInfo(string.format("[item:%d]", itemId));
-		local color = ITEM_QUALITY_COLORS[quality]; 
-		local text = color.hex .. name .. FONT_COLOR_CODE_CLOSE;
-		self.background:SetColorTexture(color.r, color.g, color.b, 0.125);
+		local name, link, quality = GetItemInfo(itemId);
+		local color = ITEM_QUALITY_COLORS[quality];
+        local text = name
+        if color then
+            text = color.hex .. name .. FONT_COLOR_CODE_CLOSE;
+      		self.background:SetColorTexture(color.r, color.g, color.b, 0.125);
+        end
 		self.text:SetText(text);
 		self.itemId = itemId;
 		self.itemLink = link;
