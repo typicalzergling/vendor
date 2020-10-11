@@ -248,8 +248,7 @@
                         </KeyValues>                    
                         <Layers>
                             <Layer>
-                                <FontString justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalGraySmall" parentKey="emptyText" 
-                                text="Your always sell list is current empty.  You can drag and drop items into this list to add them.">
+                                <FontString justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalGraySmall" parentKey="emptyText">
                                     <Anchors>
                                         <Anchor point="TOPLEFT" x="4" y="-16"/>
                                         <Anchor point="BOTTOMRIGHT" x="-20" y="16"/>

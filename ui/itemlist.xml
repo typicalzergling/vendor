@@ -26,6 +26,7 @@
 			<OnLoad>Vendor.ItemList.OnLoad(self);</OnLoad>
 			<OnShow>self:OnShow(self);</OnShow>
 			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
+			<OnMouseUp>self:OnDropItem(button)</OnMouseUp>
 		</Scripts>
 	</ScrollFrame>
 
@@ -59,9 +60,9 @@
 			</Layer>
 		</Layers>
 		<Scripts>
+			<OnMouseUp>self:OnClick(button)</OnMouseUp>
             <OnEnter>self:OnMouseEnter()</OnEnter>
             <OnLeave>self:OnMouseLeave()</OnLeave>
-			<OnClick>self:OnClick(button)</OnClick>
 		</Scripts>
 	</Button>
 </Ui>

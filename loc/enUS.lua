@@ -451,6 +451,10 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
     "%s has been removed from the " .. RED_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
 ["ITEMLIST_REMOVE_FROM_KEEP_FMT"] = 
     "%s has been removed from the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_ADD_TO_SELL_FMT1"] = 
+    "%s has been added to then " .. RED_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_ADD_TO_KEEP_FMT1"] = 
+    "%s has been added to the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
 ["ITEMLIST_MOVE_FROM_KEEP_TO_SELL_FMT"] = 
     "%s has been moved from the " .. 
     GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. 
@@ -463,7 +467,10 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
     " sell list to the " ..
     GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. 
     " sell list",
-
+["ITEMLIST_LOADING"] = "Loading...",
+["ITEMLIST_LOADING_TOOLTIP"] = "The item information is currently retrieved from the server",
+["ITEMLIST_EMPTY_SELL_LIST"] = "Your always sell list is current empty you can drag and drop items into this list to add them.",
+["ITEMLIST_EMPTY_KEEP_LIST"] = "Your never sell list is current empty you can drag and drop items into this list to add them.",
 } -- END OF LOCALIZATION TABLE
 
 -- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.

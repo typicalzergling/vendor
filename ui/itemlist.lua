@@ -4,53 +4,83 @@
     | ItemList:
     ========================================================================--]]
 
-	local Addon, L, Config = _G[select(1,...).."_GET"]()
-	local ItemList = {}
-	local Package = select(2, ...);
+local Addon, L, Config = _G[select(1,...).."_GET"]()
+local ItemList = {}
+local Package = select(2, ...);
+local SELL_LIST = Addon.c_AlwaysSellList;
+local KEEP_LIST = Addon.c_NeverSellList;
 	
-	function ItemList:CreateItem(itemId)
-		local item = Mixin(CreateFrame("Button", nil, self, "Vendor_Item_Template"), Package.ItemListItem);
-		item:SetItem(itemId);
-		return item;
+function ItemList:CreateItem(itemId)
+	local item = Mixin(CreateFrame("Button", nil, self, "Vendor_Item_Template"), Package.ItemListItem);
+	item:SetItem(itemId);
+	return item;
+end
+
+function ItemList:createModel()
+	local list = Addon:GetList(self.listType);
+	local model = {};
+
+	for id, v in pairs(list:GetContents()) do
+		if (v) then
+			table.insert(model, id);
+		end
 	end
 
-	function ItemList:createModel()
-		local list = Addon:GetList(self.listType);
-		local model = {};
+	return model;
+end
+	
+function ItemList:OnUpdateItem(item, isFirst, isLast)
+end
 
-		for id, v in pairs(list:GetContents()) do
-			if (v) then
-				table.insert(model, id);
+function ItemList:OnViewBuilt()
+end
+	
+function ItemList.OnLoad(self)
+	Mixin(self, ItemList, Package.ListBase);
+	self:AdjustScrollbar();
+	Config:AddOnChanged(
+		function()
+			if (self:IsShown()) then
+				self:UpdateView(self:createModel());
 			end
 		end
+	);
 
-		return model;
+	if (self.emptyText) then
+		if (self.listType == SELL_LIST) then
+			self.emptyText:SetText(L["ITEMLIST_EMPTY_SELL_LIST"]);
+		elseif (self.listType == KEEP_LIST) then
+			self.emptyText:SetText(L["ITEMLIST_EMPTY_KEEP_LIST"]);
+		else
+			self.emptyText:SetText("");
+		end
 	end
-		
-	function ItemList:OnUpdateItem(item, isFirst, isLast)
-	end
-	
-	function ItemList:OnViewBuilt()
-	end
-		
-	function ItemList.OnLoad(self)
-		Mixin(self, ItemList, Package.ListBase);
-		self:AdjustScrollbar();
-		Config:AddOnChanged(
-			function()
-				if (self:IsShown()) then
-					self:UpdateView(self:createModel());
-				end
-			end
-		);
-	end
-	
-	function ItemList:OnShow()
-		self:UpdateView(self:createModel());
-	end
-	
-	function ItemList:RefreshView()
-	end	
+end
 
-	Package.ItemList = ItemList;
-	Addon.ItemList = ItemList;
+function ItemList:OnShow()
+	self:UpdateView(self:createModel());
+end
+
+function ItemList:RefreshView()
+end	
+
+function ItemList:OnDropItem(button)
+	if ((button == "LeftButton") and CursorHasItem()) then
+		local _, itemId, itemLink = GetCursorInfo();
+		Config:BeginBatch();
+		if (self.listType == KEEP_LIST) then
+			Addon:GetList(KEEP_LIST):Add(itemId);
+			Addon:GetList(SELL_LIST):Remove(itemId);
+			Addon:Print(L["ITEMLIST_ADD_TO_KEEP_FMT1"], itemLink);
+		elseif (self.listType == SELL_LIST) then
+			Addon:GetList(KEEP_LIST):Remove(itemId);
+			Addon:GetList(SELL_LIST):Add(itemId);
+			Addon:Print(L["ITEMLIST_ADD_TO_SELL_FMT1"], itemLink);
+		end
+		Config:EndBatch();
+		ClearCursor();
+	end
+end
+
+Package.ItemList = ItemList;
+Addon.ItemList = ItemList;
