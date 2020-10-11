@@ -7,6 +7,7 @@ AddonLocales["enUS"] =
 {
 -- Core
 ["ADDON_NAME"] = "Vendor",
+["ADDON_LOADED"] = "is loaded. Type '/vendor help' for usage.",
 
 -- Bindings
 ["BINDING_HEADER_VENDORQUICKLIST"] = "Quick Add/Remove items from the sell lists when mousing over the item",

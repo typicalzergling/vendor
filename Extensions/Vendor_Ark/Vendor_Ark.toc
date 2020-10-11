@@ -4,7 +4,7 @@
 #@end-retail@
 #@non-retail@
 # ## Interface: 11302
-# ## Dependencies: Vendor, ArkInventoryClassicRules
+# ## Dependencies: Vendor, ArkInventoryRules
 #@end-non-retail@
 ## Title: Vendor_ArkInventory
 ## Notes: ArkInventory extension. Requires both Vendor and ArkInventory
