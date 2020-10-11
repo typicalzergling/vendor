@@ -7,7 +7,11 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
 local Package = select(2, ...);
 local ItemListItem = {};
-	
+
+--[[============================================================================
+	| ItemListItem:SetItem
+	|   Create the frames which represent the rule parameters.
+	==========================================================================]]
 function ItemListItem:populate()
 	local name = self:GetItemName();
 	local color = self:GetItemQualityColor();
@@ -23,7 +27,7 @@ end
 
 
 --[[============================================================================
-	| RuleItem:CreateParameters
+	| ItemListItem:SetItem
 	|   Create the frames which represent the rule parameters.
 	==========================================================================]]	
 function ItemListItem:SetItem(itemId)
@@ -35,7 +39,7 @@ function ItemListItem:SetItem(itemId)
 		local color = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_POOR];
 		self.text:SetText(color.hex .. L["ITEMLIST_LOADING"] .. FONT_COLOR_CODE_CLOSE);
 		self.background:SetColorTexture(color.r, color.g, color.b, 0.125);
-		--self:ContinueOnItemLoad(function() self:populate() end);
+		self:ContinueOnItemLoad(function() self:populate() end);
 	else
 		self:populate();
 	end
