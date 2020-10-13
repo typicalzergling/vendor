@@ -16,7 +16,7 @@ function ItemListItem:populate()
 	local name = self:GetItemName();
 	local color = self:GetItemQualityColor();
 	if (not color) then
-		color = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_POOR];
+		color = ITEM_QUALITY_COLORS[0];
 	end
 
 	local text = color.hex .. name .. FONT_COLOR_CODE_CLOSE;
@@ -34,7 +34,7 @@ function ItemListItem:SetItem(itemId)
 	self:SetItemID(itemId);
 
 	if (not self:IsItemDataCached()) then 
-		local color = ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_POOR];
+		local color = ITEM_QUALITY_COLORS[0];
 		self.text:SetText(color.hex .. L["ITEMLIST_LOADING"] .. FONT_COLOR_CODE_CLOSE);
 		self.background:SetColorTexture(color.r, color.g, color.b, 0.125);
 		self:ContinueOnItemLoad(function() self:populate() end);

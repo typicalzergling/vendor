@@ -53,7 +53,7 @@
         <Scripts>
             <OnLoad>
                 --self:SetBackdropColor(0.2, 0.2, 0.2, 0.60);
-				self:SetBackdropBorderColor(0.6, 0.6, 0.6, 1);
+				--self:SetBackdropBorderColor(0.6, 0.6, 0.6, 1);
 			</OnLoad>
 		</Scripts>
     </Frame>
