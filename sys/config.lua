@@ -20,7 +20,7 @@ local function IsMigrationToShadowlands()
     local currV = tonumber(Vendor_RulesConfig.interfaceversion) or ver;
 
     if ((ver >= 90000) and (currV < 90000)) then
-        Addon:Print("---> Migration to ShadowLands");
+        Addon:Print(L["DATA_MIGRATION_SL_NOTICE"]);
         return true;
     end
     return false;
@@ -61,7 +61,7 @@ Addon.DefaultConfig.Settings =
 Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
-    version = 5,
+    version = 6,
     
     -- Current interface version of the client
     interfaceversion = select(4, GetBuildInfo()),

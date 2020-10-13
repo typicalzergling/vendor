@@ -185,6 +185,7 @@ AddonLocales["enUS"] =
 
 -- Data Migration
 ["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
+["DATA_MIGRATION_SL_NOTICE"] = "Detected migration to Shadowland, The settings for vendor have been reset and custom rules may require modification",
 
 -- Edit Rule Dialog
 ["EDITRULE_CAPTION"] = "Edit Rule",

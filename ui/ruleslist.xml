@@ -90,7 +90,7 @@
                         <Anchor point="RIGHT" x="-28"/>
                     </Anchors>
                 </Texture>
-                <Texture parentKey="extension" hidden="true" file="Interface\GossipFrame\DailyQuestIcon" alpha="0.15">
+                <Texture parentKey="extension" hidden="true" file="Interface\GossipFrame\HealerGossipIcon" alpha="0.15">
                     <Size x="54" y="54"/>
                     <Anchors>
                         <Anchor point="RIGHT" x="-28"/>
