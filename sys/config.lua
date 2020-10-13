@@ -61,7 +61,7 @@ Addon.DefaultConfig.Settings =
 Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
-    version = 6,
+    version = 5,
     
     -- Current interface version of the client
     interfaceversion = select(4, GetBuildInfo()),
@@ -143,11 +143,14 @@ function Addon.Config:Create()
                         ((Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)
                          or IsMigration())
                        ) then
-                    local oldRuleConfig = Vendor_RulesConfig
-                    local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
-                    self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
-                    Vendor_RulesConfig = newRuleConfig
-                    Addon:Debug("Rules config has been migrated.")
+                        if (((Vendor_RulesConfig.version == Addon.DefaultConfig.Version) and IsMigrationToShadowlands()) or
+                            (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
+                            local oldRuleConfig = Vendor_RulesConfig
+                            local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+                            self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
+                            Vendor_RulesConfig = newRuleConfig
+                            Addon:Debug("Rules config has been migrated.")
+                        end
                 end
 
                 self.ensured = true;
@@ -360,14 +363,6 @@ function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
         if (rawget(oldSettings, SELL_RULES)) then
             Addon:Debug("[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
             rawset(newSettings, SELL_RULES, rawget(oldSettings, SELL_RULES))
-        end
-    end
-
-    if ((oldSettings.version == 5) and (newSettings == 6)) then
-        if (newSettings.interfaceversion >= 90000) then
-            Addon:Debug("[Config]: |        Need to migrate from 5->6 (SL)")
-        else
-            newSettings.version = 5;
         end
     end
 
