@@ -140,17 +140,17 @@ function Addon.Config:Create()
                 -- If it does exist, check the version and the interface version to see if we need to do any migration.
                 -- For BFA specifically, there is an ilvl squish which necessitates a rule config reset.
                 elseif (Vendor_RulesConfig and 
-                        ((Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)
-                         or IsMigration())
-                       ) then
-                        if (((Vendor_RulesConfig.version == Addon.DefaultConfig.Version) and IsMigrationToShadowlands()) or
-                            (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)) then
-                            local oldRuleConfig = Vendor_RulesConfig
-                            local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
-                            self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
-                            Vendor_RulesConfig = newRuleConfig
-                            Addon:Debug("Rules config has been migrated.")
-                        end
+                        ((Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version) or IsMigration()))then
+                    if ((Vendor_RulesConfig.version == Addon.DefaultConfig.Version) and IsMigrationToShadowlands()) then
+                        Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules);
+                        Addon:Debug("Rules config has been migrated.");
+                    elseif (Vendor_RulesConfig.version ~= Addon.DefaultConfig.version) then
+                        local oldRuleConfig = Vendor_RulesConfig;
+                        local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules);
+                        self:migrateRulesConfig(oldRuleConfig, newRuleConfig);
+                        Vendor_RulesConfig = newRuleConfig;
+                        Addon:Debug("Rules config has been migrated.");
+                   end
                 end
 
                 self.ensured = true;
