@@ -24,8 +24,6 @@ function ItemListItem:populate()
 	self.background:SetColorTexture(color.r, color.g, color.b, 0.125);
 end
 
-
-
 --[[============================================================================
 	| ItemListItem:SetItem
 	|   Create the frames which represent the rule parameters.
