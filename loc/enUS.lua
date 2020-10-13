@@ -124,12 +124,12 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SELLRULES_TEXT"] = "Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Definitions",
 ["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "The custom rules you have defined (account wide) are shown below.  You can create a new one by using the button on the bottom or edit your rule by double clicking it.  Rules defined here can be enabled/disabled from the appropriate Sell/Keep rule list tab.",
-["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"] = "Deleting '%s' will make in unavailable to all of your characters you sure you want to delete this rule?",
+["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"] = "Deleting '%s' will make it unavailable to all of your characters you sure you want to delete this rule?",
 ["CONFIG_DIALOG_SHARE_TOOLTIP"] = "Share",
 ["CONFIG_DIALOG_MOVEUP_TOOLTIP"] = "Click to move the rule sooner in evaluation order",
 ["CONFIG_DIALOG_MOVEDOWN_TOOLTIP"] = "Click to move the rule later in the evaluation order",
 ["CONFIG_DIALOG_SCRAPRULES_TAB"] = "Scrap Rules",
-["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "<< Make some useful text >>",
+["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "The scrap rules will be removed at Shadowlands launch.",
 ["CONFIG_DIALOG_LISTS_TAB"] = "Sell Lists",
 ["CONFIG_DIALOG_LISTS_TEXT"] = "" ..
     YELLOW_FONT_COLOR_CODE .. "Left-Click" .. FONT_COLOR_CODE_CLOSE .. " removes the item from the list.|n" ..
