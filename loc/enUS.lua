@@ -184,8 +184,8 @@ AddonLocales["enUS"] =
 ["TOOLTIP_SCAN_CRAFTINGREAGENT"] = _G["PROFESSIONS_USED_IN_COOKING"],
 
 -- Data Migration
-["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
-["DATA_MIGRATION_SL_NOTICE"] = "Detected migration to Shadowland, The settings for vendor have been reset and custom rules may require modification",
+["DATA_MIGRATION_SL_NOTICE"] = YELLOW_FONT_COLOR_CODE.. "Detected migration to Shadowlands! The settings for Vendor have been reset and custom rules require verification before they will be active!" ..FONT_COLOR_CODE_CLOSE,
+["DATA_MIGRATION_ERROR"] = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration was detected, but no action taken. Please notify the addon authors here: https://www.curseforge.com/wow/addons/vendor/issues" ..FONT_COLOR_CODE_CLOSE,
 
 -- Edit Rule Dialog
 ["EDITRULE_CAPTION"] = "Edit Rule",
@@ -220,9 +220,9 @@ AddonLocales["enUS"] =
 ["EDITRULE_MATCHES_HEADER_FMT"] = "<h1>This rule matched %d items in your inventory</h1>",
 ["EDITRULE_RULE_SOURCE_FMT"] = "Source: %s",
 ["EDITRULE_MIGRATE_RULE_TITLE"] ="Verify Rule",
-["EDITRULE_MIGRATE_RULE_TEXT"] ="Please verify this rule, it was created with a non-compatible version of World of Warcraft and may need revisions",
+["EDITRULE_MIGRATE_RULE_TEXT"] ="Rule requires review before it can be used. Please verify that it matches what you expect and save.",
 
-["RULEITEM_MIGRATE_WARNING"] = HIGHLIGHT_FONT_COLOR_CODE .. "Warning:" .. FONT_COLOR_CODE_CLOSE .. " This rule was created with a non-compatible version of World of Warcraft, please open the rule and verify it",
+["RULEITEM_MIGRATE_WARNING"] = HIGHLIGHT_FONT_COLOR_CODE .. "Warning: " .. FONT_COLOR_CODE_CLOSE .. "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to review.",
 
 
 -- ITEM PROPERTIES HELP
