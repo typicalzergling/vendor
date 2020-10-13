@@ -218,6 +218,10 @@ AddonLocales["enUS"] =
 ["EDITRULE_NO_MATCHES"] = "<p>This rule does not match anything in your inventory.</p>",
 ["EDITRULE_MATCHES_HEADER_FMT"] = "<h1>This rule matched %d items in your inventory</h1>",
 ["EDITRULE_RULE_SOURCE_FMT"] = "Source: %s",
+["EDITRULE_MIGRATE_RULE_TITLE"] ="Verify Rule",
+["EDITRULE_MIGRATE_RULE_TEXT"] ="Please verify this rule, it was created with a non-compatible version of World of Warcraft and may need revisions",
+
+["RULEITEM_MIGRATE_WARNING"] = HIGHLIGHT_FONT_COLOR_CODE .. "Warning:" .. FONT_COLOR_CODE_CLOSE .. " This rule was created with a non-compatible version of World of Warcraft, please open the rule and verify it",
 
 
 -- ITEM PROPERTIES HELP

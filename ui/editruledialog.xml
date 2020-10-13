@@ -282,7 +282,7 @@
 				<FontString inherits="GameFontNormalLarge" parentKey="title" justifyH="LEFT" justifyV="TOP">
 					<Size x="1" y="18"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="0" y="-4"/>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="8" y="-4"/>
 						<Anchor point="TOPRIGHT"/>
 					</Anchors>
 				</FontString>
@@ -413,6 +413,16 @@
 							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.errorStatus"/>
 						</Anchors>
 					</Frame>
+					<Frame parentKey="migrateStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
+						<KeyValues>
+							<KeyValue key="textColor" value="ORANGE_FONT_COLOR" type="global"/>
+							<KeyValue key="textureFile" value="Interface\DialogFrame\UI-Dialog-Icon-AlertNew" type="string"/>
+						</KeyValues>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.errorStatus"/>
+							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.errorStatus"/>
+						</Anchors>
+					</Frame>					
 				</Frames>
 
 			</Frame>

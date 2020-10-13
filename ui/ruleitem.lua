@@ -162,24 +162,43 @@ function RuleItem:SetRule(ruleDef)
 
     self.moveUp.tooltip = L["CONFIG_DIALOG_MOVEUP_TOOLTIP"];
     self.moveDown.tooltip = L["CONFIG_DIALOG_MOVEDOWN_TOOLTIP"];
+    self.migrationText:SetText(L["RULEITEM_MIGRATE_WARNING"])
     self:ShowMoveButtons(false);
     self.check:Hide();
     self.check:SetVertexColor(0, 1, 0, 1);
 
-    -- If the rule is unhealthy then toggle the unhealthy background.
-    if (Addon.ruleManager and not Addon.ruleManager:CheckRuleHealth(ruleDef.Id)) then
+    local ruleManager = Addon:GetRuleManager();
+    if (ruleManager and not ruleManager:CheckRuleHealth(ruleDef.Id)) then
         self.background:Show();
         self.background:SetColorTexture(ORANGE_FONT_COLOR.r, ORANGE_FONT_COLOR.g, ORANGE_FONT_COLOR.b, 0.25);
         self.unhealthy:Show();
+        self.migration:Hide();
+        self.migrationText:Hide();
+        self.text:Show();
+    elseif (ruleDef.needsMigration) then
+        self.background:Show();
+        self.background:SetColorTexture(YELLOW_FONT_COLOR.r, YELLOW_FONT_COLOR.g, YELLOW_FONT_COLOR.b, 0.05);
+        self.unhealthy:Hide();
+        self.migration:Show();
+        self.migrationText:Show();
+        self.text:Hide();
     else
         self.background:Hide();
         self.unhealthy:Hide();
+        self.migration:Hide();
+        self.migrationText:Hide();
+        self.text:Show();
     end
 
     if (ruleDef.Custom) then
         self.custom:Show();
+        self.extension:Hide();
+    elseif (Addon.Rules.IsExtension(ruleDef)) then
+        self.custom:Hide();
+        self.extension:Show();
     else
         self.custom:Hide();
+        self.extension:Hide();
     end
 
     if (ruleDef.Params) then
@@ -207,6 +226,10 @@ function RuleItem:SetConfig(config, index)
 
     self.configIndex = index;
     self:SetSelected(config ~= nil);
+
+    if (config ~= nil and self.migrationText:IsShown()) then 
+        self.background:SetColorTexture(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, 0.1);
+    end
 end
 
 --[[============================================================================
@@ -264,6 +287,14 @@ function RuleItem:SetSelected(selected)
                 frame:Disable();
             end
         end
+    end
+
+    if (self.migrationText:IsShown()) then 
+        if (selected) then
+            self.background:SetColorTexture(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, 0.1);
+        else
+            self.background:SetColorTexture(YELLOW_FONT_COLOR.r, YELLOW_FONT_COLOR.g, YELLOW_FONT_COLOR.b, 0.05);
+        end 
     end
 end
 

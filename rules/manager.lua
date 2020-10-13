@@ -53,7 +53,7 @@ end
 -- environment they run in.
 --*****************************************************************************
 function RuleManager:Create()
-    local instance = setmetatable({ unhealthy = {} }, self);
+    local instance = setmetatable({ unhealthy = {}, outdated = {} }, self);
     self.__index = self;
 
     -- Initialize the rule engine
@@ -74,6 +74,7 @@ function RuleManager:Create()
     -- Subscribe to events we need to update our state when the definitions change
     -- we might have scrub rules, etc.
     Addon.Rules.OnDefinitionsChanged:Add(function() instance:Update(); end);
+    Addon.Rules.CheckMigration();
     Config:AddOnChanged(function() instance:Update(); end);
     instance:Update();
 
@@ -114,6 +115,22 @@ function RuleManager:CheckRuleHealth(ruleId)
 end
 
 --[[===========================================================================
+    | SetRuleOutdatedState
+    |   Marks the given rule as outdated (happens when we process the rules)
+    ========================================================================--]]
+    function RuleManager:SetRuleOutdatedState(ruleId, state)
+    self.outdated[string.lower(ruleId)] = state;
+end
+
+--[[===========================================================================
+    | IsRuleOutdated:
+    |   Checks if the specified rule is outdated.
+    ========================================================================--]]
+    function RuleManager:IsRuleOutdated(ruleId)
+    return self.outdated[string.lower] or false;
+end
+
+--[[===========================================================================
     | ApplyConfig:
     |   Queries the config to get the rules which should be enabled and then
     |   adds rules to the engine.
@@ -129,16 +146,26 @@ function RuleManager:ApplyConfig(categoryId, ruleType)
             if (type(entry) == "string") then
                 local ruleDef = Addon.Rules.GetDefinition(entry, ruleType);
                 if (ruleDef) then
-                    Addon:DebugRules("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
-                    rulesEngine:AddRule(categoryId, ruleDef);
+                    if (ruleDef.needsMigration) then
+                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        self:SetRuleOutdatedState(ruleDef.Id, true);
+                    else
+                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        rulesEngine:AddRule(categoryId, ruleDef);
+                    end
                 else
                     Addon:DebugRules("Rule '%s' [%s] was not found", entry, ruleType);
                 end
             elseif ((type(entry) == "table") and (entry.rule)) then
                 local ruleDef = Addon.Rules.GetDefinition(entry.rule, ruleType);
                 if (ruleDef) then
-                    Addon:DebugRules("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
-                    rulesEngine:AddRule(categoryId, ruleDef, entry);
+                    if (ruleDef.needsMigration) then
+                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        self:SetRuleOutdatedState(ruleDef.Id, true);
+                    else
+                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        rulesEngine:AddRule(categoryId, ruleDef, entry);
+                    end
                 else
                     Addon:DebugRules("Rule '%s' [%s] was not found", entry.rule, ruleType);
                 end
