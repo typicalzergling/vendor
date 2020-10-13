@@ -1,0 +1,68 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="itemlist.lua"/>
+	<Script file="itemlistitem.lua"/>
+    
+	<!-- -->
+   	<ScrollFrame name="Vendor_Item_List" virtual="true" inherits="FauxScrollFrameTemplate">
+        <KeyValues>
+            <KeyValue key="itemHeight" value="24" type="number"/>
+        </KeyValues>
+		<Layers>
+			<Layer level="BORDER" textureSubLevel="-2">
+				<Texture parentKey="scrollbarBackground">
+					<Color r="0" g="0" b="0" a="0.65"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>Vendor.ItemList.OnLoad(self);</OnLoad>
+			<OnShow>self:OnShow(self);</OnShow>
+			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
+			<OnMouseUp>self:OnDropItem(button)</OnMouseUp>
+		</Scripts>
+	</ScrollFrame>
+
+	<!-- -->
+	<Button name="Vendor_Item_Template" virtual="true">
+		<Size x="396" y="24"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="background" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="text" inherits="GameFontHighlight" justifyH="LEFT" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture file="Interface\RAIDFRAME\ReadyCheck-NotReady" parentKey="remove" hidden="true">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-2"/>
+					</Anchors>
+				</Texture>			
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseUp>self:OnClick(button)</OnMouseUp>
+            <OnEnter>self:OnMouseEnter()</OnEnter>
+            <OnLeave>self:OnMouseLeave()</OnLeave>
+		</Scripts>
+	</Button>
+</Ui>

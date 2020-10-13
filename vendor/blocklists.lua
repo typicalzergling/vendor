@@ -1,5 +1,60 @@
 local Addon, L, Config = _G[select(1,...).."_GET"]()
 
+local BlockList = {}
+function BlockList:Create(_config, _listType, _configValue)
+    local instance = {
+        listType = _listType,
+        config = _config,
+        configValue = _configValue,
+    };
+
+   setmetatable(instance, self)
+   self.__index = self
+   return instance
+end
+
+function BlockList:Add(itemId)
+    local list = self.config:GetValue(self.configValue);
+    if (not list[itemId]) then
+        list[itemId] = true;
+        Addon:Debug("BlockList: Added %d to '%s' list", itemId, self.listType);
+        self.config:NotifyChanges();
+        return true;
+    end
+
+    return false;
+end
+
+function BlockList:Remove(itemId)
+    local list = self.config:GetValue(self.configValue);
+    if (list[itemId]) then
+        list[itemId] = nil;
+        Addon:Debug("BlockList: Removed %d from '%s' list", itemId, self.listType);
+        self.config:NotifyChanges();
+        return true;
+    end
+    return false;
+end
+
+function BlockList:Contains(itemId)
+    local list = self.config:GetValue(self.configValue);
+    return list[itemId] == true;
+end
+
+function BlockList:GetContents()
+    --todo: this should be a clone of the table
+    return self.config:GetValue(self.configValue);
+end
+
+function BlockList:GetType()
+    return self.listType;
+end
+
+function BlockList:IsType(listType)
+    return (self.listType == listType);
+end
+
+
 -- Manages the always-sell and never-sell blocklists.
 -- Consider - adding "toggle" as a method on config can (and should) fire a config change.
 
@@ -96,4 +151,13 @@ function Addon:ClearBlocklist(list)
 
     -- Blocklist changed, so clear the Tooltip cache.
     self:ClearTooltipResultCache()
+end
+
+function Addon:GetList(listType)
+    if (listType == self.c_AlwaysSellList) then
+        return BlockList:Create(Config, listType, "sell_always");
+    elseif (listType == self.c_NeverSellList) then
+        return BlockList:Create(Config, listType, "sell_never");
+    end
+    return nil;
 end

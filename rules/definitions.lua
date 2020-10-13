@@ -5,9 +5,12 @@ local Rules = Addon.Rules;
 local SELL_RULE = Addon.c_RuleType_Sell;
 local KEEP_RULE = Addon.c_RuleType_Keep;
 local SCRAP_RULE = Addon.c_RuleType_Scrap;
+local INTERFACE_VERSION = tonumber(select(4, GetBuildInfo()));
+local SHADOWLANDS_VERSION = 90000;
 
 local addon_Functions = {};
 local addon_Definitions = {};
+
 
 -- This is event is fired when our custom rule definitions have changed.
 Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
@@ -348,7 +351,9 @@ function Rules.UpdateDefinition(ruleDef)
         custom.Name = ruleDef.Name;
         custom.Description = ruleDef.Description;
         custom.Script = ruleDef.Script;
-        custom.Type = ruleDef.Type or SELL_RULE;
+        custom.Type = (ruleDef.Type or SELL_RULE);
+        custom.needsMigration = nil;
+        custom.interfaceversion = INTERFACE_VERSION;
         Rules.OnDefinitionsChanged("UPDATE", custom.Id);
     else
         Vendor_CustomRuleDefinitions = Vendor_CustomRuleDefinitions or {};
@@ -361,9 +366,56 @@ function Rules.UpdateDefinition(ruleDef)
                 Description = ruleDef.Description,
                 EditedBy = editedBy,
                 Custom = true,
+                needsMigration = false,
+                interfaceversion = INTERFACE_VERSION,
             });
         Rules.OnDefinitionsChanged("CREATE", ruleDef.Id);
     end
+end
+
+--[[===========================================================================
+    | CheckMigration:
+    ========================================================================--]]
+function Rules.CheckMigration()
+    Addon:Debug("%s+|r Checking for rule definition migration", YELLOW_FONT_COLOR_CODE);
+    if (Vendor_CustomRuleDefinitions) then
+        for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
+            ruleDef.Locked = false;
+            if (not ruleDef.needsMigration) then
+                local riv = ruleDef.interfaceversion or 0;
+                if ((INTERFACE_VERSION >=SHADOWLANDS_VERSION) and (riv < SHADOWLANDS_VERSION)) then
+                    Addon:Debug("%s| |rrule '%s' needs migration (iv=%s)", GREEN_FONT_COLOR_CODE, ruleDef.Id, riv or "<none>");
+                    ruleDef.needsMigration = true;
+                end
+            end
+        end
+    end
+    Addon:Debug("+ Completed rule defintion migration");
+end
+
+--[[===========================================================================
+    | CheckMigration:
+    ========================================================================--]]
+function Rules.IsExtension(target) 
+    local ruleId = target;
+    if (type(target) == "table") then
+        ruleId = target.Id;
+    end
+
+    if (type(ruleId) ~= "string") then
+        return false;
+    end
+
+    ruleId = string.lower(ruleId);
+    if (Package.Extensions) then
+        for _, ruleDef in ipairs(Package.Extensions:GetRules(typeFilter)) do
+            if (string.lower(ruleDef.Id) == ruleId) then
+                return true;
+            end
+        end
+    end
+
+    return false;
 end
 
 --[[===========================================================================
@@ -394,6 +446,7 @@ function Rules.GetDefinitions(typeFilter)
     -- Gather extensions
     if (Package.Extensions) then
         for _, ruleDef in ipairs(Package.Extensions:GetRules(typeFilter)) do
+            ruleDef.Locked = false;
             table.insert(defs, ruleDef);
         end
     end

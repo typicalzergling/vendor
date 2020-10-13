@@ -231,6 +231,16 @@ function ListBase:AdjustScrollbar()
         scrollbar.ScrollUpButton:SetPoint("BOTTOM", scrollbar, "TOP", 0, 0);
         scrollbar.ScrollDownButton:ClearAllPoints();
         scrollbar.ScrollDownButton:SetPoint("TOP", scrollbar, "BOTTOM", 0, 0);
+
+        if (not self.items or not table.getn(self.items)) then
+            scrollbar:Disable();
+            scrollbar.ScrollUpButton:Disable();
+            scrollbar.ScrollDownButton:Disable();
+        else
+            scrollbar:Enable();
+            scrollbar.ScrollUpButton:Enable();
+            scrollbar.ScrollDownButton:Enable();
+        end
     end
 end
 

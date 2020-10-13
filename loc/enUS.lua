@@ -17,6 +17,8 @@ AddonLocales["enUS"] =
 ["BINDING_DESC_VENDORNEVERSELL"] = "Adds the item currently in the game tooltip to the Never-sell list. Removes it if it is already in the list.",
 ["BINDING_NAME_VENDORRUNAUTOSELL"] = "Autosell at Merchant",
 ["BINDING_DESC_VENDORRUNAUTOSELL"] = "Manually trigger an autoselling run while at a merchant.",
+["BINDING_NAME_VENDORRULES"] = "Toggle the Vendor Rules menu",
+["BINDING_DESC_VENDORRULES"] = "Toggles the visibility of the main Vendor Rules menu.",
 
 -- Merchant
 ["MERCHANT_REPAIR_FROM_GUILD_BANK"] = "Repaired all equipment from the guild bank for %s",
@@ -122,15 +124,19 @@ AddonLocales["enUS"] =
 ["CONFIG_DIALOG_SELLRULES_TEXT"] = "Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
 ["CONFIG_DIALOG_CUSTOMRULES_TAB"] = "Custom Definitions",
 ["CONFIG_DIALOG_CUSTOMRULES_TEXT"] = "The custom rules you have defined (account wide) are shown below.  You can create a new one by using the button on the bottom or edit your rule by double clicking it.  Rules defined here can be enabled/disabled from the appropriate Sell/Keep rule list tab.",
-["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"] = "Deleting '%s' will make in unavailable to all of your characters you sure you want to delete this rule?";
-["CONFIG_DIALOG_SHARE_TOOLTIP"] = "Share";
-["CONFIG_DIALOG_MOVEUP_TOOLTIP"] = "Click to move the rule sooner in evaluation order";
-["CONFIG_DIALOG_MOVEDOWN_TOOLTIP"] = "Click to move the rule later in the evaluation order";
-["CONFIG_DIALOG_SCRAPRULES_TAB"] = "Scrap Rules";
-["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "<< Make some useful text >>";
-["CONFIG_DIALOG_LISTS_TAB"] = "Lists";
-["CONFIG_DIALOG_LISTS_TEXT"] =  "<< Make some useful text >>";
-
+["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"] = "Deleting '%s' will make in unavailable to all of your characters you sure you want to delete this rule?",
+["CONFIG_DIALOG_SHARE_TOOLTIP"] = "Share",
+["CONFIG_DIALOG_MOVEUP_TOOLTIP"] = "Click to move the rule sooner in evaluation order",
+["CONFIG_DIALOG_MOVEDOWN_TOOLTIP"] = "Click to move the rule later in the evaluation order",
+["CONFIG_DIALOG_SCRAPRULES_TAB"] = "Scrap Rules",
+["CONFIG_DIALOG_SCRAPRULES_TEXT"] =  "<< Make some useful text >>",
+["CONFIG_DIALOG_LISTS_TAB"] = "Sell Lists",
+["CONFIG_DIALOG_LISTS_TEXT"] = "" ..
+    YELLOW_FONT_COLOR_CODE .. "Left-Click" .. FONT_COLOR_CODE_CLOSE .. " removes the item from the list.|n" ..
+    YELLOW_FONT_COLOR_CODE .. "Right-Click" .. FONT_COLOR_CODE_CLOSE .. " swaps the item to the other list.|n" ..
+    YELLOW_FONT_COLOR_CODE .. "Dragging an item from your bags over a list" .. FONT_COLOR_CODE_CLOSE .. " adds it to that list.",
+["CONFIG_DIALOG_LISTS_ALWAYS_LABEL"] = "Always Sell:",
+["CONFIG_DIALOG_LISTS_NEVER_LABEL"] = "Never Sell:",
 
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",
@@ -181,7 +187,8 @@ AddonLocales["enUS"] =
 ["TOOLTIP_SCAN_CRAFTINGREAGENT"] = _G["PROFESSIONS_USED_IN_COOKING"],
 
 -- Data Migration
-["DATA_MIGRATION_BFA_NOTICE"] = "Detected migration to BFA. We have reset Vendor rules settings to default to protect against unintended selling due to the item level squish. Sorry for the inconvenience!",
+["DATA_MIGRATION_SL_NOTICE"] = YELLOW_FONT_COLOR_CODE.. "Detected migration to Shadowlands! The settings for Vendor have been reset and custom rules require verification before they will be active!" ..FONT_COLOR_CODE_CLOSE,
+["DATA_MIGRATION_ERROR"] = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration was detected, but no action taken. Please notify the addon authors here: https://www.curseforge.com/wow/addons/vendor/issues" ..FONT_COLOR_CODE_CLOSE,
 
 -- Edit Rule Dialog
 ["EDITRULE_CAPTION"] = "Edit Rule",
@@ -215,6 +222,10 @@ AddonLocales["enUS"] =
 ["EDITRULE_NO_MATCHES"] = "<p>This rule does not match anything in your inventory.</p>",
 ["EDITRULE_MATCHES_HEADER_FMT"] = "<h1>This rule matched %d items in your inventory</h1>",
 ["EDITRULE_RULE_SOURCE_FMT"] = "Source: %s",
+["EDITRULE_MIGRATE_RULE_TITLE"] ="Verify Rule",
+["EDITRULE_MIGRATE_RULE_TEXT"] ="Rule requires review before it can be used. Please verify that it matches what you expect and save.",
+
+["RULEITEM_MIGRATE_WARNING"] = HIGHLIGHT_FONT_COLOR_CODE .. "Warning: " .. FONT_COLOR_CODE_CLOSE .. "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to review.",
 
 
 -- ITEM PROPERTIES HELP
@@ -444,6 +455,30 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
                "Check left side line 1: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Vanq\", \"left\", 1)</p>" .. FONT_COLOR_CODE_CLOSE,
 
 
+["ITEMLIST_REMOVE_FROM_SELL_FMT"] = 
+    "%s has been removed from the " .. ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_REMOVE_FROM_KEEP_FMT"] = 
+    "%s has been removed from the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_ADD_TO_SELL_FMT1"] = 
+    "%s has been added to then " .. ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_ADD_TO_KEEP_FMT1"] = 
+    "%s has been added to the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
+["ITEMLIST_MOVE_FROM_KEEP_TO_SELL_FMT"] = 
+    "%s has been moved from the " .. 
+    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
+    " sell list to the " ..
+    ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE ..
+    " sell list",
+["ITEMLIST_REMOVE_FROM_SELL_TO_KEEP_FMT"] = 
+    "%s has been moved from the " .. 
+    ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE ..
+    " sell list to the " ..
+    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
+    " sell list",
+["ITEMLIST_LOADING"] = "Loading...",
+["ITEMLIST_LOADING_TOOLTIP"] = "The item information is currently retrieved from the server",
+["ITEMLIST_EMPTY_SELL_LIST"] = "Your always sell list is current empty you can drag and drop items into this list to add them.",
+["ITEMLIST_EMPTY_KEEP_LIST"] = "Your never sell list is current empty you can drag and drop items into this list to add them.",
 } -- END OF LOCALIZATION TABLE
 
 -- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.

@@ -53,7 +53,7 @@
         <Scripts>
             <OnLoad>
                 --self:SetBackdropColor(0.2, 0.2, 0.2, 0.60);
-				self:SetBackdropBorderColor(0.6, 0.6, 0.6, 1);
+				--self:SetBackdropBorderColor(0.6, 0.6, 0.6, 1);
 			</OnLoad>
 		</Scripts>
     </Frame>
@@ -218,8 +218,67 @@
                                 <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
                             </Anchors>
                         </FontString>
+                        <FontString parentKey="alwaysSellLabel" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal">
+                            <Size x="1" y="18"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent.TopText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                                <Anchor point="RIGHT" relativePoint="CENTER" x="-5" y="0"/>
+                            </Anchors>
+                        </FontString>                        
+                        <FontString parentKey="alwaysKeepLabel" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent.alwaysSellLabel" relativePoint="TOPRIGHT" x="10" y="0"/>
+                                <Anchor point="RIGHT" relativePoint="RIGHT" x="-5" y="0"/>
+                                <Anchor point="BOTTOM" relativePoint="BOTTOM" relativeKey="$parent.alwaysSellLabel"/>
+                            </Anchors>
+                        </FontString>                        
                     </Layer>
                 </Layers>
+                <Frames>
+	                <Frame parentKey="outlineSell" inherits="Vendor_List_Container">
+		                <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.alwaysSellLabel" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+                            <Anchor point="RIGHT" relativeKey="$parent.alwaysSellLabel" relativePoint="RIGHT" x="-5" y="0"/>
+                            <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="16"/>
+		                </Anchors>
+	                </Frame>
+                    <ScrollFrame parentKey="selllist" inherits="Vendor_Item_List">
+                        <KeyValues>
+                            <KeyValue key="listType" value="always" type="string"/>
+                        </KeyValues>                    
+                        <Layers>
+                            <Layer>
+                                <FontString justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalGraySmall" parentKey="emptyText">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="4" y="-16"/>
+                                        <Anchor point="BOTTOMRIGHT" x="-20" y="16"/>
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+	                    <Anchors>
+		                    <Anchor point="TOPLEFT" relativeKey="$parent.outlineSell" relatvePoint="TOPLEFT" x="4" y="-5"/>
+		                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.outlineSell" relativePoint="BOTTOMRIGHT" x="-4" y="4"/>
+	                    </Anchors>
+                    </ScrollFrame>
+
+	                <Frame parentKey="outlineKeep" inherits="Vendor_List_Container">
+		                <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.alwaysKeepLabel" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+                            <Anchor point="RIGHT" relativeKey="$parent.alwaysKeepLabel" relativePoint="RIGHT" x="-5" y="0"/>
+                            <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="16"/>
+		                </Anchors>
+	                </Frame>
+                    <ScrollFrame parentKey="keeplist" inherits="Vendor_Item_List">
+                        <KeyValues>
+                            <KeyValue key="listType" value="never" type="string"/>
+                        </KeyValues>                    
+	                    <Anchors>
+		                    <Anchor point="TOPLEFT" relativeKey="$parent.outlineKeep" relatvePoint="TOPLEFT" x="4" y="-5"/>
+		                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.outlineKeep" relativePoint="BOTTOMRIGHT" x="-4" y="4"/>
+	                    </Anchors>
+                    </ScrollFrame>
+                </Frames>
 			</Frame>
 
             <!-- Panels are sized to this frame when shown -->

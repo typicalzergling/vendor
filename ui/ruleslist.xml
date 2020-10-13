@@ -84,16 +84,28 @@
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="background" setAllPoints="true" hidden="true"/>
-                <Texture parentKey="custom" hidden="true" file="Interface\Worldmap\Gear_64Grey" alpha="0.30">
+                <Texture parentKey="custom" hidden="true" file="Interface\Worldmap\Gear_64Grey" alpha="0.15">
                     <Size x="54" y="54"/>
                     <Anchors>
                         <Anchor point="RIGHT" x="-28"/>
                     </Anchors>
                 </Texture>
-				<Texture parentKey="unhealthy" hidden="true" file="Interface\RAIDFRAME\ReadyCheck-NotReady" alpha="0.6">
+                <Texture parentKey="extension" hidden="true" file="Interface\GossipFrame\HealerGossipIcon" alpha="0.15">
+                    <Size x="54" y="54"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-28"/>
+                    </Anchors>
+                </Texture>				
+				<Texture parentKey="unhealthy" hidden="true" file="Interface\RAIDFRAME\ReadyCheck-NotReady" alpha="0.4">
 					<Size x="54" y="54"/>
 					<Anchors>
 						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="migration" hidden="true" file="Interface\DialogFrame\UI-Dialog-Icon-AlertNew" alpha="0.25">
+					<Size x="54" y="54"/>
+					<Anchors>
+						<Anchor point="LEFT" x="2"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -134,6 +146,14 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-32" y="6"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="migrationText" hidden="true" inherits="GameFontRedSmall" justifyH="LEFT"  justifyV="MIDDLE"
+					text="Warning: This rule was created with a non-compatible version of World of Warcraft, please open the rule and verify it">
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.text" relativePoint="TOP"/>
+						<Anchor point="LEFT" relativeKey="$parent.migration" relativePoint="RIGHT" x="2"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.text"/>
 					</Anchors>
 				</FontString>
 			</Layer>

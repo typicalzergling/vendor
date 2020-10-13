@@ -4,12 +4,9 @@ local Addon, L = _G[select(1,...).."_GET"]()
 Addon.Config = {}
 Addon.DefaultConfig = {}
 
--- BFA specific migration check. 
--- If we existed before BFA, and are currently on or above BFA
-local function IsMigrationToBFA()
-    if tonumber(Vendor_RulesConfig.interfaceversion) < 80000 
-        and tonumber(select(4, GetBuildInfo())) >= 80000 then   -- This condition can be removed once BFA lands
-        Addon:Print(L["DATA_MIGRATION_BFA_NOTICE"])
+
+local function IsNewConfigVersion()
+    if (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version) then
         return true
     end
     return false
@@ -17,23 +14,38 @@ end
 
 local function IsMigrationToShadowlands()
     local ver = tonumber(select(4, GetBuildInfo()));
-    local currV = tonumber(Vendor_RulesConfig.interfaceversion);
-
+    local currV = tonumber(Vendor_RulesConfig.interfaceversion) or ver;
     if ((ver >= 90000) and (currV < 90000)) then
-        Addon:Print("---> Migration to ShadowLands");
         return true;
     end
     return false;
 end
 
-local function IsMigration()
-    if (IsMigrationToShadowlands()) then
-        return true;
-    elseif (IsMigrationToBFA()) then
-        return true;
+-- Migration Detection
+-- Migration occurs when either the rules config version changes OR we have an expansion migration.
+local function NeedsMigration()
+    if (Vendor_RulesConfig and (IsNewConfigVersion() or IsMigrationToShadowlands())) then
+        return true
     end
-    return false;
+    return false
 end
+
+local function MigrateData()
+    if IsMigrationToShadowlands() then
+        -- Shadowlands is a rules config reset without migrating settings.
+        Addon:Print(L["DATA_MIGRATION_SL_NOTICE"])
+        Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+    elseif IsNewConfigVersion() then
+        local oldRuleConfig = Vendor_RulesConfig
+        local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
+        Addon.Config:migrateSettings(oldRuleConfig, newRuleConfig)
+        Addon:Debug("Rules config has been migrated.")
+    else
+        -- We shouldn't ever get here, but just in case...
+        Addon.Print(L["DATA_MIGRATION_ERROR"])
+    end
+end
+
 
 --*****************************************************************************
 -- The default settings for Addon.
@@ -106,6 +118,7 @@ function Addon.Config:Create()
         notifyChanges =
             function(self)
                 if ((self.suspend == 0) and self.changes) then
+                    Addon:Debug("Notifying Changes");
                     for _, callback in ipairs(self.handlers) do
                         local status, result = pcall(callback, self)
                         if (not status) then
@@ -136,17 +149,9 @@ function Addon.Config:Create()
                     Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
                     Addon:Debug("Rules config has been set from defaults.")
 
-                -- If it does exist, check the version and the interface version to see if we need to do any migration.
-                -- For BFA specifically, there is an ilvl squish which necessitates a rule config reset.
-                elseif (Vendor_RulesConfig and 
-                        ((Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version)
-                         or IsMigration())
-                       ) then
-                    local oldRuleConfig = Vendor_RulesConfig
-                    local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
-                    self:migrateRulesConfig(oldRuleConfig, newRuleConfig)
-                    Vendor_RulesConfig = newRuleConfig
-                    Addon:Debug("Rules config has been migrated.")
+                -- Migration can get complex, logic is moved out of this area.
+                elseif (NeedsMigration()) then
+                    MigrateData()
                 end
 
                 self.ensured = true;
@@ -159,6 +164,7 @@ function Addon.Config:Create()
     self.__index = self
     return instance
 end
+
 
 --*****************************************************************************
 -- When a batch of changes are being made to our settings you can send out
@@ -258,7 +264,6 @@ end
 -- Called to signal changes in the config explicitly.
 --*****************************************************************************
 function Addon.Config:NotifyChanges()
-    Addon:Debug("Notifying Changes")
     self.changes = true
     self:notifyChanges()
 end
@@ -360,14 +365,6 @@ function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
         if (rawget(oldSettings, SELL_RULES)) then
             Addon:Debug("[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
             rawset(newSettings, SELL_RULES, rawget(oldSettings, SELL_RULES))
-        end
-    end
-
-    if ((oldSettings.version == 5) and (newSettings == 6)) then
-        if (newSettings.interfaceversion >= 90000) then
-            Addon:Debug("[Config]: |        Need to migrate from 5->6 (SL)")
-        else
-            newSettings.version = 5;
         end
     end
 

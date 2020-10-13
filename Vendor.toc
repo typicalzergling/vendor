@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 80300
+## Interface: 90002
 #@end-retail@
 #@non-retail@
 # ## Interface: 11302
@@ -58,6 +58,7 @@ rules\rulehelp.lua
 ui\common.xml
 ui\tooltip.lua
 ui\ruleslist.xml
+ui\itemlist.xml
 ui\generalconfigpanel.lua
 ui\repairconfigpanel.lua
 ui\perfconfigpanel.lua

@@ -484,7 +484,7 @@ function EditRuleDialog:UpdateButtonState()
             Addon:Debug("EditRule - Cannot save rule due an invalid description");
         end
 
-        if (canSave) then
+        if (canSave or self.ruleDef.needsMigration) then
             self.save:Enable();
         else
             self.save:Disable();
@@ -581,18 +581,26 @@ function EditRuleDialog:EditRule(ruleDef, readOnly, infoPanelId)
 
     -- If the rule came from an extension setup the widget.
     self.editRule:SetExtension(ruleDef.Extension);
+    local health = false;
 
     -- If we're read-only disable all the fields.
     if (readOnly) then
         self:SetMode(MODE_READONLY);
         if (self:CheckRuleHealth(ruleDef)) then
             self.editRule:ShowStatus();
+            health = true;
         end
     else
         self:SetMode(MODE_EDIT, infoPanelId);
         if (self:CheckRuleHealth(ruleDef)) then
             self.editRule:IsScriptValid(true);
+            health = true;
         end
+    end
+
+    -- Check if this rule needs migration.
+    if (ruleDef.needsMigration and health) then
+        self.editRule:ShowStatus("MIGRATE");
     end
 
     self:UpdateButtonState();
@@ -649,6 +657,8 @@ function EditRule:Setup()
     self.okStatus.text:SetText(L["EDITRULE_RULEOK_TEXT"]);
     self.errorStatus.title:SetText(L["EDITRULE_ERROR_RULE"]);
     self.unhealthyStatus.title:SetText(L["EDITRULE_UNHEALTHY_RULE"]);
+    self.migrateStatus.title:SetText(L["EDITRULE_MIGRATE_RULE_TITLE"]);
+    self.migrateStatus.text:SetText(L["EDITRULE_MIGRATE_RULE_TEXT"]);
     self.extension:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
     self.extension:Hide();
 
@@ -728,6 +738,7 @@ function EditRule:ShowStatus(status, text)
     self.okStatus:Hide();
     self.unhealthyStatus:Hide();
     self.errorStatus:Hide();
+    self.migrateStatus:Hide();
 
     if (status == "OK") then
         self.okStatus:Show();
@@ -737,6 +748,8 @@ function EditRule:ShowStatus(status, text)
     elseif (status == "UNHEALTHY") then
         self.unhealthyStatus.text:SetText(text);
         self.unhealthyStatus:Show();
+    elseif (status == "MIGRATE") then
+        self.migrateStatus:Show();
     end
 end
 

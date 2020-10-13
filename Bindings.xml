@@ -14,6 +14,11 @@
         description="BINDING_DESC_VENDORRUNAUTOSELL" category="BINDING_CATEGORY_VENDOR">
         Vendor:AutoSell_Cmd()
     </Binding>
+    <Binding
+        name="VENDORRULES"
+        description="BINDING_DESC_VENDORRULES" category="BINDING_CATEGORY_VENDOR">
+        VendorRulesDialog:Toggle()
+    </Binding>
     <!--@do-not-package@-->
     <Binding 
         name="Vendor Item Properties Debug Dump" 
