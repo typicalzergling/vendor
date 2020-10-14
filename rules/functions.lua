@@ -2,15 +2,15 @@ local Addon, L = _G[select(1,...).."_GET"]()
 Addon.RuleFunctions = {}
 Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH;
 Addon.RuleFunctions.BATTLE_FOR_AZEROTH = LE_EXPANSION_BATTLE_FOR_AZEROTH;
-Addon.RuleFunctions.POOR = 0;
-Addon.RuleFunctions.COMMON = 1;
-Addon.RuleFunctions.UNCOMMON = 2;
-Addon.RuleFunctions.RARE = 3;
-Addon.RuleFunctions.EPIC = 4;
-Addon.RuleFunctions.LEGENDARY = 5;
-Addon.RuleFunctions.ARTIFACT = 6;
-Addon.RuleFunctions.HEIRLOOM = 7;
-Addon.RuleFunctions.TOKEN = 8;
+Addon.RuleFunctions.POOR = 0
+Addon.RuleFunctions.COMMON = 1
+Addon.RuleFunctions.UNCOMMON = 2
+Addon.RuleFunctions.RARE = 3
+Addon.RuleFunctions.EPIC = 4
+Addon.RuleFunctions.LEGENDARY = 5
+Addon.RuleFunctions.ARTIFACT = 6
+Addon.RuleFunctions.HEIRLOOM = 7
+Addon.RuleFunctions.TOKEN = 8
 
 --*****************************************************************************
 -- Helper function which given a value, will search the map for the value
