@@ -3,7 +3,7 @@ local Addon, L = _G[select(1,...).."_GET"]()
 
 -- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 4 lines. Thanks AceConsole for the inspiriation and color code.
 -- Assume if multiple arguments it is a format string.
-local printPrefix = string.format("%s[%s%s%s]%s%s", HIGHLIGHT_FONT_COLOR_CODE, ORANGE_FONT_COLOR_CODE, L["ADDON_NAME"], HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, " ")
+local printPrefix = string.format("%s[%s%s%s]%s%s%s", HIGHLIGHT_FONT_COLOR_CODE, ORANGE_FONT_COLOR_CODE, L["ADDON_NAME"], HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, FONT_COLOR_CODE_CLOSE, " ")
 function Addon:Print(msg, ...)
     DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
 end
