@@ -14,10 +14,10 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText">
+                <FontString justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalGraySmall" parentKey="emptyText" hidden="true">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="-8"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+						<Anchor point="TOPLEFT" x="4" y="-16"/>
+						<Anchor point="BOTTOMRIGHT" x="-20" y="16"/>
 					</Anchors>
 				</FontString>
 			</Layer>
