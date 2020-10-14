@@ -246,16 +246,6 @@
                         <KeyValues>
                             <KeyValue key="listType" value="always" type="string"/>
                         </KeyValues>                    
-                        <Layers>
-                            <Layer>
-                                <FontString justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalGraySmall" parentKey="emptyText">
-                                    <Anchors>
-                                        <Anchor point="TOPLEFT" x="4" y="-16"/>
-                                        <Anchor point="BOTTOMRIGHT" x="-20" y="16"/>
-                                    </Anchors>
-                                </FontString>
-                            </Layer>
-                        </Layers>
 	                    <Anchors>
 		                    <Anchor point="TOPLEFT" relativeKey="$parent.outlineSell" relatvePoint="TOPLEFT" x="4" y="-5"/>
 		                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.outlineSell" relativePoint="BOTTOMRIGHT" x="-4" y="4"/>
