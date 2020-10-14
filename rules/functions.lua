@@ -1,7 +1,8 @@
 local Addon, L = _G[select(1,...).."_GET"]()
 Addon.RuleFunctions = {}
-Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH;
-Addon.RuleFunctions.BATTLE_FOR_AZEROTH = LE_EXPANSION_BATTLE_FOR_AZEROTH;
+Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_SHADOWLANDS;
+Addon.RuleFunctions.BATTLE_FOR_AZEROTH = LE_EXPANSION_BATTLE_FOR_AZEROTH; --7
+Addon.RuleFunctions.SHADOWLANDS = LE_EXPANSION_SHADOWLANDS; -- 8
 Addon.RuleFunctions.POOR = 0;
 Addon.RuleFunctions.COMMON = 1;
 Addon.RuleFunctions.UNCOMMON = 2;
