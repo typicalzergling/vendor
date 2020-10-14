@@ -50,7 +50,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_POORITEMS_DESC"],
         ScriptText = "Quality == POOR",
         Script = function()
-                return Quality == POOR;
+                return Quality == 0;
             end,
         Order = 1000,
     },
