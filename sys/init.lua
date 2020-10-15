@@ -17,6 +17,7 @@ _G[AddonName]  = {}
 local Addon = _G[AddonName]
 Addon.AddonFrame = CreateFrame("Frame")
 Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
+--Addon.IsShadowlands = select(4, GetBuildInfo()) >= 90000;
 
 -- Event Handling
 local events = {}

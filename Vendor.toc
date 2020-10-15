@@ -7,8 +7,8 @@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings
-## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_SettingsPerCharacter
+## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug
+## SavedVariablesPerCharacter: Vendor_RulesConfig
 ## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
@@ -16,6 +16,10 @@
 # Initialize & Constants must come first.
 sys\init.lua
 sys\constants.lua
+#@do-not-package@
+sys\debug.lua
+vendor\debug.lua
+#@end-do-not-package@
 
 # LOCALES - Locales must be loaded next so they can be used in all subsequent files.
 # Note that Locales that are not used will be thrown out, so it won't waste memory loading strings you don't need.
@@ -30,7 +34,6 @@ sys\config.lua
 # After this point load order shouldn't matter.
 
 # Base Addon Functionality
-sys\debug.lua
 sys\hook.lua
 sys\console.lua
 sys\cmds.lua
