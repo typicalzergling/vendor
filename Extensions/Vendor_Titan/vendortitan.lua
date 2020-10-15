@@ -109,5 +109,27 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
 	end
 end
 
+-- Vendor Extension for callback when rules change.
+-- This will register a callback to Ark with Vendor
+local function registerTitanExtension()
+    local titanExtension =
+    {
+        -- Vendor will check this source is loaded prior to registration.
+        -- It will also be displayed in the Vendor UI.
+        Source = "VendorTitan",
+        Addon = AddonName,
+
+        -- This is called by Vendor whenever its rules change
+        OnRuleUpdate = function()
+            updateSellCount()
+        end
+    }
+
+    assert(Vendor and Vendor.RegisterExtension, "Vendor RegisterExtension not found, cannot register extension: "..tostring(titanExtension.Source))
+    if (not Vendor.RegisterExtension(titanExtension)) then
+        -- something went wrong
+    end
+end
+registerTitanExtension()
 
 
