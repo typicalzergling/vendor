@@ -134,3 +134,6 @@ end
 
 
 
+-- EXPOSE API
+VendorAddonAPI = Addon
+
