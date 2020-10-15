@@ -43,7 +43,7 @@ local AddonName, Addon = ...
     | against other addons. And it should be obvious to any addon developer 
     | using an undocumented API is risky and may break at any time.
     =======================================================================--]]
-Addon.Public = Addon.Public or {}   -- Inherit if already existed (init creates it)
+Addon.Public = {}
 local addonPublic = Addon.Public    -- The real public API is now hidden.
 Addon.Public = {}                   -- Aaaaaaaand it's gone.
 _G[AddonName] = Addon.Public        -- Update the global reference.
@@ -178,6 +178,22 @@ function Addon:GetPublic(showUndocumented)
     -- Build the information from MakePublic
     -- Value is assumed to be a table that has a non-nil tbl.value key
     local function getAPIInfo(name, parent, value)
+    
+        -- Cycle detection; the API must be a DAG
+        if type(value) == "table" then
+            if seen[value] then
+                -- Detected a cycle. This is a programmer mistake.
+                return
+                --error("Detected a cycle at "..entry.Path)
+            else
+                seen[value] = true
+            end
+        end
+        
+        if not (type(name) == "string") then
+            return
+        end
+    
         local entry = {}
         if parent then
             entry.Path = string.format("%s.%s", parent.Path, name)
@@ -185,16 +201,6 @@ function Addon:GetPublic(showUndocumented)
         else
             entry.Path = name
             entry.Level = 0
-        end
-
-        -- Cycle detection; the API must be a DAG
-        if type(value) == "table" then
-            if seen[value] then
-                -- Detected a cycle. This is a programmer mistake.
-                error("Detected a cycle at "..entry.Path)
-            else
-                seen[value] = true
-            end
         end
 
         entry.Name = name
@@ -255,6 +261,8 @@ end
     =======================================================================--]]
 function Addon:PrintPublic(showUndocumented, showTree)
     local api = self:GetPublic(showUndocumented)
+    
+    local color = Addon.c_APIMethodColorCode
 
     -- Tree view w/ indentation
     if showTree then
@@ -276,9 +284,9 @@ function Addon:PrintPublic(showUndocumented, showTree)
                 suffix = "()"
             end
             if v.Title then
-                self:Print("%s%s - %s", v.Path, suffix, v.Title)
+                self:Print("%s%s%s%s - %s", color, v.Path, suffix, FONT_COLOR_CODE_CLOSE, v.Title)
             else
-                self:Print("%s%s", v.Path, suffix)
+                self:Print("%s%s%s%s", color, v.Path, suffix, FONT_COLOR_CODE_CLOSE)
             end
             if v.Documentation then
                 self:Print("    %s", v.Documentation)

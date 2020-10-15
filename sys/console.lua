@@ -1,8 +1,8 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local _, Addon = ...
 
 local commandList = {}
 
-local function ShowConsoleHelp()
+local function PrintConsoleHelp()
     -- Get a list of all commands
     local cmds = {}
     for cmd, _ in pairs(commandList) do
@@ -11,7 +11,6 @@ local function ShowConsoleHelp()
     table.sort(cmds)
     
     -- Print Command help
-    Addon.Print(Addon, L["CMD_HELP_HEADER"])
     for _, cmd in ipairs(cmds) do
         if commandList[cmd].Help then
             Addon.Print(Addon, "    %s%s%s  -  %s",YELLOW_FONT_COLOR_CODE, cmd, FONT_COLOR_CODE_CLOSE, commandList[cmd].Help)
@@ -29,7 +28,7 @@ local function GetArgs(str)
     return a
 end
 
-local function CommandParser(msg)
+local function commandParser(msg)
     -- String split the msg
     local args = GetArgs(msg)
     
@@ -47,11 +46,11 @@ local function CommandParser(msg)
     elseif commandList[cmd] then
         commandList[cmd].Func(unpack(args))
     else
-        ShowConsoleHelp()
+        PrintConsoleHelp()
     end
 end
 
-local function AddCommandToNamespace(cmd, namespace)
+local function addCommandToNamespace(cmd, namespace)
     assert(string.find(cmd, "^/"))
     namespace = string.upper(namespace)
     local slashbase = "SLASH_"..namespace
@@ -89,15 +88,15 @@ function Addon:RegisterConsoleCommandName(namespace, ...)
         -- Add Our default commands to the command reference.
         self:AddConsoleCommand("")
         self:AddConsoleCommand("?")
-        self:AddConsoleCommand("help", L["CMD_HELP_HELP"])    -- Only show help for the commands once.
+        self:AddConsoleCommand("help")
     
         -- Register the namespace with Blizzard
-        SlashCmdList[namespace] = CommandParser
+        SlashCmdList[namespace] = commandParser
     end
     
     -- Create the slash alias for each command
     for _, cmd in ipairs(commandList) do
-        AddCommandToNamespace(cmd, namespace)
+        addCommandToNamespace(cmd, namespace)
     end
 end
 
@@ -143,7 +142,7 @@ function Addon:AddConsoleCommand(name, help, func)
             assert(false, "Invalid Argument: not a function.")
         end
     else
-        cmd.Func = ShowConsoleHelp            -- No function defined will default to Showing help
+        cmd.Func = PrintConsoleHelp            -- No function defined will default to Showing help
     end
     
     -- Default command with no arguments

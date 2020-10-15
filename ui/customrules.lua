@@ -1,5 +1,7 @@
-local Addon, L = _G[select(1,...).."_GET"]()
-Addon.CustomRuleList = {};
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+
+Addon.CustomRuleList = Addon.CustomRuleList or {};
 local Package=select(2,...);
 local CustomRuleList=Addon.CustomRuleList;
 local Rules=Addon.Rules;
@@ -118,3 +120,5 @@ StaticPopupDialogs[VENDOR_STATICPOPUP_CONFIRM_DELETE] =
 	exclusive = 1,
 	whileDead = 1,
 };
+
+Addon.Public.CustomRuleList = Addon.CustomRuleList

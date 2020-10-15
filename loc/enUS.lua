@@ -2,8 +2,8 @@
 -- If the loading order of the files is incorrect, this will fail when trying to use AddonLocales.
 -- Locales should be loaded AFTER Init and before anything that uses them.
 -- So basically make sure they are all loaded together in the TOC right after Init (constants is OK too).
-local AddonLocales = _G[select(1,...).."_LOC"]()
-AddonLocales["enUS"] =
+local _, Addon = ...
+Addon:AddLocale("enUS",
 {
 -- Core
 ["ADDON_NAME"] = "Vendor",
@@ -114,6 +114,26 @@ AddonLocales["enUS"] =
 ["CMD_AUTOSELL_MERCHANTNOTOPEN"] = "Merchant window is not open. You must be at a merchant to auto-sell.",
 ["CMD_AUTOSELL_INPROGRESS"] = "Already auto-selling. Please wait for completion before re-running.",
 ["CMD_AUTOSELL_EXECUTING"] = "Running auto-sell.",
+
+-- API
+["API_REGISTEREXTENSION_TITLE"] = "Register Extension",
+["API_REGISTEREXTENSION_DOCS"] = "Registers a Vendor extension with Vendor. See CurseForge documentation for details.",
+["API_EVALUATEITEM_TITLE"] = "Evaluate Item",
+["API_EVALUATEITEM_DOCS"] = "Evaluates an item for selling. Input is a Tooltip + Link, Bag + Slot, or Link. Bag and Slot is best.",
+["API_ADDTOALWAYSSELL_TITLE"] = "Add Tooltip Item To Always Sell List",
+["API_ADDTOALWAYSSELL_DOCS"] = "Toggles the item that has a tooltip showing on or off the Always Sell list.",
+["API_ADDTONEVERSELL_TITLE"] = "Add Tooltip Item To Never Sell List",
+["API_ADDTONEVERSELL_DOCS"] = "Toggles the item that has a tooltip showing on or off the Never Sell list.",
+["API_AUTOSELL_TITLE"] = "Run Autosell",
+["API_AUTOSELL_DOCS"] = "Runs the autosell routine if at a merchant.",
+["API_OPENSETTINGS_TITLE"] = "Open Settings",
+["API_OPENSETTINGS_DOCS"] = "Opens the Vendor Settings page.",
+["API_OPENKEYBINDINGS_TITLE"] = "Open Keybindings",
+["API_OPENKEYBINDINGS_DOCS"] = "Opens the Vendor Keybindings page.",
+["API_OPENRULES_TITLE"] = "Open Rules",
+["API_OPENRULES_DOCS"] = "Opens the main Vendor Rules interface.",
+["API_GETSELLCOUNT_TITLE"] = "Get Sell Count",
+["API_GETSELLCOUNT_DOCS"] = "Returns number of items currently in your bags that Vendor has marked for selling.",
 
 -- Rules
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
@@ -479,7 +499,7 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
 ["ITEMLIST_LOADING_TOOLTIP"] = "The item information is currently retrieved from the server",
 ["ITEMLIST_EMPTY_SELL_LIST"] = "Your always sell list is current empty you can drag and drop items into this list to add them.",
 ["ITEMLIST_EMPTY_KEEP_LIST"] = "Your never sell list is current empty you can drag and drop items into this list to add them.",
-} -- END OF LOCALIZATION TABLE
+}) -- END OF LOCALIZATION TABLE
 
 -- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.
 

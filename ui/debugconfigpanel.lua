@@ -1,4 +1,7 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
+
 local SETTING_MAX_ITEMS_TO_SELL = Addon.c_Config_MaxSellItems;
 local SETTING_ENABLE_BUYBACK = Addon.c_Config_SellLimit; 
 local MAX_ITEMS_TO_SELL = 144;
@@ -60,3 +63,7 @@ function Addon.ConfigPanel.Debug.Init(self)
             self.DisplayValue:SetFormattedText("%0d", value);
         end
 end
+
+-- Export to public
+if not Addon.Public.ConfigPanel then Addon.Public.ConfigPanel = {} end
+Addon.Public.ConfigPanel.Debug = Addon.ConfigPanel.Debug

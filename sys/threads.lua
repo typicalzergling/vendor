@@ -1,4 +1,4 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
 
 -- Thread processor.
 -- This allows the addon to queue up work and then do it later in the background without cuasing a perf hit.

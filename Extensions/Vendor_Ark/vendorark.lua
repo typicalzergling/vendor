@@ -21,7 +21,7 @@ local function registerArkExtension()
     }
 
     assert(Vendor and Vendor.RegisterExtension, "Vendor RegisterExtension not found, cannot register extension: "..tostring(arkExtension.Source))
-    if (not Vendor:RegisterExtension(arkExtension)) then
+    if (not Vendor.RegisterExtension(arkExtension)) then
         -- something went wrong
     end
 end
@@ -39,12 +39,7 @@ function Addon:Vendor_AutoSell()
 
     -- Becuase Ark is on another planet and has its own concept of bags, must convert to blizzard bags.
     local bag = ArkInventory.API.InternalIdToBlizzardBagId( object.loc_id, object.bag_id )
-    local item = Vendor:GetItemProperties(bag, object.slot_id)
-    if (item) then
-        return Vendor:EvaluateItemForSelling(item);
-    end
-
-    return false;
+    return Vendor.EvaluateItem(bag, object.slot_id);
 end
 
 if (ArkInventoryRules and Vendor) then

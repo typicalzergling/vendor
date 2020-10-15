@@ -12,10 +12,18 @@
 ## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
-# Load order is very specific and important up until after Config is loaded.
-# Initialize & Constants must come first.
-sys\init.lua
-sys\constants.lua
+# Constants defined first
+constants.lua
+
+# Locale neutral and should not be modified
+sys\core.lua
+sys\locale.lua
+sys\utils.lua
+sys\event.lua
+sys\api.lua
+sys\hook.lua
+sys\console.lua
+sys\threads.lua
 
 # LOCALES - Locales must be loaded next so they can be used in all subsequent files.
 # Note that Locales that are not used will be thrown out, so it won't waste memory loading strings you don't need.
@@ -24,18 +32,14 @@ loc\enUS.lua
 loc\frFR.lua
 
 # Helpers & Configuration loads after loc, giving all core functionality.
-sys\utils.lua
 sys\config.lua
-
-# After this point load order shouldn't matter.
 
 # Base Addon Functionality
 sys\debug.lua
-sys\hook.lua
-sys\console.lua
-sys\cmds.lua
-sys\threads.lua
-sys\core.lua
+
+addon.lua
+cmds.lua
+
 
 # Vendoring
 vendor\blocklists.lua
@@ -73,3 +77,5 @@ ui\editruledialog.xml
 # Debug
 ui\debugconfig.lua
 #@end-do-not-package@
+
+publicAPI.lua

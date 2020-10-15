@@ -1,4 +1,6 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
 
 local BlockList = {}
 function BlockList:Create(_config, _listType, _configValue)

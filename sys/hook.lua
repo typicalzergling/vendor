@@ -1,4 +1,4 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local _, Addon = ...
 
 -- Hooking helpers. Keeping It Simple.
 

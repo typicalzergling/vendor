@@ -1,4 +1,6 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+
 local Package = select(2, ...);
 
 local SCROLL_PADDING_X = 4;
@@ -859,3 +861,8 @@ function EditRule:onEditChanged(which)
         end
     end
 end
+
+-- Export to Public
+Addon.Public.EditRuleDialog = Addon.EditRuleDialog
+Addon.Public.ScrollFrame = Addon.ScrollFrame
+Addon.Public.RuleDocumentation = Addon.RuleDocumentation

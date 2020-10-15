@@ -41,9 +41,22 @@ function Addon:Load()
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+local sellCount = 0
+local function updateSellCount()
+    sellCount = Vendor.GetSellCount()
+    TitanPanelButton_UpdateButton(Addon.id);
+end
+
 function Addon:OnEvent(event, ...)
     if (event == "PLAYER_ENTERING_WORLD") then
         self:RegisterEvent("BAG_UPDATE")
+        updateSellCount()
+        return
+    end
+    
+    if (event == "BAG_UPDATE") then
+        updateSellCount()
+        return
     end
 end
 
@@ -60,8 +73,7 @@ function VendorTitan_GetButtonText(id)
 	-- SDK : "TitanUtils_GetButton" is used to get a reference to the button Titan created.
 	--       The reference is not needed by this example.
 
-	return "Vendor: "
-
+	return "Vendor: " .. tostring(sellCount)
 end
 
 

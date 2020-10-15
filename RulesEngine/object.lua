@@ -174,6 +174,6 @@ Package.CreateObject = create_object;
 Package.CreateEvent = create_event;
 
 -- TEMP
-local Addon =  _G[select(1,...).."_GET"]();
+local _, Addon = ...
 Addon.CreateEvent = create_event
 

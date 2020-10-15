@@ -27,7 +27,9 @@
     |
     ========================================================================--]]
 
-local Package = select(2, ...);
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+
 local ListBase = {};
 local ItemBase = {};
 local MODEL_KEY = {};
@@ -337,4 +339,4 @@ function ListBase:Update()
     end
 end
 
-Package.ListBase = ListBase;
+Addon.ListBase = ListBase;

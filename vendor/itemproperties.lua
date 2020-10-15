@@ -1,4 +1,5 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 -- Gets information about an item
 -- Here is the list of captured item properties.
@@ -80,7 +81,7 @@ function Addon:GetItemProperties(arg1, arg2)
         _, item.Count, _, _, _, _, item.Link = GetContainerItemInfo(bag, slot)
 
     else
-        self:Debug("Invalid arguments to GetItemProperties")
+        assert("Invalid arguments to GetItemProperties")
         return nil
     end
 

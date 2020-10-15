@@ -71,7 +71,7 @@ local function registerPawnExtension()
     -- For safety, you should make sure both Vendor and the RegisterExtension method exist before
     -- calling, as done below. If not a clean LUA error will be thrown that can be reported back to players.
     assert(Vendor and Vendor.RegisterExtension, "Vendor RegisterExtension not found, cannot register extension: "..tostring(pawnExtension.Source))
-    if (not Vendor:RegisterExtension(pawnExtension)) then
+    if (not Vendor.RegisterExtension(pawnExtension)) then
         -- something went wrong
     end
 end

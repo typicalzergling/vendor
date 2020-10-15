@@ -1,4 +1,5 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 -- This registers all of the commands in this file.
 function Addon:SetupConsoleCommands()
@@ -118,7 +119,11 @@ function Addon:OpenKeybindings_Cmd()
         for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
             if button.element and button.element.name and button.element.name == _G["BINDING_CATEGORY_VENDOR"] then
                 -- Found it. Click it to set the category.
-                KeybindingsCategoryListButton_OnClick(button)
+                if Addon.IsClassic then
+                    KeybindingsCategoryListButton_OnClick(button)
+                else
+                    button:OnClick()
+                end
             end
         end
     end

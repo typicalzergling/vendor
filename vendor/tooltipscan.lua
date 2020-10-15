@@ -1,5 +1,6 @@
 
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 -- Tooltip scanning for item information. This is necessary because not all information is available via item info API.
 

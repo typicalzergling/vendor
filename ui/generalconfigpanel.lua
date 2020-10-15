@@ -1,4 +1,6 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
 
 local SETTING_AUTOSELL = Addon.c_Config_AutoSell
 local SETTING_TOOLTIP = Addon.c_Config_Tooltip
@@ -27,7 +29,7 @@ end
 --*****************************************************************************
 function GeneralPanel.OnOpenRules()
     Addon:Debug("Showing rules dialog")
-    VendorRulesDialog:Toggle()
+    VendorRulesDialog:Show()
 end
 
 
@@ -86,3 +88,7 @@ function GeneralPanel.Init(self)
     self.OpenBindings:SetText(L["OPTIONS_SHOW_BINDINGS"]);
     self.OpenRules:SetText(L["OPTIONS_OPEN_RULES"]);
 end
+
+-- Export to public
+if not Addon.Public.ConfigPanel then Addon.Public.ConfigPanel = {} end
+Addon.Public.ConfigPanel.General = Addon.ConfigPanel.General

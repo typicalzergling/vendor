@@ -1,4 +1,5 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
 
@@ -99,3 +100,8 @@ function Addon.ConfigPanel.InitChildPanel(self)
     self.name = self.Title:GetText()
     InterfaceOptions_AddCategory(self)
 end
+
+-- Must make this public.
+-- This is tricky becuase all the child panels have already been created.
+assert(Addon.Public.ConfigPanel)
+Addon:MergeTable(Addon.Public.ConfigPanel, Addon.ConfigPanel)
