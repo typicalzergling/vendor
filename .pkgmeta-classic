@@ -11,6 +11,7 @@ ignore:
  - Extensions/Vendor_Pawn/*
  - Extensions/Vendor_TSM/*
  - Extensions/Vendor_RulePack/*
+ - Extensions/Vendor_Titan/*
 
 move-folders:
  Vendor/Extensions/Vendor_Ark: Vendor_Ark

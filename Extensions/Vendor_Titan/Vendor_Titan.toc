@@ -1,0 +1,10 @@
+## Interface: 90002
+## Title: Vendor_Titan
+## Notes: Titan Plugin for the Vendor addon.
+## Version: 1.0.0
+## Author: Malvir & Buskin of Lightbringer
+## Dependencies: Vendor, Titan
+#sys\core.lua
+#sys\locale.lua
+#sys\event.lua
+vendortitan.xml
