@@ -1,5 +1,6 @@
 -- Titan Plugin for Vendor
 local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 if _G[AddonName] then
     error("Addon conflict detected. Addon already exists with this name: "..AddonName)
@@ -8,29 +9,26 @@ _G[AddonName] = Addon
 
 Addon.id = "VendorTitan"
 Addon.addon = AddonName
-Addon.button_label = "Vendor: "
-Addon.menu_text = "Vendor"
-Addon.tooltip_header = "Vendor test"
-Addon.tooltip_hint_1 = "HINT: clicky"
-Addon.menu_option = "Options"
-Addon.menu_hide = "Hide"
-Addon.version = "1.0"
-Addon.author = "Fuckoff"
+Addon.button_label = L["TITAN_BUTTON_LABEL"]
+Addon.version = GetAddOnMetadata(AddonName, "Version")
+Addon.author = GetAddOnMetadata(AddonName, "Author")
 
 function Addon:Load()
     self.registry =
     {
-        id = "VendorTitan",
-        version = "1.0",
+        id = Addon.id,
+        version = Addon.version,
         category = "General",
-        menuText = "Vendor",
+        menuText = L["TITAN_MENU_TEXT"],
         buttonTextFunction = "VendorTitan_GetButtonText",
-        tooltipTitle = "Vendor",
+        tooltipTitle = L["TITAN_TOOLTIP_TITLE"],
         tooltipTextFunction = "VendorTitan_GetTooltipText",
-        icon = nil,
+        icon = "Interface\\Icons\\Achievement_Boss_Zuldazar_TreasureGolem",
         iconWidth = 16,
         savedVariables =
         {
+            ShowValueText = true,
+
             -- Titan required
             ShowIcon = 1,
             ShowLabelText = 1,
@@ -41,21 +39,48 @@ function Addon:Load()
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+local totalCount = 0
+local sellValue = 0
 local sellCount = 0
-local function updateSellCount()
-    sellCount = Vendor.GetSellCount()
+local deleteCount = 0
+local totalCountStr = ""
+local sellCountStr = ""
+local sellValueStr = ""
+local deleteCountStr = ""
+local function updateStats()
+    totalCount, sellValue, sellCount, deleteCount = Vendor.GetStats()
+
+    if totalCount > 0 then
+        totalCountStr = TitanUtils_GetColoredText(tostring(totalCount), BATTLENET_FONT_COLOR)
+    else
+        totalCountStr = TitanUtils_GetColoredText(tostring(totalCount), HIGHLIGHT_FONT_COLOR)
+    end
+
+    if sellCount > 0 then
+        sellCountStr = TitanUtils_GetColoredText(tostring(sellCount), GREEN_FONT_COLOR)
+    else
+        sellCountStr = TitanUtils_GetColoredText(tostring(sellCount), NORMAL_FONT_COLOR)
+    end
+
+    if deleteCount > 0 then
+        deleteCountStr = TitanUtils_GetColoredText(tostring(deleteCount), ORANGE_FONT_COLOR)
+    else
+        deleteCountStr = TitanUtils_GetColoredText(tostring(deleteCount), NORMAL_FONT_COLOR)
+    end
+    sellValueStr = Vendor.GetPriceString(sellValue)
+
     TitanPanelButton_UpdateButton(Addon.id);
 end
 
 function Addon:OnEvent(event, ...)
     if (event == "PLAYER_ENTERING_WORLD") then
         self:RegisterEvent("BAG_UPDATE")
-        updateSellCount()
+        updateStats()
         return
     end
     
     if (event == "BAG_UPDATE") then
-        updateSellCount()
+        updateStats()
         return
     end
 end
@@ -64,53 +89,97 @@ end
 function Addon:OnClick(button)
     if (button == "LeftButton") then
         -- Open Vendor Menu
-        VendorRulesDialog:Toggle()
+        Vendor.ShowRules()
     end
 end
 
 function VendorTitan_GetButtonText(id)
-	--local button, id = TitanUtils_GetButton(id, true);
-	-- SDK : "TitanUtils_GetButton" is used to get a reference to the button Titan created.
-	--       The reference is not needed by this example.
+    local out = ""
 
-	return "Vendor: " .. tostring(sellCount)
+    if totalCount > 0 then
+        out = out..TitanUtils_GetColoredText(tostring(totalCount), BATTLENET_FONT_COLOR)
+    else
+        out = out..TitanUtils_GetColoredText(tostring(totalCount), HIGHLIGHT_FONT_COLOR)
+    end
+    
+    if TitanGetVar(Addon.id, "ShowValueText") then
+        out = out..TitanUtils_GetHighlightText("  ")..sellValueStr
+    end
+
+    return Addon.button_label, out
 end
 
 
 function VendorTitan_GetTooltipText()
-    return "Vendor Tooltip Test"
+    local out = ""
+    out = out.."\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_ITEMEVALUATION"])
+    out = out.."\n"..TitanUtils_GetHighlightText(L["TITAN_TOOLTIP_TOSELL"]).."\t"..sellCountStr
+    out = out.."\n"..TitanUtils_GetHighlightText(L["TITAN_TOOLTIP_TODELETE"]).."\t"..deleteCountStr
+    out = out.."\n\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_VALUE"]).."\t"..sellValueStr
+    return out
 end
 
 function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
     -- Titan Menu
     local info
-	
+    
+    if L_UIDROPDOWNMENU_MENU_LEVEL == 2 then
+		return 
+	end
+
 	-- level 1 menu
 	if L_UIDROPDOWNMENU_MENU_LEVEL == 1 then
-		TitanPanelRightClickMenu_AddTitle(TitanPlugins[Addon.registry.id].menuText);
-		 
+		TitanPanelRightClickMenu_AddTitle(TitanPlugins[Addon.id].menuText);
+         
+
+        -- Rules Menu
 		info = {};
-		info.text = "Options v1"
-		info.value = "Options"
-		info.hasArrow = 1;
-		L_UIDropDownMenu_AddButton(info);
+        info.text = L["TITAN_MENU_RULES"]
+        info.notCheckable = true
+        info.func = function () Vendor.ShowRules() end
+        L_UIDropDownMenu_AddButton(info);
+        
+
+        -- Settings Button
+		info = {};
+        info.text = L["TITAN_MENU_SETTINGS"]
+        info.notCheckable = true
+        info.func = function () Vendor.ShowSettings() end
+        L_UIDropDownMenu_AddButton(info);
+        
+        -- Keybinds Button
+		info = {};
+        info.text = L["TITAN_MENU_KEYBINDINGS"]
+        info.notCheckable = true
+        info.func = function () Vendor.ShowKeybindings() end
+        L_UIDropDownMenu_AddButton(info);
+        
+        -- Default Titan options
+        TitanPanelRightClickMenu_AddSpacer();     
+        TitanPanelRightClickMenu_AddToggleIcon(Addon.id);
+		TitanPanelRightClickMenu_AddToggleLabelText(Addon.id);
+        TitanPanelRightClickMenu_AddToggleColoredText(Addon.id);
+
+        -- Button to hide the money string
+		--[[info = {};
+        info.text = "Show Value Text"
+        info.checked = TitanGetVar(Addon.id, "ShowValueText")
+        info.keepShownOnClick = true
+        info.func = function ()
+            TitanToggleVar(Addon.id, "ShowValueText")
+            TitanPanelButton_UpdateButton(Addon.id)
+        end
+        L_UIDropDownMenu_AddButton(info);]]
+
+        TitanPanelRightClickMenu_AddToggleVar(L["TITAN_MENU_SHOWVALUETEXT"], Addon.id, "ShowValueText", nil, L_UIDROPDOWNMENU_MENU_LEVEL)
 
 		TitanPanelRightClickMenu_AddSpacer();     
-		-- SDK : "TitanPanelRightClickMenu_AddSpacer" is used to put a blank line in the menu
-		TitanPanelRightClickMenu_AddToggleLabelText(Addon.registry.id);
-		-- SDK : "TitanPanelRightClickMenu_AddToggleLabelText" is used to put a "Show label text" (localized) in the menu.
-		--        registry.savedVariables.ShowLabelText
-		TitanPanelRightClickMenu_AddToggleColoredText(Addon.registry.id);
-		-- SDK : "TitanPanelRightClickMenu_AddToggleLabelText" is used to put a "Show colored text" (localized) in the menu.
-		--        registry.savedVariables.ShowColoredText
-		TitanPanelRightClickMenu_AddSpacer();     
-		TitanPanelRightClickMenu_AddCommand("Hide", Addon.registry.id, TITAN_PANEL_MENU_FUNC_HIDE);
+		TitanPanelRightClickMenu_AddCommand(L["TITAN_MENU_HIDE"], Addon.id, TITAN_PANEL_MENU_FUNC_HIDE);
 		-- SDK : The routine above is used to put a "Hide" (localized) in the menu.
 	end
 end
 
 -- Vendor Extension for callback when rules change.
--- This will register a callback to Ark with Vendor
 local function registerTitanExtension()
     local titanExtension =
     {
@@ -121,13 +190,13 @@ local function registerTitanExtension()
 
         -- This is called by Vendor whenever its rules change
         OnRuleUpdate = function()
-            updateSellCount()
+            updateStats()
         end
     }
 
     assert(Vendor and Vendor.RegisterExtension, "Vendor RegisterExtension not found, cannot register extension: "..tostring(titanExtension.Source))
     if (not Vendor.RegisterExtension(titanExtension)) then
-        -- something went wrong
+        error("Error registering "..AddonName.." with Vendor")
     end
 end
 registerTitanExtension()

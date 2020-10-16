@@ -3,7 +3,7 @@ local L = Addon:GetLocale()
 
 -- This registers all of the commands in this file.
 function Addon:SetupConsoleCommands()
-    self:RegisterConsoleCommandName(self.c_AddonName, "/vendor", "/ven")
+    self:RegisterConsoleCommandName(AddonName, "/vendor", "/ven")
     self:AddConsoleCommand(nil, nil, "OpenConfigDialog_Cmd")                        -- Override the default
     self:AddConsoleCommand("rules", L["CMD_RULES_HELP"], "OpenConfigDialog_Cmd")
     self:AddConsoleCommand("sell", L["CMD_SELLITEM_HELP"], "SellItem_Cmd")
@@ -12,6 +12,7 @@ function Addon:SetupConsoleCommands()
     self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
     self:AddConsoleCommand("settings", L["CMD_SETTINGS_HELP"], "OpenSettings_Cmd")
     self:AddConsoleCommand("withdraw", L["CMD_WITHDRAW_HELP"], "Withdraw_Cmd")
+    self:AddConsoleCommand("api", L["CMD_API_HELP"], "PrintAPI_Cmd")
 end
 
 -- Add or remove items from the blacklist or whitelist.
@@ -188,4 +189,9 @@ function Addon:Withdraw_Cmd()
         end
     end
     Addon:Print(L["MERCHANT_WITHDRAWN_ITEMS"], count);
+end
+
+-- Prints the public API
+function Addon:PrintAPI_Cmd()
+    Addon:PrintPublic()
 end

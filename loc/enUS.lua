@@ -132,8 +132,8 @@ Addon:AddLocale("enUS",
 ["API_OPENKEYBINDINGS_DOCS"] = "Opens the Vendor Keybindings page.",
 ["API_OPENRULES_TITLE"] = "Open Rules",
 ["API_OPENRULES_DOCS"] = "Opens the main Vendor Rules interface.",
-["API_GETSELLCOUNT_TITLE"] = "Get Sell Count",
-["API_GETSELLCOUNT_DOCS"] = "Returns number of items currently in your bags that Vendor has marked for selling.",
+["API_GETSTATS_TITLE"] = "Get Stats",
+["API_GETSTATS_DOCS"] = "Returns stats of slots Vendor will sell, delete, and their value.",
 
 -- Rules
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",

@@ -15,7 +15,7 @@
 # Constants defined first
 constants.lua
 
-# Locale neutral and should not be modified
+# Addon skeleton
 sys\core.lua
 sys\locale.lua
 sys\utils.lua
@@ -23,7 +23,7 @@ sys\event.lua
 sys\api.lua
 sys\hook.lua
 sys\console.lua
-sys\threads.lua
+sys\thread.lua
 
 # LOCALES - Locales must be loaded next so they can be used in all subsequent files.
 # Note that Locales that are not used will be thrown out, so it won't waste memory loading strings you don't need.
@@ -31,15 +31,15 @@ sys\threads.lua
 loc\enUS.lua
 loc\frFR.lua
 
-# Helpers & Configuration loads after loc, giving all core functionality.
+# Helpers & Configuration loads after loc
 sys\config.lua
 
 # Base Addon Functionality
 sys\debug.lua
 
+# Addon starts here
 addon.lua
 cmds.lua
-
 
 # Vendoring
 vendor\blocklists.lua
@@ -72,10 +72,10 @@ ui\configpanels.xml
 ui\customrules.xml
 ui\rulesdialog.xml
 ui\editruledialog.xml
-
 #@do-not-package@
 # Debug
 ui\debugconfig.lua
 #@end-do-not-package@
 
+# public API export should be last
 publicAPI.lua

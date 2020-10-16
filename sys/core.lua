@@ -36,7 +36,8 @@ _G[AddonName] = Addon.Public
     | Most basic output to the user, used by most modules for user feedback.
     | Constants can define the color. Prints to DEFAULT_CHAT_FRAME.
     =======================================================================--]]
-local color = Addon.c_PrintColorCode or ""
+local color = Addon.c_PrintColorCode or ORANGE_FONT_COLOR_CODE
+assert(type(color) == "string", "Addon print color code must be a string.")
 local printPrefix = string.format("%s[%s%s%s]%s%s%s", HIGHLIGHT_FONT_COLOR_CODE, color, AddonName, HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, FONT_COLOR_CODE_CLOSE, " ")
 function Addon:Print(msg, ...)
     DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
@@ -108,7 +109,6 @@ addonLifetimeFrame:SetScript("OnEvent", lifetimeEventHandler)
 addonLifetimeFrame:RegisterEvent("PLAYER_LOGIN")
 addonLifetimeFrame:RegisterEvent("PLAYER_LOGOUT")
 
-
 --[[===========================================================================
     | AddInitializeAction
     | AddTerminateAction
@@ -127,7 +127,3 @@ function Addon:AddTerminateAction(action)
     assert(type(action) == "function", "Terminate Action must be a function.")
     table.insert(onTerminateActions, action)
 end
-
-
-
-

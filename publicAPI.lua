@@ -8,7 +8,7 @@ assert(Addon.Public, "Public not defined. This is a programmer error in load ord
 
 Addon:MakePublic(
     "RegisterExtension",
-    function (extension) Addon:RegisterExtension(extension) end,
+    function (extension) return Addon:RegisterExtension(extension) end,
     L["API_REGISTEREXTENSION_TITLE"],
     L["API_REGISTEREXTENSION_DOCS"])
 
@@ -55,15 +55,21 @@ Addon:MakePublic(
     L["API_OPENKEYBINDINGS_DOCS"])
 
 Addon:MakePublic(
-    "OpenRules",
+    "ShowRules",
     function () VendorRulesDialog:Toggle() end,
     L["API_OPENRULES_TITLE"],
     L["API_OPENRULES_DOCS"])
 
 Addon:MakePublic(
-    "GetSellCount",
-    function () return Addon:GetVendorItemCounts() end,
-    L["API_GETSELLCOUNT_TITLE"],
-    L["API_GETSELLCOUNT_DOCS"])
+    "GetStats",
+    function () return Addon:GetStats() end,
+    L["API_GETSTATS_TITLE"],
+    L["API_GETSTATS_DOCS"])
+
+Addon:MakePublic(
+    "GetPriceString",
+    function (price) return Addon:GetPriceString(price) end,
+    L["API_GETPRICESTRING_TITLE"],
+    L["API_GETPRICESTRING_DOCS"])
 
 

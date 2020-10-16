@@ -262,7 +262,8 @@ end
 function Addon:PrintPublic(showUndocumented, showTree)
     local api = self:GetPublic(showUndocumented)
     
-    local color = Addon.c_APIMethodColorCode
+    local color = Addon.c_APIMethodColorCode or YELLOW_FONT_COLOR_CODE
+    assert(type(color) == "string", "API color code must be a string.")
 
     -- Tree view w/ indentation
     if showTree then

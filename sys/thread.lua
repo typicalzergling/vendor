@@ -1,43 +1,48 @@
+--[[===========================================================================
+    | thread.lua
+    |
+    | Sets up coroutine handling and management, simulating thread-like
+    | funcionality. This allows you to queue up work and then do it later in
+    | the background without causing a perf hit to your client. This can avoid
+    | UI hangs and throttling by blizzard, which can disconnect the player.
+    | This will wrap the function and execute it as a thread.
+    |
+    | Methods:
+    |   AddThread
+    |   GetThread
+    |   RemoveThread
+    |
+    =======================================================================--]]
 local AddonName, Addon = ...
 
--- Thread processor.
--- This allows the addon to queue up work and then do it later in the background without cuasing a perf hit.
--- This is also useful for avoiding throttling by Blizzard.
--- Creation of the actual threads is left to the appropriate files; this just manages them and runs them.
--- This is a general purpose chunk that could be used for a wide variety of processing intensive tasks. In this addon I use it for selling.
-
-local threads = {}                      -- Holds the processing threads
+local threads = {} 
 
 -- This is a listener frame used for waking up processing threads.
 -- Threads go into a queue and the throttler processes them one at a time, FIFO
--- This keeps the threads from interfering with the UI and keeps it responsive.
--- This approach can do some very process-intensive work without hanging the UI.
 -- This frame is hidden/shown to turn off/on the listener, so it only checks for work when you want it to.
 local counter = 0
 local processingFrame = CreateFrame("Frame")
 processingFrame:Hide()
-processingFrame:SetScript("OnUpdate", function(self, elapsed)
-    counter = counter + elapsed
-    local throttletime = Addon:GetConfig():GetValue(Addon.c_Config_ThrottleTime)
-    if counter >= throttletime then
-        counter = counter - throttletime
 
-        -- Do some processing on the next thread.
-        Addon:DoSomeWork()
+local function hasWorkToDo()
+    if #threads > 0 then
+        return true
+    else
+        return false
     end
-end)
+end
 
 -- Wake up the next thread in the queue and do processing.
 -- Assumes the threads will yield on their own so this doesn't hang the UI or cause a disconnect.
 -- If the coroutine needs to stop, it should be baked into the coroutine itself.
-function Addon:DoSomeWork()
+local function doSomeWork()
 
     -- Go through the thread queue.
-    while self:HasWorkToDo() do
+    while hasWorkToDo() do
         -- check if thread is dead
         -- if yes, clean it up
         if coroutine.status(threads[1].thread) == "dead" then
-            self:Debug("Thread "..threads[1].name.." is complete.")
+            Addon:Debug("Thread "..threads[1].name.." is complete.")
             table.remove(threads, 1)
         else
             -- if not, resume it
@@ -50,19 +55,28 @@ function Addon:DoSomeWork()
     processingFrame:Hide()
 end
 
-function Addon:HasWorkToDo()
-    if #threads > 0 then
-        return true
-    else
-        return false
+processingFrame:SetScript("OnUpdate", function(self, elapsed)
+    counter = counter + elapsed
+    -- Set a reasonable throttle time to start with, addon can override in a constant.
+    local throttletime = 0.10
+    if Addon.c_ThrottleTime and type(Addon.c_ThrottleTime) == "number" then
+        throttletime = Addon.c_ThrottleTime
     end
-end
+    if counter >= throttletime then
+        counter = counter - throttletime
+
+        -- Do some processing on the next thread.
+        doSomeWork()
+    end
+end)
+
 
 -- Accessor for adding a thread to the processor. Duplicate names are allowed.
--- Also wakes up listener, as if you add a thread, surely you intend for it to be executed.
-function Addon:AddThread(thread, name)
+function Addon:AddThread(func, name)
+    assert(type(func) == "function", "First argument to AddThread must be a function.")
+    assert(type(name) == "string", "Second argument to AddThread must be a string.")
     local obj = {}
-    obj.thread = thread
+    obj.thread = coroutine.create(func)
     obj.name = name
     table.insert(threads, obj)
     self:Debug("Added thread: "..tostring(name))
@@ -93,7 +107,7 @@ function Addon:RemoveThread(name)
     for k, v in pairs(threads) do
         if v.name == name then
             table.remove(threads, k)
-            self:Debug("Removed thread: "..tostring(v.name))
+            self:Debug("Removed thread: "..tostring(name))
         end
     end
 end
