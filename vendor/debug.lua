@@ -1,25 +1,5 @@
-local AddonName = select(1,...);
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
 
--- Writes a debug message to the default chat frame.
-function Addon:Debug(msg, ...)
-	Addon:DebugChannel("default", msg, ...);
-end
-
--- Debug print function for rules
-function Addon:DebugRules(msg, ...)
-    Addon:DebugChannel("rules", msg, ...);
-end
-    
--- Writes a debug message for a specific channmel to the defualt chat frame
-function Addon:DebugChannel(channel, msg, ...)
-    --@debug@
-    local name = string.upper(channel);
-    if (Addon:IsDebugChannelEnabled(name)) then
-        self:Print(" %s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
-    end
-    --@end-debug@
-end
 
 -- Debug print function for rules
 function Addon:DebugRules(msg, ...)

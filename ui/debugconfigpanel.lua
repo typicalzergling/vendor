@@ -15,8 +15,10 @@ Addon.ConfigPanel.Debug = {}
 --*****************************************************************************
 function Addon.ConfigPanel.Debug.Set(self, config)
     Addon:Debug("Setting debug options panel values")
+    print("channel:", Addon:IsDebugChannelEnabled("default"));
+    print("channel:", Addon:IsDebugChannelEnabled("rules"));    
     self.Debug.State:SetChecked(Addon:IsDebugChannelEnabled("default"));
-    self.DebugRules.State:SetChecked(not not Addon:IsDebugChannelEnabled("rules"));
+    self.DebugRules.State:SetChecked(Addon:IsDebugChannelEnabled("rules"));
 end
 
 --*****************************************************************************

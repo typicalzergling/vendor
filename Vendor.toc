@@ -7,7 +7,7 @@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug
+## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles
 ## SavedVariablesPerCharacter: Vendor_RulesConfig
 ## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
@@ -15,13 +15,12 @@
 
 constants.lua
 
-#@do-not-package@
-sys\debug.lua
-vendor\debug.lua
-#@end-do-not-package@
 
 # Addon skeleton
 sys\core.lua
+#@do-not-package@
+sys\debug.lua
+#@end-do-not-package@
 sys\locale.lua
 sys\utils.lua
 sys\event.lua
@@ -39,14 +38,11 @@ loc\frFR.lua
 # Helpers & Configuration loads after loc
 sys\config.lua
 
-# Base Addon Functionality
-sys\hook.lua
-sys\console.lua
-sys\cmds.lua
-sys\threads.lua
-sys\core.lua
-
 # Addon starts here
+#@do-not-package@
+vendor\debug.lua
+#@end-do-not-package@
+
 addon.lua
 cmds.lua
 
@@ -56,6 +52,7 @@ vendor\tooltipscan.lua
 vendor\itemproperties.lua
 vendor\bagitemcache.lua
 vendor\merchant.lua
+vendor\profile.lua
 
 # Rules
 RulesEngine\rules.xml

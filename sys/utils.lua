@@ -4,17 +4,10 @@ local AddonName, Addon = ...
 
 -- Writes a debug message to the default chat frame.
 function Addon:Debug(msg, ...)
-    --@debug@
-    if (Addon:IsDebugChannelEnabled("DEFAULT")) then
-        self:Print(msg, ...);
-    end
-    --@end-debug@
+    Addon:DebugChannel("default", msg, ...);
 end
 
--- Debug print function for rules
-function Addon:DebugRules(msg, ...)
-    Addon:DebugChannel("rules", msg, ...);
-end
+
     
 -- Writes a debug message for a specific channmel to the defualt chat frame
 function Addon:DebugChannel(channel, msg, ...)
