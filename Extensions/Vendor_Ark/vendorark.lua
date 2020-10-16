@@ -42,10 +42,22 @@ function Addon:Vendor_AutoSell()
     return Vendor.EvaluateItem(bag, object.slot_id);
 end
 
+-- Empty function to not break Ark
+local deprecatedMessageDisplayed = false
+function Addon:Vendor_AutoScrap()
+    if not deprecatedMessageDisplayed then
+        print("ArkInventory rule for Vendor scrap, 'venscrap()' is deprecated and no longer functional. For the future stability of Ark, please remove that rule.")
+        deprecatedMessageDisplayed = true
+    end
+    return false;
+end
+
+
 if (ArkInventoryRules and Vendor) then
     local rules = ArkInventoryRules:NewModule(AddonName);
     function rules:OnEnable()
         ArkInventoryRules.Register(self, "vensell", Addon.Vendor_AutoSell);
+        ArkInventoryRules.Register(self, "venscrap", Addon.Vendor_AutoScrap);
     end;
 end
 

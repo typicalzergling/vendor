@@ -138,18 +138,6 @@ Rules.SystemRules =
         Order = -2000,
     },
 
-    -- This is an unsellable item if value is 0
-    {
-        Id = "keep.unsellable",
-        Type = KEEP_RULE,
-        Name = L["SYSRULE_KEEP_UNSELLABLE"],
-        Description = L["SYSRULE_KEEP_UNSELLABLE_DESC"],
-        ScriptText = "UnitValue == 0",
-        Script = function() return UnitValue == 0; end,
-        Locked = true,
-        Order = -9999,
-    },
-
     -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
     {
         Id = "keep.legendaryandup",

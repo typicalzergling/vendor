@@ -14,9 +14,7 @@ Addon.ConfigPanel.Debug = {}
 -- Called to sync the values on our page with the config.
 --*****************************************************************************
 function Addon.ConfigPanel.Debug.Set(self, config)
-    Addon:Debug("Setting debug options panel values")
-    print("channel:", Addon:IsDebugChannelEnabled("default"));
-    print("channel:", Addon:IsDebugChannelEnabled("rules"));    
+    Addon:Debug("Setting debug options panel values") 
     self.Debug.State:SetChecked(Addon:IsDebugChannelEnabled("default"));
     self.DebugRules.State:SetChecked(Addon:IsDebugChannelEnabled("rules"));
 end
