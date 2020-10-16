@@ -39,6 +39,6 @@ local rulePackDefs =
 -- Register this extension with Vendor.
 -- For safety, you should make sure both Vendor and the RegisterExtension method exist before
 -- calling, as done below. If not a clean LUA error will be thrown that can be reported back to players.
-if (not Vendor:RegisterExtension(rulePackDefs)) then
+if (not Vendor.RegisterExtension(rulePackDefs)) then
     -- something went wrong
 end

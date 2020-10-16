@@ -1,4 +1,5 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 Addon.Maps = {}
 

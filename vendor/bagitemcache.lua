@@ -1,7 +1,33 @@
 -- Item cache used to store results of scans and track item state for efficient retrieval. This is for bags only, not tooltips.
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 local bagItemCache = {}
+
+
+function Addon:GetStats()
+    local count = 0
+    local value = 0
+    local tosell = 0
+    local todelete = 0
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1, GetContainerNumSlots(bag) do
+            -- use cache?
+            -- local item = Addon:GetBagItemFromCache(bag, slot)
+            local item = Addon:GetItemPropertiesFromBag(bag, slot)
+            if Addon:EvaluateItemForSelling(item) then
+                count = count + 1
+                value = value + item.NetValue
+                if item.NetValue == 0 then
+                    todelete = todelete + 1
+                else
+                    tosell = tosell + 1
+                end
+            end
+        end
+    end
+    return count, value, tosell, todelete
+end
 
 -- Clears either a specific bag slot, an entire bag, or the entire cache
 function Addon:ClearBagItemCache(bag, slot)

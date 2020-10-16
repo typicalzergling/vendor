@@ -1,4 +1,4 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
 
 -- Hooking helpers. Keeping It Simple.
 
@@ -18,7 +18,7 @@ function Addon:SecureHookWidget(widget, method, func)
         if self[func] then
             widget:HookScript(method, function(...) self[func](self, ...) end)
         else
-            assert(false, "Method "..func.." does not exist in "..self.c_AddonName)
+            assert(false, "Method "..func.." does not exist in "..AddonName)
         end
     end
 end
@@ -41,7 +41,7 @@ function Addon:PreHookWidget(widget, method, func)
         if self[func] then
             hookedFunc = function(...) self[func](self, ...) end
         else
-            assert(false, "Method "..func.." does not exist in "..self.c_AddonName)
+            assert(false, "Method "..func.." does not exist in "..AddonName)
         end
     end
     

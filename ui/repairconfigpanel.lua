@@ -1,4 +1,5 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
 Addon.ConfigPanel.Repair = {}
@@ -56,3 +57,7 @@ function Addon.ConfigPanel.Repair.Init(self)
            Addon.ConfigPanel.Repair.updateGuildRepair(self, state)
         end
 end
+
+-- Export to Public
+if not Addon.Public.ConfigPanel then Addon.Public.ConfigPanel = {} end
+Addon.Public.ConfigPanel.Repair = Addon.ConfigPanel.Repair

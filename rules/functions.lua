@@ -1,4 +1,6 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+
 Addon.RuleFunctions = {}
 Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_SHADOWLANDS;
 Addon.RuleFunctions.BATTLE_FOR_AZEROTH = LE_EXPANSION_BATTLE_FOR_AZEROTH; --7

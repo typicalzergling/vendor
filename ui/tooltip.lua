@@ -1,4 +1,6 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
 function Addon:AddTooltipItemToSellList(list)
@@ -51,7 +53,7 @@ function Addon:ClearTooltipResultCache()
     ruleName = nil
 end
 
-Config:AddOnChanged(Addon.ClearTooltipResultCache)
+Addon:GetConfig():AddOnChanged(Addon.ClearTooltipResultCache)
 
 
 function Addon:AddItemTooltipLines(tooltip, link)

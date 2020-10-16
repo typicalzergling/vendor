@@ -1,4 +1,7 @@
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
+
 local Package = select(2, ...);
 local KEEP_TABID = 1;
 local SELL_TABID = 2;
@@ -80,4 +83,5 @@ function RulesDialog:Toggle()
     end
 end
 
-Addon.RulesDialog = RulesDialog;
+-- Export to Public
+Addon.Public.RulesDialog = RulesDialog

@@ -1,6 +1,7 @@
 -- This is exclusively for the debug options panel and Debug-specific commands that do not appear in a normal build.
 -- This entire file is excluded from packaging and it is not localized intentionally.
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 -- Sets up all the console commands for debug functions in this file.
 function Addon:SetupDebugConsoleCommands()

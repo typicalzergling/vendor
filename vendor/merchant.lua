@@ -1,5 +1,7 @@
 -- Merchant event handling.
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
 
 local threadName = "ItemSeller"
 
@@ -84,7 +86,7 @@ function Addon:AutoSell()
     end
 
     -- Create the coroutine.
-    local thread = coroutine.create( function ()
+    local thread = function ()
         local numSold = 0
         local totalValue = 0
         local sellLimitEnabled = Config:GetValue(Addon.c_Config_SellLimit)
@@ -147,7 +149,7 @@ function Addon:AutoSell()
         end
 
         PrintSellSummary(numSold, totalValue)
-    end)  -- Coroutine end
+    end  -- Coroutine end
 
     -- Add thread to the thread queue and start it.
     self:AddThread(thread, threadName)

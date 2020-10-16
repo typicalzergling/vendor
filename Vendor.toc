@@ -11,15 +11,24 @@
 ## SavedVariablesPerCharacter: Vendor_RulesConfig
 ## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
+# Constants defined first
 
-# Load order is very specific and important up until after Config is loaded.
-# Initialize & Constants must come first.
-sys\init.lua
-sys\constants.lua
+constants.lua
+
 #@do-not-package@
 sys\debug.lua
 vendor\debug.lua
 #@end-do-not-package@
+
+# Addon skeleton
+sys\core.lua
+sys\locale.lua
+sys\utils.lua
+sys\event.lua
+sys\api.lua
+sys\hook.lua
+sys\console.lua
+sys\thread.lua
 
 # LOCALES - Locales must be loaded next so they can be used in all subsequent files.
 # Note that Locales that are not used will be thrown out, so it won't waste memory loading strings you don't need.
@@ -27,11 +36,8 @@ vendor\debug.lua
 loc\enUS.lua
 loc\frFR.lua
 
-# Helpers & Configuration loads after loc, giving all core functionality.
-sys\utils.lua
+# Helpers & Configuration loads after loc
 sys\config.lua
-
-# After this point load order shouldn't matter.
 
 # Base Addon Functionality
 sys\hook.lua
@@ -39,6 +45,10 @@ sys\console.lua
 sys\cmds.lua
 sys\threads.lua
 sys\core.lua
+
+# Addon starts here
+addon.lua
+cmds.lua
 
 # Vendoring
 vendor\blocklists.lua
@@ -71,8 +81,10 @@ ui\configpanels.xml
 ui\customrules.xml
 ui\rulesdialog.xml
 ui\editruledialog.xml
-
 #@do-not-package@
 # Debug
 ui\debugconfig.lua
 #@end-do-not-package@
+
+# public API export should be last
+publicAPI.lua

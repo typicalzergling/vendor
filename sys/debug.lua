@@ -1,7 +1,6 @@
 -- This is a file exclusively for debug channels and functions. On a release build, debug statements are no-op and ignored.
 -- This file will exist on a release build so Debug related code in the other files is defined.
-local AddonName = select(1,...);
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
 
 local debugSettings = _G[AddonName .. "_debug"];
 if (not debugSettings or (type(debugSettings) ~= "table")) then
