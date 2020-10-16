@@ -134,6 +134,8 @@ Addon:AddLocale("enUS",
 ["API_OPENRULES_DOCS"] = "Opens the main Vendor Rules interface.",
 ["API_GETSTATS_TITLE"] = "Get Stats",
 ["API_GETSTATS_DOCS"] = "Returns stats of slots Vendor will sell, delete, and their value.",
+["API_GETPRICESTRING_TITLE"] = "Get Price String",
+["API_GETPRICESTRING_DOCS"] = "Converts passed in integer to a color coded and icon embedded price string.",
 
 -- Rules
 ["RULEUI_LABEL_ITEMLEVEL"] = "Level:",
