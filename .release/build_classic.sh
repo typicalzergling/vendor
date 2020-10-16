@@ -21,7 +21,7 @@ $JUNCTION_TOOL -d "$addon_path_titan"
 rm -rf ".release/classic"
 
 # Build the classic addons. We are not publishing. Offline only.
-./release.sh -dz -r ../.release/classic -m ./../.pkgmeta-classic
+./release.sh -dz -r ../.release/classic -m ./../.pkgmeta-classic -g 1.13.2 -p 297511
 
 # Set new junctions.
 $JUNCTION_TOOL "$addon_path" "classic\\$ADDON_NAME"

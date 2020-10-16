@@ -23,7 +23,12 @@ function Addon:Load()
         buttonTextFunction = "VendorTitan_GetButtonText",
         tooltipTitle = L["TITAN_TOOLTIP_TITLE"],
         tooltipTextFunction = "VendorTitan_GetTooltipText",
+        --@retail@
         icon = "Interface\\Icons\\Achievement_Boss_Zuldazar_TreasureGolem",
+        --@end-retail@
+        --@non-retail@
+        icon = "Interface\\Icons\\INV_Misc_Coin_04",
+        --@end-non-retail@
         iconWidth = 16,
         savedVariables =
         {
