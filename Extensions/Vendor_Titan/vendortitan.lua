@@ -13,6 +13,8 @@ Addon.button_label = L["TITAN_BUTTON_LABEL"]
 Addon.version = GetAddOnMetadata(AddonName, "Version")
 Addon.author = GetAddOnMetadata(AddonName, "Author")
 
+Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC)
+
 function Addon:Load()
     self.registry =
     {
@@ -23,12 +25,6 @@ function Addon:Load()
         buttonTextFunction = "VendorTitan_GetButtonText",
         tooltipTitle = L["TITAN_TOOLTIP_TITLE"],
         tooltipTextFunction = "VendorTitan_GetTooltipText",
-        --@retail@
-        icon = "Interface\\Icons\\Achievement_Boss_Zuldazar_TreasureGolem",
-        --@end-retail@
-        --@non-retail@
-        icon = "Interface\\Icons\\INV_Misc_Coin_04",
-        --@end-non-retail@
         iconWidth = 16,
         savedVariables =
         {
@@ -40,6 +36,13 @@ function Addon:Load()
             ShowColoredText = 1,
         },
     }
+
+    -- Retail icon doesn't exist on classic
+    if Addon.IsClassic then
+        self.registry.icon = "Interface\\Icons\\INV_Misc_Coin_04"
+    else
+        self.registry.icon = "Interface\\Icons\\Achievement_Boss_Zuldazar_TreasureGolem"
+    end
 
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
