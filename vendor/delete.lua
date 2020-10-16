@@ -3,7 +3,7 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local Config = Addon:GetConfig()
 
-local threadName = "ItemDeleter"
+local threadName = Addon.c_ItemDeleterThreadName
 
 
 -- This returns true if we are in the middle of autoselling.
@@ -23,7 +23,7 @@ end
 -- for the item we are actually trying to delete.
 local currentDeletedItem = nil
 
-function Addon:DeleteUnsellableItems()
+function Addon:AutoDeleteItems()
     -- Start deleting
     if self:GetThread(threadName) then
         return
@@ -44,24 +44,21 @@ function Addon:DeleteUnsellableItems()
                 end
 
                 -- Get Item properties and run sell rules.
-                local item = self:GetBagItemFromCache(bag, slot)
-                if item then
-                    self:Debug("Evaluated: "..tostring(item.Properties.Link).." = "..tostring(item.Result))
-                end
+                local item, itemCount = self:GetItemPropertiesFromBag(bag, slot)
+                local result = self:EvaluateItem(item)
 
-                -- Determine if it is to be sold
                 -- Result of 0 is no action, 1 is sell, 2 is must be deleted.
                 -- So we only try to sell if Result is exactly 1.
-                if item and item.Result == 2 then
-                    currentDeletedItem = item.Properties.Link
+                if result == 2 then
+                    currentDeletedItem = item.Link
                     self:Print(L["DELETE_DELETING_ITEM"], tostring(currentDeletedItem))
-                    PickupContainerItem(bag, slot)
-                    DeleteCursorItem()
+                    --PickupContainerItem(bag, slot)
+                    --DeleteCursorItem()
                     currentDeletedItem = nil
                     numDeleted = numDeleted + 1
                     
                     -- Yield per throttling setting.
-                    if numDeleted % Addon.c_DeleteThottle == 0 then
+                    if numDeleted % self.c_DeleteThottle == 0 then
                         coroutine.yield()
                     end
                 end
@@ -76,9 +73,19 @@ function Addon:DeleteUnsellableItems()
 end
 
 -- Confirms the popup if an item will be delted, but only when we are auto-deleting it.
-function Addon:AutoConfirmDelete(link)
+function Addon.AutoConfirmDelete(link)
     if self:IsDeleting() then
         self:Print(L["MERCHANT_AUTO_CONFIRM_DELETE"], link)
+        if link ~= currentDeletedItem then
+            self:Debug("Confirmation does not match item currently being deleted, aborting auto-confirm")
+            return
+        end
+        -- TODO: Implement the auto-confirm.
         --SellCursorItem()
     end
 end
+
+
+-- Add Thread Callback, when Itemseller is done running, we will run the deleter.
+-- This avoids both of them running simultaneously.
+Addon:AddThreadCompletionCallback(Addon.c_ItemSellerThreadName, function() Addon:AutoDeleteItems() end)

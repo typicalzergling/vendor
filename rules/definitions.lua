@@ -13,6 +13,10 @@ local SHADOWLANDS_VERSION = 90000;
 local addon_Functions = {};
 local addon_Definitions = {};
 
+-- Define DebugRules if debug files are absent.
+if not Addon.DebugRules then
+    Addon.DebugRules = function () end
+end
 
 -- This is event is fired when our custom rule definitions have changed.
 Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");

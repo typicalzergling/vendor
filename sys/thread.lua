@@ -11,11 +11,25 @@
     |   AddThread
     |   GetThread
     |   RemoveThread
+    |   AddThreadCompletionCallback
     |
     =======================================================================--]]
 local AddonName, Addon = ...
 
 local threads = {} 
+
+
+
+-- This allows adding a callback function whenever a thread of the specified name is completed.
+local threadCallbacks = {}
+function Addon:AddThreadCompletionCallback(name, func)
+    assert(type(name) == "string" and type(func) == "function")
+    if not threadCallbacks[name] then
+        threadCallbacks[name] = {}
+    end
+    table.insert(threadCallbacks[name], func)
+end
+
 
 -- This is a listener frame used for waking up processing threads.
 -- Threads go into a queue and the throttler processes them one at a time, FIFO
@@ -42,8 +56,16 @@ local function doSomeWork()
         -- check if thread is dead
         -- if yes, clean it up
         if coroutine.status(threads[1].thread) == "dead" then
-            Addon:Debug("Thread "..threads[1].name.." is complete.")
+            local name = threads[1].name
+            Addon:Debug("Thread %s is complete.", name)
             table.remove(threads, 1)
+            -- execute all callbacks for this thread
+            if threadCallbacks[name] then
+                for _, cb in pairs(threadCallbacks[name]) do
+                    Addon:Debug("Executing callback for thread %s", name)
+                    cb()
+                end
+            end
         else
             -- if not, resume it
             coroutine.resume(threads[1].thread)
@@ -70,7 +92,6 @@ processingFrame:SetScript("OnUpdate", function(self, elapsed)
     end
 end)
 
-
 -- Accessor for adding a thread to the processor. Duplicate names are allowed.
 function Addon:AddThread(func, name)
     assert(type(func) == "function", "First argument to AddThread must be a function.")
@@ -79,7 +100,7 @@ function Addon:AddThread(func, name)
     obj.thread = coroutine.create(func)
     obj.name = name
     table.insert(threads, obj)
-    self:Debug("Added thread: "..tostring(name))
+    self:Debug("Added thread: %s",tostring(name))
 
     -- "wake up" the listener
     processingFrame:Show()
@@ -107,7 +128,9 @@ function Addon:RemoveThread(name)
     for k, v in pairs(threads) do
         if v.name == name then
             table.remove(threads, k)
-            self:Debug("Removed thread: "..tostring(name))
+            self:Debug("Removed thread: %s", tostring(name))
         end
     end
 end
+
+

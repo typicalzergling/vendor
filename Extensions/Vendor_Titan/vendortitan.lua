@@ -56,7 +56,7 @@ local sellCountStr = ""
 local sellValueStr = ""
 local deleteCountStr = ""
 local function updateStats()
-    totalCount, sellValue, sellCount, deleteCount = Vendor.GetStats()
+    totalCount, sellValue, sellCount, deleteCount = Vendor.GetEvaluationStatus()
 
     if totalCount > 0 then
         totalCountStr = TitanUtils_GetColoredText(tostring(totalCount), BATTLENET_FONT_COLOR)

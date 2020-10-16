@@ -62,9 +62,8 @@ function Addon:AddItemTooltipLines(tooltip, link)
     -- If it is in the cache, then we already have our answer, so don't waste perf re-evaluating.
     -- TODO: We could keep a larger cache so we don't re-evaluate an item unless inventory changed, the rules changed, or the blocklist changed.
     if not (itemLink == link) then
-        -- Evaluate the item for sell
-        local item = self:GetItemPropertiesFromTooltip(tooltip, link)
-        result, ruleId, ruleName  = self:EvaluateItemForSelling(item)
+        -- Evaluate the item
+        result, ruleId, ruleName  = self:EvaluateItem(self:GetItemPropertiesFromTooltip(tooltip, link))
 
         -- Check if the item is in the Always or Never sell lists
         blocklist = self:GetBlocklistForItem(link)

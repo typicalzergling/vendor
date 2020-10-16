@@ -128,7 +128,6 @@ function Addon:AddTerminateAction(action)
     table.insert(onTerminateActions, action)
 end
 
--- No-Op debug messages
+-- No-Op debug messages. This will be overridden if debug.lua is included,
+-- but still exist if it doesn't, so calls to Debug wont' fail.
 Addon.Debug = function () end
-Addon.DebugRules = function () end 
-

@@ -1,5 +1,5 @@
 
-local _, Addon = ...
+local AddonName, Addon = ...
 
 
 -- EVENT HANDLING

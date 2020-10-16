@@ -46,11 +46,12 @@ vendor\debug.lua
 addon.lua
 cmds.lua
 
-# Vendoring
+# Vendor Main
 vendor\blocklists.lua
 vendor\tooltipscan.lua
 vendor\itemproperties.lua
-vendor\bagitemcache.lua
+vendor\itemcache.lua
+vendor\evaluation.lua
 vendor\merchant.lua
 vendor\profile.lua
 vendor\delete.lua
