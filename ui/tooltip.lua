@@ -64,7 +64,7 @@ function Addon:AddItemTooltipLines(tooltip, link)
     if not (itemLink == link) then
         -- Evaluate the item for sell
         local item = self:GetItemPropertiesFromTooltip(tooltip, link)
-        willBeSold, ruleId, ruleName  = self:EvaluateItemForSelling(item)
+        result, ruleId, ruleName  = self:EvaluateItemForSelling(item)
 
         -- Check if the item is in the Always or Never sell lists
         blocklist = self:GetBlocklistForItem(link)
@@ -87,14 +87,16 @@ function Addon:AddItemTooltipLines(tooltip, link)
 
     -- Add a warning that this item will be auto-sold on next vendor trip.
     if (Config:GetValue(Addon.c_Config_Tooltip)) then
-        if willBeSold then
+        if result == 1 then
             tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+        elseif result == 2 then
+            tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_DELETED"], FONT_COLOR_CODE_CLOSE))    
         end
     end
     
     -- Add Advanced Rule information if set and available.
     if (ruleName and Config:GetValue(Addon.c_Config_Tooltip_Rule)) then
-        if willBeSold then
+        if result > 0 then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
         else
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_KEEP"], ruleName))

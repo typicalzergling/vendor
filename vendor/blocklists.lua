@@ -16,11 +16,21 @@ function BlockList:Create(_config, _listType, _configValue)
 end
 
 function BlockList:Add(itemId)
+
+    -- If it was in the other list, remove it.
+    if self.listType == Addon.c_AlwaysSellList then
+        -- Remove from Never Sell list
+        Addon:GetList(Addon.c_NeverSellList):Remove(itemId)
+    elseif self.listType == Addon.c_NeverSellList then
+        -- Remove from Always sell list
+        Addon:GetList(Addon.c_AlwaysSellList):Remove(itemId)
+    end
+
     local list = self.config:GetValue(self.configValue);
     if (not list[itemId]) then
         list[itemId] = true;
         Addon:Debug("BlockList: Added %d to '%s' list", itemId, self.listType);
-        self.config:NotifyChanges();
+        self.config:NotifyChanges();        
         return true;
     end
 
@@ -64,38 +74,19 @@ end
 -- Returns 2 if item was removed from the list.
 -- Returns nil if no action taken.
 function Addon:ToggleItemInBlocklist(list, item)
-    local function toggle(l, o, i)
-        if (l[i]) then
-            l[i] = nil
-            return 2
-        else
-            l[i] = true
-            o[i] = nil
-            return 1
-        end
-    end
-
-    if not item then return nil end
 
     local id = self:GetItemId(item)
     if not id then return nil end
 
+    -- Get existing blocklist id
+    local existinglist = Addon:GetBlocklistForItem(id)
+
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
-    if list == self.c_AlwaysSellList then
-        local ret = toggle(Config:GetValue("sell_always"), Config:GetValue("sell_never"), id)
-        if (ret) then
-            Config:NotifyChanges()
-        end
-        return ret
-    elseif list == self.c_NeverSellList then
-        local ret = toggle(Config:GetValue("sell_never"), Config:GetValue("sell_always"), id)
-        if (ret) then
-            Config:NotifyChanges()
-        end
-        return ret
+    if list == existinglist then
+        Addon:GetList(list):Remove(id)
     else
-        return nil
+        Addon:GetList(list):Add(id)
     end
 end
 

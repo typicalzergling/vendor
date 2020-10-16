@@ -53,6 +53,7 @@ vendor\itemproperties.lua
 vendor\bagitemcache.lua
 vendor\merchant.lua
 vendor\profile.lua
+vendor\delete.lua
 
 # Rules
 RulesEngine\rules.xml

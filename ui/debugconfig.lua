@@ -31,33 +31,7 @@ function Addon:DumpLink_Cmd(arg)
 end
 
 function Addon:Test_Cmd(...)
-    local Item = PawnGetItemData(select(1,...))
-    local UpgradeInfo, BestItemFor, SecondBestItemFor, NeedsEnhancements = PawnIsItemAnUpgrade(Item)
-
-    self:Print("UpgradeInfo: %s", tostring(UpgradeInfo))
-        if UpgradeInfo then
-            for key, data in pairs(UpgradeInfo) do
-                self:Print("Key: %s  Value: %s", tostring(key), tostring(data))
-                for key1, data1 in pairs(data) do
-                    self:Print("Key: %s  Value: %s", tostring(key1), tostring(data1))
-                end
-            end
-        end
-    self:Print("BestItemFor: %s", tostring(BestItemFor))
-    self:Print("SecondBestItemFor: %s", tostring(SecondBestItemFor))
-    self:Print("NeedsEnhancements: %s", tostring(NeedsEnhancements))
-
-
-    --[[local upgradeInfo = {PawnIsItemAnUpgrade(Item)}
-    for _, v in ipairs(upgradeInfo) do
-        if type(v) == "table" then
-            for key, data in pairs(v) do
-                self:Print("Key: %s  Value: %s", tostring(key), tostring(data))
-            end
-        else
-            self:Print("Info: %s", tostring(v))
-        end
-    end]]
+    Addon:DeleteUnsellableItems()
 end
 
 function Addon:GetAllBagItemInformation()

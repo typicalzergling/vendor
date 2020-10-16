@@ -127,3 +127,8 @@ function Addon:AddTerminateAction(action)
     assert(type(action) == "function", "Terminate Action must be a function.")
     table.insert(onTerminateActions, action)
 end
+
+-- No-Op debug messages
+Addon.Debug = function () end
+Addon.DebugRules = function () end 
+

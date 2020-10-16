@@ -122,6 +122,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
     item.UnitValue = getItemInfo[11]
+    item.IsUnsellable = item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
 

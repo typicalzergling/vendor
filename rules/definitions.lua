@@ -42,7 +42,7 @@ Rules.SystemRules =
         ScriptText = "IsAlwaysSellItem()",
         Script = function() return IsAlwaysSellItem() end,
         Locked = true,
-        Order = -1000,
+        Order = -2000,
     },
 
     {
@@ -135,7 +135,7 @@ Rules.SystemRules =
         ScriptText = "IsNeverSellItem()",
         Script = function() return IsNeverSellItem() end,
         Locked = true,
-        Order = -2000,
+        Order = -3000,
     },
 
     -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...

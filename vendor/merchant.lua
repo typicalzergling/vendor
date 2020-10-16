@@ -114,11 +114,13 @@ function Addon:AutoSell()
                 -- Get Item properties and run sell rules.
                 local item = self:GetBagItemFromCache(bag, slot)
                 if item then
-                    self:Debug("Evaluated: "..tostring(item.Properties.Link).." = "..tostring(item.Sell))
+                    self:Debug("Evaluated: "..tostring(item.Properties.Link).." = "..tostring(item.Result))
                 end
 
                 -- Determine if it is to be sold
-                if item and item.Sell then
+                -- Result of 0 is no action, 1 is sell, 2 is must be deleted.
+                -- So we only try to sell if Result is exactly 1.
+                if item and item.Result == 1 then
 
                     -- UseContainerItem is really just a limited auto-right click, and it will equip/use the item if we are not in a merchant window!
                     -- So before we do this, make sure the Merchant frame is still open. If not, terminate the coroutine.
@@ -153,6 +155,9 @@ function Addon:AutoSell()
 
     -- Add thread to the thread queue and start it.
     self:AddThread(thread, threadName)
+    
+    -- Delete items that cannot be sold.
+    self:DeleteUnsellableItems()
 end
 
 -- Confirms the popup if an item will be non-tradeable when sold, but only when we are auto-selling it.

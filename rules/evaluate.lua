@@ -6,18 +6,36 @@ local Package = select(2, ...);
 -- Evaluating items for selling.
 
 -- Rules for determining if an item should be sold.
+-- Retval meanings:
+-- 0 = No action
+-- 1 = Item will be sold
+-- 2 = Item will be deleted
+-- Both 1 and 2 will evaluate to True, so you can still use this function as a boolean.
 function Addon:EvaluateItemForSelling(item)
     -- Check some cases where we know we should never ever sell the item
     if not item then
-        return false, nil, nil
+        return 0, nil, nil
     end
 
     if (not self.ruleManager) then
         self.ruleManager = Addon.RuleManager:Create();
     end
-
-    -- Determine if we should keep this item or not
-    return self.ruleManager:Run(item)
+    
+    local result, ruleid, rule = self.ruleManager:Run(item)
+    
+    local retval = 0
+    if result then
+        -- Only items explicitly in the always sell list are considered for deletion.
+        if item.IsUnsellable then
+            if Addon:GetList(Addon.c_AlwaysSellList):Contains(item.Id) then
+                retval = 2
+            end
+        else
+            retval = 1
+        end
+    end
+    
+    return retval, ruleid, rule
 end
 
 -- Simple helper function which handles enumerating bags and running the function.

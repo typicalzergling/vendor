@@ -15,14 +15,17 @@ function Addon:GetStats()
             -- use cache?
             -- local item = Addon:GetBagItemFromCache(bag, slot)
             local item = Addon:GetItemPropertiesFromBag(bag, slot)
-            if Addon:EvaluateItemForSelling(item) then
+            result = Addon:EvaluateItemForSelling(item)
+            
+            if result > 0 then
                 count = count + 1
+            end
+            
+            if result == 1 then
                 value = value + item.NetValue
-                if item.NetValue == 0 then
-                    todelete = todelete + 1
-                else
-                    tosell = tosell + 1
-                end
+                tosell = tosell + 1
+            elseif result == 2 then
+                todelete = todelete + 1
             end
         end
     end
@@ -86,9 +89,7 @@ end
 
 -- This will get the cached item info from a bag slot
 function Addon:GetBagItemFromCache(bag, slot)
-    --@debug@
     assert(tonumber(bag) and tonumber(slot) and bag >= 0 and bag <= NUM_BAG_SLOTS)
-    --@end-debug@
     bag = tonumber(bag)
     slot = tonumber(slot)
     -- If its not cached we need to cache it.
@@ -127,7 +128,7 @@ function Addon:CacheBagItem(bag, slot)
     end
     
     -- Do evaluation and cache it.
-    item.Sell, item.RuleId, item.RuleName = self:EvaluateItemForSelling(item.Properties)
+    item.Result, item.RuleId, item.RuleName = self:EvaluateItemForSelling(item.Properties)
     self:AddItemToBagItemCache(bag, slot, item)
 end
 
@@ -145,7 +146,7 @@ function Addon:OnBagUpdate(event, bag)
     if self:IsAutoSelling() then
         self:Debug("Autoselling, skipping cache clear for the bag.")
         return
-    end ]]
+    end]]
     self:ClearBagItemCache(tonumber(bag))
 end
 

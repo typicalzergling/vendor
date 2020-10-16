@@ -34,11 +34,16 @@ Addon:AddLocale("enUS",
 ["MERCHANT_POPULATING_SCRAP"] = "Auto-populating scrapper:",
 ["MERCHANT_MORE_SCRAP"] = "There are more items in your inventory which could be scrapped after scrapping these close and re-open the scrapper to continue",
 
+-- Delete
+["DELETE_DELETED_ITEMS"] = "Deleted %s items.",
+["DELETE_DELETING_ITEM"] = "Deleting %s",
+
 -- Tooltip
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
 ["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be sold by Vendor",
+["TOOLTIP_ITEM_WILL_BE_DELETED"] = "Will be DELETED by Vendor",
 ["TOOLTIP_RULEMATCH_SELL"] = "Sell: %s",
 ["TOOLTIP_RULEMATCH_KEEP"] = "Keep: %s",
 

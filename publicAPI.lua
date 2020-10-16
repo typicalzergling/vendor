@@ -19,7 +19,7 @@ Addon:MakePublic(
         if item then
             return Addon:EvaluateItemForSelling(item)
         end
-        return nil
+        return nil, "", ""
     end,
     L["API_EVALUATEITEM_TITLE"],
     L["API_EVALUATEITEM_DOCS"])
