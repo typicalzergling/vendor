@@ -10,6 +10,7 @@ Addon.ScriptReference.ItemProperties =
     Count = { Html = L["HELP_COUNT_HTML"] },
     Quality = { Html = L["HELP_QUALITY_HTML"] },
     Level = { Html = L["HELP_LEVEL_HTML"] },
+    MinLevel = { Html = L["HELP_MINLEVEL_HTML"] },
     Type = { Html = L["HELP_TYPE_HTML"] },
     TypeId = { Html = L["HELP_TYPEID_HTML"] },
     SubType = { Html = L["HELP_SUBTYPE_HTML"] },
