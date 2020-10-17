@@ -98,6 +98,7 @@ Addon:AddLocale("enUS",
 ["CMD_RULES_HELP"] = "Open the Sell/Keep Rules configuration panel.",
 ["CMD_KEYS_HELP"] = "Open keybindings. Working with blocklists is much easier with keybinds!",
 ["CMD_WITHDRAW_HELP"] = "Withdraws any items from you bank which vendor would sell, requires your bank to be open",
+["CMD_API_HELP"] = "Prints the public API for Vendor",
 
 ["CMD_SELLITEM_HELP"] = "Adds or removes items from the sell list: sell {always||never} [itemid]",
 ["CMD_SELLITEM_INVALIDARG"] = "Must specify which list to which you want to query or edit an item: {always||never} [item]",

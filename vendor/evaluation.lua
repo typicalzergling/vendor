@@ -90,7 +90,7 @@ function Addon:AddResultToCache(link, result, ruleid, rule)
     cacheEntry.Rule = rule
 
     assert(link ~= "")
-    self:Debug("Cached result: %s = %s", link, tostring(result))
+    --self:Debug("Cached result: %s = %s", link, tostring(result))
     resultCache[link] = cacheEntry
 end
 

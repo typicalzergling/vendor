@@ -52,8 +52,8 @@ function Addon:AutoDeleteItems()
                 if result == 2 then
                     currentDeletedItem = item.Link
                     self:Print(L["DELETE_DELETING_ITEM"], tostring(currentDeletedItem))
-                    --PickupContainerItem(bag, slot)
-                    --DeleteCursorItem()
+                    PickupContainerItem(bag, slot)
+                    DeleteCursorItem()
                     currentDeletedItem = nil
                     numDeleted = numDeleted + 1
                     

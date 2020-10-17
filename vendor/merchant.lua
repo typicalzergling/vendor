@@ -19,12 +19,6 @@ function Addon:OnMerchantShow()
 
     -- Do auto-selling if enabled
     if Config:GetValue(Addon.c_Config_AutoSell) then
-
-        -- On Classic there is a caching issue, clear the cache to be certain.
-        if Addon.IsClassic then
-            self:ClearBagItemCache()
-        end
-
         self:AutoSell()
     end
 end

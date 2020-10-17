@@ -5,12 +5,16 @@
 # Process command-line options
 usage() {
 	echo "Usage: build.sh [-d]" >&2
-	echo "  -d               Enable Dev mode. Doesn't build, hardlinks directly to retail." >&2
+	echo "  -c               Builds classic only and junctions into classic wow." >&2
+	echo "  -d               Enable Dev mode. Doesn't build, junctions directly to retail." >&2
 }
 
 exit_code=0
-while getopts ":d" opt; do
+while getopts ":cd" opt; do
 	case $opt in
+	c)
+		classicOnly="true"
+		;;
 	d)
 		devmode="true"
 		;;
@@ -29,8 +33,12 @@ if [ $devmode ]; then
     echo
     echo "Dev mode enabled."
 else
-    (cd .release; ./build_retail.sh)
-    (cd .release; ./build_classic.sh)
+	if [ $classicOnly ]; then
+		(cd .release; ./build_classic.sh)
+	else
+		(cd .release; ./build_retail.sh)
+		(cd .release; ./build_classic.sh)
+	fi
     echo
     echo "Build complete."
 fi
