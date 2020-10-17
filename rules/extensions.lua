@@ -46,7 +46,10 @@
     |           you can just use the result of "select(1, ...)"
     ========================================================================--]]
 
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
+
 local Package = select(2, ...);
 local AddonName = select(1, ...);
 

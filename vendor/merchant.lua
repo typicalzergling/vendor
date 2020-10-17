@@ -1,7 +1,9 @@
 -- Merchant event handling.
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
 
-local threadName = "ItemSeller"
+local threadName = Addon.c_ItemSellerThreadName
 
 local isMerchantOpen = false
 
@@ -17,12 +19,6 @@ function Addon:OnMerchantShow()
 
     -- Do auto-selling if enabled
     if Config:GetValue(Addon.c_Config_AutoSell) then
-
-        -- On Classic there is a caching issue, clear the cache to be certain.
-        if Addon.IsClassic then
-            self:ClearBagItemCache()
-        end
-
         self:AutoSell()
     end
 end
@@ -60,7 +56,7 @@ function Addon:IsAutoSelling()
     return not not self:GetThread(threadName)
 end
 
-local function PrintSellSummary(num, value)
+local function printSellSummary(num, value)
     if num > 0 then
         Addon:Print(L["MERCHANT_SOLD_ITEMS"], tostring(num), Addon:GetPriceString(value))
     end
@@ -84,7 +80,7 @@ function Addon:AutoSell()
     end
 
     -- Create the coroutine.
-    local thread = coroutine.create( function ()
+    local thread = function ()
         local numSold = 0
         local totalValue = 0
         local sellLimitEnabled = Config:GetValue(Addon.c_Config_SellLimit)
@@ -101,7 +97,7 @@ function Addon:AutoSell()
 
                     -- It is possible the merchant window closes while the user is holding an item, so check for termination condition before yielding.
                     if not self:IsMerchantOpen() then
-                        PrintSellSummary(numSold, totalValue)
+                        printSellSummary(numSold, totalValue)
                         return
                     end
 
@@ -109,32 +105,32 @@ function Addon:AutoSell()
                     coroutine.yield()
                 end
 
-                -- Get Item properties and run sell rules.
-                local item = self:GetBagItemFromCache(bag, slot)
-                if item then
-                    self:Debug("Evaluated: "..tostring(item.Properties.Link).." = "..tostring(item.Sell))
-                end
+                -- Get Item properties and evaluate
+                local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
+                local result = Addon:EvaluateItem(item)
 
                 -- Determine if it is to be sold
-                if item and item.Sell then
-
+                -- Result of 0 is no action, 1 is sell, 2 is must be deleted.
+                -- So we only try to sell if Result is exactly 1.
+                if result == 1 then
                     -- UseContainerItem is really just a limited auto-right click, and it will equip/use the item if we are not in a merchant window!
                     -- So before we do this, make sure the Merchant frame is still open. If not, terminate the coroutine.
                     if not self:IsMerchantOpen() then
-                        PrintSellSummary(numSold, totalValue)
+                        printSellSummary(numSold, totalValue)
                         return
                     end
 
                     -- Still open, so OK to sell it.
                     UseContainerItem(bag, slot)
-                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Properties.Link), self:GetPriceString(item.Properties.NetValue))
+                    local netValue = item.UnitValue * itemCount
+                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue))
                     numSold = numSold + 1
-                    totalValue = totalValue + item.Properties.NetValue
+                    totalValue = totalValue + netValue
 
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
                         self:Print(L["MERCHANT_SELL_LIMIT_REACHED"], sellLimitMaxItems)
-                        PrintSellSummary(numSold, totalValue)
+                        printSellSummary(numSold, totalValue)
                         return
                     end
 
@@ -146,8 +142,8 @@ function Addon:AutoSell()
             end
         end
 
-        PrintSellSummary(numSold, totalValue)
-    end)  -- Coroutine end
+        printSellSummary(numSold, totalValue)
+    end  -- Coroutine end
 
     -- Add thread to the thread queue and start it.
     self:AddThread(thread, threadName)

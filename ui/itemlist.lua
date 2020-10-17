@@ -4,8 +4,13 @@
     | ItemList:
     ========================================================================--]]
 
-local Addon, L, Config = _G[select(1,...).."_GET"]()
-local ItemList = {}
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
+
+Addon.ItemList = Addon.ItemList or {}
+local ItemList = Addon.ItemList
+
 local Package = select(2, ...);
 local SELL_LIST = Addon.c_AlwaysSellList;
 local KEEP_LIST = Addon.c_NeverSellList;
@@ -82,5 +87,5 @@ function ItemList:OnDropItem(button)
 	end
 end
 
-Package.ItemList = ItemList;
-Addon.ItemList = ItemList;
+-- Export to Public
+Addon.Public.ItemList = Addon.ItemList

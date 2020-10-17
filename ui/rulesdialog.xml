@@ -130,7 +130,7 @@
                     <Anchor point="LEFT" relativeKey="$parent.defaults" relativePoint="RIGHT"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick>Vendor.OpenSettings_Cmd()</OnClick>
+                    <OnClick>Vendor.ShowSettings()</OnClick>
                 </Scripts>
             </Button>
 

@@ -5,7 +5,10 @@
     |
     ========================================================================--]]
 
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
+
 Addon.RulesList = {}
 Addon.Rules = Addon.Rules or {};
 local Rules = Addon.Rules;
@@ -126,3 +129,7 @@ function RulesList:ChangeRuleOrder(item, adjustment)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
     end
 end
+
+-- Export to Public
+Addon.Public.Rules = Addon.Rules
+Addon.Public.RulesList = Addon.RulesList

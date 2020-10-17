@@ -1,11 +1,22 @@
 -- Useful helper functions prior to other files loading. Ideally this is the first file loaded after Localization, right before Config
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
 
--- Simplified print to DEFAULT_CHAT_FRAME. Replaces need for AceConsole with 4 lines. Thanks AceConsole for the inspiriation and color code.
--- Assume if multiple arguments it is a format string.
-local printPrefix = string.format("%s[%s%s%s]%s%s%s", HIGHLIGHT_FONT_COLOR_CODE, ORANGE_FONT_COLOR_CODE, L["ADDON_NAME"], HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, FONT_COLOR_CODE_CLOSE, " ")
-function Addon:Print(msg, ...)
-    DEFAULT_CHAT_FRAME:AddMessage(printPrefix .. string.format(msg, ...))
+
+-- Writes a debug message to the default chat frame.
+function Addon:Debug(msg, ...)
+    Addon:DebugChannel("default", msg, ...);
+end
+
+
+    
+-- Writes a debug message for a specific channmel to the defualt chat frame
+function Addon:DebugChannel(channel, msg, ...)
+    --@debug@
+    local name = string.upper(channel);
+    if (Addon:IsDebugChannelEnabled(name)) then
+        self:Print(" %s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
+    end
+    --@end-debug@
 end
 
 function Addon:IsShadowlands()
@@ -14,7 +25,7 @@ end
 
 -- Gets the version of the addon
 function Addon:GetVersion()
-    local version = GetAddOnMetadata(self.c_AddonName, "version")
+    local version = GetAddOnMetadata(AddonName, "version")
     --@debug@
     if version == "@project-version@" then version = "Debug" end
     --@end-debug@
@@ -50,5 +61,3 @@ function Addon.DeepTableCopy(obj, seen)
     for k, v in pairs(obj) do res[Addon.DeepTableCopy(k, s)] = Addon.DeepTableCopy(v, s) end
     return res
 end
-
-

@@ -32,12 +32,18 @@ addon_pawn="$ADDON_NAME""_Pawn"
 addon_path_pawn="$addons_folder$addon_pawn"
 addon_repo_pawn="$addon_ext$addon_pawn"
 
+addon_titan="$ADDON_NAME""_Titan"
+addon_path_titan="$addons_folder$addon_titan"
+addon_repo_titan="$addon_ext$addon_titan"
+
+
 # Remove existing junctions
 $JUNCTION_TOOL -d "$addon_path"
 $JUNCTION_TOOL -d "$addon_path_rulepack"
 $JUNCTION_TOOL -d "$addon_path_ark"
 $JUNCTION_TOOL -d "$addon_path_tsm"
 $JUNCTION_TOOL -d "$addon_path_pawn"
+$JUNCTION_TOOL -d "$addon_path_titan"
 
 # Set new retail junctions.
 $JUNCTION_TOOL "$addon_path" "$addon_repo"
@@ -45,4 +51,5 @@ $JUNCTION_TOOL "$addon_path_rulepack" "$addon_repo_rulepack"
 $JUNCTION_TOOL "$addon_path_ark" "$addon_repo_ark"
 $JUNCTION_TOOL "$addon_path_tsm" "$addon_repo_tsm"
 $JUNCTION_TOOL "$addon_path_pawn" "$addon_repo_pawn"
+$JUNCTION_TOOL "$addon_path_titan" "$addon_repo_titan"
 

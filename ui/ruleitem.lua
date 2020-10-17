@@ -5,7 +5,9 @@
     |
     ========================================================================--]]
 
-local Addon, L, Config = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
+
 local Package = select(2, ...);
 local RuleItem = {};
 

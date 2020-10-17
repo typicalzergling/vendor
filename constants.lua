@@ -1,10 +1,12 @@
 -- Define all constants here
 -- This will not trigger loc loading because we have not defined the Default Locale yet
-local Addon = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
 
--- Default Constants
-Addon.c_AddonName = select(1, ...)
+-- Skeleton Constants
 Addon.c_DefaultLocale = "enUS"
+Addon.c_PrintColorCode = ORANGE_FONT_COLOR_CODE
+Addon.c_APIMethodColorCode = YELLOW_FONT_COLOR_CODE
+Addon.c_ThrottleTime = .15
 
 -- Addon Constants
 Addon.c_AlwaysSellList = "always"
@@ -14,6 +16,9 @@ Addon.c_RuleType_Keep = "Keep"
 Addon.c_RuleType_Custom = "Custom"
 Addon.c_RuleType_Scrap = "Scrap"
 Addon.c_BuybackLimit = 12
+Addon.c_DeleteThottle = 3
+Addon.c_ItemSellerThreadName = "ItemSeller"
+Addon.c_ItemDeleterThreadName = "ItemDeleter"
 
 -- Config Constants
 Addon.c_Config_SellNever = "sell_never"

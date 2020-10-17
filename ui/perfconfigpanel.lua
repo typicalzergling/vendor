@@ -1,4 +1,5 @@
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
 Addon.ConfigPanel.Perf = {}
@@ -62,3 +63,7 @@ function Addon.ConfigPanel.Perf.Init(self)
             self.DisplayValue:SetFormattedText("%0.2f", value / 10)
         end
 end
+
+-- Export to Public
+if not Addon.Public.ConfigPanel then Addon.Public.ConfigPanel = {} end
+Addon.Public.ConfigPanel.Perf = Addon.ConfigPanel.Perf

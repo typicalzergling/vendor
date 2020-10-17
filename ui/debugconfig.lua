@@ -1,11 +1,12 @@
 -- This is exclusively for the debug options panel and Debug-specific commands that do not appear in a normal build.
 -- This entire file is excluded from packaging and it is not localized intentionally.
-local Addon, L = _G[select(1,...).."_GET"]()
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 -- Sets up all the console commands for debug functions in this file.
 function Addon:SetupDebugConsoleCommands()
-    self:AddConsoleCommand("debug", "Toggle Debug", function() Addon:ToggleDebug("debug") end)
-    self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Addon:ToggleDebug("debugrules") end)
+    self:AddConsoleCommand("debug", "Toggle Debug", function() Addon:ToggleDebug("default") end)
+    self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Addon:ToggleDebug("rules") end)
     self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
     self:AddConsoleCommand("test", "It is a mystery!", "Test_Cmd")
     self:AddConsoleCommand("lfg", "dumps some lfg info", "Test_lfg")
@@ -30,33 +31,7 @@ function Addon:DumpLink_Cmd(arg)
 end
 
 function Addon:Test_Cmd(...)
-    local Item = PawnGetItemData(select(1,...))
-    local UpgradeInfo, BestItemFor, SecondBestItemFor, NeedsEnhancements = PawnIsItemAnUpgrade(Item)
-
-    self:Print("UpgradeInfo: %s", tostring(UpgradeInfo))
-        if UpgradeInfo then
-            for key, data in pairs(UpgradeInfo) do
-                self:Print("Key: %s  Value: %s", tostring(key), tostring(data))
-                for key1, data1 in pairs(data) do
-                    self:Print("Key: %s  Value: %s", tostring(key1), tostring(data1))
-                end
-            end
-        end
-    self:Print("BestItemFor: %s", tostring(BestItemFor))
-    self:Print("SecondBestItemFor: %s", tostring(SecondBestItemFor))
-    self:Print("NeedsEnhancements: %s", tostring(NeedsEnhancements))
-
-
-    --[[local upgradeInfo = {PawnIsItemAnUpgrade(Item)}
-    for _, v in ipairs(upgradeInfo) do
-        if type(v) == "table" then
-            for key, data in pairs(v) do
-                self:Print("Key: %s  Value: %s", tostring(key), tostring(data))
-            end
-        else
-            self:Print("Info: %s", tostring(v))
-        end
-    end]]
+    Addon:DeleteUnsellableItems()
 end
 
 function Addon:GetAllBagItemInformation()
