@@ -127,3 +127,7 @@ function Addon:AddTerminateAction(action)
     assert(type(action) == "function", "Terminate Action must be a function.")
     table.insert(onTerminateActions, action)
 end
+
+-- No-Op debug messages. This will be overridden if debug.lua is included,
+-- but still exist if it doesn't, so calls to Debug wont' fail.
+Addon.Debug = function () end

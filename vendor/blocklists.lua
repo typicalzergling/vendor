@@ -19,7 +19,25 @@ function BlockList:Add(itemId)
         list[itemId] = true;
         Addon:DebugChannel("blocklists", "Added %d to '%s' list", itemId, self.listType);
         self.profile:SetList(self.listType, list);
-        return true;
+    end
+
+    -- If it was in the other list, remove it.
+    if self.listType == Addon.c_AlwaysSellList then
+         -- Remove from Never Sell list
+        local other =self.profile:GetList(Addon.c_NeverSellList);
+        if (other[idemId]) then
+            other[itemId] = nil;
+            self.profile:SetList(Addon.c_NeverSellList, other);
+            Addon:DebugChannel("blocklists", "Removed %d to '%s' list", itemId, Addon.c_NeverSellList);
+        end
+    elseif self.listType == Addon.c_NeverSellList then
+        -- Remove from Always sell list
+        local other =self.profile:GetList(Addon.c_AlwaysSellList);
+        if (other[idemId]) then
+            other[itemId] = nil;
+            self.profile:SetList(Addon.c_AlwaysSellList, other);
+            Addon:DebugChannel("blocklists", "Removed %d to '%s' list", itemId, Addon.c_AlwaysSellList);
+        end
     end
 
     return false;
@@ -62,44 +80,18 @@ end
 -- Returns 2 if item was removed from the list.
 -- Returns nil if no action taken.
 function Addon:ToggleItemInBlocklist(list, item)
-    local function toggle(l, o, i)
-        if (l[i]) then
-            l[i] = nil
-            return 2
-        else
-            l[i] = true
-            o[i] = nil
-            return 1
-        end
-    end
-
-    if not item then return nil end
-
-    local profile = self:GetProfile();
     local id = self:GetItemId(item)
     if not id then return nil end
 
-    local never = profile:GetList(self.c_NeverSellList);
-    local always = profile:GetList(self.c_AlwaysSellList);
+    -- Get existing blocklist id
+    local existinglist = Addon:GetBlocklistForItem(id)
 
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
-    if list == self.c_AlwaysSellList then
-        local ret = toggle(always, never, id)
-        if (ret) then
-            profile:SetList(self.c_AlwaysSellList, always);
-            profile:SetList(self.c_NeverSellList, never);
-        end
-        return ret
-    elseif list == self.c_NeverSellList then
-        local ret = toggle(never, always, id)
-        if (ret) then
-            profile:SetList(self.c_AlwaysSellList, always);
-            profile:SetList(self.c_NeverSellList, never);
-        end
-        return ret
+    if list == existinglist then
+        Addon:GetList(list):Remove(id)
     else
-        return nil
+        Addon:GetList(list):Add(id)
     end
 end
 

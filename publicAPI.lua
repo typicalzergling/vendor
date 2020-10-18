@@ -5,7 +5,6 @@ local L = Addon:GetLocale()
 
 assert(Addon.Public, "Public not defined. This is a programmer error in load order.")
 
-
 Addon:MakePublic(
     "RegisterExtension",
     function (extension) return Addon:RegisterExtension(extension) end,
@@ -14,13 +13,7 @@ Addon:MakePublic(
 
 Addon:MakePublic(
     "EvaluateItem",
-    function (arg1, arg2)
-        local item = Addon:GetItemProperties(arg1, arg2)
-        if item then
-            return Addon:EvaluateItemForSelling(item)
-        end
-        return nil
-    end,
+    function (arg1, arg2) return Addon:EvaluateSource(arg1, arg2) end,
     L["API_EVALUATEITEM_TITLE"],
     L["API_EVALUATEITEM_DOCS"])
 
@@ -61,10 +54,10 @@ Addon:MakePublic(
     L["API_OPENRULES_DOCS"])
 
 Addon:MakePublic(
-    "GetStats",
-    function () return Addon:GetStats() end,
-    L["API_GETSTATS_TITLE"],
-    L["API_GETSTATS_DOCS"])
+    "GetEvaluationStatus",
+    function () return Addon:GetEvaluationStatus() end,
+    L["API_GETEVALUATIONSTATUS_TITLE"],
+    L["API_GETEVALUATIONSTATUS_DOCS"])
 
 Addon:MakePublic(
     "GetPriceString",

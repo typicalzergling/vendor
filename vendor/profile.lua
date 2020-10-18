@@ -1,5 +1,4 @@
 local AddonName, Addon = ...;
-
 local DEFAULT_PROFILE = "-[DEFUALT]-";
 local SELL_LIST = Addon.c_Config_SellAlways;
 local KEEP_LIST = Addon.c_Config_SellNever;
@@ -400,8 +399,7 @@ function Addon:GetProfile()
 end
 
 function Addon:SetProfile(profileName)
-	error("not-yet-implements");
+	error("not-yet-implemented");
 end
 
 Addon.Profile = Profile;
-VendorProfile = Profile;

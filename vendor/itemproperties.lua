@@ -59,7 +59,9 @@ end]]
 
 
 function Addon:GetItemProperties(arg1, arg2)
-    local item = {}
+
+    local link = nil
+    local count = 1
     local tooltip = nil
     local bag = nil
     local slot = nil
@@ -68,25 +70,35 @@ function Addon:GetItemProperties(arg1, arg2)
     if type(arg1) == "table" then
         tooltip = arg1
         if type(arg2) == "string" then
-            item.Link = arg2
+            link = arg2
         else
-            _, item.Link = tooltip:GetItem()
+            _, link = tooltip:GetItem()
         end
-        item.Count = 1
 
     -- Bag and Slot passed in
     elseif type(arg1) == "number" and type(arg2) == "number" then
         bag = arg1
         slot = arg2
-        _, item.Count, _, _, _, _, item.Link = GetContainerItemInfo(bag, slot)
+        _, count, _, _, _, _, link = GetContainerItemInfo(bag, slot)
 
     else
         assert("Invalid arguments to GetItemProperties")
         return nil
     end
 
-    -- No name or quantity means there is no item in that slot. Nil denotes no item.
-    if not item.Link then return nil end
+    -- No link means no item.
+    if not link then return nil end
+
+    -- Item properties may already be cached
+    local item = Addon:GetCachedItem(link)
+    if item then
+        -- Return cached item and count
+        return item, count
+    else
+        -- Item not cached, so we need to populate the properties.
+        item = {}
+        item.Link = link
+    end
 
     -- Get more id and cache GetItemInfo, because we aren't bad.
     local getItemInfo = {GetItemInfo(item.Link)}
@@ -106,6 +118,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsAlreadyKnown = false
     item.IsAzeriteItem = false
     item.IsCraftingReagent = false
+    item.IsUnsellable = false
 
     -- Get the effective item level.
     item.Level = GetDetailedItemLevelInfo(item.Link)
@@ -116,17 +129,16 @@ function Addon:GetItemProperties(arg1, arg2)
     item.Quality = getItemInfo[3]
     item.EquipLoc = getItemInfo[9]          -- This is a non-localized string identifier. Wrap in _G[""] to localize.
     item.Type = getItemInfo[6]              -- Note: This is localized, TypeId better to use for rules.
+    item.MinLevel = getItemInfo[5]
     item.TypeId = getItemInfo[12]
     item.SubType = getItemInfo[7]           -- Note: This is localized, SubTypeId better to use for rules.
     item.SubTypeId = getItemInfo[13]
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
     item.UnitValue = getItemInfo[11]
+    item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
-
-    -- Net Value is net value including quantity.
-    item.NetValue = (item.UnitValue or 0) * item.Count
 
     -- Check for usability
     item.IsUsable = IsUsableItem(item.Id)
@@ -197,7 +209,8 @@ function Addon:GetItemProperties(arg1, arg2)
     item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
     item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
 
-    return item
+    Addon:AddItemToCache(item)
+    return item, count
 end
 
 -- Both bag and slot must be numbers and both passed in.

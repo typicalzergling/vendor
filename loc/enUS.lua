@@ -34,11 +34,16 @@ Addon:AddLocale("enUS",
 ["MERCHANT_POPULATING_SCRAP"] = "Auto-populating scrapper:",
 ["MERCHANT_MORE_SCRAP"] = "There are more items in your inventory which could be scrapped after scrapping these close and re-open the scrapper to continue",
 
+-- Delete
+["DELETE_DELETED_ITEMS"] = "Deleted %s items.",
+["DELETE_DELETING_ITEM"] = "Deleting %s",
+
 -- Tooltip
 ["TOOLTIP_ADDITEM_ERROR_NOITEM"] = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
 ["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"] = "Vendor: Always Sell",
 ["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"] = "Vendor: Never Sell",
 ["TOOLTIP_ITEM_WILL_BE_SOLD"] = "Will be sold by Vendor",
+["TOOLTIP_ITEM_WILL_BE_DELETED"] = "Will be DELETED by Vendor",
 ["TOOLTIP_RULEMATCH_SELL"] = "Sell: %s",
 ["TOOLTIP_RULEMATCH_KEEP"] = "Keep: %s",
 
@@ -93,6 +98,7 @@ Addon:AddLocale("enUS",
 ["CMD_RULES_HELP"] = "Open the Sell/Keep Rules configuration panel.",
 ["CMD_KEYS_HELP"] = "Open keybindings. Working with blocklists is much easier with keybinds!",
 ["CMD_WITHDRAW_HELP"] = "Withdraws any items from you bank which vendor would sell, requires your bank to be open",
+["CMD_API_HELP"] = "Prints the public API for Vendor",
 
 ["CMD_SELLITEM_HELP"] = "Adds or removes items from the sell list: sell {always||never} [itemid]",
 ["CMD_SELLITEM_INVALIDARG"] = "Must specify which list to which you want to query or edit an item: {always||never} [item]",
@@ -132,8 +138,8 @@ Addon:AddLocale("enUS",
 ["API_OPENKEYBINDINGS_DOCS"] = "Opens the Vendor Keybindings page.",
 ["API_OPENRULES_TITLE"] = "Open Rules",
 ["API_OPENRULES_DOCS"] = "Opens the main Vendor Rules interface.",
-["API_GETSTATS_TITLE"] = "Get Stats",
-["API_GETSTATS_DOCS"] = "Returns stats of slots Vendor will sell, delete, and their value.",
+["API_GETEVALUATIONSTATUS_TITLE"] = "Get Evaluation Status",
+["API_GETEVALUATIONSTATUS_DOCS"] = "Returns current number of slots Vendor will take action, sell, delete, and their value.",
 ["API_GETPRICESTRING_TITLE"] = "Get Price String",
 ["API_GETPRICESTRING_DOCS"] = "Converts passed in integer to a color coded and icon embedded price string.",
 

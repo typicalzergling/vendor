@@ -13,6 +13,10 @@ local SHADOWLANDS_VERSION = 90000;
 local addon_Functions = {};
 local addon_Definitions = {};
 
+-- Define DebugRules if debug files are absent.
+if not Addon.DebugRules then
+    Addon.DebugRules = function () end
+end
 
 -- This is event is fired when our custom rule definitions have changed.
 Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
@@ -42,7 +46,7 @@ Rules.SystemRules =
         ScriptText = "IsAlwaysSellItem()",
         Script = function() return IsAlwaysSellItem() end,
         Locked = true,
-        Order = -1000,
+        Order = -2000,
     },
 
     {
@@ -135,19 +139,7 @@ Rules.SystemRules =
         ScriptText = "IsNeverSellItem()",
         Script = function() return IsNeverSellItem() end,
         Locked = true,
-        Order = -2000,
-    },
-
-    -- This is an unsellable item if value is 0
-    {
-        Id = "keep.unsellable",
-        Type = KEEP_RULE,
-        Name = L["SYSRULE_KEEP_UNSELLABLE"],
-        Description = L["SYSRULE_KEEP_UNSELLABLE_DESC"],
-        ScriptText = "UnitValue == 0",
-        Script = function() return UnitValue == 0; end,
-        Locked = true,
-        Order = -9999,
+        Order = -3000,
     },
 
     -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...

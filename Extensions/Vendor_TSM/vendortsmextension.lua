@@ -137,7 +137,10 @@ local function registerTSMExtension()
             },
         },
 
-        -- Rule IDs must be unique. The "Source" will be prefixed to the id.
+        -- This rule is not valuable on Classic, as the dbregionsalerate isn't available, so lots of false positives
+        -- are created due to people putting up trash for stupid prices. You need dbregionsalerate to filter out
+        -- those bogus postings that inflate the price.
+        --@retail@
         Rules =
         {
             {
@@ -146,14 +149,6 @@ local function registerTSMExtension()
                 Name = "TSM - Items Worth Auctioning",
                 Description = "Any items which have a (Market Value - Vendor Price) greater than the specified amount of Gold. Example: Specifying '10' will keep all items which have a net auction value greater than 10 gold.",
                 Script = function()
-                    --@do-not-package@
-                    -- This will be shown if rules debug is enabled.
-                    print("  Param: "..tostring(RULE_PARAMS.GOLDVALUE));
-                    print("  Target Value: "..tostring(RULE_PARAMS.GOLDVALUE * 10000));
-                    print("  Unit Value: "..tostring((TSM_MarketValue() - UnitValue)));
-                    print("  Sale Rate: "..tostring(TSM_CustomValue("dbregionsalerate * 100")));
-                    print("  Result: "..tostring((TSM_IsAuctionItem() and (TSM_CustomValue("dbregionsalerate * 100") > 30) and ((TSM_MarketValue() - UnitValue) > (RULE_PARAMS.GOLDVALUE * 10000)))));
-                    --@end-do-not-package@
                     return TSM_IsAuctionItem() and (TSM_CustomValue("dbregionsalerate * 100") > 30) and ((TSM_MarketValue() - UnitValue) > (RULE_PARAMS.GOLDVALUE * 10000));
                 end,
                 ScriptText = "TSM_IsAuctionItem() and (TSM_CustomValue(\"dbregionsalerate * 100\") > 30) and ((TSM_MarketValue() - UnitValue) > ({gold} * 10000))",
@@ -168,6 +163,7 @@ local function registerTSMExtension()
                 Order = 1100,
             },
         },
+        --@end-retail@
     }
 
     -- Register this extension with Vendor.

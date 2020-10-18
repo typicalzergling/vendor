@@ -62,9 +62,8 @@ function Addon:AddItemTooltipLines(tooltip, link)
     -- If it is in the cache, then we already have our answer, so don't waste perf re-evaluating.
     -- TODO: We could keep a larger cache so we don't re-evaluate an item unless inventory changed, the rules changed, or the blocklist changed.
     if not (itemLink == link) then
-        -- Evaluate the item for sell
-        local item = self:GetItemPropertiesFromTooltip(tooltip, link)
-        willBeSold, ruleId, ruleName  = self:EvaluateItemForSelling(item)
+        -- Evaluate the item
+        result, ruleId, ruleName  = self:EvaluateItem(self:GetItemPropertiesFromTooltip(tooltip, link))
 
         -- Check if the item is in the Always or Never sell lists
         blocklist = self:GetBlocklistForItem(link)
@@ -87,14 +86,15 @@ function Addon:AddItemTooltipLines(tooltip, link)
 
     -- Add a warning that this item will be auto-sold on next vendor trip.
     if (profile:GetValue(Addon.c_Config_Tooltip)) then
-        if willBeSold then
+        if result == 1 then
             tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+        elseif result == 2 then
+            tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_DELETED"], FONT_COLOR_CODE_CLOSE))    
         end
     end
     
     -- Add Advanced Rule information if set and available.
-    if (ruleName and profile:GetValue(Addon.c_Config_Tooltip_Rule)) then
-        if willBeSold then
+        if result > 0 then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
         else
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_KEEP"], ruleName))

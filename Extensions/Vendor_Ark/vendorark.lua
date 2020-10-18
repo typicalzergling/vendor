@@ -39,13 +39,31 @@ function Addon:Vendor_AutoSell()
 
     -- Becuase Ark is on another planet and has its own concept of bags, must convert to blizzard bags.
     local bag = ArkInventory.API.InternalIdToBlizzardBagId( object.loc_id, object.bag_id )
-    return Vendor.EvaluateItem(bag, object.slot_id);
+    result, ruleid, name = Vendor.EvaluateItem(bag, object.slot_id)
+    if not result then
+        return false
+    else
+        return result > 0
+    end
 end
+
+-- Empty function to not break Ark
+local deprecatedMessageDisplayed = false
+local deprecatedMessage = "ArkInventory rule for Vendor scrap, 'venscrap()' is deprecated and no longer functional. For the future stability of Ark, please remove that rule."
+function Addon:Vendor_AutoScrap()
+    if not deprecatedMessageDisplayed then
+        DEFAULT_CHAT_FRAME:AddMessage(RED_FONT_COLOR_CODE..deprecatedMessage..FONT_COLOR_CODE_CLOSE)
+        deprecatedMessageDisplayed = true
+    end
+    return false;
+end
+
 
 if (ArkInventoryRules and Vendor) then
     local rules = ArkInventoryRules:NewModule(AddonName);
     function rules:OnEnable()
         ArkInventoryRules.Register(self, "vensell", Addon.Vendor_AutoSell);
+        ArkInventoryRules.Register(self, "venscrap", Addon.Vendor_AutoScrap);
     end;
 end
 

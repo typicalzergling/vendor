@@ -3,23 +3,6 @@ local L = Addon:GetLocale()
 
 local Package = select(2, ...);
 
--- Evaluating items for selling.
-
--- Rules for determining if an item should be sold.
-function Addon:EvaluateItemForSelling(item)
-    -- Check some cases where we know we should never ever sell the item
-    if not item then
-        return false, nil, nil
-    end
-
-    if (not self.ruleManager) then
-        self.ruleManager = Addon.RuleManager:Create();
-    end
-
-    -- Determine if we should keep this item or not
-    return self.ruleManager:Run(item)
-end
-
 -- Simple helper function which handles enumerating bags and running the function.
 local function withEachBagAndItem(func, startBag, endBag)
     assert(type(func) == "function");

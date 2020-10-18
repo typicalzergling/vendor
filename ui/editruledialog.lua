@@ -1,5 +1,6 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
+local Config = Addon:GetConfig()
 
 local Package = select(2, ...);
 
