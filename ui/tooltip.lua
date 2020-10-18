@@ -94,6 +94,7 @@ function Addon:AddItemTooltipLines(tooltip, link)
     end
     
     -- Add Advanced Rule information if set and available.
+    if (ruleName and profile:GetValue(Addon.c_Config_Tooltip_Rule)) then
         if result > 0 then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
         else
