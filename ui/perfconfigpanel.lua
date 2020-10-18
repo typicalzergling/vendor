@@ -13,25 +13,40 @@ local TIME_MULT = 10
 --*****************************************************************************
 -- Called to sync the values on our page with the config.
 --*****************************************************************************
-function Addon.ConfigPanel.Perf.Set(self, config)
-    Addon:Debug("Setting performance panel config")
+function Addon.ConfigPanel.Perf.Set(self)
+    Addon:DebugChannel("config", "Setting performance panel config")
 
-    local time = math.max(MIN_TIME_THROTTLE, math.min(MAX_TIME_THROTTLE, config:GetValue(Addon.c_Config_ThrottleTime) or 0))
+    local profile = Addon:GetProfile();
+    local time = math.max(MIN_TIME_THROTTLE, math.min(MAX_TIME_THROTTLE, profile:GetValue(Addon.c_Config_ThrottleTime) or 0))
     self.TimeThrottle.Value:SetValue(time * TIME_MULT)
     self.TimeThrottle.DisplayValue:SetFormattedText("%0.2f", time)
 
-    local sell = math.max(MIN_SELL_THROTTLE, math.min(MAX_SELL_THROTTLE, config:GetValue(Addon.c_Config_SellThrottle) or 0))
+    local sell = math.max(MIN_SELL_THROTTLE, math.min(MAX_SELL_THROTTLE, profile:GetValue(Addon.c_Config_SellThrottle) or 0))
     self.SellThrottle.Value:SetValue(sell)
     self.SellThrottle.DisplayValue:SetFormattedText("%0d", sell)
+end
+
+--[[===========================================================================
+    | Default:
+    |   Applies the default setting values for this page.
+    =========================================================================]]
+function Addon.ConfigPanel.Perf.Default(self)
+    local profile = Addon:GetProfile();
+    local defaults = Addon.DefaultConfig.Settings;
+
+    profile:SetValue(Addon.c_Config_SellThrottle, defaults[Addon.c_Config_SellThrottle]);
+    profile:SetValue(Addon.c_Config_ThrottleTime, defaults[Addon.c_Config_ThrottleTime]);
 end
 
 --*****************************************************************************
 -- Called to push the values from page into the config
 --*****************************************************************************
-function Addon.ConfigPanel.Perf.Apply(self, config)
-    Addon:Debug("Applying performance options")
-    config:SetValue(Addon.c_Config_SellThrottle, self.SellThrottle.Value:GetValue())
-    config:SetValue(Addon.c_Config_ThrottleTime, self.TimeThrottle.Value:GetValue() / TIME_MULT)
+function Addon.ConfigPanel.Perf.Apply(self)
+    Addon:DebugChannel("config", "Applying performance options");
+
+    local profile = Addon:GetProfile();
+    profile:SetValue(Addon.c_Config_SellThrottle, self.SellThrottle.Value:GetValue())
+    profile:SetValue(Addon.c_Config_ThrottleTime, self.TimeThrottle.Value:GetValue() / TIME_MULT)
 end
 
 --*****************************************************************************

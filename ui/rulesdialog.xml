@@ -115,22 +115,16 @@
                     <OnClick>VendorEditRuleDialog:CreateRule()</OnClick>
                 </Scripts>
             </Button>
-            <Button parentKey="defaults" inherits="MagicButtonTemplate" text="DEFAULTS">
+            <Button inherits="MagicButtonTemplate" text="SETTINGS" parentKey="settings">
                 <Size x="132" y="22"/>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" x="10" y="10"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick>self:GetParent():SetDefaults()</OnClick>
-                </Scripts>
-            </Button>
-            <Button inherits="MagicButtonTemplate" text="SETTINGS">
-                <Size x="132" y="22"/>
-                <Anchors>
-                    <Anchor point="LEFT" relativeKey="$parent.defaults" relativePoint="RIGHT"/>
-                </Anchors>
-                <Scripts>
-                    <OnClick>Vendor.ShowSettings()</OnClick>
+                    <OnClick>
+                        Vendor.ShowSettings();
+                        self:GetParent():Hide();
+                    </OnClick>
                 </Scripts>
             </Button>
 
@@ -141,7 +135,7 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
             </Frame>
@@ -153,7 +147,7 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
             </Frame>
@@ -165,7 +159,7 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
             </Frame>
@@ -174,7 +168,7 @@
             <Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="4">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
                 <Layers>
@@ -207,7 +201,7 @@
             <Frame name="$parentListsPanel" parentKey="ListsPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="5">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
                 <Layers>
@@ -275,7 +269,7 @@
             <Frame name="$parentContainer" parentKey="Container">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.defaults" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
                     <Anchor point="RIGHT" x="-22" y="0"/>
                 </Anchors>
                 <Layers>

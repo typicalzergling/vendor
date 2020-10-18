@@ -1,6 +1,5 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local Package = select(2, ...);
 local KEEP_TABID = 1;
@@ -59,20 +58,11 @@ function RulesDialog:OnShow()
     self.ScrapPanel.list:RefreshView();
 end
 
-function RulesDialog:SetDefaults()
-    Addon:DebugRules("Restoring rule configuration to the default")
-    self.SellPanel.list:SetDefaultConfig();
-    self.ScrapPanel.list:SetDefaultConfig();
-end
-
 function RulesDialog:OnOk()
     Addon:DebugRules("Applying new rule configuration")
-    Config:BeginBatch()
-        self.SellPanel.list:UpdateConfig();
-        self.KeepPanel.list:UpdateConfig();
-        self.ScrapPanel.list:UpdateConfig();
-    Config:EndBatch()
-    --HideParentPanel(self.Container)
+    self.SellPanel.list:UpdateConfig();
+    self.KeepPanel.list:UpdateConfig();
+    self.ScrapPanel.list:UpdateConfig();
 end
 
 function RulesDialog:Toggle()

@@ -2,6 +2,7 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
 Addon.ConfigPanel = Addon.ConfigPanel or {}
+local configPanels = {};
 
 --*****************************************************************************
 -- Sets the version infromation on the version widget which is present
@@ -54,51 +55,106 @@ function Addon.ConfigPanel.SetSliderEnable(slider, enabled)
     end
 end
 
---*****************************************************************************
--- Handles the initialization of the main configruation panel
---*****************************************************************************
-function Addon.ConfigPanel.InitMainPanel(self)
-    self.name = L["ADDON_NAME"]
-    self.okay =
-        function()
-            local config = Addon:GetConfig()
-            config:BeginBatch()
-                Addon.ConfigPanel.General.Apply(VendorGeneralConfigPanel)
-                Addon.ConfigPanel.Repair.Apply(VendorRepairConfigPanel, config)
-                Addon.ConfigPanel.Perf.Apply(VendorPerfConfigPanel, config)
-                if (VendorDebugConfigPanel and Addon.ConfigPanel.Debug) then
-                    Addon.ConfigPanel.Debug.Apply(VendorDebugConfigPanel, config)
-                end
-            config:EndBatch()
-        end
-
-    -- Simple helper function which handles pushing the config
-    -- to each one of our panels.
-    local function updatePanels(self, config)
-        Addon.ConfigPanel.Repair.Set(VendorRepairConfigPanel, config)
-        Addon.ConfigPanel.General.Set(VendorGeneralConfigPanel)
-        Addon.ConfigPanel.Perf.Set(VendorPerfConfigPanel, config)
-        if (VendorDebugConfigPanel and Addon.ConfigPanel.Debug) then
-            Addon.ConfigPanel.Debug.Set(VendorDebugConfigPanel, config)
+local function invokePanelMethod(method, panel, ...)
+    local fn = panel[method];
+    if (type(fn) == "function") then
+        local result, msg = pcall(fn, panel, ...);
+        if (not result) then
+            Addon:DebugChannel("config", "Failed to invoke '%s' on '%s': %s%s|r", method, panel.PanelType, RED_FONT_COLOR_CODE, msg);
+            print(string.format("Failed to invoke '%s' on '%s': %s%s|r", method, panel.PanelType, RED_FONT_COLOR_CODE, msg));
+            return false;
+        else
+            Addon:DebugChannel("config", "Succesfully invoked '%s' on '%s'", method, panel.PanelType);
         end
     end
 
-    self:RegisterEvent("PLAYER_LOGIN")
-    self:SetScript("OnEvent", function(self, event)
-            updatePanels(self, Addon:GetConfig())
-            self:UnregisterEvent(event)
-        end)
-    Addon:GetConfig():AddOnChanged(function(...) updatePanels(self, ...) end)
-    InterfaceOptions_AddCategory(self)
+    return true;
+end
+
+local function applySubclass(panel, name)
+    local subclass = Addon.ConfigPanel[name];
+    if (type(subclass) == "table") then
+        Mixin(panel, subclass);
+        panel.PanelType = name;
+    else
+        panel.PanelType = "<unknown>";
+    end
+
+    return panel;
+end
+
+function Addon.ConfigPanel:Save()
+    Addon:DebugChannel("config", "Apply panel settings (%d panels)", table.getn(configPanels));
+    for _, panel in ipairs(configPanels) do
+        invokePanelMethod("Apply", panel);
+    end
+end
+
+function Addon.ConfigPanel.OnShow(self)
+    invokePanelMethod("Set", self);
+end
+
+function Addon.ConfigPanel:SetDefaults()
+    Addon:DebugChannel("config", "Apply default settings (%d panels)", table.getn(configPanels));
+    for _, panel in ipairs(configPanels) do
+        invokePanelMethod("Default", panel);
+    end
+
+    self:Refresh();
+end
+
+function Addon.ConfigPanel:Cancel()
+    Addon:DebugChannel("config", "Cancel panel settings (%d panels)", table.getn(configPanels));
+    for _, panel in ipairs(configPanels) do
+        invokePanelMethod("Cancel", panel);
+    end
+end
+
+function Addon.ConfigPanel:Refresh()
+    Addon:DebugChannel("config", "Refresh panel settings (%d panels)", table.getn(configPanels));
+    for _, panel in ipairs(configPanels) do
+        invokePanelMethod("Set", panel);
+    end
+end
+
+function Addon.ConfigPanel:AddPanel(panel, name)
+    applySubclass(panel, name);
+    local title = "<unknown>";
+    if (panel.Title) then
+        title = panel.Title:GetText();
+    end
+
+    invokePanelMethod("Init", panel);
+    Addon.ConfigPanel.SetVersionInfo(panel);
+
+    panel.parent = L["ADDON_NAME"];
+    panel.name = panel.Title:GetText();
+    panel:SetScript("OnShow", Addon.ConfigPanel.OnShow);
+    InterfaceOptions_AddCategory(panel);    
+    table.insert(configPanels, panel);
+
+    Addon:DebugChannel("config", "Add panel '%s' [%s] (%d panels)", title, name, table.getn(configPanels));
 end
 
 --*****************************************************************************
--- Handle the initialization of a child configuration panel.
+-- Handles the initialization of the main configruation panel
 --*****************************************************************************
-function Addon.ConfigPanel.InitChildPanel(self)
-    self.parent = L["ADDON_NAME"]
-    self.name = self.Title:GetText()
-    InterfaceOptions_AddCategory(self)
+function Addon.ConfigPanel.InitMainPanel(self, name)
+    self.name = L["ADDON_NAME"]
+    self:SetScript("OnShow", Addon.ConfigPanel.OnShow);
+    applySubclass(self, name);
+    
+    invokePanelMethod("Init", self);
+    Addon.ConfigPanel.SetVersionInfo(self);
+    InterfaceOptions_AddCategory(self);
+
+    self.okay = function() Addon.ConfigPanel:Save() end;
+    self.default = function() Addon.ConfigPanel:Defaults() end;
+    self.refresh = function() Addon.ConfigPanel:Refresh() end;
+    self.cancel = function() Addon.ConfigPanel:Cancel() end;
+
+    table.insert(configPanels, self);
+    Addon:DebugChannel("config", "Initialize main panel: %s", name);
 end
 
 -- Must make this public.

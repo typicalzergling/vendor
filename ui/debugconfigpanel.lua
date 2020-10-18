@@ -1,6 +1,5 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local SETTING_MAX_ITEMS_TO_SELL = Addon.c_Config_MaxSellItems;
 local SETTING_ENABLE_BUYBACK = Addon.c_Config_SellLimit; 
@@ -14,9 +13,7 @@ Addon.ConfigPanel.Debug = {}
 -- Called to sync the values on our page with the config.
 --*****************************************************************************
 function Addon.ConfigPanel.Debug.Set(self, config)
-    Addon:Debug("Setting debug options panel values")
-    print("channel:", Addon:IsDebugChannelEnabled("default"));
-    print("channel:", Addon:IsDebugChannelEnabled("rules"));    
+    Addon:DebugChannel("config", "Setting debug options panel values")
     self.Debug.State:SetChecked(Addon:IsDebugChannelEnabled("default"));
     self.DebugRules.State:SetChecked(Addon:IsDebugChannelEnabled("rules"));
 end
@@ -25,7 +22,7 @@ end
 -- Called to apply the values on our page into to the config
 --*****************************************************************************
 function Addon.ConfigPanel.Debug.Apply(self, config)
-    Addon:Debug("Applying debugging panel options")
+    Addon:DebugChannel("config", "Applying debugging panel options")
     Addon:SetDebugChannel("default", self.Debug.State:GetChecked());
     Addon:SetDebugChannel("rules", self.DebugRules.State:GetChecked());
 end

@@ -1,7 +1,6 @@
 -- Merchant event handling.
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local threadName = "ItemSeller"
 
@@ -11,14 +10,15 @@ local isMerchantOpen = false
 function Addon:OnMerchantShow()
     self:Debug("Merchant opened.")
     isMerchantOpen = true
+    local profile = self:GetProfile();
 
     -- Do auto-repair if enabled
-    if Config:GetValue(Addon.c_Config_AutoRepair) then
+    if profile:GetValue(Addon.c_Config_AutoRepair) then
         self:AutoRepair()
     end
 
     -- Do auto-selling if enabled
-    if Config:GetValue(Addon.c_Config_AutoSell) then
+    if profile:GetValue(Addon.c_Config_AutoSell) then
 
         -- On Classic there is a caching issue, clear the cache to be certain.
         if Addon.IsClassic then
@@ -43,8 +43,9 @@ end
 function Addon:AutoRepair()
     local cost, canRepair = GetRepairAllCost()
     if canRepair then
+        local profile = self:GetProfile();
         -- Guild repair is not supported on Classic. The API method "CanGuidlBankRepair" is missing.
-        if not Addon.IsClassic and Config:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
+        if not Addon.IsClassic and profile:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
             -- use guild repairs
             RepairAllItems(true)
             self:Print(string.format(L["MERCHANT_REPAIR_FROM_GUILD_BANK"], self:GetPriceString(cost)))

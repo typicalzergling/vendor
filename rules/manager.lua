@@ -1,6 +1,5 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local Package = select(2, ...);
 Addon.RuleManager = {}
@@ -59,8 +58,10 @@ function RuleManager:Create()
     local instance = setmetatable({ unhealthy = {}, outdated = {} }, self);
     self.__index = self;
 
+    local profile = Addon:GetProfile();
+
     -- Initialize the rule engine
-    local rulesEngine = Addon:CreateRulesEngine(Config:GetValue("debugrules"));
+    local rulesEngine = Addon:CreateRulesEngine(Addon:IsDebugChannelEnabled("rulesengine"));
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
     rulesEngine:CreateCategory(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
@@ -78,7 +79,7 @@ function RuleManager:Create()
     -- we might have scrub rules, etc.
     Addon.Rules.OnDefinitionsChanged:Add(function() instance:Update(); end);
     Addon.Rules.CheckMigration();
-    Config:AddOnChanged(function() instance:Update(); end);
+    Addon.Profile:RegisterForChanges(function() instance:Update(); end);
     instance:Update();
 
     return instance
@@ -142,7 +143,8 @@ end
     |         custom rules are blended in the list.
     ========================================================================--]]
 function RuleManager:ApplyConfig(categoryId, ruleType)
-    local config = Config:GetRulesConfig(ruleType);
+    local profile = Addon:GetProfile();
+    local config = profile:GetRules(ruleType);
     local rulesEngine = self.rulesEngine;
     if (config) then
         for _, entry in ipairs(config) do
@@ -189,7 +191,7 @@ function RuleManager:Update()
 
     self.unhealthy = {};
     rulesEngine:ClearRules();
-    rulesEngine:SetVerbose(Config:GetValue("debugrules"));
+    rulesEngine:SetVerbose(Addon:IsDebugChannelEnabled("rulesmanager"));
 
     -- Step 1: We want to add all of the locked rules into the
     --         engine as those are always added independent of the config.

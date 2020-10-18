@@ -62,10 +62,10 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_AutoRepair] = true,
     [Addon.c_Config_GuildRepair] = true,
     [Addon.c_Config_SellThrottle] = 1,
-    [Addon.c_Config_SellNever] = {},
-    [Addon.c_Config_SellAlways] = {},
     [Addon.c_Config_Tooltip] = true,
-    [Addon.c_Config_SellLimit] = false,
+    [Addon.c_Config_SellLimit] = true,
+    [Addon.c_Config_Tooltip_Rule] = false,
+    [Addon.c_Config_MaxSellItems] = false,
 }
 
 --*****************************************************************************
@@ -408,3 +408,5 @@ function Addon:GetConfig()
     end
     return self.config
 end
+
+VendorDefaultConfig = Addon.DefaultConfig;

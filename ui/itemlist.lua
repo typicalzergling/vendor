@@ -6,7 +6,6 @@
 
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 Addon.ItemList = Addon.ItemList or {}
 local ItemList = Addon.ItemList
@@ -43,7 +42,7 @@ end
 function ItemList.OnLoad(self)
 	Mixin(self, ItemList, Package.ListBase);
 	self:AdjustScrollbar();
-	Config:AddOnChanged(
+	Addon.Profile:RegisterForChanges(
 		function()
 			if (self:IsShown()) then
 				self:UpdateView(self:createModel());
@@ -72,7 +71,6 @@ end
 function ItemList:OnDropItem(button)
 	if ((button == "LeftButton") and CursorHasItem()) then
 		local _, itemId, itemLink = GetCursorInfo();
-		Config:BeginBatch();
 		if (self.listType == KEEP_LIST) then
 			Addon:GetList(KEEP_LIST):Add(itemId);
 			Addon:GetList(SELL_LIST):Remove(itemId);
@@ -82,7 +80,6 @@ function ItemList:OnDropItem(button)
 			Addon:GetList(SELL_LIST):Add(itemId);
 			Addon:Print(L["ITEMLIST_ADD_TO_SELL_FMT1"], itemLink);
 		end
-		Config:EndBatch();
 		ClearCursor();
 	end
 end

@@ -6,7 +6,6 @@
 
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local Package = select(2, ...);
 local ItemListItem = {};
@@ -105,7 +104,6 @@ function ItemListItem:OnClick(button)
 		local itemLink = self:GetItemLink();
 		local itemId = self:GetItemID();
 
-		Config:BeginBatch();
 		if (button == "LeftButton") then
 			if (listType == Addon.c_AlwaysSellList) then
 				Addon:GetList(Addon.c_AlwaysSellList):Remove(itemId);
@@ -125,7 +123,6 @@ function ItemListItem:OnClick(button)
 				Addon:Print(L["ITEMLIST_MOVE_FROM_KEEP_TO_SELL_FMT"], itemLink);
 			end
 		end
-		Config:EndBatch();
 	end
 end
 	

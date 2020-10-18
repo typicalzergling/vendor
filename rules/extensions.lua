@@ -48,7 +48,6 @@
 
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local Package = select(2, ...);
 local AddonName = select(1, ...);
@@ -161,7 +160,7 @@ local function addRuleDefinition(ext, rdef)
 end
 
 -- Helper function to add an OnRuleUpdate callback to Vendor
--- This attaches as a config callback, so anytime state is changed in Vendor it will fire.
+-- This attaches as a profile callback, so anytime state is changed in Vendor it will fire.
 local function addOnRuleUpdateCallback(ext, cbdef)
     local cb =
     {
@@ -176,9 +175,13 @@ local function addOnRuleUpdateCallback(ext, cbdef)
     -- Add the callback to the config table.concat, this is the primary invocation point.
     local function fn()
         Addon:Debug("Executing callback from (%s)...", ext.Source)
-        cbdef()
+        local result, msg = pcall(cbdef);
+        if (not result) then
+            Addon:Debug("%sFailed to invoke extenion callback %s: %s|r", RED_FONT_COLOR_CODE, cb.Source, msg);
+        end
     end
-    Config:AddOnChanged(fn)
+
+    Addon.Profile:RegisterForChanges(fn, true);
 end
 
 

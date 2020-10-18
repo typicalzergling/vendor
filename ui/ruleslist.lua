@@ -7,7 +7,6 @@
 
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 Addon.RulesList = {}
 Addon.Rules = Addon.Rules or {};
@@ -30,7 +29,8 @@ end
 
 function RulesList:SetConfigState(configState)
     if (self.ruleType) then
-        local ruleConfig = configState or Config:GetRulesConfig(self.ruleType);
+        local profile = Addon:GetProfile();
+        local ruleConfig = configState or profile:GetRules(self.ruleType);
         self:ForEach(
             function(item)
                 local index, config = findRuleConfig(item:GetRuleId(), ruleConfig);
@@ -59,8 +59,8 @@ function RulesList:UpdateConfig()
                     table.insert(config, entry);
                 end
             end)
-
-        Config:SetRulesConfig(self.ruleType, config);
+            
+        Addon:GetProfile():SetRules(self.ruleType, config);
     end
 end
 
@@ -108,7 +108,7 @@ function RulesList.OnLoad(self)
         self.ruleType = self:GetParent().ruleType;
     end
     if (self.ruleType) then
-        Config:AddOnChanged(function() self:SetConfigState(); end);
+        Addon.Profile:RegisterForChanges(function() self:SetConfigState(); end);
         Rules.OnDefinitionsChanged:Add(function() self:UpdateView(Rules.GetDefinitions(self.ruleType)); end);
     end
 end

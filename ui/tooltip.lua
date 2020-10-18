@@ -1,6 +1,5 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
 function Addon:AddTooltipItemToSellList(list)
@@ -53,10 +52,11 @@ function Addon:ClearTooltipResultCache()
     ruleName = nil
 end
 
-Addon:GetConfig():AddOnChanged(Addon.ClearTooltipResultCache)
+Addon.Profile:RegisterForChanges(Addon.ClearTooltipResultCache)
 
 
 function Addon:AddItemTooltipLines(tooltip, link)
+    local profile = self:GetProfile();
     -- Check Cache if we already have data for this item from a previous update.
     -- If it isn't in the cache, we need to evaluate this item/link.
     -- If it is in the cache, then we already have our answer, so don't waste perf re-evaluating.
@@ -86,14 +86,14 @@ function Addon:AddItemTooltipLines(tooltip, link)
     end
 
     -- Add a warning that this item will be auto-sold on next vendor trip.
-    if (Config:GetValue(Addon.c_Config_Tooltip)) then
+    if (profile:GetValue(Addon.c_Config_Tooltip)) then
         if willBeSold then
             tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
         end
     end
     
     -- Add Advanced Rule information if set and available.
-    if (ruleName and Config:GetValue(Addon.c_Config_Tooltip_Rule)) then
+    if (ruleName and profile:GetValue(Addon.c_Config_Tooltip_Rule)) then
         if willBeSold then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
         else

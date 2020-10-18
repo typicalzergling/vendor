@@ -8,7 +8,7 @@
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
 ## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles
-## SavedVariablesPerCharacter: Vendor_RulesConfig
+## SavedVariablesPerCharacter: Vendor_RulesConfig Vendor_ActiveProfile
 ## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 # Constants defined first

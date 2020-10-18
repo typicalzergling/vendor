@@ -1,13 +1,11 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local BlockList = {}
-function BlockList:Create(_config, _listType, _configValue)
+function BlockList:Create(_listType, _profile)
     local instance = {
         listType = _listType,
-        config = _config,
-        configValue = _configValue,
+        profile = _profile,
     };
 
    setmetatable(instance, self)
@@ -16,11 +14,11 @@ function BlockList:Create(_config, _listType, _configValue)
 end
 
 function BlockList:Add(itemId)
-    local list = self.config:GetValue(self.configValue);
+    local list = self.profile:GetList(self.listType);
     if (not list[itemId]) then
         list[itemId] = true;
-        Addon:Debug("BlockList: Added %d to '%s' list", itemId, self.listType);
-        self.config:NotifyChanges();
+        Addon:DebugChannel("blocklists", "Added %d to '%s' list", itemId, self.listType);
+        self.profile:SetList(self.listType, list);
         return true;
     end
 
@@ -28,24 +26,24 @@ function BlockList:Add(itemId)
 end
 
 function BlockList:Remove(itemId)
-    local list = self.config:GetValue(self.configValue);
+    local list = self.profile:GetList(self.listType);
     if (list[itemId]) then
         list[itemId] = nil;
-        Addon:Debug("BlockList: Removed %d from '%s' list", itemId, self.listType);
-        self.config:NotifyChanges();
+        Addon:DebugChannel("BlockLists", "Removed %d from '%s' list", itemId, self.listType);
+        self.profile:SetList(self.listType, list);
         return true;
     end
     return false;
 end
 
 function BlockList:Contains(itemId)
-    local list = self.config:GetValue(self.configValue);
+    local list = self.profile:GetList(self.listType);
     return list[itemId] == true;
 end
 
 function BlockList:GetContents()
     --todo: this should be a clone of the table
-    return self.config:GetValue(self.configValue);
+    return self.profile:GetList(self.listType);
 end
 
 function BlockList:GetType()
@@ -77,21 +75,27 @@ function Addon:ToggleItemInBlocklist(list, item)
 
     if not item then return nil end
 
+    local profile = self:GetProfile();
     local id = self:GetItemId(item)
     if not id then return nil end
+
+    local never = profile:GetList(self.c_NeverSellList);
+    local always = profile:GetList(self.c_AlwaysSellList);
 
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
     if list == self.c_AlwaysSellList then
-        local ret = toggle(Config:GetValue("sell_always"), Config:GetValue("sell_never"), id)
+        local ret = toggle(always, never, id)
         if (ret) then
-            Config:NotifyChanges()
+            profile:SetList(self.c_AlwaysSellList, always);
+            profile:SetList(self.c_NeverSellList, never);
         end
         return ret
     elseif list == self.c_NeverSellList then
-        local ret = toggle(Config:GetValue("sell_never"), Config:GetValue("sell_always"), id)
+        local ret = toggle(never, always, id)
         if (ret) then
-            Config:NotifyChanges()
+            profile:SetList(self.c_AlwaysSellList, always);
+            profile:SetList(self.c_NeverSellList, never);
         end
         return ret
     else
@@ -101,20 +105,15 @@ end
 
 -- Quick direct accessor for Never Sell List
 function Addon:IsItemIdInNeverSellList(id)
-    local list = self:GetConfig():GetValue("sell_never")
-    if id and list then
-        return list[id]
-    end
-    return false
+    local list = self:GetList(self.c_NeverSellList);
+    return list:Contains(id);
+
 end
 
 -- Quick direct accessor for Always Sell List
 function Addon:IsItemIdInAlwaysSellList(id)
-    local list = self:GetConfig():GetValue("sell_always")
-    if id and list then
-        return list[id]
-    end
-    return false
+    local list = self:GetList(self.c_AlwaysSellList);
+    return list:Contains(id);
 end
 
 -- Returns whether an item is in the list and which one.
@@ -134,32 +133,29 @@ end
 
 -- Returns the list of items on the black or white list
 function Addon:GetBlocklist(list)
-    local vlist = {}
-    if list == self.c_AlwaysSellList then
-        vlist = self:GetConfig():GetValue("sell_always")
-    elseif list == self.c_NeverSellList then
-        vlist = self:GetConfig():GetValue("sell_never")
-    end
-    return vlist
+    local list = self:GetList(list);
+    return list:GetContents();
 end
 
 -- Permanently deletes the associated blocklist.
 function Addon:ClearBlocklist(list)
-    if list == self.c_AlwaysSellList then
-        self:GetConfig():SetValue("sell_always", {})
-    elseif list == self.c_NeverSellList then
-        self:GetConfig():SetValue("sell_never", {})
+    if ((list == self.c_AlwaysSellList) or
+        (list == self.c_NeverSellList)) then
+        Addon:GetProfile():SetList(list, {});
+        -- Blocklist changed, so clear the Tooltip cache.
+        self:ClearTooltipResultCache()
+        return;
     end
 
-    -- Blocklist changed, so clear the Tooltip cache.
-    self:ClearTooltipResultCache()
+    error(string.format("There is not '%s' list", list));
 end
 
+-- Retrieve the specified list
 function Addon:GetList(listType)
-    if (listType == self.c_AlwaysSellList) then
-        return BlockList:Create(Config, listType, "sell_always");
-    elseif (listType == self.c_NeverSellList) then
-        return BlockList:Create(Config, listType, "sell_never");
+    if ((listType == self.c_AlwaysSellList) or
+        (listType == self.c_NeverSellList)) then
+        return BlockList:Create(listType, self:GetProfile());
     end
-    return nil;
+
+    error(string.format("There is not '%s' list", listType));    
 end
