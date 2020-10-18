@@ -40,17 +40,22 @@ function Addon:EvaluateItem(item)
     end
     local result = nil
     result, ruleid, rule = self.ruleManager:Run(item)
+    retval = 0
     if result then
         -- Only items explicitly in the always sell list are considered for deletion.
         if item.IsUnsellable then
             if Addon:GetList(Addon.c_AlwaysSellList):Contains(item.Id) then
                 retval = 2
             end
+            -- What to do about items that are to be sold, but are unsellable and not in the list?
+            -- We can't sell them, but the user wants them sold. There's nothing Vendor
+            -- can do here, but we should potentially catch this and inform the user and update
+            -- the tooltip (as in, add this to the always-sell list to delete it).
+            -- For now, we will let this fall through and take no action to fix immediate bug.
+            -- TODO: Consider Possible new state of -1 to indicate error state/conflict.
         else
             retval = 1
         end
-    else
-        retval = 0
     end
 
     -- Add item to cache
