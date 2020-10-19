@@ -12,7 +12,6 @@ end
 
 
 -- Debug Commands
-
 function Addon:DumpLink_Cmd(arg)
     self:Print("Link: "..tostring(arg))
     self:Print("Raw: "..gsub(arg, "\124", "\124\124"))

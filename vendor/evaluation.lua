@@ -2,8 +2,6 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
-local bagItemCache = {}
-
 -- This is a wrapper for Evaluate Item that takes GetItemProperties parameters as input.
 -- This is for use cases where you do not need the item itself and just want to know
 -- the result. This is also the public api implementaion.
@@ -38,8 +36,9 @@ function Addon:EvaluateItem(item)
     if (not self.ruleManager) then
         self.ruleManager = Addon.RuleManager:Create();
     end
-    local result = nil
-    result, ruleid, rule = self.ruleManager:Run(item)
+
+    retval = 0
+    local result, ruleid, rule = self.ruleManager:Run(item)
     if result then
         -- Only items explicitly in the always sell list are considered for deletion.
         if item.IsUnsellable then
@@ -49,8 +48,6 @@ function Addon:EvaluateItem(item)
         else
             retval = 1
         end
-    else
-        retval = 0
     end
 
     -- Add item to cache
@@ -82,7 +79,8 @@ end
 Addon:GetConfig():AddOnChanged(function() Addon:ClearResultCache() end)
 
 function Addon:AddResultToCache(link, result, ruleid, rule)
-    assert(type(link) == "string" and type(result) == "number")
+    assert(type(link) == "string")
+    assert(type(result) == "number")
 
     local cacheEntry = {}
     cacheEntry.Result = result

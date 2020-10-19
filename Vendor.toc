@@ -91,6 +91,6 @@ publicAPI.lua
 
 #@do-not-package@
 # Tests
-test\test.lua
+sys\test.lua
 test\blocklisttests.lua
 #@end-do-not-package@
