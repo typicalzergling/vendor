@@ -84,13 +84,16 @@ function Addon:AutoSell()
     local thread = function ()
         local numSold = 0
         local totalValue = 0
-        local sellLimitEnabled = Config:GetValue(Addon.c_Config_SellLimit)
+        local profile = Addon:GetProfile();
+        local sellLimitEnabled = profile:GetValue(Addon.c_Config_SellLimit)
         local sellLimitMaxItems = Addon.c_BuybackLimit
-        local sellThrottle = Config:GetValue(Addon.c_Config_SellThrottle)
+        local sellThrottle = profile:GetValue(Addon.c_Config_SellThrottle)
 
         -- Loop through every bag slot once.
+        print("do bags", NUM_BAG_SLOTS);
         for bag=0, NUM_BAG_SLOTS do
-            for slot=1, GetContainerNumSlots(bag) do
+            for slot=1, GetContainerNumSlots(bag) do                
+
 
                 -- If the cursor is holding anything then we cant' sell. Yield and check again next cycle.
                 -- We must do this before we get the item info, since the user may have changed what item is in this slot.
@@ -107,7 +110,7 @@ function Addon:AutoSell()
                 end
 
                 -- Get Item properties and evaluate
-                local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
+                local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)                
                 local result = Addon:EvaluateItem(item)
 
                 -- Determine if it is to be sold
