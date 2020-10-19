@@ -504,6 +504,8 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
     GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
     " sell list",
 ["ITEMLIST_LOADING"] = "Loading...",
+["ITEMLIST_INVALID_ITEM"] = RED_FONT_COLOR_CODE .. "Invalid Item" .. FONT_COLOR_CODE_CLOSE,
+["ITEMLIST_INVALID_ITEM_TOOLTIP"] = "Blizzard has removed this item and it is no longer valid. Click to remove it from the list.",
 ["ITEMLIST_LOADING_TOOLTIP"] = "The item information is currently retrieved from the server",
 ["ITEMLIST_EMPTY_SELL_LIST"] = "Your always sell list is current empty you can drag and drop items into this list to add them.",
 ["ITEMLIST_EMPTY_KEEP_LIST"] = "Your never sell list is current empty you can drag and drop items into this list to add them.",

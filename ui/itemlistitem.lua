@@ -36,6 +36,12 @@ function ItemListItem:SetItem(itemId)
 	self.remove:Hide();
 	self:SetItemID(itemId);
 
+	-- Test for invalid item
+	if (self:IsItemEmpty()) then
+		self.text:SetText(L["ITEMLIST_INVALID_ITEM"])
+		return
+	end
+
 	if (not self:IsItemDataCached()) then 
 		local color = ITEM_QUALITY_COLORS[0];
 		self.text:SetText(color.hex .. L["ITEMLIST_LOADING"] .. FONT_COLOR_CODE_CLOSE);
@@ -68,7 +74,11 @@ function ItemListItem:OnMouseEnter()
 		if (cached) then
 			GameTooltip:SetHyperlink(self:GetItemLink());
 		else
-			GameTooltip:SetText(L["ITEMLIST_LOADING_TOOLTIP"]);
+			if (self:IsItemEmpty()) then
+				GameTooltip:SetText(L["ITEMLIST_INVALID_ITEM_TOOLTIP"]);
+			else
+				GameTooltip:SetText(L["ITEMLIST_LOADING_TOOLTIP"]);
+			end
 		end
 		GameTooltip:Show();
 	end
@@ -126,6 +136,17 @@ function ItemListItem:OnClick(button)
 			end
 		end
 		Config:EndBatch();
+
+	-- Clicking on empty items removes them also, but they do not have links.
+	elseif (self:IsItemEmpty()) then
+		local itemId = self.itemId;
+		if (listType == Addon.c_AlwaysSellList) then
+			Addon:GetList(Addon.c_AlwaysSellList):Remove(itemId);
+			Addon:Print(L["ITEMLIST_REMOVE_FROM_SELL_FMT"], tostring(itemId));
+		elseif (listType == Addon.c_NeverSellList) then
+			Addon:GetList(Addon.c_NeverSellList):Remove(itemId);
+			Addon:Print(L["ITEMLIST_REMOVE_FROM_KEEP_FMT"], tostring(itemId));
+		end
 	end
 end
 	
