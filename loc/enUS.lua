@@ -292,6 +292,9 @@ the bag slot information. The matches tab uses items in your bag so it will be c
 This will be the item's effective item level if it is Equipment, otherwise it will be the base item level if it does not have an effective item level.
 </p>
 ]],
+["HELP_MINLEVEL_HTML"] = [[
+<p>The required character level for equipping the item.</p>
+]],
 ["HELP_TYPE_HTML"] = [[
 <p>The name of the item's Type. This is a localized string. You can use this in conjunction with SubType to zero in on specific types of items.</p>
 ]],
@@ -504,6 +507,8 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
     GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
     " sell list",
 ["ITEMLIST_LOADING"] = "Loading...",
+["ITEMLIST_INVALID_ITEM"] = RED_FONT_COLOR_CODE .. "Invalid Item" .. FONT_COLOR_CODE_CLOSE,
+["ITEMLIST_INVALID_ITEM_TOOLTIP"] = "Blizzard has removed this item and it is no longer valid. Click to remove it from the list.",
 ["ITEMLIST_LOADING_TOOLTIP"] = "The item information is currently retrieved from the server",
 ["ITEMLIST_EMPTY_SELL_LIST"] = "Your always sell list is current empty you can drag and drop items into this list to add them.",
 ["ITEMLIST_EMPTY_KEEP_LIST"] = "Your never sell list is current empty you can drag and drop items into this list to add them.",
