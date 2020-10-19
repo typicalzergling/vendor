@@ -34,7 +34,7 @@ function Addon:EvaluateItem(item)
     end
 
     if (not self.ruleManager) then
-        self.ruleManager = Addon.RuleManager:Create();git 
+        self.ruleManager = Addon.RuleManager:Create();
     end
     local result = nil
     result, ruleid, rule = self.ruleManager:Run(item)

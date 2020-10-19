@@ -204,5 +204,5 @@ Addon:AddTest(
     "Test Nil Cleanup",
     "Test", 
     nil,
-    function () error("Execution failed") end,
+    Addon:Debug("In Execution"),
     nil) 
