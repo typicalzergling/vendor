@@ -51,10 +51,8 @@ function Addon:ClearTooltipResultCache()
     blocklist = nil
     ruleId = nil
     ruleName = nil
+    Addon:Debug("TooltipResultCache cleared.")
 end
-
-Addon:GetConfig():AddOnChanged(Addon.ClearTooltipResultCache)
-
 
 function Addon:AddItemTooltipLines(tooltip, link)
     -- Check Cache if we already have data for this item from a previous update.
