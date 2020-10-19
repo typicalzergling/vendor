@@ -79,15 +79,18 @@ end
 local function runTest(test)
     Addon:Print("Running [%s] %s...", test.Category, test.Name)
 
-    -- Run test setup (if this fails we will abort the entire test run)
-    if not runTestFunction(test, "Setup") then
-        Addon:Print("[%s] %s Setup failed! Not executing remainder of test.", test.Category, test.Name)
-        return false
+    -- Run test setup (if this fails we will abort the entire test run but still run cleanup.
+    local setupSuccess = runTestFunction(test, "Setup")
+    if not setupSuccess then
+        Addon:Print("[%s] %s Setup failed! Not executing remainder of test.", test.Category, test.Name)        
     end
 
-    -- Run main execution
-    local execSuccess = runTestFunction(test, "Execution") 
-    if not execSuccess then
+    -- Run main execution if setup succeeded.
+    local execStatus = false
+    if setupSuccess then
+        execSuccess = runTestFunction(test, "Execution")
+    end
+    if setupSuccess and not execSuccess then
         Addon:Print("[%s] %s failed!", test.Category, test.Name)
     end
 
@@ -126,7 +129,6 @@ end
 
 function Addon:SetupTestConsoleCommands()
     self:AddConsoleCommand("test", "It is a mystery!", "Test_Cmd")
-    self:AddConsoleCommand("lfg", "dumps some lfg info", "Test_lfg")
     self:AddConsoleCommand("runtests", "Runs all functional tests.", "RunTests_Cmd")
     self:AddConsoleCommand("testfailures", "Re-prints test failures from the last test run.", "TestFailures_Cmd")
 end
@@ -142,27 +144,6 @@ end
 function Addon:Test_Cmd(...)
     Addon:RemoveInvalidEntriesFromAllBlocklists()
 end
-
-function Addon:Test_lfg(...)
-    local tCats = C_LFGList.GetAvailableCategories(LE_LFG_LIST_FILTER_PVE);
-    for _, catId in ipairs(tCats) do
-        print("catId:", catId, C_LFGList.GetCategoryInfo(catId));
-
-
-        tAct = C_LFGList.GetAvailableActivities(catId, nil, LE_LFG_LIST_FILTER_PVE);
-        for _, actId in ipairs(tAct) do
-            print("actId:", actId, C_LFGList.GetActivityInfo(actId));
-
-            --local tGroups = C_LFGList.GetAvailableActivityGroups(tCat, LE_LFG_LIST_FILTER_PVE);
-           -- for _, groupId in ipairs(tGroups) do
-           --     print("groupId:", groupId);
-           -- end
-
-        end
-
-    end
-end
-
 
 -- Basic test harness tests.
 Addon:AddTest(
