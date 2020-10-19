@@ -39,7 +39,7 @@ end
 
 -- Result cache
 local itemLink = nil
-local willBeSold = nil
+local result = 0
 local blocklist = nil
 local ruleId = nil
 local ruleName = nil
@@ -47,7 +47,7 @@ local ruleName = nil
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Addon:ClearTooltipResultCache()
     itemLink = nil
-    willBeSold = nil
+    result = 0
     blocklist = nil
     ruleId = nil
     ruleName = nil
