@@ -37,7 +37,7 @@ else
 		(cd .release; ./build_classic.sh)
 	else
 		(cd .release; ./build_retail.sh)
-		(cd .release; ./build_classic.sh)
+		#(cd .release; ./build_classic.sh) # Classic freezing for now.
 	fi
     echo
     echo "Build complete."
