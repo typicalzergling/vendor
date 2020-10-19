@@ -47,6 +47,7 @@ addon.lua
 cmds.lua
 
 # Vendor Main
+vendor\items.lua
 vendor\blocklists.lua
 vendor\tooltipscan.lua
 vendor\itemproperties.lua
@@ -87,3 +88,9 @@ ui\debugconfig.lua
 
 # public API export should be last
 publicAPI.lua
+
+#@do-not-package@
+# Tests
+test\test.lua
+test\blocklisttests.lua
+#@end-do-not-package@

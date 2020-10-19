@@ -21,6 +21,12 @@ function BlockList:Add(itemId)
         self.profile:SetList(self.listType, list);
     end
 
+    -- Validate ItemId
+    if not Addon:IsItemIdValid(itemId) then
+        Addon:Debug("Invalid Item ID: %s", tostring(itemId))
+        return false
+    end
+
     -- If it was in the other list, remove it.
     if self.listType == Addon.c_AlwaysSellList then
          -- Remove from Never Sell list
@@ -80,7 +86,7 @@ end
 -- Returns 2 if item was removed from the list.
 -- Returns nil if no action taken.
 function Addon:ToggleItemInBlocklist(list, item)
-    local id = self:GetItemId(item)
+    local id = self:GetItemIdFromString(item)
     if not id then return nil end
 
     -- Get existing blocklist id
@@ -110,7 +116,7 @@ end
 
 -- Returns whether an item is in the list and which one.
 function Addon:GetBlocklistForItem(item)
-    local id = self:GetItemId(item)
+    local id = self:GetItemIdFromString(item)
     if id then
         if self:IsItemIdInNeverSellList(id) then
             return self.c_NeverSellList
@@ -123,7 +129,7 @@ function Addon:GetBlocklistForItem(item)
     return nil
 end
 
--- Returns the list of items on the black or white list
+-- Returns the list of items on the corresponding blocklist
 function Addon:GetBlocklist(list)
     local list = self:GetList(list);
     return list:GetContents();
@@ -150,4 +156,33 @@ function Addon:GetList(listType)
     end
 
     error(string.format("There is not '%s' list", listType));    
+end
+
+function Addon:RemoveInvalidEntriesFromBlocklist(listType)
+    local list = self:GetList(listType)
+    if not list then return end
+    local contents = list:GetContents()
+    if not contents then return end
+    -- Find all bad entries.
+    local invalid = {}
+    for id, _ in pairs(contents) do
+        if type(id) == "number" and not self:IsItemIdValid(id) then
+            table.insert(invalid, id)
+        end
+    end
+
+    -- Remove said bad entries.
+    for _, id in pairs (invalid) do
+        self:Debug("Removing invalid ItemID: %s from %s list.", tostring(id), tostring(listType))
+        list:Remove(id)
+    end
+end
+
+function Addon:RemoveInvalidEntriesFromAllBlocklists()
+    local success, msg = pcall(
+    function () 
+    self:RemoveInvalidEntriesFromBlocklist(self.c_NeverSellList)
+    self:RemoveInvalidEntriesFromBlocklist(self.c_AlwaysSellList)
+    end)
+    Addon:Print("Success = %s, msg = %s", tostring(success), tostring(msg))
 end

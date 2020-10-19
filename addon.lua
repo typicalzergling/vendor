@@ -23,8 +23,15 @@ function Addon:OnInitialize()
     -- Setup Console Commands
     self:SetupConsoleCommands()
     --@debug@
-    self:SetupDebugConsoleCommands()
+    if self.SetupDebugConsoleCommands then
+        self:SetupDebugConsoleCommands()
+    end
     --@end-debug@
+    --@do-not-package@
+    if self.SetupTestConsoleCommands then
+        self:SetupTestConsoleCommands()
+    end
+    --@end-do-not-package@
 
     -- Set up events
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
