@@ -292,6 +292,9 @@ the bag slot information. The matches tab uses items in your bag so it will be c
 This will be the item's effective item level if it is Equipment, otherwise it will be the base item level if it does not have an effective item level.
 </p>
 ]],
+["HELP_MINLEVEL_HTML"] = [[
+<p>The required character level for equipping the item.</p>
+]],
 ["HELP_TYPE_HTML"] = [[
 <p>The name of the item's Type. This is a localized string. You can use this in conjunction with SubType to zero in on specific types of items.</p>
 ]],
