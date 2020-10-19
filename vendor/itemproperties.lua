@@ -208,6 +208,10 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Import the tooltip text as item properties for custom rules.
     item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
     item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
+    item.TooltipLeftColor = self:ImportTooltipColorLeft(tooltip, bag, slot)
+    item.TooltipRightColor = self:ImportTooltipColorRight(tooltip, bag, slot)
+
+    item.TooltipHasRedText = self:TooltipHasRedText(tooltip, bag, slot)
 
     Addon:AddItemToCache(item)
     return item, count
