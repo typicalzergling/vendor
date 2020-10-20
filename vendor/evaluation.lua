@@ -81,8 +81,7 @@ function Addon:ClearResultCache()
     self:ClearTooltipResultCache()
 end
 
--- Clear the cache on addon changes
-Addon:GetConfig():AddOnChanged(function() Addon:ClearResultCache() end)
+Addon:GetProfile():RegisterForChanges(function() Addon:ClearResultCache() end, true)
 
 function Addon:AddResultToCache(link, result, ruleid, rule)
     assert(type(link) == "string")

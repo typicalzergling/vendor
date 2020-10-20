@@ -47,6 +47,7 @@ addon.lua
 cmds.lua
 
 # Vendor Main
+vendor\profile.lua
 vendor\items.lua
 vendor\blocklists.lua
 vendor\tooltipscan.lua
@@ -54,7 +55,6 @@ vendor\itemproperties.lua
 vendor\itemcache.lua
 vendor\evaluation.lua
 vendor\merchant.lua
-vendor\profile.lua
 vendor\delete.lua
 
 # Rules
