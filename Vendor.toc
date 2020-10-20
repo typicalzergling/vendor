@@ -21,10 +21,10 @@ sys\core.lua
 #@do-not-package@
 sys\debug.lua
 #@end-do-not-package@
-sys\locale.lua
 sys\utils.lua
 sys\event.lua
 sys\api.lua
+sys\locale.lua
 sys\hook.lua
 sys\console.lua
 sys\thread.lua

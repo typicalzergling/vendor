@@ -1,5 +1,6 @@
 local AddonName, Addon = ...;
 local DEFAULT_PROFILE = "-[DEFUALT]-";
+
 local SELL_LIST = Addon.c_Config_SellAlways;
 local KEEP_LIST = Addon.c_Config_SellNever;
 local KEEP_RULE = Addon.c_RuleType_Keep;
@@ -27,7 +28,6 @@ end
 
 local Profile = {}
 local profileObservers = {};
-local profileObserversLow = {};
 
 Vendor_Profiles = Vendor_Profiles or {};
 Vendor_ActiveProfile = Vendor_ActiveProfile or nil;
@@ -188,9 +188,9 @@ local function invoke(self, index, rank, observer)
 	if (type(observer) == "function") then
 		local r, msg = xpcall(observer, CallErrorHandler, self);
 		if (not r) then
-			Addon:DebugChannel("profile", "%s|    |  |r%d) [%d] Error: %s%s|r", GREEN_FONT_COLOR_CODE, index, rank, RED_FONT_COLOR_CODE, msg);
+			Addon:DebugChannel("profile", "%s|    |r%d) [%d] Error: %s%s|r", GREEN_FONT_COLOR_CODE, index, rank, RED_FONT_COLOR_CODE, msg);
 		else
-			Addon:DebugChannel("profile", "%s|    |  |r%d) [%s] %sSuccess|r", GREEN_FONT_COLOR_CODE, index, rank,  GREEN_FONT_COLOR_CODE);
+			Addon:DebugChannel("profile", "%s|    |r%d) [%s] %sSuccess|r", GREEN_FONT_COLOR_CODE, index, rank,  GREEN_FONT_COLOR_CODE);
 		end
 	end
 end
@@ -221,7 +221,7 @@ function Profile:NotifyChanges()
 		self.timer:Cancel();
 		self.timer = nil;
 	end
-	self.timer = C_Timer.NewTimer(0.15, function() sendChangeEvents(self) end);
+	self.timer = C_Timer.NewTimer(0.25, function() sendChangeEvents(self) end);
 end
 
 

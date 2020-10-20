@@ -637,7 +637,6 @@ end
 function EditRule:SetupRuleType()
     Package.InitializeRadioButton(self.sellRule, Addon.c_RuleType_Sell, L["EDITRULE_SELLRULE_LABEL"], L["EDITRULE_SELLRULE_TEXT"]);
     Package.InitializeRadioButton(self.keepRule, Addon.c_RuleType_Keep, L["EDITRULE_KEEPRULE_LABEL"], L["EDITRULE_KEEPRULE_TEXT"]);
-    Package.InitializeRadioButton(self.scrapRule, Addon.c_RuleType_Scrap, L["EDITRULE_SCRAPRULE_LABEL"], L["EDITRULE_SCRAPRULE_TEXT"]);
     self.sellRule:SetSelected(Addon.c_RuleType_SellRule);
 end
 
@@ -763,14 +762,12 @@ function EditRule:SetReadOnly(readonly)
         self.description.content:Disable();
         self.sellRule:Disable();
         self.keepRule:Disable();
-        self.scrapRule:Disable();
     else
         self.name:Enable();
         self.script.content:Enable();
         self.description.content:Enable();
         self.sellRule:Enable();
         self.keepRule:Enable();
-        self.scrapRule:Enable();
     end
 end
 

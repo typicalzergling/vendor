@@ -373,13 +373,6 @@
 							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.keepRule" x="0" y="-6"/>
 						</Anchors>
 					</Frame>
-					<Frame parentKey="scrapRule" inherits="Vendor_RadioButton">
-						<Size x="1" y="48"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.sellRule" x="0" y="-6"/>
-							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.sellRule" x="0" y="-6"/>
-						</Anchors>
-					</Frame>
 
 					<!-- Status Area -->
 					<Frame parentKey="errorStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
