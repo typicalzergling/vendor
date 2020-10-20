@@ -8,6 +8,9 @@ Addon:AddLocale("enUS",
 -- Core
 ["ADDON_NAME"] = "Vendor",
 ["ADDON_LOADED"] = "is loaded. Type '/vendor help' for usage.",
+VENDOR_URL = "https://www.curseforge.com/wow/addons/vendor",
+VENDOR_TUTORIAL = "https://youtu.be/j93Orw3vPKQ",
+
 
 -- Bindings
 ["BINDING_HEADER_VENDORQUICKLIST"] = "Quick Add/Remove items from the sell lists when mousing over the item",
@@ -165,6 +168,8 @@ Addon:AddLocale("enUS",
     YELLOW_FONT_COLOR_CODE .. "Dragging an item from your bags over a list" .. FONT_COLOR_CODE_CLOSE .. " adds it to that list.",
 ["CONFIG_DIALOG_LISTS_ALWAYS_LABEL"] = "Always Sell:",
 ["CONFIG_DIALOG_LISTS_NEVER_LABEL"] = "Never Sell:",
+RULES_DIALOG_HELP_HEADING = "You can find the latest release notes as well as links to the project and it's tutorials on this page.",
+RULES_DIALOG_HELP_TAB = "Help",
 
 -- Sell Rules
 ["SYSRULE_SELL_ALWAYSSELL"] = "Items in Always Sell List",

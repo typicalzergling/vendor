@@ -32,9 +32,9 @@ end
 -- Initialize the tab, and panel frame within the dialog
 --=========================================================================
 function TabbedFrame:InitTab(tabId, tabName)
-    tab = assert(self:FindTab(tabId), string.format("Unable to locate TAB(%d)", tabId));
-    tab:SetText(tabName)
-    PanelTemplates_TabResize(tab, 0)
+    --tab = assert(self:FindTab(tabId), string.format("Unable to locate TAB(%d)", tabId));
+    --tab:SetText(tabName)
+    --PanelTemplates_TabResize(tab, 0)
 end
 
 --=========================================================================
@@ -49,16 +49,20 @@ function TabbedFrame:ShowTab(tab)
     -- Update our tabs, spaces, and backgrounds
     for _, tab in ipairs(self.Tabs) do
         if (tab:GetID() == tabId) then
-            tab.activeBg:Show();
-            tab.normalBg:Hide();
-            for _, spacer in ipairs(tab.Spacers) do
-                spacer:Show()
+            --tab.activeBg:Show();
+            --tab.normalBg:Hide();
+            if (tab.Spacers) then 
+                for _, spacer in ipairs(tab.Spacers) do
+                    spacer:Show()
+                end
             end
         else
-            tab.activeBg:Hide();
-            tab.normalBg:Show();
-            for _, spacer in ipairs(tab.Spacers) do
-                spacer:Hide()
+            --tab.activeBg:Hide();
+            --tab.normalBg:Show();
+            if (tab.Spaces) then
+                for _, spacer in ipairs(tab.Spacers) do
+                    spacer:Hide()
+                end
             end
         end
     end

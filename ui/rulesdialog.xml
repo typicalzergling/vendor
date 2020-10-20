@@ -9,53 +9,26 @@
 
     <Button name="Vendor_RulesDialog_Tab" inherits="OptionsFrameTabButtonTemplate" virtual="true" visible="false" parentArray="Tabs">
 	    <Scripts>
-	        <OnClick>self:GetParent():ShowTab(self);</OnClick>
+	        <OnClick>self:GetParent():ShowTab(self)</OnClick>
+            <!-- The first rhree lines come from the shared template for some reason this it is replaced by our handler -->
+            <OnLoad>
+				self:SetFrameLevel(self:GetFrameLevel() + 4);
+				self.deselectedTextY = -3;
+				self.selectedTextY = -2;
+                Vendor:SetLocalizedString(self, self.TextKey);
+                PanelTemplates_TabResize(self, 0);
+            </OnLoad>
 	    </Scripts>
-	    <Layers>
-			<Layer level="BACKGROUND" textureSubLevel="1">
-				<Texture hidden="true" parentKey="activeBg">
-					<Color r="0" g="0" b="0" a="0.5"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="11" y="-4" />
-						<Anchor point="BOTTOMRIGHT" x="-9" y="-1" />
-					</Anchors>
-				</Texture>
-				<Texture hidden="true" parentKey="normalBg">
-					<Color r="0" g="0" b="0" a="0.30"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="11" y="-6" />
-						<Anchor point="BOTTOMRIGHT" x="-9" y="0" />
-					</Anchors>
-				</Texture>
-			</Layer>
-	    </Layers>
     </Button>
 
-    <Frame name="Vendor_List_Container" virtual="true">
-        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true" >
-            <EdgeSize><AbsValue val="16"/></EdgeSize>
-            <TileSize><AbsValue val="16"/></TileSize>
-            <BackgroundInsets>
-                <AbsInset left="5" right="5" top="5" bottom="5"/>
-            </BackgroundInsets>
-        </Backdrop>
-		<Layers>
-			<Layer level="BACKGROUND" textureSubLevel="1">
-				<Texture>
-					<Color r="0" g="0" b="0" a="0.5"/>//
-					<Anchors>
-						<Anchor point="TOPLEFT" x="4" y="-4" />
-						<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
-					</Anchors>
-				</Texture>
-			</Layer>
-		</Layers>
+    <Frame name="Vendor_List_Container" virtual="true" inherits="InsetFrameTemplate">
         <Scripts>
             <OnLoad>
-                --self:SetBackdropColor(0.2, 0.2, 0.2, 0.60);
-				--self:SetBackdropBorderColor(0.6, 0.6, 0.6, 1);
-			</OnLoad>
-		</Scripts>
+                if (self.Bg) then 
+                    self.Bg:SetColorTexture(0.05, 0.05, 0.05, 0.6);
+                end
+            </OnLoad>
+        </Scripts>
     </Frame>
 
     <Frame name="Vendor_ListPanel_Template" virtual="true" inherits="Vendor_TabPanel_Base">
@@ -85,9 +58,11 @@
         </Frames>
     </Frame>
 
+    <Include file="rulespanels.xml"/>
+
     <!-- Rules dialog Frame -->
     <Frame name="VendorRulesDialog" parent="UIParent" hidden="true" inherits="Vendor_Dialog_Template">
-        <Size x="600" y="616"/>
+        <Size x="600" y="624"/>
         <Anchors>
             <Anchor point="CENTER"/>
         </Anchors>
@@ -98,7 +73,7 @@
                     <AbsDimension x="132" y="22"/>
                 </Size>
                 <Anchors>
-                    <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+                    <Anchor point="BOTTOMRIGHT" x="-22" y="16"/>
                 </Anchors>
 				<Scripts>
 					<OnClick>self:GetParent():Hide();</OnClick>
@@ -118,7 +93,7 @@
             <Button inherits="MagicButtonTemplate" text="SETTINGS" parentKey="settings">
                 <Size x="132" y="22"/>
                 <Anchors>
-                    <Anchor point="BOTTOMLEFT" x="10" y="10"/>
+                    <Anchor point="BOTTOMLEFT" x="22" y="16"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -128,15 +103,26 @@
                 </Scripts>
             </Button>
 
+            <!-- Panels are sized to this frame when shown -->
+            <Frame name="$parentContainer" parentKey="Container" inherits="TooltipBorderBackdropTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-48"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
+                    <Anchor point="RIGHT" x="-22" y="0"/>
+                </Anchors>
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
+				</KeyValues>
+            </Frame>
+
             <!-- Keep Panel -->
             <Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="1">
                 <KeyValues>
                     <KeyValue key="ruleType" value="Keep" type="string"/>
                 </KeyValues>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
-                    <Anchor point="RIGHT" x="-22" y="0"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
                 </Anchors>
             </Frame>
 
@@ -146,30 +132,16 @@
                     <KeyValue key="ruleType" value="Sell" type="string"/>
                 </KeyValues>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
-                    <Anchor point="RIGHT" x="-22" y="0"/>
-                </Anchors>
-            </Frame>
-
-            <!-- Scrap Panel -->
-            <Frame name="$parentScrapPanel" parentKey="ScrapPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
-                <KeyValues>
-                    <KeyValue key="ruleType" value="Scrap" type="string"/>
-                </KeyValues>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
-                    <Anchor point="RIGHT" x="-22" y="0"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
                 </Anchors>
             </Frame>
 
             <!-- Custom Panel -->
-            <Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="4">
+            <Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="3">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
-                    <Anchor point="RIGHT" x="-22" y="0"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
@@ -198,11 +170,10 @@
             </Frame>
 
 			<!-- Lists Panel -->
-            <Frame name="$parentListsPanel" parentKey="ListsPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="5">
+            <Frame name="$parentListsPanel" parentKey="ListsPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="4">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
-                    <Anchor point="RIGHT" x="-22" y="0"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
@@ -265,196 +236,62 @@
                 </Frames>
 			</Frame>
 
-            <!-- Panels are sized to this frame when shown -->
-            <Frame name="$parentContainer" parentKey="Container">
+            <Frame inherits="Vendor_RulesDialog_Help" parentKey="helpPanel" id="5" hidden="true">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="22" y="-40"/>
-                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.settings" relativePoint="TOPLEFT" x="0" y="4"/>
-                    <Anchor point="RIGHT" x="-22" y="0"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
                 </Anchors>
-                <Layers>
-					<Layer level="BACKGROUND" textureSubLevel="1">
-						<Texture>
-							<Color r="0" g="0" b="0" a="0.5"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" x="4" y="-4" />
-								<Anchor point="BOTTOMRIGHT" x="-4" y="4" />
-							</Anchors>
-						</Texture>
-					</Layer>
-                    <Layer level="BACKGROUND">
-                        <Texture name="$parentTopLeft" file="Interface\Tooltips\UI-Tooltip-Border">
-                            <Size x="16" y="16"/>
-                            <Anchors>
-                                <Anchor point="TOPLEFT"/>
-                            </Anchors>
-                            <TexCoords left="0.5" right="0.625" top="0" bottom="1"/>
-                        </Texture>
-                        <Texture name="$parentBottomLeft" file="Interface\Tooltips\UI-Tooltip-Border">
-                            <Size  x="16" y="16"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMLEFT"/>
-                            </Anchors>
-                            <TexCoords left="0.75" right="0.875" top="0" bottom="1"/>
-                        </Texture>
-                        <Texture name="$parentBottomRight" file="Interface\Tooltips\UI-Tooltip-Border">
-                            <Size x="16" y="16"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMRIGHT"/>
-                            </Anchors>
-                            <TexCoords left="0.875" right="1" top="0" bottom="1"/>
-                        </Texture>
-                        <Texture name="$parentTopRight" file="Interface\Tooltips\UI-Tooltip-Border">
-                            <Size x="16" y="16"/>
-                            <Anchors>
-                                <Anchor point="TOPRIGHT"/>
-                            </Anchors>
-                            <TexCoords left="0.625" right="0.75" top="0" bottom="1"/>
-                        </Texture>
-                        <Texture name="$parentLeft" file="Interface\Tooltips\UI-Tooltip-Border">
-                            <Anchors>
-                                <Anchor point="TOPLEFT" relativeTo="$parentTopLeft" relativePoint="BOTTOMLEFT"/>
-                                <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomLeft" relativePoint="TOPRIGHT"/>
-                            </Anchors>
-                            <TexCoords left="0" right="0.125" top="0" bottom="1"/>
-                        </Texture>
-                        <Texture name="$parentRight" file="Interface\Tooltips\UI-Tooltip-Border">
-                            <Anchors>
-                                <Anchor point="TOPLEFT" relativeTo="$parentTopRight" relativePoint="BOTTOMLEFT"/>
-                                <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRight" relativePoint="TOPRIGHT"/>
-                            </Anchors>
-                            <TexCoords left="0.125" right="0.25" top="0" bottom="1"/>
-                        </Texture>
-                        <Texture name="$parentBottom" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer">
-                            <Size>
-                                <AbsDimension x="0" y="16"/>
-                            </Size>
-                            <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeft" relativePoint="BOTTOMRIGHT" x="0" y="-2"/>
-                                <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRight" relativePoint="BOTTOMLEFT"/>
-                            </Anchors>
-                        </Texture>
-                    </Layer>
-                </Layers>
             </Frame>
 
             <!-- Keep Tab -->
             <Button name="$parentKeepTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="KeepTab">
+                <KeyValues>
+                    <KeyValue key="TextKey" value="CONFIG_DIALOG_KEEPRULES_TAB" type="string"/>
+                </KeyValues>
                 <Anchors>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentContainer" relativePoint="TOPLEFT" x="6" y="-3"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.Container" relativePoint="TOPLEFT" x="6" y="-2"/>
                 </Anchors>
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-                            <Size x="85" y="16"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-10" y="-6"/>
-                                <Anchor point="RIGHT" relativeTo="VendorRulesDialogContainerTopRight" relativePoint="LEFT"/>
-                            </Anchors>
-                        </Texture>
-                    </Layer>
-                </Layers>
             </Button>
 
             <!-- Sell Tab -->
             <Button name="$parentSellTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="SellTab">
+                <KeyValues>
+                    <KeyValue key="TextKey" value="CONFIG_DIALOG_SELLRULES_TAB" type="string"/>
+                </KeyValues>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.KeepTab" relativePoint="TOPRIGHT" x="-16" y="0"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.KeepTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
                 </Anchors>
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-                            <Size x="64" y="16"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
-                                <Anchor point="LEFT" relativeTo="VendorRulesDialogContainerTopLeft" relativePoint="RIGHT"/>
-                            </Anchors>
-                        </Texture>
-                        <Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-                            <Size x="16" y="16"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
-                                <Anchor point="RIGHT" relativeTo="VendorRulesDialogContainerTopRight" relativePoint="LEFT"/>
-                            </Anchors>
-                        </Texture>
-                    </Layer>
-                </Layers>
-            </Button>
-
-            <!-- Scrap Tab -->
-            <Button name="$parentScrapTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="ScrapTab">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.SellTab" relativePoint="TOPRIGHT" x="-16" y="0"/>
-                </Anchors>
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-                            <Size x="64" y="16"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
-                                <Anchor point="LEFT" relativeTo="VendorRulesDialogContainerTopLeft" relativePoint="RIGHT"/>
-                            </Anchors>
-                        </Texture>
-                        <Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-                            <Size x="16" y="16"/>
-                            <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
-                                <Anchor point="RIGHT" relativeTo="VendorRulesDialogContainerTopRight" relativePoint="LEFT"/>
-                            </Anchors>
-                        </Texture>
-                    </Layer>
-                </Layers>
             </Button>
 
 			<!-- Custom Tab -->
-			<Button name="$parentCustomTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="CustomTab">
+			<Button name="$parentCustomTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="CustomTab">
+                <KeyValues>
+                    <KeyValue key="TextKey" value="CONFIG_DIALOG_CUSTOMRULES_TAB" type="string"/>
+                </KeyValues>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.ScrapTab" relativePoint="TOPRIGHT" x="-16" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.SellTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
 				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-							<Size x="64" y="16"/>
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
-								<Anchor point="LEFT" relativeTo="VendorRulesDialogContainerTopLeft" relativePoint="RIGHT"/>
-							</Anchors>
-						</Texture>
-						<Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-							<Size x="16" y="16"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
-								<Anchor point="RIGHT" relativeTo="VendorRulesDialogContainerTopRight" relativePoint="LEFT"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
 			</Button>
 
 
 			<!-- Lists Tab -->
-			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="5" parentKey="ListsTab" enabled="false">
+			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ListsTab" enabled="false">
+                <KeyValues>
+                    <KeyValue key="TextKey" value="CONFIG_DIALOG_LISTS_TAB" type="string"/>
+                </KeyValues>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.CustomTab" relativePoint="TOPRIGHT" x="-16" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.CustomTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
 				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentSpacer1" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-							<Size x="64" y="16"/>
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="11" y="-6"/>
-								<Anchor point="LEFT" relativeTo="VendorRulesDialogContainerTopLeft" relativePoint="RIGHT"/>
-							</Anchors>
-						</Texture>
-						<Texture name="$parentSpacer2" file="Interface\OptionsFrame\UI-OptionsFrame-Spacer" hidden="true" inherits="Vendor.RulesUI.ConfigPanelTabSpacerTemplate">
-							<Size x="16" y="16"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-9" y="-6"/>
-								<Anchor point="RIGHT" relativeTo="VendorRulesDialogContainerTopRight" relativePoint="LEFT"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
+			</Button>
+
+			<!-- Lists Tab -->
+			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="5" parentKey="HelpTab" enabled="false">
+                <KeyValues>
+                    <KeyValue key="TextKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
+                </KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ListsTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
+				</Anchors>
 			</Button>
 
         </Frames>
