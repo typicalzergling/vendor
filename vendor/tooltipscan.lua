@@ -28,7 +28,7 @@ local function importTooltipTextToTable(tooltip, text, bag, slot)
     end
 
     -- Import the tooltip into a table
-    tooltipTable = {}
+    local tooltipTable = {}
     for i=1, tooltip:NumLines() do
         if _G[tooltipText..i] and _G[tooltipText..i]:GetText() then
             table.insert(tooltipTable, _G[tooltipText..i]:GetText())
