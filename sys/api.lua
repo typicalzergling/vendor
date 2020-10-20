@@ -43,7 +43,7 @@ local AddonName, Addon = ...
     | against other addons. And it should be obvious to any addon developer 
     | using an undocumented API is risky and may break at any time.
     =======================================================================--]]
-Addon.Public = {}
+Addon.Public = Addon.Public or {}
 local addonPublic = Addon.Public    -- The real public API is now hidden.
 Addon.Public = {}                   -- Aaaaaaaand it's gone.
 _G[AddonName] = Addon.Public        -- Update the global reference.
