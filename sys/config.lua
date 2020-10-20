@@ -191,9 +191,13 @@ end
 -- Adds a handler to be called when the configuration has changed, passes
 -- the configuration object as the first parameter.
 --*****************************************************************************
-function Addon.Config:AddOnChanged(onchange)
+function Addon.Config:AddOnChanged(onchange, position)
     if (type(onchange) == "function") then
-        table.insert(self.handlers, onchange)
+        if position and type(position) == "number" then
+            table.insert(self.handlers, position, onchange)
+        else
+            table.insert(self.handlers, onchange)
+        end
     end
 end
 

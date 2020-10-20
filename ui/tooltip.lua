@@ -50,6 +50,7 @@ function Addon:ClearTooltipResultCache()
     blocklist = nil
     ruleId = nil
     ruleName = nil
+    Addon:Debug("TooltipResultCache cleared.")
 end
 
 function Addon:AddItemTooltipLines(tooltip, link)
