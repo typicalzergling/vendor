@@ -56,6 +56,7 @@ vendor\evaluation.lua
 vendor\merchant.lua
 vendor\profile.lua
 vendor\delete.lua
+vendor\releasenotes.lua
 
 # Rules
 RulesEngine\rules.xml
