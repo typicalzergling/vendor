@@ -81,7 +81,7 @@ function Addon:ClearResultCache()
     self:ClearTooltipResultCache()
 end
 
-Addon:GetProfile():RegisterForChanges(function() Addon:ClearResultCache() end, true)
+Addon.Profile:RegisterForChanges(function() Addon:ClearResultCache() end, 10)
 
 function Addon:AddResultToCache(link, result, ruleid, rule)
     assert(type(link) == "string")
