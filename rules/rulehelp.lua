@@ -39,6 +39,7 @@ Addon.ScriptReference.Functions =
     PlayerClass = L["HELP_PLAYERCLASS"],
     IsAlwaysSellItem = L["HELP_ISALWAYSSELLITEM"],
     IsNeverSellItem = L["HELP_ISNEVERSELLITEM"],
+    PlayerItemLevel = L["HELP_PLAYERITEMLEVEL"],
 
     ItemQuality =
     {

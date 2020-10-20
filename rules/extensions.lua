@@ -181,7 +181,7 @@ local function addOnRuleUpdateCallback(ext, cbdef)
         end
     end
 
-    Addon.Profile:RegisterForChanges(fn, true);
+    Addon.Profile:RegisterForChanges(fn, 32000);
 end
 
 

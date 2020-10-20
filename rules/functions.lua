@@ -118,20 +118,18 @@ function Addon.RuleFunctions.PlayerClass()
     return localizedClassName --This is intentional to avoid passing back extra args
 end
 
+--@retail@
 --[[============================================================================
     | Rule function which returns the average item level of the players 
 	| equipped gear, in classic this just sums all your equipped items and 
 	| divides it by the number of item of equipped.
     ==========================================================================]]
 function Addon.RuleFunctions.PlayerItemLevel()
-	if (not Addon.IsClassic) then
-		local _, itemLevel, _ = GetAvergeItemLevel();
-		return itemLevel;
-	end
-
-	-- What should we do here?
-	return 400;
+    assert(not Addon.IsClassic);
+    local itemLevel = GetAvergeItemLevel();
+	return floor(itemLevel);
 end
+--@end-retail@
 
 --*****************************************************************************
 -- This function checks if the specified item is a member of an item set.

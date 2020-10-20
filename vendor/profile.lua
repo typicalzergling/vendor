@@ -158,53 +158,57 @@ function Profile:CreateDefaultFromOldConfig()
 	return profile;
 end
 
-function Profile:RegisterForChanges(callback, lowPriority)
-	if (type(callback) ~= "function") then
-		error("Expect the argument to RegisterForChanges to be a function");
+function Profile:RegisterForChanges(_callback, _rank)
+	if (type(_callback) ~= "function") then
+		error("Expect the callback argument of RegisterForChanges to be a function");
+	end
+	if (_rank and (type(_rank) ~= "number")) then
+		error("Expected the rank argument of RegisterForChanges to be absent or a number");
 	end
 
-	if (not lowPriority) then
-		table.insert(profileObservers, callback);
-	else
-		table.insert(profileObserversLow, callback);
-	end
+	local insert = {
+		rank=_rank or 1000,
+		callback=_callback,
+	};
+
+	table.insert(profileObservers, insert);
+	table.sort(profileObservers, 
+		function (a, b)
+			return (a.rank < b.rank);
+		end);
 end
 
 --[[ Instance Methods ]]--
 
 
+local function invoke(self, index, rank, observer)
+	assert(type(rank) == "number");
+	assert(type(observer) == "function");
+
+	if (type(observer) == "function") then
+		local r, msg = xpcall(observer, CallErrorHandler, self);
+		if (not r) then
+			Addon:DebugChannel("profile", "%s|    |  |r%d) [%d] Error: %s%s|r", GREEN_FONT_COLOR_CODE, index, rank, RED_FONT_COLOR_CODE, msg);
+		else
+			Addon:DebugChannel("profile", "%s|    |  |r%d) [%s] %sSuccess|r", GREEN_FONT_COLOR_CODE, index, rank,  GREEN_FONT_COLOR_CODE);
+		end
+	end
+end
+
+
 local function sendChangeEvents(self)
-	Addon:DebugChannel("profile", "%s+  |rStarting change notifications", GREEN_FONT_COLOR_CODE)
+	Addon:DebugChannel("profile", "%s+  |rStarting change notifications [%d handlers]", GREEN_FONT_COLOR_CODE, table.getn(profileObservers));
+
 	if (self.timer) then
 		self.timer:Cancel();
 		self.timer = nil;
 	end
-
-	local function invoke(index, observer)
-		if (type(observer) == "function") then
-			local r, msg = pcall(observer, self);
-			if (not r) then
-				Addon:DebugChannel("profile", "%s|    |  |r%d] Error: %s%s|r", GREEN_FONT_COLOR_CODE, index, RED_FONT_COLOR_CODE, msg);
-			else
-				Addon:DebugChannel("profile", "%s|    |  |r%d] %sSuccess|r", GREEN_FONT_COLOR_CODE, index,  GREEN_FONT_COLOR_CODE);
-			end
-		end
-	end
-
 	-- If thes the currently active profile, then we want to invoke the callbacks
 	local active = Addon:GetProfile();
 	if (active and self:IsEqual(active)) then
-		Addon:DebugChannel("profile", "%s|    + |rStart %d high proirity|r", GREEN_FONT_COLOR_CODE, table.getn(profileObservers));
 		for i, observer in ipairs(profileObservers) do
-			invoke(i, observer);
+			invoke(self, i, observer.rank, observer.callback)
 		end
-		Addon:DebugChannel("profile", "%s|    + |rComplete|r", GREEN_FONT_COLOR_CODE, table.getn(profileObserversLow));
-
-		Addon:DebugChannel("profile", "%s|    + |rStart %d low priority|r", GREEN_FONT_COLOR_CODE, table.getn(profileObserversLow));
-		for i, observer in ipairs(profileObserversLow) do
-			invoke(i, observer);
-		end
-		Addon:DebugChannel("profile", "%s|    + |rComplete|r", GREEN_FONT_COLOR_CODE, table.getn(profileObserversLow));
 	end
 	Addon:DebugChannel("profile", "%s+  |rCompleted change notifications", GREEN_FONT_COLOR_CODE)
 end	

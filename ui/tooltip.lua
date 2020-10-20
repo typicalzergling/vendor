@@ -52,7 +52,7 @@ function Addon:ClearTooltipResultCache()
     ruleName = nil
 end
 
-Addon.Profile:RegisterForChanges(Addon.ClearTooltipResultCache)
+Addon.Profile:RegisterForChanges(Addon.ClearTooltipResultCache, 10)
 
 
 function Addon:AddItemTooltipLines(tooltip, link)

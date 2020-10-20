@@ -458,6 +458,7 @@ This is determined by the tooltip text. Note that if you drag a crafting reagent
 ["HELP_PLAYERCLASS"] = "Returns the localized class name of the player. This should match any localized class names in your client, such as the tooltip.",
 ["HELP_ISALWAYSSELLITEM"] = "Returns the state of the item in the always sell list.  A return value of tue indicates it belongs to the list while false indicates it does not.",
 ["HELP_ISNEVERSELLITEM"] = "Returns the state of the item in the never sell list.  A return value of true indicates it belongs to the list false indicates it does not.",
+["HELP_PLAYERITEMLEVEL"] = "Returns the average item level of players gear",
 
 ["HELP_ITEMQUALITY_ARGS"] = "qual [, qual1..qualN]",
 ["HELP_ITEMQUALITY_TEXT"] = "Determines the item quality",

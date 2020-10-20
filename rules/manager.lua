@@ -79,7 +79,10 @@ function RuleManager:Create()
     -- we might have scrub rules, etc.
     Addon.Rules.OnDefinitionsChanged:Add(function() instance:Update(); end);
     Addon.Rules.CheckMigration();
-    Addon.Profile:RegisterForChanges(function() instance:Update(); end);
+    Addon.Profile:RegisterForChanges(
+            function() 
+                instance:Update(); 
+        end, -1);
     instance:Update();
 
     return instance
