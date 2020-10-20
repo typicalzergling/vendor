@@ -52,9 +52,6 @@ function Addon:ClearTooltipResultCache()
     ruleName = nil
 end
 
-Addon.Profile:RegisterForChanges(Addon.ClearTooltipResultCache, 10)
-
-
 function Addon:AddItemTooltipLines(tooltip, link)
     local profile = self:GetProfile();
     -- Check Cache if we already have data for this item from a previous update.

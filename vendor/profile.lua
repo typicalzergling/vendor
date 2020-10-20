@@ -221,7 +221,7 @@ function Profile:NotifyChanges()
 		self.timer:Cancel();
 		self.timer = nil;
 	end
-	self.timer = C_Timer.NewTimer(0.25, function() sendChangeEvents(self) end);
+	self.timer = C_Timer.NewTimer(0.15, function() sendChangeEvents(self) end);
 end
 
 
