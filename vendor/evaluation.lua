@@ -30,7 +30,7 @@ function Addon:EvaluateItem(item)
     end
 
     -- See if this item is already in the cache.
-    local retval, ruleid, rule = Addon:GetCachedResult(item.Link)
+    local retval, ruleid, rule = Addon:GetCachedResult(item.GUID)
     if retval and type(retval) == "number" then
         return retval, ruleid, rule
     end
@@ -64,12 +64,11 @@ function Addon:EvaluateItem(item)
     return retval, ruleid, rule
 end
 
--- Result Cache so we dont' redo evaluations where we don't need to.
-
+-- Results are cached by guid.
 local resultCache = {}
-function Addon:GetCachedResult(link)
-    assert(link)
-    result = resultCache[link]
+function Addon:GetCachedResult(guid)
+    assert(guid)
+    result = resultCache[guid]
     if result then
         return result.Result, result.RuleId, result.Rule
     else
@@ -86,17 +85,17 @@ end
 -- Clear the cache on addon changes
 Addon:GetConfig():AddOnChanged(function() Addon:ClearResultCache() end)
 
-function Addon:AddResultToCache(link, result, ruleid, rule)
-    assert(type(link) == "string" and type(result) == "number")
+function Addon:AddResultToCache(guid, result, ruleid, rule)
+    assert(type(guid) == "string" and type(result) == "number")
 
     local cacheEntry = {}
     cacheEntry.Result = result
     cacheEntry.RuleId = ruleid
     cacheEntry.Rule = rule
 
-    assert(link ~= "")
-    --self:Debug("Cached result: %s = %s", link, tostring(result))
-    resultCache[link] = cacheEntry
+    assert(guid ~= "")
+    --self:Debug("Cached result: %s = %s", guid, tostring(result))
+    resultCache[guid] = cacheEntry
 end
 
 function Addon:GetEvaluationStatus()

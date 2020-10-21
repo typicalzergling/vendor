@@ -93,11 +93,6 @@ function Addon:IsStringInTooltip(tooltip, bag, slot, str)
     return Addon:IsStringInTooltipRightText(tooltip, bag, slot, str)
 end
 
--- Soulbound
-function Addon:IsItemSoulboundInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_SOULBOUND"])
-end
-
 -- You haven't collected this appearance
 function Addon:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot)
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_UNKNOWNAPPEARANCE"])

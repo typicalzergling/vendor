@@ -10,13 +10,43 @@ local L = Addon:GetLocale()
 
 local itemCache = {}
 
-function Addon:GetCachedItem(link)
-    assert(link)
-    item = itemCache[link]
-    if item then
-        return item
+-- Arg is a location or a guid
+function Addon:AddItemToCache(item, arg)
+    assert(item)
+    assert(arg)
+    if type(arg) == "table" then
+        itemCache[C_Item.GetItemGUID(arg)] = item
+    elseif type(arg) == "string" then
+        itemCache[arg] = item
     else
-        return nil
+        error("Invalid input into AddItemToCache")
+    end
+end
+
+-- Create this from location. For speed going to assume correctness.
+-- location = ItemLocation:CreateFromBagAndSlot(bag, slot)
+
+-- Input is a location or a guid
+function Addon:GetItemFromCache(arg)
+    assert(arg)
+    if type(arg) == "table" then
+        return itemCache[C_Item.GetItemGUID(arg)]
+    elseif type(arg) == "string" then
+        return itemCache[arg]
+    else
+        error("Invalid input into AddItemToCache")
+    end
+end
+
+-- Pass in the location or guid, not the item
+function Addon:IsItemCached(arg)
+    assert(arg)
+    if arg == "table" then
+        return not not itemCache[C_Item.GetItemGUID(arg)]
+    elseif arg == "string" then
+        return not not itemCache[arg]
+    else
+        error("Invalid input into IsItemCached")
     end
 end
 
@@ -24,13 +54,4 @@ function Addon:ClearItemCache()
     itemCache = {}
     Addon:Debug("Item Cache cleared.")
     Addon:ClearTooltipResultCache()
-end
-
-function Addon:AddItemToCache(item)
-    assert(item and item.Link and type(item) == "table" and type(item.Link) == "string")
-    itemCache[item.Link] = item
-end
-
-function Addon:IsItemCached(link)
-    return not not itemCache[link]
 end

@@ -361,13 +361,19 @@ function EditRuleDialog:UpdateItemProperties()
     end
 
     local _, _, link = GetCursorInfo();
+
+
+    -- get cursor item location
+    local location = C_Cursor.GetCursorItem()
+    if not location or not location:IsBagAndSlot() then return end
+    local bag, slot = location:GetBagAndSlot()
     ClearCursor();
 
     local function htmlEncode(str)
         return str:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;");
     end
 
-    local itemProps = Addon:GetItemProperties(GameTooltip, link);
+    local itemProps = Addon:GetItemProperties(bag, slot);
     local props = {}
     if (itemProps) then
         for name, value in spairs(itemProps) do

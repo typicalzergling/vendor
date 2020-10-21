@@ -38,8 +38,11 @@ function Addon:OnInitialize()
     -- Tooltip hooks
     self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
     self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
+    self:PreHookFunction(GameTooltip, "SetBagItem", "OnGameTooltipSetBagItem")
+    self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
+    self:PreHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
 
     -- Print version and load confirmation to console.
-    self:Print("%s %sv%s%s %s", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, self:GetVersion(), FONT_COLOR_CODE_CLOSE, L["ADDON_LOADED"])
+    --self:Print("%s %sv%s%s %s", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, self:GetVersion(), FONT_COLOR_CODE_CLOSE, L["ADDON_LOADED"])
 end
 
