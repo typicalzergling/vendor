@@ -20,7 +20,6 @@ end
 function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
     if not tooltipLocation then
         tooltipLocation = ItemLocation:CreateFromBagAndSlot(bag, slot)
-        --Addon:Print("In Tooltip Set Item...(%s, %s)", tostring(bag), tostring(slot))
     end
 end
 
@@ -29,7 +28,6 @@ function Addon:OnGameTooltipSetInventoryItem(tooltip, unit, slot)
     if not tooltipLocation then
         if unit == "player" then
             tooltipLocation = ItemLocation:CreateFromEquipmentSlot(slot)
-            --Addon:Print("In Tooltip Set Inventory...(%s)", tostring(slot))
         else
             clearTooltipState()
         end
@@ -39,7 +37,6 @@ end
 -- Hook for Hide
 function Addon:OnGameTooltipHide(tooltip)
     clearTooltipState()
-    Addon:Print("Itemlocation = %s", tostring(not not tooltipLocation))
 end
 
 
