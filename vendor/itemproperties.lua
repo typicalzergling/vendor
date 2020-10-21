@@ -18,19 +18,15 @@ end
 
 -- Hook for tooltip SetBagItem
 function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
-    if not tooltipLocation then
-        tooltipLocation = ItemLocation:CreateFromBagAndSlot(bag, slot)
-    end
+    tooltipLocation = ItemLocation:CreateFromBagAndSlot(bag, slot)
 end
 
 -- Hook for SetInventoryItem
 function Addon:OnGameTooltipSetInventoryItem(tooltip, unit, slot)
-    if not tooltipLocation then
-        if unit == "player" then
-            tooltipLocation = ItemLocation:CreateFromEquipmentSlot(slot)
-        else
-            clearTooltipState()
-        end
+    if unit == "player" then
+        tooltipLocation = ItemLocation:CreateFromEquipmentSlot(slot)
+    else
+        clearTooltipState()
     end
 end
 
