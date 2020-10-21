@@ -1,6 +1,41 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
+
+-- We are tracking the location to which the tooltip is currently set. This is because blizzard does not expose
+-- a way to get the item location of the tooltip item. So we track the state and the location by hooking SetBagItem
+-- and SetInventoryItem to squirrel away that data and clear it whenever the tooltip is hidden. This allows us to
+-- know whether a tooltip is referring to an item in the player's bags and then get that item information.
+local tooltipLocation = nil
+
+function Addon:GetTooltipItemLocation()
+    return tooltipLocation
+end
+
+local function clearTooltipState()
+    tooltipLocation = nil
+end
+
+-- Hook for tooltip SetBagItem
+function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
+    tooltipLocation = ItemLocation:CreateFromBagAndSlot(bag, slot)
+end
+
+-- Hook for SetInventoryItem
+function Addon:OnGameTooltipSetInventoryItem(tooltip, unit, slot)
+    if unit == "player" then
+        tooltipLocation = ItemLocation:CreateFromEquipmentSlot(slot)
+    else
+        clearTooltipState()
+    end
+end
+
+-- Hook for Hide
+function Addon:OnGameTooltipHide(tooltip)
+    clearTooltipState()
+end
+
+
 -- Gets information about an item
 -- Here is the list of captured item properties.
 --     Name
@@ -32,31 +67,12 @@ local L = Addon:GetLocale()
 --     IsAzeriteItem = false
 --     IsCraftingReagent
 
---[[
-local function GetItemEquipmentSets(itemId)
-    local sets = {}
-    local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
-    for _, setId in pairs(itemSets) do
-        local itemIds = C_EquipmentSet.GetItemIDs(setId)
-        for _, id in pairs(itemIds) do
-            if itemId == id then
-                local name = C_EquipmentSet.GetEquipmentSetInfo(setId)
-                table.insert(sets, name)
-                break
-            end
-        end
-    end
-    return sets
-end]]
-
 -- Gets information about the item in the specified slot.
 -- If we pass in a link, use the link. If link is nil, use bag and slot.
 -- We do this so we can evaluate based purely on a link, or on item container if we have it.
 -- Argument combinations
 --      tooltip, nil - we will get the item link from the tooltip and use the tooltip for scanning
---      tooltip, link - we will use the link and the tooltip for scanning
 --      bag, slot       - we will get link from the containerinfo and use the scanning tip for scanning
-
 
 function Addon:GetItemProperties(arg1, arg2)
 
@@ -65,14 +81,14 @@ function Addon:GetItemProperties(arg1, arg2)
     local tooltip = nil
     local bag = nil
     local slot = nil
+    local location = nil
 
-    -- Tooltip passed in. Use the link if provided, otherwise get it from the tooltip.
+    -- Tooltip passed in. Use item location of known tooltip.
     if type(arg1) == "table" then
         tooltip = arg1
-        if type(arg2) == "string" then
-            link = arg2
-        else
-            _, link = tooltip:GetItem()
+        _, link = tooltip:GetItem()
+        if tooltipLocation then
+            location = tooltipLocation
         end
 
     -- Bag and Slot passed in
@@ -80,23 +96,29 @@ function Addon:GetItemProperties(arg1, arg2)
         bag = arg1
         slot = arg2
         _, count, _, _, _, _, link = GetContainerItemInfo(bag, slot)
-
+        location = ItemLocation:CreateFromBagAndSlot(bag, slot)
     else
         assert("Invalid arguments to GetItemProperties")
         return nil
     end
 
     -- No link means no item.
-    if not link then return nil end
+    if not link or not location then return nil end
+
+    -- Guid is how we uniquely identify items.
+    local guid = C_Item.GetItemGUID(location)
 
     -- Item properties may already be cached
-    local item = Addon:GetCachedItem(link)
+    local item = Addon:GetItemFromCache(guid)
     if item then
         -- Return cached item and count
         return item, count
     else
         -- Item not cached, so we need to populate the properties.
         item = {}
+        -- Item may not be loaded, need to handle this in a non-hacky way.
+        item.GUID = guid
+        item.Location = location
         item.Link = link
     end
 
@@ -146,28 +168,15 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Save string compares later.
     item.IsEquipment = item.EquipLoc ~= "" and item.EquipLoc ~= "INVTYPE_BAG"
 
-    -- For additional bind information we can be smart and only check the tooltip if necessary. This saves us string compares.
-    -- 0 = none, 1 = on pickup, 2 = on equip, 3 = on use, 4 = quest
-    if item.BindType == 1 or item.BindType == 4 then
-        -- BOP or quest, must be soulbound if it is in our inventory
+    -- Get soulbound information
+    if C_Item.IsBound(location) then
         item.IsSoulbound = true
-    elseif item.BindType == 2 then
-        -- BOE, may be soulbound
-        if self:IsItemSoulboundInTooltip(tooltip, bag, slot) then
-            item.IsSoulbound = true
-        else
-            -- If it is BoE and isn't soulbound, it must still be BOE
+    else
+        if item.BindType == 2 then
             item.IsBindOnEquip = true
-        end
-    elseif item.BindType == 3 then
-        -- Bind on Use, may be soulbound
-        if self:IsItemSoulboundInTooltip(tooltip, bag, slot) then
-            item.IsSoulbound = true
-        else
+        elseif item.BindType == 3 then
             item.IsBindOnUse = true
         end
-    else
-        -- None, leave nil
     end
 
     -- Determine if this item is an uncollected transmog appearance
@@ -209,7 +218,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
     item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
 
-    Addon:AddItemToCache(item)
+    Addon:AddItemToCache(item, guid)
     return item, count
 end
 

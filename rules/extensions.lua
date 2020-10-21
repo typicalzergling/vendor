@@ -445,9 +445,7 @@ function Extensions:Register(extension)
     end
 
     self.OnChanged("ADDED", ext);
-
-    -- Suppressing to reduce spam.
-    --Addon:Print("Completed registration of %s (%s) with %d function(s), %d rule(s) and %d OnRuleUpdate functions.", ext.Source, ext.Name, ext.Functions, ext.Rules, ext.OnRuleUpdate);
+    Addon:Debug("Completed registration of %s (%s) with %d function(s), %d rule(s) and %d OnRuleUpdate functions.", ext.Source, ext.Name, ext.Functions, ext.Rules, ext.OnRuleUpdate);
     return true;
 end
 

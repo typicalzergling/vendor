@@ -45,6 +45,9 @@ function Addon:OnInitialize()
     -- Tooltip hooks
     self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
     self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
+    self:PreHookFunction(GameTooltip, "SetBagItem", "OnGameTooltipSetBagItem")
+    self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
+    self:PreHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
 
     -- Print version and load confirmation to console.
     -- Suppressing for now to reduce spam.
