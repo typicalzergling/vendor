@@ -38,49 +38,6 @@ local function importTooltipTextToTable(tooltip, text, bag, slot)
 end
 
 
-
-local function importTooltipColorToTable(tooltip, side, bag, slot)
-    -- We assume the tooltip is the GameTooltip
-    local tooltipText = "GameTooltipText"..side
-
-    -- If we don't have the gametooltip, use the scanning tooltip and use the bag item.
-    if not tooltip then
-        tooltip = scanningtip
-        tooltip:ClearLines()
-        tooltipText = "VendorScanningTipText"..side
-        if bag and slot then
-            tooltip:SetBagItem(bag, slot)
-        else
-            error("Invalid arguments to Tooltip Import")
-        end
-    end
-
-    -- Import the tooltip into a table
-    local tooltipTable = {}
-    for i=1, tooltip:NumLines() do
-        if _G[tooltipText..i] and _G[tooltipText..i]:GetText() then
-            local r, g, b = _G[tooltipText..i]:GetTextColor()
-
-            r = math.floor(r * 100 + 0.5) / 100
-            g = math.floor(g * 100 + 0.5) / 100
-            b = math.floor(b * 100 + 0.5) / 100
-
-            if r == 1 and g == 0.13 and b == 0.13 then
-                table.insert(tooltipTable, "red")
-            elseif r == 0 and g == 1 and b == 0 then
-                table.insert(tooltipTable, "green")
-            else
-                table.insert(tooltipTable, "white")
-            end
-
-
-        end
-    end
-    return tooltipTable
-end
-
-
-
 function Addon:ImportTooltipTextLeft(tooltip, bag, slot)
     return importTooltipTextToTable(tooltip, "Left", bag, slot)
 end
@@ -89,28 +46,35 @@ function Addon:ImportTooltipTextRight(tooltip, bag, slot)
     return importTooltipTextToTable(tooltip, "Right", bag, slot)
 end
 
-function Addon:ImportTooltipColorLeft(tooltip, bag, slot)
-    return importTooltipColorToTable(tooltip, "Left", bag, slot)
-end
+function Addon:TooltipHasRedText(bag, slot)
 
-function Addon:ImportTooltipColorRight(tooltip, bag, slot)
-    return importTooltipColorToTable(tooltip, "Right", bag, slot)
-end
-
-function Addon:TooltipHasRedText(tooltip, bag, slot)
-    local left = importTooltipColorToTable(tooltip, "Left", bag, slot)
-    local right = importTooltipColorToTable(tooltip, "Right", bag, slot)
-
-    local function checkColor(colorTable)
-        for _, color in ipairs(colorTable) do
-            if color == "red" then
-                return true
-            end
-        end
-        return false
+    -- Never use Gametoolip as other addons can taint it.
+    -- Eg "Better transmog and wardrobe" addon adding red text that you havn't collected the full set of an appearance.
+    tooltipName = "VendorScanningTip"
+    tooltip = scanningtip
+    tooltip:ClearLines()
+    if bag and slot then
+        tooltip:SetBagItem(bag, slot)
+    else
+        error("Invalid arguments to TooltipHasRedText")
     end
 
-    return checkColor(left) or checkColor(right)
+    for _, side in ipairs({"Left", "Right"}) do
+        local tooltipText = tooltipName.."Text"..side
+        for i=1, tooltip:NumLines() do
+            if _G[tooltipText..i] and _G[tooltipText..i]:GetText() then -- Make sure line actually has text
+                local r, g, b = _G[tooltipText..i]:GetTextColor()
+                r = math.floor(r * 100 + 0.5) / 100
+                g = math.floor(g * 100 + 0.5) / 100
+                b = math.floor(b * 100 + 0.5) / 100
+                if r == 1 and g == 0.13 and b == 0.13 then
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
 end
 
 
@@ -191,3 +155,5 @@ function Addon:IsItemCraftingReagentInTooltip(tooltip, bag, slot)
     -- Look, I don't know why it's called that, but it is. Blizzard has...reasons.
     return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_CRAFTINGREAGENT"])
 end
+
+
