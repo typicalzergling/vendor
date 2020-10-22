@@ -139,7 +139,6 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsToy = false
     item.IsAlreadyKnown = false
     item.IsAzeriteItem = false
-    item.IsCraftingReagent = false
     item.IsUnsellable = false
 
     -- Get the effective item level.
@@ -161,6 +160,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
+    item.IsCraftingReagent = getItemInfo[17]
 
     -- Check for usability
     item.IsUsable = IsUsableItem(item.Id)
@@ -186,14 +186,7 @@ function Addon:GetItemProperties(arg1, arg2)
             item.IsUnknownAppearance = true
         end
     end
-
-    -- Determine if crafting reagent
-    -- These are typically itemtype 7, which is 'tradeskill' but sometimes item type 15, which is miscellaneous.
-    if item.TypeId == 7 or item.TypeId == 15 then
-        if self:IsItemCraftingReagentInTooltip(tooltip, bag, slot) then
-            item.IsCraftingReagent = true
-        end
-    end
+    
 
     -- Pet collection items appear to be type 15, subtype 2 (Miscellaneous - Companion Pets)
 
