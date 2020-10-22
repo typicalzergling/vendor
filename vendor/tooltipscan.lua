@@ -37,12 +37,44 @@ local function importTooltipTextToTable(tooltip, text, bag, slot)
     return tooltipTable
 end
 
+
 function Addon:ImportTooltipTextLeft(tooltip, bag, slot)
     return importTooltipTextToTable(tooltip, "Left", bag, slot)
 end
 
 function Addon:ImportTooltipTextRight(tooltip, bag, slot)
     return importTooltipTextToTable(tooltip, "Right", bag, slot)
+end
+
+function Addon:TooltipHasRedText(bag, slot)
+
+    -- Never use Gametoolip as other addons can taint it.
+    -- Eg "Better transmog and wardrobe" addon adding red text that you havn't collected the full set of an appearance.
+    tooltipName = "VendorScanningTip"
+    tooltip = scanningtip
+    tooltip:ClearLines()
+    if bag and slot then
+        tooltip:SetBagItem(bag, slot)
+    else
+        error("Invalid arguments to TooltipHasRedText")
+    end
+
+    for _, side in ipairs({"Left", "Right"}) do
+        local tooltipText = tooltipName.."Text"..side
+        for i=1, tooltip:NumLines() do
+            if _G[tooltipText..i] and _G[tooltipText..i]:GetText() then -- Make sure line actually has text
+                local r, g, b = _G[tooltipText..i]:GetTextColor()
+                r = math.floor(r * 100 + 0.5) / 100
+                g = math.floor(g * 100 + 0.5) / 100
+                b = math.floor(b * 100 + 0.5) / 100
+                if r == 1 and g == 0.13 and b == 0.13 then
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
 end
 
 
