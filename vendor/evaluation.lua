@@ -74,9 +74,13 @@ function Addon:GetCachedResult(guid)
     end
 end
 
-function Addon:ClearResultCache()
-    resultCache = {}
-    self:Debug("Result Cache cleared.")
+function Addon:ClearResultCache(arg)
+    if not arg then
+        resultCache = {}
+        self:Debug("Result Cache cleared.")
+    else
+        resultCache[arg] = nil
+    end
     self:ClearTooltipResultCache()
 end
 
