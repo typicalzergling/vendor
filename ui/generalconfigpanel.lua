@@ -49,7 +49,7 @@ function GeneralPanel.Apply(self)
     Config:SetValue(SETTING_AUTOSELL, self.AutoSell.State:GetChecked())
     Config:SetValue(SETTING_TOOLTIP, self.Tooltip.State:GetChecked())
     Config:SetValue(SETTING_TOOLTIP_RULE, self.Tooltip.State:GetChecked() and self.TooltipRule.State:GetChecked())
-    Config:SetValue(SETTING_ENABLE_BUYBACK, self.AutoSell.State:GetChecked() and self.enableBuyback.State:GetChecked());
+    Config:SetValue(SETTING_ENABLE_BUYBACK, self.enableBuyback.State:GetChecked());
 end
 
 --*****************************************************************************
