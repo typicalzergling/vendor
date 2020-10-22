@@ -119,6 +119,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsAzeriteItem = false
     item.IsCraftingReagent = false
     item.IsUnsellable = false
+    item.TooltipHasRedText = false
 
     -- Get the effective item level.
     item.Level = GetDetailedItemLevelInfo(item.Link)
@@ -208,10 +209,11 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Import the tooltip text as item properties for custom rules.
     item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
     item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
-    item.TooltipLeftColor = self:ImportTooltipColorLeft(tooltip, bag, slot)
-    item.TooltipRightColor = self:ImportTooltipColorRight(tooltip, bag, slot)
 
-    item.TooltipHasRedText = self:TooltipHasRedText(tooltip, bag, slot)
+    -- We can't use GameTooltip as other addons could easily taint the results by adding red text before we get to scan it.
+    if not tooltip then
+        item.TooltipHasRedText = self:TooltipHasRedText(bag, slot)
+    end
 
     Addon:AddItemToCache(item)
     return item, count
