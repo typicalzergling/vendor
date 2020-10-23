@@ -15,6 +15,7 @@ Addon.c_RuleType_Sell = "Sell"
 Addon.c_RuleType_Keep = "Keep"
 Addon.c_RuleType_Custom = "Custom"
 Addon.c_RuleType_Scrap = "Scrap"
+Addon.c_RuleType_Delete = "Delete";
 Addon.c_BuybackLimit = 12
 Addon.c_DeleteThottle = 3
 Addon.c_ItemSellerThreadName = "ItemSeller"
@@ -33,3 +34,10 @@ Addon.c_Config_ThrottleTime = "throttle_time"
 Addon.c_Config_AutoRepair = "autorepair"
 Addon.c_Config_GuildRepair = "guildrepair"
 
+
+-- Rule Types
+Addon.RuleType = {
+	SELL = "Sell",
+	KEEP = "Keep",
+	DELETE  = "Delete",
+};

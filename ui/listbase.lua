@@ -168,7 +168,7 @@ function ListBase:EnsureItems(model)
         ids[element] = true;
         local item = self:FindItem(element);
         if (not item) then
-            item = createItemCallback(self, element);
+            item =createItemCallback(self, element);
             rawset(item, MODEL_KEY, element);
             item = Mixin(item, ItemBase);
             table.insert(self.items, item);
@@ -197,10 +197,8 @@ function ListBase:EnsureItems(model)
 
     -- After we've created the view give our subclass a chance do something
     -- with the items.
-    local onViewBuilt = self.OnViewBuilt;
-    if (onViewBuilt and type(onViewBuilt) == "function") then
-        onViewBuilt(self);
-    end
+    local onViewBuilt = self.OnViewBuilt or __noop;
+    xpcall(onViewBuilt, self);
 
     -- Sort the items if a sort function was provided.
     self:SortItems();
@@ -228,7 +226,7 @@ function ListBase:AdjustScrollbar()
 
         scrollbar:ClearAllPoints();
         scrollbar:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -buttonHeight);
-        scrollbar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, buttonHeight);
+        scrollbar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, buttonHeight - 1);
         scrollbar.ScrollUpButton:ClearAllPoints();
         scrollbar.ScrollUpButton:SetPoint("BOTTOM", scrollbar, "TOP", 0, 0);
         scrollbar.ScrollDownButton:ClearAllPoints();

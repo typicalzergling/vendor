@@ -106,8 +106,8 @@
 					<SimpleHTML parentKey="content" font="GameFontNormalSmall">
 						<Size x="200" y="10"/>
 						<FontString inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" spacing="4"/>
-						<FontStringHeader1 inherits="GameFontHighlight" spacing="8" justifyH="CENTER" justifyV="TOP"/>
-						<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
+						<FontStringHeader1 inherits="GameFontHighlightLarge" spacing="8" justifyH="CENTER" justifyV="TOP"/>
+						<FontStringHeader2 inherits="GameFontHighlight" spacing="4" justifyH="LEFT" justifyV="TOP"/>
 						<FontStringHeader3 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
 					</SimpleHTML>
 				</ScrollChild>

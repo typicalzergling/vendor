@@ -38,10 +38,10 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
     local result, message = rulesEngine:AddRule(1, { Id = ruleId, Name = ruleId, Script = ruleScript }, parameters);
     if (result) then
         withEachBagAndItem(
-            function(item)
+            function(item, bag, slot)
                 local result = rulesEngine:Evaluate(item);
                 if (result) then
-                    table.insert(results, item.Link);
+                    table.insert(results, ItemLocation:CreateFromBagAndSlot(bag, slot));
                 end
                 return true;
            end, 0, NUM_BAG_SLOTS);

@@ -10,6 +10,10 @@ local L = Addon:GetLocale()
 local Package = select(2, ...);
 local ItemListItem = {};
 
+function ItemListItem:OnLoad()
+	print("---> item list item load");
+end
+
 --[[============================================================================
 	| ItemListItem:SetItem
 	|   Create the frames which represent the rule parameters.
@@ -18,33 +22,38 @@ function ItemListItem:populate()
 	local name = self:GetItemName();
 	local color = self:GetItemQualityColor();
 	if (not color) then
-		color = ITEM_QUALITY_COLORS[0];
+		color = GRAY_FONT_COLOR;
 	end
 
-	local text = color.hex .. name .. FONT_COLOR_CODE_CLOSE;
-	self.text:SetText(text);
-	self.background:SetColorTexture(color.r, color.g, color.b, 0.125);
+	self.Text:SetText(name);
+	self.Text:SetTextColor(color.r, color.g, color.b);
 end
 
 --[[============================================================================
 	| ItemListItem:SetItem
 	|   Create the frames which represent the rule parameters.
 	==========================================================================]]	
-function ItemListItem:SetItem(itemId)
-	self.itemId = itemId;
-	self.remove:Hide();
-	self:SetItemID(itemId);
+function ItemListItem:SetItem(item)
+	if (type(item) == "number") then
+		self:SetItemID(itemId);
+	elseif (type(item) == "string") then			
+		self:SetItemLink(item);
+	else
+		self:SetItemLocation(item);
+	end
 
 	-- Test for invalid item
 	if (self:IsItemEmpty()) then
-		self.text:SetText(L["ITEMLIST_INVALID_ITEM"])
+		self.Text:SetText(L["ITEMLIST_INVALID_ITEM"])
+		self.Text:SetTextColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b);
 		return
 	end
 
+	-- If the data isn't cached then we want to note that and setup a callback
 	if (not self:IsItemDataCached()) then 
 		local color = ITEM_QUALITY_COLORS[0];
-		self.text:SetText(color.hex .. L["ITEMLIST_LOADING"] .. FONT_COLOR_CODE_CLOSE);
-		self.background:SetColorTexture(color.r, color.g, color.b, 0.125);
+		self.Text:SetText(L.ITEMLIST_LOADING);
+		self.Text:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
 		self:ContinueOnItemLoad(function() self:populate() end);
 	else
 		self:populate();
@@ -58,27 +67,34 @@ end
 	==========================================================================]]
 function ItemListItem:OnMouseEnter()
 	if (not CursorHasItem()) then
-		local cached = self:IsItemDataCached();
-		local listType = self:GetParent().listType;
-		local itemLink = self:GetItemLink();
-
-		self.background:Show();
-		if (cached) then
-			self.remove:Show();
-		end
+		self.Hover:Show();
 
 		GameTooltip:SetOwner(self, "ANCHOR_NONE");
 		GameTooltip:ClearAllPoints();
 		GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -4);
-		if (cached) then
-			GameTooltip:SetHyperlink(self:GetItemLink());
-		else
-			if (self:IsItemEmpty()) then
-				GameTooltip:SetText(L["ITEMLIST_INVALID_ITEM_TOOLTIP"]);
+
+		if (not self:IsItemEmpty()) then
+			if (self:IsItemDataCached()) then
+				if (self:HasItemLocation()) then
+					local location = self:GetItemLocation();
+					if (location:IsBagAndSlot()) then
+						local bag, slot = location:GetBagAndSlot();
+						GameTooltip:SetBagItem(bag, slot);
+					elseif (locaion:IsEquipmentSlot()) then
+						GameTooltip:SetInventoryItem("player", location:GetEquipmentSlot());
+					else
+						GameTooltip:SetHyperlink(self:GetItemLink());
+					end
+				else
+					GameTooltip:SetHyperlink(self:GetItemLink());
+				end
 			else
 				GameTooltip:SetText(L["ITEMLIST_LOADING_TOOLTIP"]);
 			end
+		else
+			GameTooltip:SetText(L["ITEMLIST_INVALID_ITEM_TOOLTIP"]);
 		end
+
 		GameTooltip:Show();
 	end
 end
@@ -88,9 +104,12 @@ end
 	|   Called when the user mouses off the item
 	==========================================================================]]
 function ItemListItem:OnMouseLeave()
-	self.background:Hide();
-	self.remove:Hide();
-	self:RegisterForClicks();
+	--self.background:Hide();
+	--self.remove:Hide();
+	--self:RegisterForClicks();
+	if (self.Hover:IsShown()) then
+		self.Hover:Hide();
+	end
 
 	if (GameTooltip:IsOwned(self)) then
 		GameTooltip:Hide();

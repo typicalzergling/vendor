@@ -58,10 +58,9 @@ end
 local function invokePanelMethod(method, panel, ...)
     local fn = panel[method];
     if (type(fn) == "function") then
-        local result, msg = pcall(fn, panel, ...);
+        local result, msg = xpcall(fn, CallErrorHandler, panel, ...);
         if (not result) then
             Addon:DebugChannel("config", "Failed to invoke '%s' on '%s': %s%s|r", method, panel.PanelType, RED_FONT_COLOR_CODE, msg);
-            print(string.format("Failed to invoke '%s' on '%s': %s%s|r", method, panel.PanelType, RED_FONT_COLOR_CODE, msg));
             return false;
         else
             Addon:DebugChannel("config", "Succesfully invoked '%s' on '%s'", method, panel.PanelType);

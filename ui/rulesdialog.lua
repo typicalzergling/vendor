@@ -11,7 +11,6 @@ local RulesDialog = {};
 function RulesDialog.OnLoad(self)
     Mixin(self, Package.TabbedFrame, RulesDialog);
     self:SetClampedToScreen(true)
-    self.header:Setup(L["CONFIG_DIALOG_CAPTION"]);
 
     -- Setup the panels
     self:SetupTab(KEEP_TABID, "CONFIG_DIALOG_KEEPRULES_TEXT")
@@ -22,6 +21,11 @@ function RulesDialog.OnLoad(self)
 
     -- Initialize the tabs
     self:InitTabs(SELL_TABID);
+
+    table.insert(UISpecialFrames, self:GetName());
+    self:RegisterForDrag("LeftButton");
+
+    table.forEach(self.Tabs, PanelTemplates_TabResize, 0);
 end
 
 function RulesDialog:SetupTab(tabId, helpText)
@@ -51,13 +55,6 @@ function RulesDialog:OnOk()
     self.KeepPanel.list:UpdateConfig();
 end
 
-function RulesDialog:Toggle()
-    if (self:IsShown()) then
-        self:Hide()
-    else
-        self:Show()
-    end
-end
-
 -- Export to Public
 Addon.Public.RulesDialog = RulesDialog
+Addon.RulesDialog = RulesDialog;

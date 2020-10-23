@@ -1,57 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 	<Script file="tabbedframe.lua"/>
-	<Script file="radiobutton.lua"/>
 
-    <Frame name="Vendor_Dialog_Template" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true">
-		<Frames>
-            <Frame parentKey="border" inherits="DialogBorderDarkTemplate"/>
-            <Frame parentKey="header" inherits="DialogHeaderTemplate">
-				<KeyValues>
-					<KeyValue key="headerTextPadding" value="100" type="number"/>
-					<KeyValue key="textString" value="Vendor" type="string"/>
-				</KeyValues>
-			</Frame>
-		</Frames>
-    </Frame>
+
 
     <Frame name="Vendor_Dialog_Template2" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" inherits="PortraitFrameTemplate">
     </Frame>
 
-	<Frame name="Vendor_RadioButton" parentArray="radioButtons" virtual="true">
-		<Layers>
-			<Layer level="ARTWORK">
-				<FontString parentKey="label" inherits="GameFontHighlight" justifyH="LEFT" justifyV="CENTER">
-					<Size x="1" y="24"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="28" y="2"/>
-						<Anchor point="TOPRIGHT" x="0" y="2"/>
-					</Anchors>
-				</FontString>
-				<FontString parentKey="text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP">
-					<Size x="256" y="32"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.label" x="0" y="-2"/>
-						<Anchor point="BOTTOMRIGHT"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<Frames>
-		 	<CheckButton parentKey="check">
-				<Size x="24" y="24"/>
-				<Anchors>
-					<Anchor point="TOPLEFT"/>
-				</Anchors>
-				<NormalTexture file="Interface\Buttons\UI-RadioButton">
-					<TexCoords left="0" right="0.25" top="0" bottom="1"/>
-				</NormalTexture>
-				<HighlightTexture file="Interface\Buttons\UI-RadioButton" alphaMode="ADD">
-					<TexCoords left="0.5" right="0.75" top="0" bottom="1"/>
-				</HighlightTexture>
-				<CheckedTexture file="Interface\Buttons\UI-RadioButton">
-					<TexCoords left="0.25" right="0.5" top="0" bottom="1"/>
-				</CheckedTexture>
-			</CheckButton>
-		</Frames>
-	</Frame>
 </Ui>

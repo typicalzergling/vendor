@@ -1,491 +1,180 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="editruledialog.lua"/>
 
-   	<EditBox name="Vendor.EditRules.Edit.Template" autoFocus="false" inherits="InsetFrameTemplate3" virtual="true">
+    <!--
+		Edit Rules dialog, Help panels are in editpanels.xml
+	-->
+    <Frame name="VendorEditRuleDialog" inherits="Vendor_Dialog_Template" parent="UIParent" hidden="true">
 		<KeyValues>
-			<KeyValue key="normalColor" value="HIGHLIGHT_FONT_COLOR" type="global"/>
-			<KeyValue key="disabledColor" value="DISABLED_FONT_COLOR" type="global"/>
+			<KeyValue key="Implementation" value="EditRuleDialog" type="string"/>
 		</KeyValues>
-   		<Layers>
-   			<Layer level="BACKGROUND">
-				<FontString parentKey="helpText" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
-					<Color r="0.6" g="0.6" b="0.6" a="0.6"/>
-					<Anchors>
-						<Anchor point="LEFT" x="12" y="0"/>
-						<Anchor point="RIGHT" x="-12" y="0"/>
-					</Anchors>
-				</FontString>
-   			</Layer>
-   			<Layer level="ARTWORK">
-				<FontString  parentKey="label" inherits="GameFontHighlight" justifyH="LEFT">
-					<Size x="1" y="14"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="2"/>
-						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="2"/>
-					</Anchors>
-				</FontString>
-   			</Layer>
-   		</Layers>
-		<Scripts>
-			<OnEscapePressed function="EditBox_ClearFocus"/>
-			<OnEnable>Vendor.EditRuleDialog.OnEditEnable(self)</OnEnable>
-			<OnDisable>Vendor.EditRuleDialog.OnEditDisable(self)</OnDisable>
-			<OnLoad>Vendor.EditRuleDialog.OnEditLoad(self);</OnLoad>
-			<OnEditFocusGained>EditBox_ClearHighlight(self);Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
-			<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
-            <OnTabPressed>
-                local handler = self:GetParent();
-                if (handler.OnTabPressed) then
-                    handler:OnTabPressed();
-                end
-            </OnTabPressed>
-		</Scripts>
-		<FontString inherits="ChatFontNormal"/>
-		<TextInsets>
-			<AbsInset left="8" right="8" top="2" bottom="2"/>
-		</TextInsets>
-   	</EditBox>
-
-   	<ScrollFrame name="Vendor.EditRules.ScrollingEdit.Template" autoFocus="false" virtual="true" inherits="InsetFrameTemplate3,UIPanelScrollFrameTemplate">
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture parentKey="scrollbarBack">
-					<Color r="0" g="0" b="0" a="0.50"/>
-				</Texture>
-				<FontString parentKey="helpText" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP">
-					<Color r="0.6" g="0.6" b="0.6" a="0.6"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="12" y="-6"/>
-						<Anchor point="BOTTOMRIGHT" x="-12" y="6"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-   			<Layer level="ARTWORK">
-				<FontString  parentKey="label" inherits="GameFontHighlight" justifyH="LEFT">
-					<Size x="1" y="14"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="2"/>
-						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="2"/>
-					</Anchors>
-				</FontString>
-   			</Layer>
-		</Layers>
-		<ScrollChild>
-			<EditBox parentKey="content" multiLine="true" autoFocus="false">
-				<KeyValues>
-					<KeyValue key="normalColor" value="HIGHLIGHT_FONT_COLOR" type="global"/>
-					<KeyValue key="disabledColor" value="DISABLED_FONT_COLOR" type="global"/>
-				</KeyValues>
-				<Size x="436" y="1"/>
-				<Anchors>
-					<Anchor point="TOPLEFT"/>
-				</Anchors>
-				<Scripts>
-					<OnUpdate>ScrollingEdit_OnUpdate(self, elapsed, self:GetParent())</OnUpdate>
-					<OnTextChanged>ScrollingEdit_OnTextChanged(self, self:GetParent())</OnTextChanged>
-					<OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
-					<OnEscapePressed function="EditBox_ClearFocus"/>
-					<OnEnable>Vendor.EditRuleDialog.OnEditEnable(self)</OnEnable>
-					<OnDisable>Vendor.EditRuleDialog.OnEditDisable(self)</OnDisable>
-					<OnLoad>Vendor.EditRuleDialog.OnEditLoad(self)</OnLoad>
-					<OnEditFocusGained>Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
-					<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
-                    <OnTabPressed>
-                        local handler = self:GetParent():GetParent();
-                        if (handler.OnTabPressed) then
-                            handler:OnTabPressed();
-                        end
-                    </OnTabPressed>
-				</Scripts>
-				<FontString inherits="ChatFontNormal"/>
-				<TextInsets>
-					<AbsInset left="8" right="8" top="8" bottom="8"/>
-				</TextInsets>
-			</EditBox>
-		</ScrollChild>
-		<Scripts>
-			<OnMouseDown>self.content:SetFocus()</OnMouseDown>
-			<OnLoad>ScrollFrame_OnLoad(self);Vendor.EditRuleDialog.OnScriptTextLoad(self:GetParent(), self);</OnLoad>
-		</Scripts>
-   	</ScrollFrame>
-
-	<Frame name="Vendor.EditRule.SimpleHtml" inherits="InsetFrameTemplate3" virtual="true">
-		<Frames>
-			<ScrollFrame name="$parent.ScrollFrame" parentKey="scrollFrame"  inherits="UIPanelScrollFrameTemplate">
-				<KeyValues>
-					<KeyValue key="scrollBarOffsetY" value="6"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" x="12" y="-6"/>
-					<Anchor point="BOTTOMRIGHT" x="0" y="6"/>
-				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture parentKey="scrollbarBack" name="$parent.scrollBarBack">
-							<Color r="0" g="0" b="0" a="0.50"/>
-						</Texture>
-					</Layer>
-				</Layers>
-				<ScrollChild>
-					<SimpleHTML inherits="InlineHyperlinkFrameTemplate" parentKey="content">
-						<Size x="354" y="100"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" x="8" y="-8"/>J
-						</Anchors>
-						<FontString inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" spacing="4"/>
-						<FontStringHeader1 inherits="GameFontHighlight" spacing="8" justifyH="LEFT" justifyV="TOP"/>
-						<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
-						<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
-					</SimpleHTML>
-				</ScrollChild>
-				<Scripts>
-					<OnLoad>Vendor.ScrollFrame.OnLoad(self);</OnLoad>
-				</Scripts>
-			</ScrollFrame>
-		</Frames>
-	</Frame>
-
-	<Frame name="Vendor_BlueInset_Template" virtual="true" inherits="InsetFrameTemplate" useParentLevel="true">
-		<Layers>
-			<Layer level="BORDER" textureSubLevel="-1">
-				<Texture parentKey="BlueBg" file="Interface\Common\bluemenu-main">
-					<Anchors> <!-- x="7" y="-23"  -->
-						<Anchor point="TOPLEFT" x="4" y="-4"/>
-						<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
-					</Anchors>
-					<TexCoords left="0.00390625" right="0.82421875" top="0.18554688" bottom="0.58984375"/>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
-				<Texture parentKey="TLCorner" file="Interface\Common\bluemenu-main">
-					<Size x="64" y="64"/>
-					<Anchors>
-						<Anchor point="TOPLEFT"  relativeKey="$parent.BlueBg"/>
-					</Anchors>
-					<TexCoords left="0.00390625" right="0.25390625" top="0.00097656" bottom="0.06347656"/>
-				</Texture>
-				<Texture parentKey="TRCorner" file="Interface\Common\bluemenu-main">
-					<Size x="64" y="64"/>
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativeKey="$parent.BlueBg"/>
-					</Anchors>
-					<TexCoords left="0.51953125" right="0.76953125" top="0.00097656" bottom="0.06347656"/>
-				</Texture>
-				<Texture parentKey="BRCorner" file="Interface\Common\bluemenu-main">
-					<Size x="64" y="64"/>
-					<Anchors>
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BlueBg"/>
-					</Anchors>
-					<TexCoords left="0.00390625" right="0.25390625" top="0.06542969" bottom="0.12792969"/>
-				</Texture>
-				<Texture parentKey="BLCorner" file="Interface\Common\bluemenu-main">
-					<Size x="64" y="64"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeKey="$parent.BlueBg"/>
-					</Anchors>
-					<TexCoords left="0.26171875" right="0.51171875" top="0.00097656" bottom="0.06347656"/>
-				</Texture>
-				<Texture file="Interface\Common\bluemenu-vert" vertTile="true">
-					<Size x="43" y="270"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.TLCorner" relativePoint="BOTTOMLEFT"/>
-						<Anchor point="BOTTOMLEFT" relativeKey="$parent.BLCorner" relativePoint="TOPLEFT" />
-					</Anchors>
-					<TexCoords left="0.06250000" right="0.39843750" top="0.00000000" bottom="1.00000000"/>
-				</Texture>
-				<Texture file="Interface\Common\bluemenu-vert" vertTile="true">
-					<Size x="43" y="270"/>
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativeKey="$parent.TRCorner" relativePoint="BOTTOMRIGHT"/>
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BRCorner" relativePoint="TOPRIGHT" />
-					</Anchors>
-					<TexCoords left="0.41406250" right="0.75000000" top="0.00000000" bottom="1.00000000"/>
-				</Texture>
-				<Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
-					<Size x="80" y="43"/>
-					<Anchors>
-						<Anchor point="BOTTOMLEFT" relativeKey="$parent.BLCorner" relativePoint="BOTTOMRIGHT" x="0" y="0" />
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BRCorner" relativePoint="BOTTOMLEFT" x="0" y="0" />
-					</Anchors>
-					<TexCoords left="0.00000000" right="1.00000000" top="0.35937500" bottom="0.69531250"/>
-				</Texture>
-				<Texture file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
-					<Size x="1" y="43"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.TLCorner" relativePoint="TOPRIGHT" x="0" y="0" />
-						<Anchor point="TOPRIGHT" relativeKey="$parent.TRCorner" relativePoint="TOPLEFT" x="0" y="0" />
-					</Anchors>
-					<TexCoords left="0.00000000" right="1.00000000" top="0.00781250" bottom="0.34375000"/>
-				</Texture>
-			</Layer>
-		</Layers>
-	</Frame>
-
-	<Frame name="Vendor_Inset_Template" useParentLevel="true" inherits="InsetFrameTemplate" virtual="true">
-		<Layers>
-			<Layer level="BORDER">
-				<Texture name="$parentBackground" file="Interface\FrameGeneral\UI-Background-Marble">
-					<Anchors>
-						<Anchor ponit="TOPLEFT" x="4" y="-4"/>
-						<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
-					</Anchors>
-				</Texture>
-			</Layer>
-		</Layers>
-	</Frame>
-
-	<Button name="Vendor_InfoButton_Template" virtual="true">
-	<!-- Interface\BUTTONS\BlueGrad64_faded -->
-		<Size x="116" y="40"/>
-		<Layers>
-			<Layer level="ARTWORK">
-				<Texture parentKey="icon" alpha="0.5">
-					<Size x="64" y="64"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="-12" y="12"/>
-					</Anchors>
-				</Texture>
-				<FontString inherits="GameFontNormal" parentKey="text" text="Help" justifyH="LEFT" justifyV="CENTER">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="40" y="-4"/>
-						<Anchor point="BOTTOMRIGHT" x="-8" y="4"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<HighlightTexture file="Interface\PVPFrame\PvPMegaQueue" alphaMode="ADD">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="0" y="-2"/>
-				<Anchor point="BOTTOMRIGHT" x="0" y="2"/>
-			</Anchors>
-			<TexCoords left="0.00195313" right="0.63867188" top="0.70703125" bottom="0.76757813"/>
-		</HighlightTexture>
-		<Scripts>
-			<OnLoad>
-				if (self.textureFile) then
-					self.icon:SetTexture(self.textureFile);
-				end
-			</OnLoad>
-			<OnClick>self:GetParent():SetInfoContent(self:GetID());</OnClick>
-		</Scripts>
-	</Button>
-
-	<Frame name="Vendor_Rule_Status_Template" virtual="true">
-		<Layers>
-			<Layer level="ARTWORK">
-				<Texture parentKey="icon">
-					<Size x="48" y="48"/>
-					<Anchors>
-						<Anchor point="TOPLEFT"/>
-					</Anchors>
-				</Texture>
-				<FontString inherits="GameFontNormalLarge" parentKey="title" justifyH="LEFT" justifyV="TOP">
-					<Size x="1" y="18"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="8" y="-4"/>
-						<Anchor point="TOPRIGHT"/>
-					</Anchors>
-				</FontString>
-				<FontString inherits="GameFontNormalSmall" parentKey="text" justifyH="LEFT" justifyV="TOP" wordwrap="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.title" x="0" y="-2"/>
-						<Anchor point="BOTTOMRIGHT"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<Scripts>
-			<OnLoad>
-				if (self.textureFile) then
-					self.icon:SetTexture(self.textureFile);
-				end
-				if (self.textColor) then
-					self.text:SetTextColor(self.textColor.r, self.textColor.g, self.textColor.b);
-					self.title:SetTextColor(self.textColor.r, self.textColor.g, self.textColor.b);
-				end
-			</OnLoad>
-		</Scripts>
-	</Frame>
-
-    <!-- Edit Rules Dialog (includes help flyout -->
-    <Frame name="VendorEditRuleDialog" inherits="Vendor_Dialog_Template2" parent="UIParent" hidden="true">
         <Size x="796" y="600"/>
         <Anchors>
             <Anchor point="CENTER"/>
         </Anchors>
         <Frames>
+            <!-- Buttons -->
+            <Button inherits="UIPanelButtonTemplate" text="CANCEL" parentKey="cancel">
+                <Size x="124" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>self:GetParent():Hide()</OnClick>
+                </Scripts>
+            </Button>
 
-	        <!-- Edit Rule / Define rule ara -->
-			<Frame parentKey="editRule" inherits="Vendor_BlueInset_Template">
+            <Button inherits="UIPanelButtonTemplate" text="SAVE" parentKey="save">
+                <Size x="124" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.cancel" relativePoint="BOTTOMLEFT" x="-8"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick> </OnClick>
+                </Scripts>
+            </Button>
+
+            <Button inherits="UIPanelButtonTemplate" text="DELETE" parentKey="delete">
+                <Size x="124" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.save" relativePoint="BOTTOMLEFT" x="-8"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick> </OnClick>
+                </Scripts>
+            </Button>
+
+            <Frame parentKey="Container" inherits="TooltipBorderBackdropTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-16" y="-48"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.delete" relativePoint="TOPLEFT" x="0" y="4"/>
+                </Anchors>
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
+				</KeyValues>
+            </Frame>
+
+			<!-- 
+				Rule Parameters
+			-->
+
+			<Frame parentKey="Name" inherits="Vendor_Edit">
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="EDITRULE_NAME_HELPTEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITRULE_NAME_LABEL" type="string"/>
+				</KeyValues>
+				<Size x="1" y="30"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="4" y="-24"/>
-					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="396" y="4"/>
+					<Anchor point="LEFT" x="24"/>
+					<Anchor point="TOPRIGHT" relativeKey="$parent.Container" relativePoint="TOPLEFT" x="-12"/>
 				</Anchors>
-
-                <Layers>
-                    <Layer level="ARTWORK">
-                        <FontString parentKey="extension" inherits="GameFontNormalSmall" justifyH="RIGHT">
-                            <Size x="1" y="12"/>
-                            <Anchors>
-                                <Anchor point="TOPLEFT" x="0" y="-16"/>
-                                <Anchor point="TOPRIGHT" x="-32" y="-16"/>
-                            </Anchors>
-                        </FontString>
-                    </Layer>
-                </Layers>
-
-				<Frames>
-					<!-- Rule Properties -->
-					<EditBox parentKey="name" name="$parent.NameEdit" multiLine="false" inherits="Vendor.EditRules.Edit.Template">
-						<Size x="1" y="30"/>
-						<Anchors>
-							<Anchor point="TOPLEFT"  x="22" y="-64"/>
-							<Anchor point="TOPRIGHT" x="-22" y="-64"/>
-						</Anchors>
-					</EditBox>
-					<ScrollFrame name="$parent.Description" parentKey="description"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-						<Size x="1" y="80"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.name" x="0" y="-24"/>
-							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.name" x="0" y="-24"/>
-						</Anchors>
-					</ScrollFrame>
-					<ScrollFrame name="$parent.ScriptText" parentKey="script"  inherits="Vendor.EditRules.ScrollingEdit.Template">
-						<Size x="1" y="100"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.description" x="0" y="-24"/>
-							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.description" x="0" y="-24"/>
-						</Anchors>
-					</ScrollFrame>
-
-					<!-- ruleType radio buttons -->
-					<Frame parentKey="keepRule" inherits="Vendor_RadioButton">
-						<Size x="1" y="48"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.script" y="-6"/>>
-							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.script" y="-6"/>>
-						</Anchors>
-					</Frame>
-					<Frame parentKey="sellRule" inherits="Vendor_RadioButton">
-						<Size x="1" y="48"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.keepRule" x="0" y="-6"/>
-							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.keepRule" x="0" y="-6"/>
-						</Anchors>
-					</Frame>
-
-					<!-- Status Area -->
-					<Frame parentKey="errorStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
-						<Size x="1" y="84"/>
-						<KeyValues>
-							<KeyValue key="textColor" value="RED_FONT_COLOR" type="global"/>
-							<KeyValue key="textureFile" value="Interface\RAIDFRAME\ReadyCheck-NotReady" type="string"/>
-						</KeyValues>
-						<Anchors>
-							<Anchor point="BOTTOMLEFT" x="16"/>
-							<Anchor point="BOTTOMRIGHT" x="-16"/>
-						</Anchors>
-					</Frame>
-					<Frame parentKey="okStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
-						<KeyValues>
-							<KeyValue key="textColor" value="GREEN_FONT_COLOR" type="global"/>
-							<KeyValue key="textureFile" value="Interface\RAIDFRAME\ReadyCheck-Ready" type="string"/>
-						</KeyValues>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.errorStatus"/>
-							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.errorStatus"/>
-						</Anchors>
-					</Frame>
-					<Frame parentKey="unhealthyStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
-						<KeyValues>
-							<KeyValue key="textColor" value="ORANGE_FONT_COLOR" type="global"/>
-							<KeyValue key="textureFile" value="Interface\RAIDFRAME\ReadyCheck-Waiting" type="string"/>
-						</KeyValues>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.errorStatus"/>
-							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.errorStatus"/>
-						</Anchors>
-					</Frame>
-					<Frame parentKey="migrateStatus" inherits="Vendor_Rule_Status_Template" hidden="true">
-						<KeyValues>
-							<KeyValue key="textColor" value="ORANGE_FONT_COLOR" type="global"/>
-							<KeyValue key="textureFile" value="Interface\DialogFrame\UI-Dialog-Icon-AlertNew" type="string"/>
-						</KeyValues>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.errorStatus"/>
-							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.errorStatus"/>
-						</Anchors>
-					</Frame>					
-				</Frames>
-
 			</Frame>
 
-			<Frame parentKey="selectInfo" inherits="InsetFrameTemplate">
-				<Size x="1" y="48"/>
+			<Frame parentKey="Description"  inherits="Vendor_TextArea">
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="EDITRULE_DESCR_HELPTEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITRULE_DESCR_LABEL" type="string"/>
+				</KeyValues>
+				<Size x="1" y="100"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.editRule" relativePoint="TOPRIGHT" x="2" y="0"/>
-					<Anchor point="TOPRIGHT" x="-6"/>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Name" x="0" y="-24"/>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.Name" x="0" y="-24"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="Script"  inherits="Vendor_TextArea">
+				<Size x="1" y="120"/>
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITRULE_SCRIPT_LABEL" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Description" x="0" y="-24"/>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.Description" x="0" y="-24"/>
+				</Anchors>
+			</Frame>
+
+			<!--
+				Rule Type
+			-->
+
+			<Frame parentKey="RuleTypeSell" inherits="Vendor_RadioButton">
+				<KeyValues>
+					<KeyValue key="HelpTextKey" value="EDITRULE_SELLRULE_TEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITRULE_SELLRULE_LABEL" type="string"/>
+					<KeyValue key="Value" value="SELL" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Script" x="0" y="-10"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.Script" x="0" y="-46"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="RuleTypeKeep" inherits="Vendor_RadioButton">
+				<KeyValues>
+					<KeyValue key="HelpTextKey" value="EDITRULE_KEEPRULE_TEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITRULE_KEEPRULE_LABEL" type="string"/>
+					<KeyValue key="Value" value="KEEP" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.RuleTypeSell" x="0" y="-8"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.RuleTypeSell" x="0" y="-46"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="RuleTypeDelete" inherits="Vendor_RadioButton">
+				<KeyValues>
+					<KeyValue key="HelpTextKey" value="EDITRULE_DELETERULE_TEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITRULE_DELETERULE_LABEL" type="string"/>
+					<KeyValue key="Value" value="DELETE" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.RuleTypeKeep" x="0" y="-8"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.RuleTypeKeep" x="0" y="-46"/>
+				</Anchors>
+			</Frame>
+
+			<!-- 
+				Rule Status
+			-->
+
+			<Frame parentKey="RuleStatus" hidden="true"> 
+				<Size x="2" y="64"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="32" y="16"/>
+					<Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.Container" x="-24"/>
 				</Anchors>
 				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture>
-							<Color r="0" b="0" g="0" a="1"/>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Icon">
+							<Size x="48" y="48"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" x="6" y="-6"/>
-								<Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
+								<Anchor point="TOPLEFT"/>
 							</Anchors>
 						</Texture>
+						<FontString inherits="GameFontNormalLarge" parentKey="Title" justifyH="LEFT" justifyV="TOP">
+							<Size x="1" y="18"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.Icon" x="8"/>
+								<Anchor point="TOPRIGHT"/>
+							</Anchors>
+						</FontString>
+						<FontString inherits="GameFontNormalSmall" parentKey="Text" justifyH="LEFT" justifyV="TOP" wordwrap="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Title" x="0" y="-2"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</FontString>
 					</Layer>
 				</Layers>
 			</Frame>
 
-			<Button parentKey="infoButton" inherits="Vendor_InfoButton_Template" id="1" parentArray="infoButtons">
-				<KeyValues>
-					<KeyValue key="textureFile" value="interface\store\category-icon-services" tyoe="string"/>
-				</KeyValues>
+			<!-- Help Panel
+            <Frame inherits="Vendor_EditPanel_Base" parentKey="helpPanel" id="3" parentArray="infoPanels">
 				<Anchors>
-					<Anchor point="CENTER" relativeKey="$parent.selectInfo"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-6" y="6"/>
 				</Anchors>
-			</Button>
-
-			<Button parentKey="matchesButton" inherits="Vendor_InfoButton_Template" id="2" parentArray="infoButtons">
-				<KeyValues>
-					<KeyValue key="textureFile" value="interface\store\category-icon-bag" tyoe="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPRIGHT" relativeKey="$parent.infoButton" relativePoint="TOPLEFT" x="-8" y="0"/>
-				</Anchors>
-			</Button>
-
-			<Button parentKey="helpButton" inherits="Vendor_InfoButton_Template" id="3" parentArray="infoButtons">
-				<KeyValues>
-					<KeyValue key="textureFile" value="interface\store\category-icon-placeholder" tyoe="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.infoButton" relativePoint="TOPRIGHT" x="8" y="0"/>
-				</Anchors>
-			</Button>
-
-			<Frame parentKey="infoArea" inherits="Vendor_Inset_Template">
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT" x="-6" y="26"/>
-					<Anchor point="TOPLEFT" relativeKey="$parent.selectInfo" relativePoint="BOTTOMLEFT" x="0" y="8"/>
-				</Anchors>
-			</Frame>
-
-            <!-- Buttons -->
-            <Button inherits="MagicButtonTemplate" text="SAVE" parentKey="save" motionScriptsWhileDisabled="true">
-                <Size x="132" y="22"/>
-                <Anchors>
-                    <Anchor point="TOP" y="-2" relativeKey="$parent.infoArea" relativePoint="BOTTOM"/>
-                </Anchors>
-                <Scripts>
-                    <OnClick>self:GetParent():HandleOk();self:GetParent():Hide();</OnClick>
-                </Scripts>
-            </Button>
-
-			<!-- Help Panel -->
-            <Frame parentKey="helpPanel"  name="$parent.HelpPane" hidden="true" id="3" parentArray="infoPanels">
             	<Layers>
 		   			<Layer level="ARTWORK">
 						<FontString  parentKey="filterLabel" inherits="GameFontHighlight" justifyV="CENTER" justifyH="LEFT">
@@ -499,6 +188,10 @@
             	</Layers>
             	<Frames>
 					<EditBox parentKey="filter"  multiLine="false" inherits="Vendor.EditRules.Edit.Template" name="$parent.HelpFilter">
+						<KeyValues>
+							<KeyValue key="LabelKey" value="EDITRULE_FILTER_LABEL" type="string"/>
+							<KeyValue key="HelpKey" value="EDITRULE_FILTER_HELPTEXT" type="string"/>
+						</KeyValues>
 						<Size x="1" y="24"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="64" y="-14"/>
@@ -510,106 +203,78 @@
 							<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
 						</Scripts>
 					</EditBox>
-					<Frame name="$parent.HelpReference" parentKey="reference" inherits="InsetFrameTemplate3">
+					<Frame name="$parent.HelpReference" parentKey="reference" inherits="Vendor_HtmlView">
 						<Size x="360" y="24"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.HelpFilter" x="-54" y="-6"/>
 							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-10" y="10"/>
 						</Anchors>
-						<Frames>
-							<ScrollFrame name="$parent.ScrollFrame" parentKey="scrollFrame"  inherits="UIPanelScrollFrameTemplate">
-								<KeyValues>
-									<KeyValue key="scrollBarOffsetY" value="6"/>
-								</KeyValues>
-								<Anchors>
-									<Anchor point="TOPLEFT" x="12" y="-6"/>
-									<Anchor point="BOTTOMRIGHT" x="0" y="6"/>
-								</Anchors>
-								<Layers>
-									<Layer level="BACKGROUND">
-										<Texture parentKey="scrollbarBack" name="$parent.scrollBarBack">
-											<Color r="0" g="0" b="0" a="0.50"/>
-										</Texture>
-									</Layer>
-								</Layers>
-								<ScrollChild>
-									<SimpleHTML inherits="InlineHyperlinkFrameTemplate" parentKey="content">
-										<Size x="354" y="100"/>
-										<Anchors>
-											<Anchor point="TOPLEFT" x="8" y="-8"/>J
-										</Anchors>
-										<FontString inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" spacing="4"/>
-										<FontStringHeader1 inherits="GameFontHighlight" spacing="8" justifyH="LEFT" justifyV="TOP"/>
-										<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
-										<FontStringHeader2 inherits="GameFontHighlightSmall" spacing="4" justifyH="LEFT" justifyV="TOP"/>
-									</SimpleHTML>
-								</ScrollChild>
-								<Scripts>
-									<OnLoad>Vendor.ScrollFrame.OnLoad(self);</OnLoad>
-								</Scripts>
-							</ScrollFrame>
-						</Frames>
 					</Frame>
             	</Frames>
             	<Scripts>
             		<OnLoad>Vendor.EditRuleDialog.OnHelpPaneLoad(self);</OnLoad>
             	</Scripts>
+           	</Frame>-->
+
+           	<Frame inherits="Vendor_EditPanel_Help" parentkey="helpInfoPanel" id="3" parentArray="infoPanels">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-6" y="6"/>
+				</Anchors>
            	</Frame>
 
-           	<Frame parentkey="itemInfoPanel" name="$parent.ItemInfoPane" id="1" hidden="true" enableMouse="true" parentArray="infoPanels">
-           		<Layers>
-           			<Layer level="ARTWORK">
-           				<FontString parentKey="topText" inherits="GameFontHighlightSmall" justifyV="TOP" justifyH="LEFT">
-           					<Size x="1" y="32"/>
-           					<Anchors>
-           						<Anchor point="TOPLEFT" x="10" y="-18"/>
-           						<Anchor point="TOPRIGHT" x="-10" y="-18"/>>
-           					</Anchors>
-           				</FontString>
-           			</Layer>
-           		</Layers>
-           		<Frames>
-					<Frame parentKey="propHtml" inherits="Vendor.EditRule.SimpleHtml">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.topText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
-							<Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
-						</Anchors>
-					</Frame>
-           		</Frames>
-           		<Scripts>
-           			<OnMouseUp>self:GetParent():UpdateItemProperties();</OnMouseUp>
-           			<OnMouseDown>self:GetParent():UpdateItemProperties()</OnMouseDown>
-           		</Scripts>
+           	<Frame inherits="Vendor_EditPanel_ItemInfo" parentkey="itemInfoPanel" id="2" parentArray="infoPanels">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-6" y="6"/>
+				</Anchors>
            	</Frame>
 
-           	<Frame parentkey="matchesPanel" name="$parent.matchesInfoPanel" parentArray="infoPanels" id="2" hidden="true">
-           		<Layers>
-           			<Layer level="ARTWORK">
-           				<FontString parentKey="topText" name="$parentTopText" inherits="GameFontHighlightSmall" justifyV="TOP" justifyH="LEFT">
-           					<Size x="1" y="32"/>
-           					<Anchors>
-           						<Anchor point="TOPLEFT" x="10" y="-18"/>
-           						<Anchor point="TOPRIGHT" x="-10" y="-18"/>>
-           					</Anchors>
-           				</FontString>
-           			</Layer>
-           		</Layers>
-           		<Frames>
-					<Frame parentKey="propMatches" inherits="Vendor.EditRule.SimpleHtml">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentTopText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
-							<Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
-						</Anchors>
-					</Frame>
-           		</Frames>
+           	<Frame inherits="Vendor_EditPanel_Matches" parentkey="matchesPanel" parentArray="infoPanels" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-6" y="6"/>
+				</Anchors>			   
            	</Frame>
 
+			<!-- Tabs-->
+			<Button name="$parentMatchesTab" inherits="OptionsFrameTabButtonTemplate" id="1" parentKey="MatchesTab" parentArray="Tabs">
+                <KeyValues>
+                    <KeyValue key="LocKey" value="EDITRULE_MATCHES_TAB_NAME" type="string"/>
+                </KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.Container" relativePoint="TOPLEFT" x="6" y="-2"/>
+				</Anchors>
+		    	<Scripts>
+	    	    	<OnClick>self:GetParent():SetActiveTab(1)</OnClick>
+	        	</Scripts>
+			</Button>
 
+			<Button name="$parentItemInfoTab" inherits="OptionsFrameTabButtonTemplate" id="2" parentKey="ItemInfoTab" parentArray="Tabs">
+                <KeyValues>
+                    <KeyValue key="LocKey" value="EDITRULE_ITEMINFO_TAB_NAME" type="string"/>
+                </KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.MatchesTab" relativePoint="BOTTOMRIGHT" x="-16"/>
+				</Anchors>
+		    	<Scripts>
+	    	    	<OnClick>self:GetParent():SetActiveTab(2)</OnClick>
+	        	</Scripts>
+			</Button>
+
+			<Button name="$parentHelpTab" inherits="OptionsFrameTabButtonTemplate" id="3" parentKey="HelpTab" parentArray="Tabs">
+                <KeyValues>
+                    <KeyValue key="LocKey" value="EDITRULE_HELP_TAB_NAME" type="string"/>
+                </KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ItemInfoTab" relativePoint="BOTTOMRIGHT" x="-16"/>
+				</Anchors>
+		    	<Scripts>
+	    	    	<OnClick>self:GetParent():SetActiveTab(3)</OnClick>
+	        	</Scripts>
+			</Button>
         </Frames>
         <Scripts>
-            <OnLoad>table.insert(UISpecialFrames, self:GetName());self:RegisterForDrag("LeftButton");Vendor.EditRuleDialog.OnLoad(self)</OnLoad>
-			<OnShow>self:OnShow();</OnShow>
-            <OnHide>self:OnHide();</OnHide>
             <OnDragStart>self:StartMoving()</OnDragStart>
             <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
         </Scripts>

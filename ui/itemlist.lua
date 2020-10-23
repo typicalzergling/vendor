@@ -13,42 +13,37 @@ local ItemList = Addon.ItemList
 local Package = select(2, ...);
 local SELL_LIST = Addon.c_AlwaysSellList;
 local KEEP_LIST = Addon.c_NeverSellList;
-	
-function ItemList:CreateItem(itemId)
-	local item = Mixin(CreateFrame("Button", nil, self, "Vendor_Item_Template"), Package.ItemListItem);
-	item:SetItem(itemId);
-	return item;
+
+-- Returns true if the item is read-only
+function ItemList:IsReadOnly()
+	return (self.isReadOnly == true);
 end
 
-function ItemList:createModel()
-	local list = Addon:GetList(self.listType);
-	local model = {};
-
-	for id, v in pairs(list:GetContents()) do
-		if (v) then
-			table.insert(model, id);
-		end
-	end
-
-	return model;
-end
-	
-function ItemList:OnUpdateItem(item, isFirst, isLast)
-end
-
-function ItemList:OnViewBuilt()
+-- Sets the list of items to display, this is either an array of ItemLocations,
+-- a list of item links, or numeric list of item ids.
+function ItemList:SetContents(itemList)
+	self.contents = itemList or {};
+	self.List:UpdateView(self.contents);
 end
 	
 function ItemList.OnLoad(self)
-	Mixin(self, ItemList, Package.ListBase);
-	self:AdjustScrollbar();
-	Addon.Profile:RegisterForChanges(
-		function()
-			if (self:IsShown()) then
-				self:UpdateView(self:createModel());
-			end
-		end
-	);
+	Mixin(self, CallbackRegistryMixin);
+	self:OnBackdropLoaded();
+	self:GenerateCallbackEvents({"OnDropItem", "OnDeleteItem"});
+
+	Mixin(self.List, Package.ListBase);
+	self.List.emptyText.LocKey = self.EmptyTextKey;
+	self.List:AdjustScrollbar();
+
+	self.List.CreateItem = function(list, item) 
+		local frame = CreateFrame("Button", nil, list, self.itemTemplate);
+		frame:SetItem(item);
+		return frame;
+	end;
+
+	self.List.RefreshItem = function(list, frame, item)
+		frame:SetItem(item);
+	end;
 
 	if (self.emptyText) then
 		if (self.listType == SELL_LIST) then
@@ -59,14 +54,12 @@ function ItemList.OnLoad(self)
 			self.emptyText:SetText("");
 		end
 	end
-end
 
-function ItemList:OnShow()
-	self:UpdateView(self:createModel());
+	self.itemTemplate = "Vendor_ListItem_Item";
+	if (self:IsReadOnly()) then
+		self.itemTemplate = "Vendor_ListItem_Item_ReadOnly";
+	end
 end
-
-function ItemList:RefreshView()
-end	
 
 function ItemList:OnDropItem(button)
 	if ((button == "LeftButton") and CursorHasItem()) then

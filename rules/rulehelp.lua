@@ -4,48 +4,98 @@ local L = Addon:GetLocale()
 Addon.ScriptReference = Addon.ScriptReference or {}
 Addon.ScriptReference.ItemProperties =
 {
-    Name = { Html = L["HELP_NAME_HTML"] },
-    Link = { Html = L["HELP_LINK_HTML"] },
-    Id = { Html = L["HELP_ID_HTML"] },
-    Count = { Html = L["HELP_COUNT_HTML"] },
-    Quality = { Html = L["HELP_QUALITY_HTML"] },
-    Level = { Html = L["HELP_LEVEL_HTML"] },
-    MinLevel = { Html = L["HELP_MINLEVEL_HTML"] },
-    Type = { Html = L["HELP_TYPE_HTML"] },
-    TypeId = { Html = L["HELP_TYPEID_HTML"] },
-    SubType = { Html = L["HELP_SUBTYPE_HTML"] },
-    SubTypeId = { Html = L["HELP_SUBTYPEID_HTML"] },
-    EquipLoc = { Html = L["HELP_EQUIPLOC_HTML"] },
-    BindType = { Html = L["HELP_BINDTYPE_HTML"] },
-    StackSize = { Html = L["HELP_STACKSIZE_HTML"] },
-    UnitValue = { Html = L["HELP_UNITVALUE_HTML"] },
-    NetValue = { Html = L["HELP_NETVALUE_HTML"] },
-    ExpansionPackId  = { Html = L["HELP_EXPANSIONPACKID_HTML"] },
-    IsEquipment = { Html = L["HELP_ISEQUIPMENT_HTML"] },
-    IsSoulbound = { Html = L["HELP_ISSOULBOUND_HTML"] },
-    IsBindOnEquip = { Html = L["HELP_ISBINDONEQUIP_HTML"] },
-    IsBindOnUse = { Html = L["HELP_ISBINDONUSE_HTML"] },
-    IsArtifactPower = { Html = L["HELP_ISARTIFACTPOWER_HTML"] },
-    IsUnknownAppearance = { Html = L["HELP_ISUNKNOWNAPPEARANCE_HTML"] },
-    IsCraftingReagent = { Html = L["HELP_ISCRAFTINGREAGENT_HTML"] },
-    IsToy = { Html = L["HELP_ISTOY_HTML"] },
-    IsAlreadyKnown  = { Html = L["HELP_ISALREADYKNOWN_HTML"] },
-    IsUsable  = { Html = L["HELP_ISUSABLE_HTML"] },
+    Name = L["HELP_NAME_TExT"],
+    Link = L["HELP_LINK_TEXT"],
+    Id = L["HELP_ID_TEXT"],
+    Count = { 
+        Text = L["HELP_COUNT_TEXT"],
+        Notes = L["HELP_COUNT_NOTES"] 
+    },
+    Quality = L["HELP_QUALITY_TEXT"],
+    Level = L["HELP_LEVEL_TEXT"],
+    MinLevel = L["HELP_MINLEVEL_TEXT"],
+    Type = L["HELP_TYPE_TEXT"],
+    TypeId = {
+        Text = L["HELP_TYPEID_TEXT"],
+        Motes = L["HELP_TYPEID_NOTES"]
+    },
+    SubType = L["HELP_SUBTYPE_TEXT"],
+    SubTypeId = { 
+        Text = L["HELP_SUBTYPEID_TEXT"],
+        Mptes = L["HELP_SUBTYPEID_NOTES"]
+    },
+    EquipLoc = L["HELP_EQUIPLOC_HTML"],
+    BindType = { 
+        Text = L["HELP_BINDTYPE_TEXT"],
+        Notes = L["HELP_BINDTYPE_NOTES"] 
+    },
+    StackSize = L["HELP_STACKSIZE_TEXT"],
+    UnitValue = { 
+        Text = L["HELP_UNITVALUE_TEXT"],
+        Notes = L["HELP_UNITVALUE_NOTES"] 
+    },
+    NetValue = L["HELP_NETVALUE_TEXT"],
+    ExpansionPackId = {
+        Text = L["HELP_EXPANSIONPACKID_TEXT"],
+        Notes = L["HELP_EXPANSIONPACKID_NOTES"],
+    },
+    IsEquipment = { 
+        Text = L["HELP_ISEQUIPMENT_TEXT"],
+        Notes = L["HELP_ISEQUIPMENT_NOTES"] 
+    },
+    IsSoulbound = { 
+        Text = L["HELP_ISSOULBOUND_TEXT"],
+        Notes = L["HELP_ISSOULBOUND_NOTES"] 
+    },
+    IsBindOnEquip = { 
+        Text = L["HELP_ISBINDONEQUIP_TEXT"],
+        Notes = L["HELP_ISBINDONEQUIP_NOTES"] 
+    },
+    IsBindOnUse = { 
+        Text = L["HELP_ISBINDONUSE_TEXT"],
+        Notes = L["HELP_ISBINDONUSE_NOTES"] 
+    },
+    IsUnknownAppearance = { 
+        Text = L["HELP_ISUNKNOWNAPPEARANCE_TEXT"],
+        Notes = L["HELP_ISUNKNOWNAPPEARANCE_NOTES"] 
+    },
+    IsCraftingReagent = { 
+        Text = L["HELP_ISCRAFTINGREAGENT_TEXT"],
+        Notes = L["HELP_ISCRAFTINGREAGENT_NOTES"] 
+    },
+    IsToy = L["HELP_ISTOY_TEXT"],
+    IsAlreadyKnown = L["HELP_ISALREADYKNOWN_TEXT"],
+    IsUsable = L["HELP_ISUSABLE_TEXT"],
 }
 
 Addon.ScriptReference.Functions =
 {
-    PlayerLevel = L["HELP_PLAYERLEVEL"],
-    PlayerClass = L["HELP_PLAYERCLASS"],
-    IsAlwaysSellItem = L["HELP_ISALWAYSSELLITEM"],
-    IsNeverSellItem = L["HELP_ISNEVERSELLITEM"],
-    PlayerItemLevel = L["HELP_PLAYERITEMLEVEL"],
-
+    PlayerLevel = {
+        Text = L["HELP_PLAYERLEVEL"],
+        IsFunction = true
+    },
+    PlayerClass ={
+        Text = L["HELP_PLAYERCLASS"],
+        IsFunction = true
+    },    
+    IsAlwaysSellItem = {
+        Text = L["HELP_ISALWAYSSELLITEM"],
+        IsFunction = true,
+    },
+    IsNeverSellItem = {
+        Text = L["HELP_ISNEVERSELLITEM"],
+        IsFunction = true,
+    },    
+    PlayerItemLevel = {
+        IsFunction = true,
+        Text = L["HELP_PLAYERITEMLEVEL"]
+    },
     ItemQuality =
     {
-        Args = L["HELP_ITEMQUALITY_ARGS"],
+        Arguments = L["HELP_ITEMQUALITY_ARGS"],
         Map = Addon.Maps.ItemQuality,
         Text = L["HELP_ITEMQUALITY_TEXT"],
+        IsFunction = true,
     },
 
     IsFromExpansion =
@@ -53,10 +103,12 @@ Addon.ScriptReference.Functions =
         Args = L["HELP_ITEMISFROMEXPANSION_ARGS"],
         Text = L["HELP_ITEMISFROMEXPANSION_TEXT"],
         Map = Addon.Maps.Expansion,
+        IsFunction = true,
     },
 
     ItemType =
     {
+        IsFunction = true,
         Args = L["HELP_ITEMTYPE_ARGS"],
         Text = L["HELP_ITEMTYPE_TEXT"],
         Map = Addon.Maps.Quality,
@@ -64,24 +116,29 @@ Addon.ScriptReference.Functions =
 
     IsInEquipmentSet =
     {
+        IsFunction = true,
         Args = L["HELP_ISINEQUIPMENTSET_ARGS"],
-        Html = L["HELP_ISINEQUIPMENTSET_HTML"],
+        Text = L["HELP_ISINEQUIPMENTSET_TEXT"],
+        Examples = L["HELP_ISINEQUIPMENTSET_EXAMPLES"]
     },
     
     TooltipContains =
     {
         Args = L["HELP_TOOLTIPCONTAINS_ARGS"],
-        Html = L["HELP_TOOLTIPCONTAINS_HTML"],
+        Text = L["HELP_TOOLTIPCONTAINS_TEXT"],
+        IsFunction = true,
+        Examples = L["HELP_TOOLTIPCONTAINS_EXAMPLES"],
     },
 
     HasStat = 
     {
+        IsFunction = true,
         Args = "stat [, stat1 .. statN]",
         Map = Addon.Maps.Stats,
-        Html =  "<p>describe" ..
-                "<br/><br/>Examples:<br/>" ..
-                "Haste:  " .. GREEN_FONT_COLOR_CODE .. "HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "<br/>" ..
-                "Strength no haste:  " .. GREEN_FONT_COLOR_CODE .. "HasStat('str') and not HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "<br/>" ..
-                "Corrupted Items:  " .. GREEN_FONT_COLOR_CODE .. "HasStat('corruption')" .. FONT_COLOR_CODE_CLOSE .. "<br/></p>",
+        Text =  "describe",
+        Examples =
+            GREEN_FONT_COLOR_CODE .. "HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "|n" ..
+            GREEN_FONT_COLOR_CODE .. "HasStat('str') and not HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "|n" ..
+            GREEN_FONT_COLOR_CODE .. "HasStat('corruption')" .. FONT_COLOR_CODE_CLOSE .. "|n",
     },
 }

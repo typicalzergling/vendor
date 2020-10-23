@@ -1,5 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="tabbedframe.lua"/>
 	<Script file="rulesdialog.lua"/>
 
     <!-- Templates -->
@@ -10,15 +9,7 @@
     <Button name="Vendor_RulesDialog_Tab" inherits="OptionsFrameTabButtonTemplate" virtual="true" visible="false" parentArray="Tabs">
 	    <Scripts>
 	        <OnClick>self:GetParent():ShowTab(self)</OnClick>
-            <!-- The first rhree lines come from the shared template for some reason this it is replaced by our handler -->
-            <OnLoad>
-				self:SetFrameLevel(self:GetFrameLevel() + 4);
-				self.deselectedTextY = -3;
-				self.selectedTextY = -2;
-                Vendor:SetLocalizedString(self, self.TextKey);
-                PanelTemplates_TabResize(self, 0);
-            </OnLoad>
-	    </Scripts>
+        </Scripts>
     </Button>
 
     <Frame name="Vendor_List_Container" virtual="true" inherits="InsetFrameTemplate">
@@ -62,6 +53,10 @@
 
     <!-- Rules dialog Frame -->
     <Frame name="VendorRulesDialog" parent="UIParent" hidden="true" inherits="Vendor_Dialog_Template">
+        <KeyValues>
+            <KeyValue key="CaptionKey" value="CONFIG_DIALOG_CAPTION" type="string"/>
+            <KeyValue key="Implementation" value="RulesDialog" type="string"/>
+        </KeyValues>
         <Size x="600" y="624"/>
         <Anchors>
             <Anchor point="CENTER"/>
@@ -246,7 +241,7 @@
             <!-- Keep Tab -->
             <Button name="$parentKeepTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="KeepTab">
                 <KeyValues>
-                    <KeyValue key="TextKey" value="CONFIG_DIALOG_KEEPRULES_TAB" type="string"/>
+                    <KeyValue key="LocKey" value="CONFIG_DIALOG_KEEPRULES_TAB" type="string"/>
                 </KeyValues>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeKey="$parent.Container" relativePoint="TOPLEFT" x="6" y="-2"/>
@@ -256,7 +251,7 @@
             <!-- Sell Tab -->
             <Button name="$parentSellTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="SellTab">
                 <KeyValues>
-                    <KeyValue key="TextKey" value="CONFIG_DIALOG_SELLRULES_TAB" type="string"/>
+                    <KeyValue key="LocKey" value="CONFIG_DIALOG_SELLRULES_TAB" type="string"/>
                 </KeyValues>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeKey="$parent.KeepTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
@@ -266,7 +261,7 @@
 			<!-- Custom Tab -->
 			<Button name="$parentCustomTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="CustomTab">
                 <KeyValues>
-                    <KeyValue key="TextKey" value="CONFIG_DIALOG_CUSTOMRULES_TAB" type="string"/>
+                    <KeyValue key="LocKey" value="CONFIG_DIALOG_CUSTOMRULES_TAB" type="string"/>
                 </KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeKey="$parent.SellTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
@@ -277,28 +272,27 @@
 			<!-- Lists Tab -->
 			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ListsTab" enabled="false">
                 <KeyValues>
-                    <KeyValue key="TextKey" value="CONFIG_DIALOG_LISTS_TAB" type="string"/>
+                    <KeyValue key="LocKey" value="CONFIG_DIALOG_LISTS_TAB" type="string"/>
                 </KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeKey="$parent.CustomTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
 				</Anchors>
 			</Button>
 
-			<!-- Lists Tab -->
+			<!-- Help Tab -->
 			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="5" parentKey="HelpTab" enabled="false">
                 <KeyValues>
-                    <KeyValue key="TextKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
+                    <KeyValue key="LocKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
                 </KeyValues>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ListsTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" relativePoint="TOPRIGHT" x="-6" y="-2"/>
 				</Anchors>
 			</Button>
 
         </Frames>
         <Scripts>
-            <OnLoad>table.insert(UISpecialFrames, self:GetName());self:RegisterForDrag("LeftButton");Vendor.RulesDialog.OnLoad(self)</OnLoad>
-            <OnShow>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);self:OnShow()</OnShow>
-            <OnHide>PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);self:OnOk()</OnHide>
+            <OnShow>self:OnShow()</OnShow>
+            <OnHide>self:OnOk()</OnHide>
             <OnDragStart>self:StartMoving()</OnDragStart>
             <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
         </Scripts>

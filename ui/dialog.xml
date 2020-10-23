@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="dialog.lua"/>
+
+    <Frame name="Vendor_Dialog_Template" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true">
+		<Frames>
+            <Frame parentKey="border" inherits="DialogBorderDarkTemplate"/>
+            <Frame parentKey="header" inherits="DialogHeaderTemplate">
+				<KeyValues>
+					<KeyValue key="headerTextPadding" value="120" type="number"/>
+				</KeyValues>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>Vendor.Dialog.OnLoad(self)</OnLoad>
+		</Scripts>
+    </Frame>	
+</Ui>
