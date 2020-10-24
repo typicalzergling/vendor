@@ -6,6 +6,7 @@ ignore:
  - CHANGES.txt
  - Vendor_Work.txt
  - sys/debug.lua
+ - sys/test.lua
  - debug.lua
  - test/*
  - .release/*
