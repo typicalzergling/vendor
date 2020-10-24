@@ -62,6 +62,10 @@ end
 -- Add table.find
 if (type(table.find) ~= "function") then
 	table.find = function(t, p, ...)
+		if (not t) then
+			return nil;
+		end
+
 		assert(type(t) == "table");
 		assert(type(p) == "function");
 		for k, v in pairs(t) do
@@ -77,9 +81,13 @@ end
 -- Add table.filter
 if (type(table.filter) ~= "function") then
 	table.filter = function(t, p, ...)
+		local f = {};
+		if (not t) then
+			return f;
+		end
+
 		assert(type(t) == "table");
 		assert(type(p) == "function");
-		local f = {};
 		for k, v in pairs(t) do
 			local r, f = xpcall(p, CallErrorHandler, v, k, ...);
 			if (r and f) then
