@@ -132,38 +132,17 @@
 				</Anchors>
 			</Frame>
 
-			<!-- Custom Panel -->
-			<Frame name="$parentCustomPanel" parentKey="CustomPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="3">
+			<!-- Delete Panel -->
+			<Frame name="$parentCustomPanel" parentKey="DeletePanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
+				<KeyValues>
+					<KeyValue key="ruleType" value="Delete" type="string"/>
+				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
 				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="TopText">
-							<Anchors>
-								<Anchor point="TOPLEFT" x="16" y="-16"/>
-								<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Frame parentKey="outline" inherits="Vendor_List_Container">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentHeaderText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
-							<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
-						</Anchors>
-					</Frame>
-					<ScrollFrame name="$parentCustomList" parentKey="list" inherits="Vendor_CustomRule_List">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.outline" relatvePoint="TOPLEFT" x="4" y="-5"/>
-							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.outline" relativePoint="BOTTOMRIGHT" x="-4" y="4"/>
-						</Anchors>
-					</ScrollFrame>
-				</Frames>
 			</Frame>
-
+				
 			<!-- Lists Panel -->
 			<Frame name="$parentListsPanel" parentKey="ListsPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="4">
 				<Anchors>
@@ -274,7 +253,7 @@
 			<!-- Custom Tab -->
 			<Button name="$parentCustomTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="CustomTab">
 				<KeyValues>
-					<KeyValue key="LocKey" value="CONFIG_DIALOG_CUSTOMRULES_TAB" type="string"/>
+					<KeyValue key="LocKey" value="CONFIG_DIALOG_DELETERULES_TAB" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeKey="$parent.SellTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>

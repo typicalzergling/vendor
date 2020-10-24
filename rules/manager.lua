@@ -8,7 +8,8 @@ local RULE_TYPE_LOCKED_KEEP = 1;
 local RULE_TYPE_LOCKED_SELL = 2;
 local RULE_TYPE_KEEP = 10;
 local RULE_TYPE_SELL = 1000;
-local RULE_TYPE_SCRAP = 100;
+local RULE_TYPE_DELETE = 2000;
+local RuleType = Addon.RuleType;
 
 local ITEM_CONSTANTS =
 {
@@ -64,9 +65,9 @@ function RuleManager:Create()
     local rulesEngine = Addon:CreateRulesEngine(Addon:IsDebugChannelEnabled("rulesengine"));
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
-    rulesEngine:CreateCategory(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
-    rulesEngine:CreateCategory(RULE_TYPE_SCRAP, Addon.c_RuleType_Scrap);
-    rulesEngine:CreateCategory(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
+    rulesEngine:CreateCategory(RULE_TYPE_KEEP, RuleType.KEEP);
+    rulesEngine:CreateCategory(RULE_TYPE_SELL, RuleType.SELL);
+    rulesEngine:CreateCategory(RULE_TYPE_DELETE, RuleType.DELETE);
     rulesEngine.OnRuleStatusChange:Add(
         function(what, categoryId, ruleId, message)
             if (what == "UNHEALTHY") then
@@ -215,8 +216,8 @@ function RuleManager:Update()
     -- Step 3: Add the sell rules from our configuration
     self:ApplyConfig(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
 
-    -- Step 4: Apply scrap rules
-    self:ApplyConfig(RULE_TYPE_SCRAP, Addon.c_RuleType_Scrap);
+    -- Step 4: Apply delete rules
+    self:ApplyConfig(RULE_TYPE_DELETE, RuleType.DELETE);
 end
 
 --*****************************************************************************
@@ -230,26 +231,15 @@ function RuleManager:Run(object, ...)
     Addon:DebugRules("Evaluated \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
     if (result) then
         if ((categoryId == RULE_TYPE_KEEP) or (categoryId == RULE_TYPE_LOCKED_KEEP) or (categoryId == RULE_TYPE_SCRAP)) then
-            return false, ruleId, name;
+            return false, ruleId, name, RuleType.KEEP;
         elseif ((categoryId == RULE_TYPE_SELL) or (categoryId == RULE_TYPE_LOCKED_SELL)) then
-            return true, ruleId, name;
+            return true, ruleId, name, RuleType.SELL;
+        elseif ((CateogryID == RULE_TYPE_DELETE)) then
+            return true, ruleId, name, RuleType.DELETE;
         end
     end
 
     return false, nil, nil
-end
-
---[[===========================================================================
-    | CheckForScrap:
-    |   Checks if the object should be considered scrap.
-    =======================================================================--]]
-function RuleManager:CheckForScrap(object, ...)
-    local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
-    Addon:Debug("CheckScrap \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
-    if (result and (categoryId == RULE_TYPE_SCRAP)) then
-        return true, ruleId, name;
-    end
-    return false, nil, nil;
 end
 
 --*****************************************************************************

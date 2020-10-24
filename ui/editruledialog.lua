@@ -216,8 +216,15 @@ end
     | Checks that a string is valid.
     ===========================================================================--]]
 local function isValidString(str)
-    return (type(str) == "string") and 
-            (string.len(string.trim(str)) ~= 0);
+    if (type(str) ~= "string") then
+        return false;
+    end
+
+    if (string.len(string.trim(str)) == 0) then
+        return false;
+    end
+
+    return true;
 end
 
 --[[===========================================================================
@@ -232,18 +239,21 @@ function EditRuleDialog:UpdateButtonState()
         self.save:Disable();
     else
         local rule = self:GetRule();
-        local canSave = false;
+        local canSave = true;
+
+        table.forEach(rule, print);
 
         -- If we aren't read-only then we can only save if we've got
         -- a valid name, type, and script.
+        print(isValidString(rule.Name));
         if (not isValidString(rule.Name)) then
             canSave = false;
             Addon:DebugChannel("editrule", "Can't save rule because name is invalid");
         end
 
-        if (not isValidString(rule.Script) or (self.status == ScriptStatus.OK)) then
+        if (not isValidString(rule.Script) or (self.status ~= ScriptStatus.OK)) then
             canSave = false;
-            Addon:DebugChannel("editrule", "Can't save rule because name is invalid");
+            Addon:DebugChannel("editrule", "Can't save rule because script is invalid");
         end
 
         if (not canSave) then

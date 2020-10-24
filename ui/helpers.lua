@@ -1,3 +1,5 @@
+local _, Addon = ...;
+
 -- Check if the character is a space
 local function isspace(c)
     print("isspace", c);
@@ -85,5 +87,13 @@ if (type(table.filter) ~= "function") then
 			end
 		end
 		return f;
+	end
+end
+
+-- Add table.copy
+if (type(table.copy) ~= "function") then
+	table.copy = function(t)
+		assert(type(t) == "table");
+		return Addon.DeepTableCopy(t);
 	end
 end

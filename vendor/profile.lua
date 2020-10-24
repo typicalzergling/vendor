@@ -3,15 +3,13 @@ local DEFAULT_PROFILE = "-[DEFUALT]-";
 
 local SELL_LIST = Addon.c_Config_SellAlways;
 local KEEP_LIST = Addon.c_Config_SellNever;
-local KEEP_RULE = Addon.c_RuleType_Keep;
-local SELL_RULE = Addon.c_RuleType_Sell;
-local SCRAP_RULE = Addon.c_RuleType_Scrap;
 local KEEP_RULES = "keep";
 local SELL_RULES = "sell";
-local SCRAP_RULES ="scrap";
+local DELETE_RULES ="delete";
 local PROFILE_VERSION = 1;
 local INTERFACE_VERSION = select(4, GetBuildInfo());
-local table_copy = Addon.DeepTableCopy;
+
+local RuleType = Addon.RuleType;
 
 --@debug@
 local function key_exists(t, c)
@@ -132,20 +130,20 @@ function Profile:CreateDefaultFromOldConfig()
 
 	-- Migrate settings variable.
 	if (Vendor_Settings) then
-		profile.profile.settings = table_copy(Vendor_Settings);
+		profile.profile.settings = table.copy(Vendor_Settings);
 		profile.profile.settings[SELL_LIST] = nil;
 		profile.profile.settings[KEEP_LIST] = nil;
 		profile.profile.settings["debugrules"] = nil;
 		profile.profile.settings["debug"] = nil;
 		profile.profile.settings.version = nil;
 		profile.profile.settings.interfaceversion = nil;
-		profile.profile.lists[KEEP_LIST] = table_copy(Vendor_Settings[KEEP_LIST]);
-		profile.profile.lists[SELL_LIST] = table_copy(Vendor_Settings[SELL_LIST]);
+		profile.profile.lists[KEEP_LIST] = table.copy(Vendor_Settings[KEEP_LIST]);
+		profile.profile.lists[SELL_LIST] = table.copy(Vendor_Settings[SELL_LIST]);
 	end
 
 	-- Migrate rule configuation varible.
 	if (Vendor_RulesConfig) then
-		profile.profile.rules = table_copy(Vendor_RulesConfig);
+		profile.profile.rules = table.copy(Vendor_RulesConfig);
 		profile.profile.rules.version = nil;
 		profile.profile.rules.interfaceversion = nil;
 	end
@@ -285,54 +283,54 @@ end
 
 -- Retreive the list of enabled rules (and their parameters) for
 -- this profile.
-function Profile:GetRules(rulesType)
-	if (rulesType == SELL_RULE) then
-		return table_copy(self.profile.rules[SELL_RULES] or {});
-	elseif (rulesType == KEEP_RULE) then
-		return table_copy(self.profile.rules[KEEP_RULES] or {});
-	elseif (rulesType == SCRAP_RULE) then
-		return table_copy(self.profile.rules[SCRAP_RULES] or {});
+function Profile:GetRules(ruleType)
+	if (ruleType == RuleType.SELL) then
+		return table.copy(self.profile.rules[SELL_RULES] or {});
+	elseif (ruleType == RuleType.KEEP) then
+		return table.copy(self.profile.rules[KEEP_RULES] or {});
+	elseif (ruleType == RuleType.DELETE) then
+		return table.copy(self.profile.rules[DELETE_RULES] or {});
 	end
 
 	--@debug@
-	error(string.format("There is not rule type '%s'", rulesType));
+	error(string.format("There is not rule type '%s'", ruleType));
 	--@end-debug@
 end
 
 -- Called to change the value of a rules list.
-function Profile:SetRules(rulesType, config)
+function Profile:SetRules(ruleType, config)
 	if (type(config) ~= "table") then
 		error("The rule config must be a table");
 	end
 
-	if (rulesType == SELL_RULE) then
-		self.profile.rules[SELL_RULES] = table_copy(config);
-		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), SELL_RULE);
+	if (ruleType == RuleType.SELL) then
+		self.profile.rules[SELL_RULES] = table.copy(config);
+		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
 		self:NotifyChanges();
 		return;
-	elseif (rulesType == KEEP_RULE) then
-		self.profile.rules[KEEP_RULES] = table_copy(config);
-		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), KEEP_RULE);
+	elseif (ruleType == RuleType.KEEP) then
+		self.profile.rules[KEEP_RULES] = table.copy(config);
+		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
 		self:NotifyChanges();
 		return;
-	elseif (rulesType == SCRAP_RULE) then 
-		self.profile.rules[SCRAP_RULES] = table_copy(config);
-		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), SCRAP_RULES);
+	elseif (ruleType == RuleType.DELETE) then 
+		self.profile.rules[DELETE_RULES] = table.copy(config);
+		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
 		self:NotifyChanges();
 		return;
 	end
 
 	--@debug@
-	error(string.format("There is not a rule type '%s'", rulesType))
+	error(string.format("There is not a rule type '%s'", ruleType));
 	--@end--debug@
 end
 
 -- Retrieves the specified block list from the profile.
 function Profile:GetList(listType)
 	if (listType == Addon.c_AlwaysSellList) then
-		return table_copy(self.profile.lists[SELL_LIST] or {});
+		return table.copy(self.profile.lists[SELL_LIST] or {});
 	elseif (listType == Addon.c_NeverSellList) then
-		return table_copy(self.profile.lists[KEEP_LIST] or {});
+		return table.copy(self.profile.lists[KEEP_LIST] or {});
 	end
 
 	error(string.format("There is no '%s' list", listType));
@@ -341,11 +339,11 @@ end
 -- Sets the specified list
 function Profile:SetList(listType, list)
 	if (listType == Addon.c_AlwaysSellList) then
-		self.profile.lists[SELL_LIST] = table_copy(list);
+		self.profile.lists[SELL_LIST] = table.copy(list);
 		self:NotifyChanges();
 		return;
 	elseif (listType == Addon.c_NeverSellList) then
-		self.profile.lists[KEEP_LIST] = table_copy(list);
+		self.profile.lists[KEEP_LIST] = table.copy(list);
 		self:NotifyChanges();
 		return;
 	end
