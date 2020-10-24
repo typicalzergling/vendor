@@ -56,7 +56,8 @@ local ListBase = {
 
     ClearUpdate = function(self)
         if (self._hooked) then
-            self:ClearScript("OnUpdate");
+            self:SetScript("OnUpdate", nil);
+            self._hooked = false;
         end
     end
 };

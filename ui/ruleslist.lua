@@ -103,6 +103,7 @@ end
 
 function RulesList.OnLoad(self)
     Mixin(self, RulesList, Package.ListBase);
+    self:SetClipsChildren(true);
     self:AdjustScrollbar();
     if (not self.ruleType) then
         self.ruleType = self:GetParent().ruleType;
