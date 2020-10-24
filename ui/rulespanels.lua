@@ -231,5 +231,90 @@ end
 function HelpPanel:OnHide()
 end
 
+--[[ Lists Panel ]]
+
+local ListType = Addon.ListType;
+
+local ListsPanel = 
+{
+	OnLoad = function(self)
+		self.selllist:RegisterCallback("OnDeleteItem", self.RemoveFromSell, self);
+		self.selllist:RegisterCallback("OnAddItem", self.AddToSell, self);
+		self.keeplist:RegisterCallback("OnDeleteItem", self.RemoveFromKeep, self);
+		self.keeplist:RegisterCallback("OnAddItem", self.AddToKeep, self);
+
+		Addon.Profile:RegisterForChanges(
+			function()
+				self:Update();
+			end);
+	end,
+
+	OnShow = function(self)
+		self:Update();
+	end,
+
+	setList = function(list, count, contents)
+		local ids = {};
+
+		table.forEach(contents, 
+			function(value, itemId)
+				if (value) then
+					table.insert(ids, itemId);
+				end
+			end);
+
+		if (table.getn(ids) ~= 0) then
+			count:Show();
+			count:SetFormattedText("(%d)", table.getn(ids));
+		else
+			count:Hide();
+		end
+
+		list:SetContents(ids);
+	end,
+
+	Update = function(self)
+		local profile = Addon:GetProfile();
+		self.setList(self.selllist, self.SellCount, profile:GetList(ListType.AlwaysSell));
+		self.setList(self.keeplist, self.KeepCount, profile:GetList(ListType.NeverSell));
+	end,
+
+	OnHide = function(self)
+	end,
+
+	AddToSell = function(self, item)
+		local itemId = Addon.ItemList.GetItemId(item);
+		if (itemId) then
+			local list = Addon:GetList(ListType.AlwaysSell);
+			list:Add(itemId);
+		end
+	end,
+
+	AddToKeep = function(self, item)
+		local itemId = Addon.ItemList.GetItemId(item);
+		if (itemId) then
+			local list = Addon:GetList(ListType.NeverSell);
+			list:Add(itemId);
+		end
+	end,
+
+	RemoveFromSell = function(self, item)
+		local itemId = Addon.ItemList.GetItemId(item);
+		if (itemId) then
+			local list = Addon:GetList(ListType.AlwaysSell);
+			list:Remove(itemId);
+		end
+	end,
+
+	RemoveFromKeep = function(self, item)
+		local itemId = Addon.ItemList.GetItemId(item);
+		if (itemId) then
+			local list = Addon:GetList(ListType.NeverSell);
+			list:Remove(itemId);
+		end
+	end
+};
+
 Addon.RulesPanels.HelpPanel = HelpPanel;
+Addon.RulesPanels.ListsPanel = ListsPanel;
 Addon.Public.RulesPanel = RulesPanel;

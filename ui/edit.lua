@@ -31,7 +31,7 @@ function Edit:UpdatePlaceholder(forceOff)
 	local placeholder= self:GetPlaceholder();
 	if (placeholder) then
 		local text = self:GetText();
-		if (not forceOff and not text or (string.len(text) == 0)) then
+		if (not forceOff and (not self:HasFocus() and (not text or (string.len(text) == 0)))) then
 			placeholder:Show();
 		else
 			placeholder:Hide();
@@ -93,6 +93,7 @@ function EditHost:GetControl()
 end
 
 function EditHost:SetText(text)
+	self.Edit.lastText = text;
 	self.Edit:SetText(text);
 end
 

@@ -419,6 +419,7 @@ HELP_TOOLTIPCONTAINS_EXAMPLES =
 ["ITEMLIST_LOADING_TOOLTIP"] = "The item information is currently being retrieved from the server",
 ["ITEMLIST_EMPTY_SELL_LIST"] = "Your always sell list is current empty you can drag and drop items into this list to add them.",
 ["ITEMLIST_EMPTY_KEEP_LIST"] = "Your never sell list is current empty you can drag and drop items into this list to add them.",
+["ITEMLIST_REMOVE_TOOLTIP"] = "Remove from list",
 }) -- END OF LOCALIZATION TABLE
 
 -- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.

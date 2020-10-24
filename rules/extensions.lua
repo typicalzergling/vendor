@@ -100,14 +100,37 @@ local function validateIdentifier(s)
     return string.len(s) == string.len(s:match("[A-Za-z_]+[A-Za0-9_]*"));
 end
 
+-- Simple helper function which copies the help table, extracting only the 
+-- keys that we know how to display.
+local function copyHelpTable(help)
+    local t = {};
+    for k,v in pairs(help) do
+        if (type(v) == "string") then
+            if ((k == "Text") or (k == "Notes") or (k == "Examples")) then            
+                t[k] = value;
+            end
+        end
+    end
+    return t;
+end
+
 local function addFunctionDefinition(ext, fdef)
     local f =
     {
         Extension = ext,
         Name = string.format("%s_%s", ext.Source, fdef.Name),
-        Help = fdef.Help;
         Function = fdef.Function;
     };
+
+    if (type(fdef.Help) == "string") then
+        f.Help = {
+            Text = fdef.Help,
+            Extension = ext
+        };
+    elseif (type(fdef.Help) == "table") then
+        f.Help = copyHelpTable(fdef.Help);
+        f.Help.Extension = ext;
+    end
 
     Addon:Debug("Added function '%s' from:", f.Name, ext.Name);
     table.insert(Extensions._functions, f);
@@ -149,7 +172,6 @@ local function addRuleDefinition(ext, rdef)
         ScriptText = rdef.ScriptText,
         Type = rdef.Type,
         ReadOnly = true,
-        Locked = true,
         Extension = ext,
         Params = rdef.Params,
         Order = tonumber(rdef.Order) or nil,

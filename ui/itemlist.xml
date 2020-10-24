@@ -24,7 +24,7 @@
 		</Layers>
 		<Scripts>
 			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
-			<OnMouseUp>self:OnDropItem(button)</OnMouseUp>
+			<OnMouseUp>self:GetParent():OnDrop(button)</OnMouseUp>
 		</Scripts>
 	</ScrollFrame>
 
@@ -44,7 +44,10 @@
 			</ScrollFrame>
 		</Frames>
 		<Scripts>
-			<OnLoad>Vendor.LoadImplementation(self)</OnLoad>
+			<OnLoad>
+				self.List.isReadOnly = self.isReadOnly;
+				Vendor.LoadImplementation(self);
+			</OnLoad>
 		</Scripts>
 	</Frame>
 
@@ -75,9 +78,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-            <OnEnter>self:OnMouseEnter()</OnEnter>
-            <OnLeave>self:OnMouseLeave()</OnLeave>
-			<OnLoad>print("----- onload"); Vendor.LoadImplementation(self)</OnLoad>
+			<OnLoad>Vendor.LoadImplementation(self)</OnLoad>
 		</Scripts>
 	</Button>
 
@@ -120,5 +121,32 @@
 	<Button name="Vendor_ListItem_Item_ReadOnly" virtual="true" inherits="Vendor_ItemList_ItemBase"/>
 
 	<Button name="Vendor_ListItem_Item" virtual="true" inherits="Vendor_ItemList_ItemBase">
+		<Frames>
+			<Button parentKey="Delete" hidden="true">
+				<Size x="14" y="14"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-5"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\Buttons\UI-GroupLoot-Pass-Up" alpha="0.5" parentKey="Texture"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						self.Texture:SetAlpha(1.0);
+						GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
+						GameTooltip:SetText(REMOVE);
+					</OnEnter>
+					<OnLeave>
+						self.Texture:SetAlpha(0.5);
+						GameTooltip_Hide();
+					</OnLeave>
+					<OnMouseDown>self.Texture:SetPoint("TOPLEFT", 1, -1);</OnMouseDown>
+					<OnMouseUp>self.Texture:SetPoint("TOPLEFT", 0, 0);</OnMouseUp>
+					<OnClick>self:GetParent():HandleDelete()</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
 	</Button>
 </Ui>

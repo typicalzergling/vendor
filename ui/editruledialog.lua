@@ -3,18 +3,10 @@ local L = Addon:GetLocale()
 local Config = Addon:GetConfig()
 local EditRuleDialog = {};
 local RuleManager = Addon.RuleManager;
-
-local ITEM_INFO_HTML_BODY_FMT = "<!DOCTYPE html><html><body><h1>%s</h1>%s</body></html>";
-local ITEM_HTML_FMT = "<p>%s == %s%s%s</p>";
-local NIL_ITEM_STRING = GRAY_FONT_COLOR_CODE .. "nil" .. FONT_COLOR_CODE_CLOSE;
-local MATCHES_HTML_START = "<!DOCTYPE html><html><body>";
-local MATCHES_HTML_END = "</body></html>";
-local MATCHES_LINK_FMT1 = "<p>%s</p>";
-local MODE_READONLY = 1;
-local MODE_EDIT = 2;
-
 local RuleType = Addon.RuleType;
 
+local MODE_READONLY = 1;
+local MODE_EDIT = 2;
 local ITEMINFO_ID = 1;
 local MATCHES_ID = 2;
 local HELP_ID = 3;
@@ -70,160 +62,21 @@ local RULE_STATUS_INFO = {
 };
 
 StaticPopupDialogs["VENDOR_CONFIRM_DELETE_RULE"] = {
-    text = "Are you sure you want to delete this rule? %s %s",
-    button1 = "Confirm Delete",
-    button2 = "No Thanks",
-    OnAccept = function(self, ruleId)
-        print("---> Delete Rule: ", ruleId);
+    text = L["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"],
+    button1 = YES,
+    button2 = NO,
+    OnAccept = function(self, ruleId, dialog)
+        Addon:DebugChannel("editrule", "Deleting rule '%s'", ruleId);
+        Addon.Rules.DeleteDefinition(self.data); 
+        if (dialog.ruleId == ruleId) then
+            dialog:Hide();
+        end
     end,
     timeout = 0,
     hideOnEscape = true,
     whileDead = true,
+    exclusive = true,
 };
-
-Addon.Utils = Addon.Utils or {};
-Addon.Utils.StringBuilder = {};
-function Addon.Utils.StringBuilder:Create()
-    local instance = { buffer = {} };
-    setmetatable(instance, self);
-    self.__index = self;
-    return instance;
-end
-
-function Addon.Utils.StringBuilder:Add(str)
-    local buffer = rawget(self, "buffer");
-    table.insert(buffer, tostring(str));
-    for i=table.getn(buffer)-1,1,-1 do
-        if (string.len(buffer[i]) > string.len(buffer[i+1])) then
-            break;
-        end
-        buffer[i] = (buffer[i] .. table.remove(buffer));
-    end
-end
-
-function Addon.Utils.StringBuilder:AddFormatted(str, ...)
-    self:Add(string.format(str, ...));
-end
-
-function Addon.Utils.StringBuilder:Get()
-    return table.concat(rawget(self, "buffer"));
-end
-
-local function spairs(t, order)
-    local keys = {};
-    for key in pairs(t) do
-        table.insert(keys, key);
-    end
-    table.sort(keys)
-
-    local iter = 0
-    return function()
-        iter = iter + 1
-        return keys[iter], t[keys[iter]];
-    end
-end
-
-
--- Move to rulehelp.lua
-Addon.RuleDocumentation =
-{
-    CreateHeader = function(name, item, ext, isfunc)
-        local postfix = "";
-        if (ext) then
-            postfix = string.format(" %s[Extension]%s", ORANGE_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE);
-        end
-
-        local fmt = "<h1>%s%s%s%s%s</h1>"
-        if isfunc then
-           fmt = "<h1>%s%s(%s)%s%s</h1>"
-        end
-
-        local args = ""
-        if (type(item) == "table") then
-            if (item.Args) then
-                args = item.Args
-            end
-        end
-
-        return string.format(fmt, BATTLENET_FONT_COLOR_CODE, name, args, FONT_COLOR_CODE_CLOSE, postfix);
-     end,
-
-    CreateValues = function(item)
-        if ((type(item) == "table") and item.Map) then
-            local temp = {}
-            for val, _ in pairs(item.Map) do
-                table.insert(temp, string.format("\"%s\"", val))
-            end
-            return "<br/><h2>Possible Values:</h2><p>" .. table.concat(temp, ", ") .. "</p>";
-        end
-        return ""
-    end,
-
-    CreateContent = function(item)
-        if (type(item) == "string") then
-            return "<p>" .. item .. "</p>";
-        elseif (type(item) == "table") then
-            if (item.Html) then
-                return item.Html;
-            elseif (item.Text) then
-                return "<p>" .. item.Text .. "</p>";
-            end
-        end
-        return "";
-    end,
-
-    CreateSingleItem = function(name, item, ext, isfunc)
-        return  Addon.RuleDocumentation.CreateHeader(name, item, ext, isfunc) ..
-                Addon.RuleDocumentation.CreateContent(item) ..
-                Addon.RuleDocumentation.CreateValues(item);
-
-    end,
-
-    Create = function()
-        -- Create our singleton cache
-        if (not Addon.RuleDocumentation.__docs) then
-            local docs = {};
-            for cat, section in pairs(Addon.ScriptReference) do
-                for name, content in pairs(section) do
-                    docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, content, false, cat == "Functions");
-                end
-            end
-
-            -- Document extension functons.
-            if (Package.Extensions) then
-                for name,help in pairs(Package.Extensions:GetFunctionDocs()) do
-                    docs[string.lower(name)] = Addon.RuleDocumentation.CreateSingleItem(name, help, true, true);
-                end
-            end
-
-            Addon.RuleDocumentation.__docs = docs;
-        end
-        return Addon.RuleDocumentation.__docs;
-    end,
-
-    --*****************************************************************************
-    -- Get a list of documentation which matches the specified filter, if the
-    -- filter empty/nil this returns the entire documentation
-    --*****************************************************************************
-    Filter = function(filter)
-        -- Did the caller want everything?
-        local docs = Addon.RuleDocumentation.Create()
-        if ((not filter) or (string.len(filter) == 0) or (filter == "")) then
-            return docs
-        end
-
-        -- Apply our filters
-        local fltr = string.lower(filter)
-        local results = {}
-        for name, content in pairs(docs) do
-            if (string.find(name, fltr)) then
-                results[name] = content
-            end
-        end
-
-        return results
-    end
-}
 
 function EditRuleDialog:OnLoad()
     Mixin(self, Addon.TabFrameMixin);
@@ -231,25 +84,10 @@ function EditRuleDialog:OnLoad()
     self:SetClampedToScreen(true)
 
     self.Script:RegisterCallback("OnChange", self.OnScriptChanged, self);
-    self.Name:RegisterCallback("OnChange", self.UpdateButtons, self);
-    self.Description:RegisterCallback("OnChange", self.UpdateButtons, self);        
-end
-    --*****************************************************************************
-    -- Called when we need to update our help content this will apply the filter
-    -- then generate HTML for the content of the control
-    --*****************************************************************************
-function EditRuleDialog:UpdateReference(helpPane)
-    local docs  = Addon.RuleDocumentation.Filter(helpPane.filter:GetText());
-    local temp = {}
-
-    -- Sort/Build temporary array that we can concat.
-    for _, content in spairs(docs) do
-        table.insert(temp, content)
-    end
-
-    -- Put the text into the body
-    local html = "<html><body>" .. table.concat(temp, "<br/>") .. "</body></html>"
-    helpPane.reference:SetHtml(html)
+    self.Name:RegisterCallback("OnChange", self.UpdateButtonState, self);
+    self.Description:RegisterCallback("OnChange", self.UpdateButtonState, self);        
+    table.insert(UISpecialFrames, self:GetName());
+    self:RegisterForDrag("LeftButton");
 end
 
 function EditRuleDialog:IsReadOnly()
@@ -281,7 +119,6 @@ function EditRuleDialog:ValidateScript(script)
 end
 
 function EditRuleDialog:OnScriptChanged(text)
-    print("script changed:", text);
     if (self:IsReadOnly()) then
         self:UpdateMatches();
     else
@@ -290,43 +127,7 @@ function EditRuleDialog:OnScriptChanged(text)
         end
     end
 
-    local rule = self:GetRule();
-    table.forEach(rule, print);
-end
-
-function EditRuleDialog:UpdateItemProperties()
-    if (not CursorHasItem()) then
-        return;
-    end
-
-    local _, _, link = GetCursorInfo();
-    ClearCursor();
-
-    local function htmlEncode(str)
-        return str:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;");
-    end
-
-    local itemProps = Addon:GetItemProperties(GameTooltip, link);
-    local props = {}
-    if (itemProps) then
-        for name, value in spairs(itemProps) do
-            if ((type(name) == "string") and
-                ((type(value) ~= "table") and (type(value) ~= "function"))) then
-                local valStr = tostring(value);
-                if (type(value) == "string") then
-                    valStr = string.format("\"%s\"", value);
-                else
-                    if ((value == nil) or (valStr == "") or (string.len(valStr) == 0)) then
-                        valStr = NIL_ITEM_STRING;
-                    end
-                end
-
-                table.insert(props, string.format(ITEM_HTML_FMT, name, GREEN_FONT_COLOR_CODE, htmlEncode(valStr), FONT_COLOR_CODE_CLOSE));
-            end
-        end
-
-        self.itemInfoPanel.propHtml.scrollFrame.content:SetText(string.format(ITEM_INFO_HTML_BODY_FMT, link, table.concat(props)));
-    end
+    self:UpdateButtonState();
 end
 
 -- Helper function which searches the config for the parameters for this rule,
@@ -350,9 +151,6 @@ function EditRuleDialog:UpdateMatches()
     local ruleDef = self:GetRule();
     local params = findRuleParams(ruleDef);
     local matches = {};
-
-    print("isreadonly", self:IsReadOnly());
-    table.forEach(ruleDef, print);
 
     if (not self:IsReadOnly()) then
         if (not ruleDef.Script or (string.len(string.trim(ruleDef.Script)) == 0)) then
@@ -401,50 +199,89 @@ function EditRuleDialog:SetMode(mode, infoId)
 end
 
 --[[===========================================================================
+    | Check if we already have a saved rule with the specifed id.
+    ===========================================================================--]]
+local function hasCustomRuleId(ruleId)
+    local defs = Addon.Rules.GetCustomDefinitions();
+    for _, ruleDef in ipairs(defs) do
+        if (ruleId == ruleDef.Id) then
+            return true;
+        end
+    end
+
+    return false;
+end
+
+--[[===========================================================================
+    | Checks that a string is valid.
+    ===========================================================================--]]
+local function isValidString(str)
+    return (type(str) == "string") and 
+            (string.len(string.trim(str)) ~= 0);
+end
+
+--[[===========================================================================
     | Called when the text of the rule edit field has changed, this will queue
     | a timer to delay evaluation until the user has stopped typing. If the
     | dialog is not currently in editing mode then we simply bail out.
     ===========================================================================--]]
 function EditRuleDialog:UpdateButtonState()
-    -- If we are read-only then we want always disable the delete/save buttons
-    -- as they can never be enabled.
     if (self:IsReadOnly()) then
+        -- If we are read-only then we can never save or delete.
         self.delete:Disable();
         self.save:Disable();
     else
-        -- Addon.RuleDefinitions.IsValid(rule)
-        -- Need to track "saved" state
-        self.delete:Disable();
-        self.save:Enable();
+        local rule = self:GetRule();
+        local canSave = false;
+
+        -- If we aren't read-only then we can only save if we've got
+        -- a valid name, type, and script.
+        if (not isValidString(rule.Name)) then
+            canSave = false;
+            Addon:DebugChannel("editrule", "Can't save rule because name is invalid");
+        end
+
+        if (not isValidString(rule.Script) or (self.status == ScriptStatus.OK)) then
+            canSave = false;
+            Addon:DebugChannel("editrule", "Can't save rule because name is invalid");
+        end
+
+        if (not canSave) then
+            self.save:Disable();
+        else
+            self.save:Enable();
+        end
+
+        -- We can only delete if this rules is already saved.
+        if (hasCustomRuleId(rule.Id)) then
+            self.delete:Enable();
+        else
+            Addon:DebugChannel("editrule", "Cannot delete the rule because it hasn't been saved yet");
+            self.delete:Disable();
+        end
     end
 end
-
 
 --[[===========================================================================
     | Called when the user clicks OKAY, this will create  a new custom
     | rule definition and place it into the saved variable.
     ===========================================================================--]]
-function EditRuleDialog.HandleOk(self)
-    if (not self.readOnly) then
-        Addon:Debug("Creating new custom rule definition");
-        local rtype, name, description, script = self.editRule:GetValues();
-        local newRuleDef =
-        {
-            Id = self.ruleDef.Id,
-            Type = rtype,
-            Name = name,
-            Description = description,
-            Script = script,
-			SupportsClassic = Addon.IsClassic,
-        };
-
-        Vendor.Rules.UpdateDefinition(newRuleDef);
+function EditRuleDialog:HandleSave()
+    if (not self:IsReadOnly()) then
+        Addon:DebugChannel("editrule", "Creating new custom rule definition");
+        local rule = self:GetRule();
+        Addon.Rules.UpdateDefinition(rule);
+        self:Hide();
     end
 end
 
 function EditRuleDialog:HandleDelete()
-    local dialog = StaticPopup_Show("VENDOR_CONFIRM_DELETE_RULE", "arg1", "arg2");
-    dialog.data = "temp-id";
+    if (not self:IsReadOnly()) then
+        local rule = self:GetRule();
+        local dialog = StaticPopup_Show("VENDOR_CONFIRM_DELETE_RULE", rule.Name);
+        dialog.data = rule.Id;
+        dialog.data2 = self;
+    end
 end
 
 -- Verifies we've got a cached rules engine
@@ -583,12 +420,14 @@ end
 function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
     self:EnsureRulesEngine();
-    Addon:LoadAllBagItemLinks()
+    Addon:LoadAllBagItemLinks();
+    self.helpInfoPanel:CreateCaches();
 end
 
 function EditRuleDialog:OnHide()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
     self.rulesEngine = nil;
+    self.helpInfoPanel:ClearCaches();
 end
 
 

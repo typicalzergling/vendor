@@ -34,10 +34,14 @@ Addon.c_Config_ThrottleTime = "throttle_time"
 Addon.c_Config_AutoRepair = "autorepair"
 Addon.c_Config_GuildRepair = "guildrepair"
 
-
 -- Rule Types
 Addon.RuleType = {
 	SELL = "Sell",
 	KEEP = "Keep",
 	DELETE  = "Delete",
+};
+
+Addon.ListType = {
+	AlwaysSell = "always",
+	NeverSell = "never",
 };

@@ -30,7 +30,7 @@
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.cancel" relativePoint="BOTTOMLEFT" x="-8"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick> </OnClick>
+                    <OnClick>self:GetParent():HandleSave()</OnClick>
                 </Scripts>
             </Button>
 
@@ -40,7 +40,7 @@
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.save" relativePoint="BOTTOMLEFT" x="-8"/>
                 </Anchors>
                 <Scripts>
-                    <OnClick> </OnClick>
+                    <OnClick>self:GetParent():HandleDelete()</OnClick>
                 </Scripts>
             </Button>
 
@@ -169,52 +169,9 @@
 				</Layers>
 			</Frame>
 
-			<!-- Help Panel
-            <Frame inherits="Vendor_EditPanel_Base" parentKey="helpPanel" id="3" parentArray="infoPanels">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="6" y="-6"/>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-6" y="6"/>
-				</Anchors>
-            	<Layers>
-		   			<Layer level="ARTWORK">
-						<FontString  parentKey="filterLabel" inherits="GameFontHighlight" justifyV="CENTER" justifyH="LEFT">
-							<Size x="1" y="14"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="10" y="-14"/>
-								<Anchor point="BOTTOMRIGHT" relativePoint="TOPLEFT" x="62" y="-38"/>
-							</Anchors>
-						</FontString>
-		   			</Layer>
-            	</Layers>
-            	<Frames>
-					<EditBox parentKey="filter"  multiLine="false" inherits="Vendor.EditRules.Edit.Template" name="$parent.HelpFilter">
-						<KeyValues>
-							<KeyValue key="LabelKey" value="EDITRULE_FILTER_LABEL" type="string"/>
-							<KeyValue key="HelpKey" value="EDITRULE_FILTER_HELPTEXT" type="string"/>
-						</KeyValues>
-						<Size x="1" y="24"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="64" y="-14"/>
-							<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-10" y="14"/>
-						</Anchors>
-						<Scripts>
-							<OnTextChanged>Vendor.EditRuleDialog.UpdateReference(self:GetParent());</OnTextChanged>
-							<OnEditFocusGained>Vendor.EditRuleDialog.OnEditFocusChange(self, true);</OnEditFocusGained>
-							<OnEditFocusLost>Vendor.EditRuleDialog.OnEditFocusChange(self, false);</OnEditFocusLost>
-						</Scripts>
-					</EditBox>
-					<Frame name="$parent.HelpReference" parentKey="reference" inherits="Vendor_HtmlView">
-						<Size x="360" y="24"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent.HelpFilter" x="-54" y="-6"/>
-							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-10" y="10"/>
-						</Anchors>
-					</Frame>
-            	</Frames>
-            	<Scripts>
-            		<OnLoad>Vendor.EditRuleDialog.OnHelpPaneLoad(self);</OnLoad>
-            	</Scripts>
-           	</Frame>-->
+			<!--
+				Info Panels
+			-->
 
            	<Frame inherits="Vendor_EditPanel_Help" parentkey="helpInfoPanel" id="3" parentArray="infoPanels">
 				<Anchors>

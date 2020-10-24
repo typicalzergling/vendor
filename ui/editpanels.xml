@@ -64,7 +64,30 @@
 		<KeyValues>
 			<KeyValue key="Implementation" value="HelpPanel" type="string"/>
 		</KeyValues>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString  parentKey="FilterLabel" inherits="GameFontHighlight" justifyV="CENTER" justifyH="LEFT">
+					<KeyValues>
+						<KeyValue key="LocKey" value="EDITRULE_FILTER_LABEL" type="string"/>
+					</KeyValues>
+					<Size x="50" y="30"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.HelpText"/>
+					</Anchors>
+				</FontString>		
+			</Layer>
+		</Layers>
 		<Frames>
+			<Frame parentKey="FilterText" inherits="Vendor_Edit">
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="EDITRULE_FILTER_HELPTEXT" type="string"/>
+				</KeyValues>
+				<Size x="1" y="30"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.FilterLabel" relativePoint="TOPRIGHT"/>
+					<Anchor point="TOPRIGHT" relativeKey="$parent.HelpText"/>
+				</Anchors>
+			</Frame>
 			<Frame parentKey="View" inherits="Vendor_FrameBorder">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
@@ -73,13 +96,40 @@
 				<Frames>
 					<ScrollFrame parentKey="Frame" inherits="UIPanelScrollFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" x="5" y="-5"/>
-							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+							<Anchor point="TOPLEFT" x="5" y="-6"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="6"/>
 						</Anchors>
+						<ScrollChild>
+							<Frame>
+								<Anchors>		
+									<Anchor point="TOPLEFT"/>
+								</Anchors>													
+							</Frame>
+						</ScrollChild>
 					</ScrollFrame>
+					<Frame hidden="true" parentKey="Empty">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="5" y="-6"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="6"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString  parentKey="Text" inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="8" y="-8"/>
+										<Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
+									</Anchors>
+								</FontString>
+							</Layer>		
+						</Layers>
+					</Frame>
 				</Frames>
 			</Frame>
 		</Frames>
+		<Scripts>
+			<OnShow>self:OnShow()</OnShow>
+			<OnHide>self:OnHide()</OnHide>
+		</Scripts>
 	</Frame>	
 
 	<!-- Documentation panels -->
@@ -110,5 +160,6 @@
 	<!-- Fonts used for the documentation -->
 	<Font virtual="true" name="Vendor_Doc_BodyText" inherits="GameFontHighlight" justifyH="LEFT" spacing="2"/>
 	<Font virtual="true" name="Vendor_Doc_SubHeader" inherits="GameFontNormal" justifyH="LEFT" spacing="2"/>
+	<Font virtual="true" name="Vendor_Doc_Extension" inherits="GameFontNormalSmall" justifyH="LEFT" spacing="1"/>
 
 </Ui>

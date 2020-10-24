@@ -30,11 +30,37 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
-local ListBase = {};
 local ItemBase = {};
 local MODEL_KEY = {};
 local MODEL_INDEX_KEY = {};
 local function __noop(...) end
+
+local ListBase = {
+    UpdateHandler = function(self)
+        if (self:IsShown()) then
+            self:ForEach(function(item)
+                local update = item.OnUpdate;
+                if (type(update) == "function") then
+                    update(item);
+                end
+            end)
+        end
+    end,
+
+    EnsureUpdate = function(self)
+        if (not self._hooked) then
+            self:SetScript("OnUpdate", self.UpdateHandler);
+            self._hooked = true;
+        end
+    end,
+
+    ClearUpdate = function(self)
+        if (self._hooked) then
+            self:ClearScript("OnUpdate");
+        end
+    end
+};
+
 
 --[[===========================================================================
     | ItemBase:GetModel:
@@ -308,7 +334,7 @@ function ListBase:Update()
         -- Update the visible custom rules
         local itemHeight = self.itemHeight;
         local offset = FauxScrollFrame_GetOffset(self);
-        local visible = math.floor(self:GetHeight() / itemHeight);
+        local visible = math.ceil(self:GetHeight() / itemHeight);
         local anchor = nil;
         local first = (1 + offset);
         local last = (first + visible);

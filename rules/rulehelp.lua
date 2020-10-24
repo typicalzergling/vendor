@@ -4,7 +4,7 @@ local L = Addon:GetLocale()
 Addon.ScriptReference = Addon.ScriptReference or {}
 Addon.ScriptReference.ItemProperties =
 {
-    Name = L["HELP_NAME_TExT"],
+    Name = L["HELP_NAME_TEXT"],
     Link = L["HELP_LINK_TEXT"],
     Id = L["HELP_ID_TEXT"],
     Count = { 
@@ -24,7 +24,7 @@ Addon.ScriptReference.ItemProperties =
         Text = L["HELP_SUBTYPEID_TEXT"],
         Mptes = L["HELP_SUBTYPEID_NOTES"]
     },
-    EquipLoc = L["HELP_EQUIPLOC_HTML"],
+    EquipLoc = L["HELP_EQUIPLOC_TEXT"],
     BindType = { 
         Text = L["HELP_BINDTYPE_TEXT"],
         Notes = L["HELP_BINDTYPE_NOTES"] 
