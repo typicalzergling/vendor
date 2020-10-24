@@ -51,6 +51,7 @@ local L = Addon:GetLocale()
 
 local Package = select(2, ...);
 local AddonName = select(1, ...);
+local RuleType = Addon.RuleType;
 
 local Extensions =
 {
@@ -280,7 +281,7 @@ local function validateRule(rdef)
     end
 
     -- Rule Type
-    if (not validateStringValue(rdef.Type, Addon.c_RuleType_Sell, Addon.c_RuleType_Keep)) then
+    if (not validateStringValue(rdef.Type, RuleType.SELL, RuleType.KEEP, RuleType.DELETE)) then
         return false, string.format("The rule (%s) has an invalid 'Type' field", rdef.Id);
     end
 

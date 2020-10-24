@@ -14,6 +14,12 @@ function BlockList:Create(_listType, _profile)
 end
 
 function BlockList:Add(itemId)
+    -- Validate ItemId
+    if not Addon:IsItemIdValid(itemId) then
+        Addon:Debug("Invalid Item ID: %s", tostring(itemId))
+        return false
+    end
+
     local list = self.profile:GetList(self.listType);
     if (not list[itemId]) then
         list[itemId] = true;
@@ -21,17 +27,11 @@ function BlockList:Add(itemId)
         self.profile:SetList(self.listType, list);
     end
 
-    -- Validate ItemId
-    if not Addon:IsItemIdValid(itemId) then
-        Addon:Debug("Invalid Item ID: %s", tostring(itemId))
-        return false
-    end
-
     -- If it was in the other list, remove it.
     if self.listType == Addon.c_AlwaysSellList then
          -- Remove from Never Sell list
-        local other =self.profile:GetList(Addon.c_NeverSellList);
-        if (other[idemId]) then
+        local other = self.profile:GetList(Addon.c_NeverSellList);
+        if (other[itemId]) then
             other[itemId] = nil;
             self.profile:SetList(Addon.c_NeverSellList, other);
             Addon:DebugChannel("blocklists", "Removed %d to '%s' list", itemId, Addon.c_NeverSellList);
@@ -39,7 +39,7 @@ function BlockList:Add(itemId)
     elseif self.listType == Addon.c_NeverSellList then
         -- Remove from Always sell list
         local other =self.profile:GetList(Addon.c_AlwaysSellList);
-        if (other[idemId]) then
+        if (other[itemId]) then
             other[itemId] = nil;
             self.profile:SetList(Addon.c_AlwaysSellList, other);
             Addon:DebugChannel("blocklists", "Removed %d to '%s' list", itemId, Addon.c_AlwaysSellList);
