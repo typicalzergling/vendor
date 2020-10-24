@@ -27,10 +27,11 @@ function BlockList:Add(itemId)
         Addon:DebugChannel("blocklists", "Added %d to '%s' list", itemId, self.listType);
         self.profile:SetList(self.listType, list);
     end
+
     -- If it was in the other list, remove it.
     if self.listType == Addon.c_AlwaysSellList then
          -- Remove from Never Sell list
-        local other =self.profile:GetList(Addon.c_NeverSellList);
+        local other = self.profile:GetList(Addon.c_NeverSellList);
         if (other[itemId]) then
             other[itemId] = nil;
             self.profile:SetList(Addon.c_NeverSellList, other);

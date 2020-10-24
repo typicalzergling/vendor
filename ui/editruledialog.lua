@@ -157,7 +157,6 @@ function EditRuleDialog:UpdateMatches()
             ruleDef = nil;
         end
     end
-    print("ruleDef", ruleDef);
 
     if (ruleDef) then
         Addon:DebugChannel("editrule", "Building matches for rule '%s'", ruleDef.Id);
@@ -241,11 +240,9 @@ function EditRuleDialog:UpdateButtonState()
         local rule = self:GetRule();
         local canSave = true;
 
-        table.forEach(rule, print);
-
         -- If we aren't read-only then we can only save if we've got
         -- a valid name, type, and script.
-        print(isValidString(rule.Name));
+        
         if (not isValidString(rule.Name)) then
             canSave = false;
             Addon:DebugChannel("editrule", "Can't save rule because name is invalid");
