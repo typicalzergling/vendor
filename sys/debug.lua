@@ -13,12 +13,43 @@ local function debugEnsureVariable()
     };
 end
 
+function Addon:RegisterDebugChannel(channel)
+    debugEnsureVariable()
+    local name = string.lower(channel)
+    if _G[DEBUG_VARIABLE].channel[name] == nil then
+        _G[DEBUG_VARIABLE].channel[name] = false
+    end
+end
+
+function Addon:PrintDebugChannels()
+    debugEnsureVariable()
+    self:Print("Debug Channels:")
+    local keys = {}
+    for key in pairs(_G[DEBUG_VARIABLE].channel) do table.insert(keys, key) end
+    table.sort(keys)
+    for _, name in ipairs(keys) do
+        if _G[DEBUG_VARIABLE].channel[name] then
+            self:Print("%s # %s%s", GREEN_FONT_COLOR_CODE, string.lower(name), FONT_COLOR_CODE_CLOSE)
+        else
+            self:Print("    %s", string.lower(name))
+        end
+    end
+end
+
+function Addon:DisableAllDebugChannels()
+    debugEnsureVariable()
+    for name, enabled in pairs(_G[DEBUG_VARIABLE].channel) do
+        _G[DEBUG_VARIABLE].channel[name] = false
+    end
+    self:Print("All Debug Channels disabled.")
+end
+
 -- Explicity sets the state of a debug channel
 function Addon:SetDebugChannel(channel, enabled) 
     debugEnsureVariable()
     local name = string.lower(channel);
     if (not enabled) then
-        _G[DEBUG_VARIABLE].channel[name] = nil;
+        _G[DEBUG_VARIABLE].channel[name] = false;
     else 
         _G[DEBUG_VARIABLE].channel[name] = true;
     end
@@ -30,7 +61,7 @@ function Addon:ToggleDebug(channel)
     local enabled = self:IsDebugChannelEnabled(channel);
 
     if enabled then
-        _G[DEBUG_VARIABLE].channel[name] = nil;
+        _G[DEBUG_VARIABLE].channel[name] = false;
         self:Print("Debug channel %s disabled.", name)
     else
         _G[DEBUG_VARIABLE].channel[name] = true;

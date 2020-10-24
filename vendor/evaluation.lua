@@ -77,7 +77,7 @@ end
 function Addon:ClearResultCache(arg)
     if not arg then
         resultCache = {}
-        self:Debug("default", "Result Cache cleared.")
+        self:Debug("items", "Result Cache cleared.")
     else
         resultCache[arg] = nil
     end
@@ -95,7 +95,7 @@ function Addon:AddResultToCache(guid, result, ruleid, rule)
     cacheEntry.Rule = rule
 
     assert(guid ~= "")
-    --self:Debug("default", "Cached result: %s = %s", guid, tostring(result))
+    self:Debug("items", "Cached result: %s = %s", guid, tostring(result))
     resultCache[guid] = cacheEntry
 end
 

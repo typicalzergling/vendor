@@ -66,7 +66,7 @@ StaticPopupDialogs["VENDOR_CONFIRM_DELETE_RULE"] = {
     button1 = YES,
     button2 = NO,
     OnAccept = function(self, ruleId, dialog)
-        Addon:DebugChannel("editrule", "Deleting rule '%s'", ruleId);
+        Addon:Debug("editrule", "Deleting rule '%s'", ruleId);
         Addon.Rules.DeleteDefinition(self.data); 
         if (dialog.ruleId == ruleId) then
             dialog:Hide();
@@ -99,19 +99,19 @@ function EditRuleDialog:ValidateScript(script)
     self.statusMessage = nil;
 
     if (script and string.len(script) ~= 0) then
-        Addon:DebugChannel("editrule", "Attempting to validate  \"%s\"", script);
+        Addon:Debug("editrule", "Attempting to validate  \"%s\"", script);
         local valid, message = Addon:ValidateRuleAgainstBags(self.rulesEngine, script);
         if (not valid) then
-            Addon:DebugChannel("editrule", "Script is invalid '%s'", message);
+            Addon:Debug("editrule", "Script is invalid '%s'", message);
             self.status = ScriptStatus.INVALID;
             self.statusMessage = message;
         else
-            Addon:DebugChannel("editrule", "Script validated");
+            Addon:Debug("editrule", "Script validated");
             self.status = ScriptStatus.OK;
             self.statusMessage = nil;
         end
     else
-        Addon:DebugChannel("editrule", "There was not script to validate");
+        Addon:Debug("editrule", "There was not script to validate");
     end
     
     self:SetRuleStatus();
@@ -159,12 +159,12 @@ function EditRuleDialog:UpdateMatches()
     end
 
     if (ruleDef) then
-        Addon:DebugChannel("editrule", "Building matches for rule '%s'", ruleDef.Id);
+        Addon:Debug("editrule", "Building matches for rule '%s'", ruleDef.Id);
         matches = Addon:GetMatchesForRule(self.rulesEngine, ruleDef.Id, ruleDef.Script, params);
         if (not matches) then
             matches = {};
         end
-        Addon:DebugChannel("editrule", "Found %d matches for rule '%s'", table.getn(matches), ruleDef.Id);
+        Addon:Debug("editrule", "Found %d matches for rule '%s'", table.getn(matches), ruleDef.Id);
     end
 
     self.matchesPanel:SetMatches(matches);
@@ -245,12 +245,12 @@ function EditRuleDialog:UpdateButtonState()
         
         if (not isValidString(rule.Name)) then
             canSave = false;
-            Addon:DebugChannel("editrule", "Can't save rule because name is invalid");
+            Addon:Debug("editrule", "Can't save rule because name is invalid");
         end
 
         if (not isValidString(rule.Script) or (self.status ~= ScriptStatus.OK)) then
             canSave = false;
-            Addon:DebugChannel("editrule", "Can't save rule because script is invalid");
+            Addon:Debug("editrule", "Can't save rule because script is invalid");
         end
 
         if (not canSave) then
@@ -263,7 +263,7 @@ function EditRuleDialog:UpdateButtonState()
         if (hasCustomRuleId(rule.Id)) then
             self.delete:Enable();
         else
-            Addon:DebugChannel("editrule", "Cannot delete the rule because it hasn't been saved yet");
+            Addon:Debug("editrule", "Cannot delete the rule because it hasn't been saved yet");
             self.delete:Disable();
         end
     end
@@ -275,7 +275,7 @@ end
     ===========================================================================--]]
 function EditRuleDialog:HandleSave()
     if (not self:IsReadOnly()) then
-        Addon:DebugChannel("editrule", "Creating new custom rule definition");
+        Addon:Debug("editrule", "Creating new custom rule definition");
         local rule = self:GetRule();
         Addon.Rules.UpdateDefinition(rule);
         self:Hide();
@@ -390,7 +390,7 @@ function EditRuleDialog:SetRuleStatus(ruleStatus, statusMsg)
         return;
     end;
 
-    Addon:DebugChannel("editrule", "Setting dialog status '%d' with message '%s'", status, statusMessage or "");
+    Addon:Debug("editrule", "Setting dialog status '%d' with message '%s'", status, statusMessage or "");
 
     local statusInfo = RULE_STATUS_INFO[status];
     assert(statusInfo, string.format("Expected there to be information for status: %d", status));

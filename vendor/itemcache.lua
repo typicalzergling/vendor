@@ -53,7 +53,7 @@ end
 function Addon:ClearItemCache(arg)
     if not arg then
         itemCache = {}
-        Addon:Debug("default", "Item Cache cleared.")
+        Addon:Debug("items", "Item Cache cleared.")
     elseif type(arg) == "string" then
         itemCache[arg] = nil
     else

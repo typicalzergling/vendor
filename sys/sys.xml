@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="core.lua"/>
+    <Script file="api.lua"/>
+    <Script file="utils.lua"/>
+    <Script file="event.lua"/>
+    <Script file="locale.lua"/>
+    <Script file="hook.lua"/>
+    <Script file="console.lua"/>
+    <Script file="thread.lua"/>
+    <Script file="helpers.lua"/>
+
+    <!--@do-not-package@-->
+    <Script file="debug.lua"/>
+    <Script file="test.lua"/>
+    <!--@end-do-not-package@-->
+</Ui>

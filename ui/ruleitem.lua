@@ -86,7 +86,7 @@ function RuleItem:CreateParameters(params)
             frame:SetNumber(0);
             table.insert(self.params, frame);
         else
-            Addon:DebugRules("The parameter type '%s' is not valid, skipping parameter '%s'", param.Type, param.Name);
+            Addon:Debug("rules", "The parameter type '%s' is not valid, skipping parameter '%s'", param.Type, param.Name);
         end
     end
 end
@@ -137,7 +137,7 @@ function RuleItem:SetParamValue(name, value)
                     frame:SetNumber(value);
                 end
             else
-                Addon:DebugRules("The parameter type '%s' is unknown for '%s' - rule %s", frame.paramType, name, tostring(self.ruleId));
+                Addon:Debug("rules", "The parameter type '%s' is unknown for '%s' - rule %s", frame.paramType, name, tostring(self.ruleId));
             end
         end
     end
@@ -151,7 +151,7 @@ function RuleItem:GetParamValue(frame)
     if (frame.paramType == "NUMERIC") then
         return frame:GetNumber();
     else
-        Addon:DebugRules("The frame has an invalid parameter type '%s'", frame.paramType);
+        Addon:Debug("rules", "The frame has an invalid parameter type '%s'", frame.paramType);
     end
 end
 

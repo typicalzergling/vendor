@@ -5,9 +5,9 @@ ignore:
  - LICENSE.txt
  - CHANGES.txt
  - Vendor_Work.txt
- - ui/debugconfig.lua
  - sys/debug.lua
- - vendor/debug.lua
+ - debug.lua
+ - test/*
  - .release/*
  - *.sh
 

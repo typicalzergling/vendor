@@ -5,8 +5,32 @@ local L = Addon:GetLocale()
 
 -- Sets up all the console commands for debug functions in this file.
 function Addon:SetupDebugConsoleCommands()
-    self:AddConsoleCommand("debug", "Toggle Debug. Accepts channel argument, default otherwise", function(channel) if not channel then channel = "default" end; Addon:ToggleDebug(channel) end)
+    self:AddConsoleCommand("debug", "Toggle Debug. No args prints channels. Specify channel to toggle.",
+        function(channel)
+            if not channel then 
+                Addon:PrintDebugChannels()
+            else
+                Addon:ToggleDebug(channel)
+            end
+        end)
+    self:AddConsoleCommand("disabledebug", "Turn off all debug channels.", "DisableAllDebugChannels")
     self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
+
+    -- Register debug channels for the addon. Register must be done after addon loaded.
+    Addon:RegisterDebugChannel("autosell")
+    Addon:RegisterDebugChannel("blocklists")
+    Addon:RegisterDebugChannel("config")
+    Addon:RegisterDebugChannel("delete")
+    Addon:RegisterDebugChannel("extensions")
+    Addon:RegisterDebugChannel("items")
+    Addon:RegisterDebugChannel("itemproperties")
+    Addon:RegisterDebugChannel("profile")
+    Addon:RegisterDebugChannel("rules")
+    Addon:RegisterDebugChannel("rulesdialog")
+    Addon:RegisterDebugChannel("rulesengine")
+    Addon:RegisterDebugChannel("test")
+    Addon:RegisterDebugChannel("threads")
+    Addon:RegisterDebugChannel("tooltip")
 end
 
 -- Debug Commands
@@ -24,8 +48,6 @@ function Addon:DumpLink_Cmd(arg)
         self:Print("["..tostring(i).."] "..tostring(v))
     end
 end
-
-
 
 -- Beyond this point are debug related functions that are not packaged.
 function Addon:DumpTooltipItemProperties()
@@ -51,6 +73,10 @@ function Addon:DumpTooltipItemProperties()
 	end
 end
 
+function Addon:DumpItemPropertiesFromTooltip()
+	Addon:DumpTooltipItemProperties()
+end
+
 -- Sorted Pairs from Lua-Users.org. We use this for pretty-printing tables for debugging purposes.
 
 function Addon.__genOrderedIndex( t )
@@ -68,7 +94,6 @@ function Addon.orderedNext(t, state)
 	-- table being iterated.
 
 	local key = nil
-	--print("orderedNext: state = "..tostring(state) )
 	if state == nil then
 		-- the first time, generate the index
 		t.__orderedIndex = Addon.__genOrderedIndex( t )

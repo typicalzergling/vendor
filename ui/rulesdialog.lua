@@ -50,7 +50,7 @@ function RulesDialog:OnShow()
 end
 
 function RulesDialog:OnOk()
-    Addon:DebugRules("Applying new rule configuration")
+    Addon:Debug("rulesdialog", "Applying new rule configuration")
     self.SellPanel.list:UpdateConfig();
     self.KeepPanel.list:UpdateConfig();
 end
