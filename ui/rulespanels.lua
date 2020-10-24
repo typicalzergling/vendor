@@ -131,7 +131,7 @@ local function invoke(frame, method, ...)
 	if (type(fn) == "function") then
 		local result, msg = xpcall(fn, CallErrorHandler, frame, ...);
 		if (not result) then
-			Addon:Debug("Failed to invoke '%s': %s%s|r", method, RED_FONT_COLOR_CODE, msg);
+			Addon:Debug("default", "Failed to invoke '%s': %s%s|r", method, RED_FONT_COLOR_CODE, msg);
 		end
 	end
 end
@@ -147,7 +147,7 @@ function RulesPanel.onInit(self)
 			Mixin(self, obj);
 		end
 	else
-		Addon:Debug("Expected an implementation for RulesPanel");
+		Addon:Debug("default", "Expected an implementation for RulesPanel");
 	end
 
 	-- If a help text key was provied set the help text in the panel.

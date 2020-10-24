@@ -20,7 +20,7 @@ end
 -- Called to sync the values on our page with the config.
 --*****************************************************************************
 function Addon.ConfigPanel.Repair.Set(self)
-    Addon:DebugChannel("config", "Setting repair panel config");
+    Addon:Debug("config", "Setting repair panel config");
 
     local profile = Addon:GetProfile();
     self.AutoRepair.State:SetChecked(profile:GetValue(Addon.c_Config_AutoRepair));
@@ -31,7 +31,7 @@ end
 -- Push the values from our UI into the config
 --*****************************************************************************
 function Addon.ConfigPanel.Repair.Apply(self)
-    Addon:DebugChannel("config", "Applying repair options")
+    Addon:Debug("config", "Applying repair options")
 
     local profile = Addon:GetProfile();
     local autorepair = self.AutoRepair.State:GetChecked()

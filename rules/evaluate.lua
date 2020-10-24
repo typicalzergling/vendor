@@ -60,7 +60,7 @@ end
     |   inside of their bags.
     ===========================================================================--]]
 function Addon:ValidateRuleAgainstBags(engine, script)
-    Addon:Debug("Validating script against bags (no-cache)");
+    Addon:Debug("default", "Validating script against bags (no-cache)");
     local rulesEngine = engine or self:CreateRulesEngine();
     local message = "";
     local valid = withEachBagAndItem(

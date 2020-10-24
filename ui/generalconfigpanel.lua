@@ -27,7 +27,7 @@ end
 -- Called to handle a click on the "open rules" dialog
 --*****************************************************************************
 function GeneralPanel.OnOpenRules()
-    Addon:DebugChannel("config", "Showing rules dialog")
+    Addon:Debug("config", "Showing rules dialog")
     VendorRulesDialog:Show()
 end
 
@@ -36,7 +36,7 @@ end
 -- Called to handle a click on the Open Keybindings button
 --*****************************************************************************
 function GeneralPanel.OpenBindings()
-    Addon:DebugChannel("config", "Showing key bindings")
+    Addon:Debug("config", "Showing key bindings")
     Addon:OpenKeybindings_Cmd()
 end
 
@@ -67,7 +67,7 @@ end
 -- Called to push the settings from our page into the addon
 --*****************************************************************************
 function GeneralPanel.Apply(self)
-    Addon:DebugChannel("config", "Applying sell panel configuration");
+    Addon:Debug("config", "Applying sell panel configuration");
 
     local profile = Addon:GetProfile();
     profile:SetValue(SETTING_AUTOSELL, self.AutoSell.State:GetChecked())
@@ -94,7 +94,7 @@ end
 -- Pull the value from the config into the panel.
 --*****************************************************************************
 function GeneralPanel.Set(self)
-    Addon:DebugChannel("config", "Setting sell panel config");
+    Addon:Debug("config", "Setting sell panel config");
 
     local profile = Addon:GetProfile();
     self.AutoSell.State:SetChecked(profile:GetValue(SETTING_AUTOSELL));

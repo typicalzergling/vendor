@@ -62,7 +62,7 @@ function RuleManager:Create()
     local profile = Addon:GetProfile();
 
     -- Initialize the rule engine
-    local rulesEngine = Addon:CreateRulesEngine(Addon.IsDebugChannelEnabled and Addon:IsDebugChannelEnabled("rulesengine"));
+    local rulesEngine = Addon:CreateRulesEngine(Addon:IsDebugChannelEnabled("rulesengine"));
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
     rulesEngine:CreateCategory(RULE_TYPE_KEEP, RuleType.KEEP);
@@ -156,10 +156,10 @@ function RuleManager:ApplyConfig(categoryId, ruleType)
                 local ruleDef = Addon.Rules.GetDefinition(entry, ruleType);
                 if (ruleDef) then
                     if (ruleDef.needsMigration) then
-                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        Addon:Debug("default", "Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
                         self:SetRuleOutdatedState(ruleDef.Id, true);
                     else
-                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        Addon:Debug("default", "Adding rule '%s' [%s]", ruleDef.Id, ruleType);
                         rulesEngine:AddRule(categoryId, ruleDef);
                     end
                 else
@@ -169,10 +169,10 @@ function RuleManager:ApplyConfig(categoryId, ruleType)
                 local ruleDef = Addon.Rules.GetDefinition(entry.rule, ruleType);
                 if (ruleDef) then
                     if (ruleDef.needsMigration) then
-                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        Addon:Debug("default", "Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
                         self:SetRuleOutdatedState(ruleDef.Id, true);
                     else
-                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        Addon:Debug("default", "Adding rule '%s' [%s]", ruleDef.Id, ruleType);
                         rulesEngine:AddRule(categoryId, ruleDef, entry);
                     end
                 else

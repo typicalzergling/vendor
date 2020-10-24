@@ -39,7 +39,7 @@ function Addon:AutoDeleteItems()
 
                 -- If the cursor is holding anything then we can't pick it up to delete. Yield and check again next cycle.
                 while GetCursorInfo() do
-                    self:Debug("Cursor is holding something; waiting to delete..")
+                    self:Debug("default", "Cursor is holding something; waiting to delete..")
                     coroutine.yield()
                 end
 
@@ -77,7 +77,7 @@ function Addon.AutoConfirmDelete(link)
     if self:IsDeleting() then
         self:Print(L["MERCHANT_AUTO_CONFIRM_DELETE"], link)
         if link ~= currentDeletedItem then
-            self:Debug("Confirmation does not match item currently being deleted, aborting auto-confirm")
+            self:Debug("default", "Confirmation does not match item currently being deleted, aborting auto-confirm")
             return
         end
         -- TODO: Implement the auto-confirm.

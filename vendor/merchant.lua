@@ -8,7 +8,7 @@ local isMerchantOpen = false
 
 -- When the merchant window is opened, we will attempt to auto repair and sell.
 function Addon:OnMerchantShow()
-    self:Debug("Merchant opened.")
+    self:Debug("default", "Merchant opened.")
     isMerchantOpen = true
     local profile = self:GetProfile();
 
@@ -24,7 +24,7 @@ function Addon:OnMerchantShow()
 end
 
 function Addon:OnMerchantClosed()
-    self:Debug("Merchant closed.")
+    self:Debug("default", "Merchant closed.")
     isMerchantOpen = false
 end
 
@@ -104,7 +104,7 @@ function Addon:AutoSell()
                         return
                     end
 
-                    self:Debug("Cursor is holding something; waiting to sell..")
+                    self:Debug("default", "Cursor is holding something; waiting to sell..")
                     coroutine.yield()
                 end
 
@@ -214,7 +214,7 @@ local function findItemsToScrap(ruleManager)
             if (item) then
                 local scrap, ruleId, ruleName = ruleManager:CheckForScrap(item);
                 if (scrap) then
-                    Addon:Debug("Scrapping \"%s\" due to rule \"%s\" (%s) [%d]", item.Name, ruleName, ruleId, #items);
+                    Addon:Debug("default", "Scrapping \"%s\" due to rule \"%s\" (%s) [%d]", item.Name, ruleName, ruleId, #items);
                     table.insert(items, { item, bag, slot });
                 end
             end

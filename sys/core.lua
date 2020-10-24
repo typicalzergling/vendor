@@ -30,7 +30,6 @@ end
 Addon.Public = {}
 _G[AddonName] = Addon.Public
 
-
 --[[===========================================================================
     | Print
     | Most basic output to the user, used by most modules for user feedback.
@@ -128,6 +127,19 @@ function Addon:AddTerminateAction(action)
     table.insert(onTerminateActions, action)
 end
 
+
+-- Useful for any Addon to know.
+Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
+
+
+-- Debug Stubs. This is so you can include debug messages and then exclude
+-- Debug files from being packaged without having unnecessary code executing.
 -- No-Op debug messages. This will be overridden if debug.lua is included,
 -- but still exist if it doesn't, so calls to Debug wont' fail.
+Addon.IsDebug = false
 Addon.Debug = function () end
+Addon.ToggleDebug = function () end
+Addon.SetDebugChannel = function () end
+Addon.IsDebugChannelEnabled = function () end
+Addon.GetDebugSetting = function () end
+Addon.SetDebugSetting = function () end

@@ -50,7 +50,7 @@ function Addon:ClearTooltipResultCache()
     blocklist = nil
     ruleId = nil
     ruleName = nil
-    Addon:Debug("TooltipResultCache cleared.")
+    Addon:Debug("default", "TooltipResultCache cleared.")
 end
 
 function Addon:AddItemTooltipLines(tooltip, link)
@@ -68,7 +68,7 @@ function Addon:AddItemTooltipLines(tooltip, link)
 
         -- Mark it as the current cached item.
         itemLink = link
-        --self:Debug("Cached item for tooltip: "..link)
+        --self:Debug("default", "Cached item for tooltip: "..link)
     end
 
     -- Add lines to the tooltip we are scanning after we've scanned it.

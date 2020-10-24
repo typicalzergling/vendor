@@ -57,12 +57,12 @@ local function doSomeWork()
         -- if yes, clean it up
         if coroutine.status(threads[1].thread) == "dead" then
             local name = threads[1].name
-            Addon:Debug("Thread %s is complete.", name)
+            Addon:Debug("default", "Thread %s is complete.", name)
             table.remove(threads, 1)
             -- execute all callbacks for this thread
             if threadCallbacks[name] then
                 for _, cb in pairs(threadCallbacks[name]) do
-                    Addon:Debug("Executing callback for thread %s", name)
+                    Addon:Debug("default", "Executing callback for thread %s", name)
                     cb()
                 end
             end
@@ -100,7 +100,7 @@ function Addon:AddThread(func, name)
     obj.thread = coroutine.create(func)
     obj.name = name
     table.insert(threads, obj)
-    self:Debug("Added thread: %s",tostring(name))
+    self:Debug("default", "Added thread: %s",tostring(name))
 
     -- "wake up" the listener
     processingFrame:Show()
@@ -128,7 +128,7 @@ function Addon:RemoveThread(name)
     for k, v in pairs(threads) do
         if v.name == name then
             table.remove(threads, k)
-            self:Debug("Removed thread: %s", tostring(name))
+            self:Debug("default", "Removed thread: %s", tostring(name))
         end
     end
 end
