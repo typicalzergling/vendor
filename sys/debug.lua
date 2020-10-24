@@ -13,7 +13,7 @@ end
 
 -- Toggles the debug channel (changing it to on it was off, or on it was off)
 function Addon:ToggleDebug(channel)
-    local name = string.upper(channel);
+    local name = string.lower(channel);
     local enabled = self:IsDebugChannelEnabled(channel);
 
     if enabled then
@@ -28,7 +28,7 @@ end
 -- Explicity sets the state of a debug channel
 function Addon:SetDebugChannel(channel, enabled) 
     self:DebugEnsureVariable();
-    local name = string.upper(channel);
+    local name = string.lower(channel);
     if (not enabled) then
         _G[DEBUG_VARIABLE].channel[name] = nil;
     else 
@@ -39,7 +39,7 @@ end
 -- Checks if a channel enabled
 function Addon:IsDebugChannelEnabled(channel)
     self:DebugEnsureVariable();
-    local name = string.upper(channel);
+    local name = string.lower(channel);
     return (_G[DEBUG_VARIABLE].channel[name]) == true;
 end
 
@@ -51,7 +51,7 @@ function Addon:GetDebugSetting(key)
         return;
     end
 
-    return _G[DEBUG_VARIABLE].settings[string.upper(key)];
+    return _G[DEBUG_VARIABLE].settings[string.lower(key)];
 end
 
 -- Saves a named debug setting key must be a string.
@@ -62,5 +62,5 @@ function Addon:SetDebugSetting(key, value)
         return;
     end
 
-    _G[DEBUG_VARIABLE].settings[string.upper(key)] = value
+    _G[DEBUG_VARIABLE].settings[string.lower(key)] = value
 end

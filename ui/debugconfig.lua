@@ -5,11 +5,10 @@ local L = Addon:GetLocale()
 
 -- Sets up all the console commands for debug functions in this file.
 function Addon:SetupDebugConsoleCommands()
-    self:AddConsoleCommand("debug", "Toggle Debug", function() Addon:ToggleDebug("default") end)
+    self:AddConsoleCommand("debug", "Toggle Debug. Accepts channel argument, default otherwise", function(channel) if not channel then channel = "default" end; Addon:ToggleDebug(channel) end)
     self:AddConsoleCommand("debugrules", "Toggle Debug Rules", function() Addon:ToggleDebug("rules") end)
     self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
 end
-
 
 -- Debug Commands
 function Addon:DumpLink_Cmd(arg)
