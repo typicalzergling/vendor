@@ -36,6 +36,7 @@ function Addon:OnInitialize()
     -- Set up events
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
+    self:RegisterEvent("ITEM_LOCK_CHANGED", "OnItemLockChanged")
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
 	if (not Addon.IsClassic) then
@@ -45,6 +46,9 @@ function Addon:OnInitialize()
     -- Tooltip hooks
     self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
     self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
+    self:PreHookFunction(GameTooltip, "SetBagItem", "OnGameTooltipSetBagItem")
+    self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
+    self:PreHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
 
     -- Print version and load confirmation to console.
     -- Suppressing for now to reduce spam.

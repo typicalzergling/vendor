@@ -90,7 +90,6 @@ function Addon:AutoSell()
         local sellThrottle = profile:GetValue(Addon.c_Config_SellThrottle)
 
         -- Loop through every bag slot once.
-        print("do bags", NUM_BAG_SLOTS);
         for bag=0, NUM_BAG_SLOTS do
             for slot=1, GetContainerNumSlots(bag) do                
 

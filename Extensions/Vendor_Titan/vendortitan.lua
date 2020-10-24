@@ -10,7 +10,7 @@ _G[AddonName] = Addon
 Addon.id = "VendorTitan"
 Addon.addon = AddonName
 Addon.button_label = L["TITAN_BUTTON_LABEL"]
-Addon.version = GetAddOnMetadata(AddonName, "Version")
+Addon.version = GetAddOnMetadata("Vendor", "Version")
 Addon.author = GetAddOnMetadata(AddonName, "Author")
 
 Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC)
@@ -21,7 +21,7 @@ function Addon:Load()
         id = Addon.id,
         version = Addon.version,
         category = "General",
-        menuText = L["TITAN_MENU_TEXT"],
+        menuText = L["TITAN_MENU_TEXT"] .. " - " .. Addon.version,
         buttonTextFunction = "VendorTitan_GetButtonText",
         tooltipTitle = L["TITAN_TOOLTIP_TITLE"],
         tooltipTextFunction = "VendorTitan_GetTooltipText",

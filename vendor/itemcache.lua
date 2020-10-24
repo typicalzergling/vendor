@@ -10,27 +10,80 @@ local L = Addon:GetLocale()
 
 local itemCache = {}
 
-function Addon:GetCachedItem(link)
-    assert(link)
-    item = itemCache[link]
-    if item then
-        return item
+-- Arg is a location or a guid
+function Addon:AddItemToCache(item, arg)
+    assert(item)
+    assert(arg)
+    if type(arg) == "table" then
+        itemCache[C_Item.GetItemGUID(arg)] = item
+    elseif type(arg) == "string" then
+        itemCache[arg] = item
     else
-        return nil
+        error("Invalid input into AddItemToCache")
     end
 end
 
-function Addon:ClearItemCache()
-    itemCache = {}
-    Addon:Debug("Item Cache cleared.")
+-- Create this from location. For speed going to assume correctness.
+-- location = ItemLocation:CreateFromBagAndSlot(bag, slot)
+
+-- Input is a location or a guid
+function Addon:GetItemFromCache(arg)
+    assert(arg)
+    if type(arg) == "table" then
+        return itemCache[C_Item.GetItemGUID(arg)]
+    elseif type(arg) == "string" then
+        return itemCache[arg]
+    else
+        error("Invalid input into AddItemToCache")
+    end
+end
+
+-- Pass in the location or guid, not the item
+function Addon:IsItemCached(arg)
+    assert(arg)
+    if arg == "table" then
+        return not not itemCache[C_Item.GetItemGUID(arg)]
+    elseif arg == "string" then
+        return not not itemCache[arg]
+    else
+        error("Invalid input into IsItemCached")
+    end
+end
+
+function Addon:ClearItemCache(arg)
+    if not arg then
+        itemCache = {}
+        Addon:Debug("Item Cache cleared.")
+    elseif type(arg) == "string" then
+        itemCache[arg] = nil
+    else
+        itemCache[C_Item.GetItemGUID(arg)] = nil
+    end
     Addon:ClearTooltipResultCache()
 end
 
-function Addon:AddItemToCache(item)
-    assert(item and item.Link and type(item) == "table" and type(item.Link) == "string")
-    itemCache[item.Link] = item
+-- Input is a location or a guid
+function Addon:GetItemFromCache(arg)
+    assert(arg)
+    if type(arg) == "table" then
+        return itemCache[C_Item.GetItemGUID(arg)]
+    elseif type(arg) == "string" then
+        return itemCache[arg]
+    else
+        error("Invalid input into AddItemToCache")
+    end
 end
 
-function Addon:IsItemCached(link)
-    return not not itemCache[link]
+-- Fires when equipping items. This can change their properties, so both caches must be cleared.
+function Addon:OnItemLockChanged(arg1, arg2)
+    local location = nil
+    if not arg2 then
+        location = ItemLocation:CreateFromEquipmentSlot(arg1)
+    else
+        location = ItemLocation:CreateFromBagAndSlot(arg1, arg2)
+    end
+    if not location then return end
+    local guid = C_Item.GetItemGUID(location)
+    Addon:ClearItemCache(guid)
+    Addon:ClearResultCache(guid)
 end

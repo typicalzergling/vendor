@@ -85,7 +85,6 @@ Rules.SystemRules =
             end,
         Order = 1300,
     },
-    --@end-retail@
 
     {
         Id = "sell.uncommongear",
@@ -125,6 +124,49 @@ Rules.SystemRules =
         Params = ITEM_LEVEL_PARAMS,
         Order = 1600,
     },
+    --@end-retail@
+
+    --@non-retail@
+    {
+        Id = "sell.uncommongear_classic",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
+        Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
+        ScriptText = "IsEquipment and Quality == UNCOMMON and Level < {itemlevel}",
+        Script = function()
+                return IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
+            end,
+        Params = ITEM_LEVEL_PARAMS,
+        Order = 1401,
+    },
+
+    {
+        Id = "sell.raregear_classic",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_RAREGEAR"],
+        Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
+        ScriptText = "IsEquipment and Quality == RARE and Level < {itemlevel}",
+        Script = function()
+                return IsEquipment and (Quality == RARE) and (Level < RULE_PARAMS.ITEMLEVEL);
+            end,
+        Params = ITEM_LEVEL_PARAMS,
+        Order = 1501,
+    },
+
+    {
+        Id = "sell.epicgear_classic",
+        Type = SELL_RULE,
+        Name = L["SYSRULE_SELL_EPICGEAR"],
+        Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
+        ScriptText = "IsEquipment and IsSoulbound and Quality == EPIC and Level < {itemlevel}",
+        Script = function()
+                return IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
+            end,
+        Params = ITEM_LEVEL_PARAMS,
+        Order = 1601,
+    },
+
+    --@end-non-retail@
 
     --*****************************************************************************
     -- Keep Rules
