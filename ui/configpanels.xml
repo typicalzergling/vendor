@@ -449,36 +449,4 @@
             </OnLoad>
         </Scripts>
     </Frame>
-
-    <!--@do-not-package@-->
-    <!--
-        VendorDebugConfigPanel
-            The debugging options for vendor, on used by active developers not available to
-            release versions
-    -->
-    <Frame name="VendorDebugConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
-        <Frames>
-            <Frame name="$parent.Debug" parentKey="Debug" inherits="Vendor.Options.CheckTemplate">
-                <Size x="250" y="54"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.HelpText" relativePoint="BOTTOMLEFT" x="16" y="-24"/>
-                    <Anchor point="RIGHT" x="-16" />
-                </Anchors>
-            </Frame>
-            <Frame name="$parent.DebugRules" parentKey="DebugRules" inherits="Vendor.Options.CheckTemplate">
-                <Size x="250" y="54"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.Debug" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
-                    <Anchor point="RIGHT" x="-16" />
-                </Anchors>
-            </Frame>
-        </Frames>
-        <Scripts>
-            <OnLoad>
-                Vendor.ConfigPanel:AddPanel(self, "Debug");
-            </OnLoad>
-        </Scripts>
-    </Frame>
-    <!--@end-do-not-package@-->
-
 </Ui>

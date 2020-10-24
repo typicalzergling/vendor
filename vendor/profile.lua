@@ -1,5 +1,5 @@
 local AddonName, Addon = ...;
-local DEFAULT_PROFILE = "-[DEFUALT]-";
+local DEFAULT_PROFILE = "-[DEFAULT]-";
 
 local SELL_LIST = Addon.c_Config_SellAlways;
 local KEEP_LIST = Addon.c_Config_SellNever;
@@ -322,7 +322,7 @@ function Profile:SetRules(ruleType, config)
 
 	--@debug@
 	error(string.format("There is not a rule type '%s'", ruleType));
-	--@end--debug@
+	--@end-debug@
 end
 
 -- Retrieves the specified block list from the profile.

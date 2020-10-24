@@ -62,7 +62,7 @@ function RuleManager:Create()
     local profile = Addon:GetProfile();
 
     -- Initialize the rule engine
-    local rulesEngine = Addon:CreateRulesEngine(Addon:IsDebugChannelEnabled("rulesengine"));
+    local rulesEngine = Addon:CreateRulesEngine(Addon.IsDebugChannelEnabled and Addon:IsDebugChannelEnabled("rulesengine"));
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
     rulesEngine:CreateCategory(RULE_TYPE_KEEP, RuleType.KEEP);
