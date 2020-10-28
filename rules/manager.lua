@@ -156,30 +156,30 @@ function RuleManager:ApplyConfig(categoryId, ruleType)
                 local ruleDef = Addon.Rules.GetDefinition(entry, ruleType);
                 if (ruleDef) then
                     if (ruleDef.needsMigration) then
-                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        Addon:Debug("rules", "Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
                         self:SetRuleOutdatedState(ruleDef.Id, true);
                     else
-                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        Addon:Debug("rules", "Adding rule '%s' [%s]", ruleDef.Id, ruleType);
                         rulesEngine:AddRule(categoryId, ruleDef);
                     end
                 else
-                    Addon:DebugRules("Rule '%s' [%s] was not found", entry, ruleType);
+                    Addon:Debug("rules", "Rule '%s' [%s] was not found", entry, ruleType);
                 end
             elseif ((type(entry) == "table") and (entry.rule)) then
                 local ruleDef = Addon.Rules.GetDefinition(entry.rule, ruleType);
                 if (ruleDef) then
                     if (ruleDef.needsMigration) then
-                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        Addon:Debug("rules", "Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
                         self:SetRuleOutdatedState(ruleDef.Id, true);
                     else
-                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        Addon:Debug("rules", "Adding rule '%s' [%s]", ruleDef.Id, ruleType);
                         rulesEngine:AddRule(categoryId, ruleDef, entry);
                     end
                 else
-                    Addon:DebugRules("Rule '%s' [%s] was not found", entry.rule, ruleType);
+                    Addon:Debug("rules", "Rule '%s' [%s] was not found", entry.rule, ruleType);
                 end
             else
-                Addon:DebugRules("Unknown configuration entry found (%s)", type(entry));
+                Addon:Debug("rules", "Unknown configuration entry found (%s)", type(entry));
             end
         end
     end
@@ -200,7 +200,7 @@ function RuleManager:Update()
     -- Step 1: We want to add all of the locked rules into the
     --         engine as those are always added independent of the config.
     for _, ruleDef in ipairs(Addon.Rules.GetLockedRules()) do
-        Addon:DebugRules("Adding LOCKED rule '%s' [%s]", ruleDef.Id, ruleDef.Type);
+        Addon:Debug("rules", "Adding LOCKED rule '%s' [%s]", ruleDef.Id, ruleDef.Type);
         if (ruleDef.Type == Addon.c_RuleType_Sell) then
             rulesEngine:AddRule(RULE_TYPE_LOCKED_SELL, ruleDef);
         elseif (ruleDef.Type == Addon.c_RuleType_Keep) then
@@ -228,7 +228,7 @@ end
 --*****************************************************************************
 function RuleManager:Run(object, ...)
     local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
-    Addon:DebugRules("Evaluated \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
+    Addon:Debug("rules", "Evaluated \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
     if (result) then
         if ((categoryId == RULE_TYPE_KEEP) or (categoryId == RULE_TYPE_LOCKED_KEEP) or (categoryId == RULE_TYPE_SCRAP)) then
             return false, ruleId, name, RuleType.KEEP;

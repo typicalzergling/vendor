@@ -40,7 +40,7 @@ local function MigrateData()
         local oldRuleConfig = Vendor_RulesConfig
         local newRuleConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
         Addon.Config:migrateSettings(oldRuleConfig, newRuleConfig)
-        Addon:Debug("Rules config has been migrated.")
+        Addon:Debug("config", "Rules config has been migrated.")
     else
         -- We shouldn't ever get here, but just in case...
         Addon.Print(L["DATA_MIGRATION_ERROR"])
@@ -119,11 +119,11 @@ function Addon.Config:Create()
         notifyChanges =
             function(self)
                 if ((self.suspend == 0) and self.changes) then
-                    Addon:Debug("Notifying Changes");
+                    Addon:Debug("config", "Notifying Changes");
                     for _, callback in ipairs(self.handlers) do
                         local status, result = pcall(callback, self)
                         if (not status) then
-                            Addon:Debug("Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
+                            Addon:Debug("config", "Config: Changed callback failed: \"%s%s%s\"", RED_FONT_COLOR_CODE, result, FONT_COLOR_CODE_CLOSE)
                         end
                     end
                     self.changes = false
@@ -135,20 +135,20 @@ function Addon.Config:Create()
 
                 if (not Vendor_Settings) then
                     Vendor_Settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
-                    Addon:Debug("Settings have been set from defaults.")
+                    Addon:Debug("config", "Settings have been set from defaults.")
                 elseif (Vendor_Settings and (Vendor_Settings.version ~= Addon.DefaultConfig.Settings.version)) then
                     local oldSettings = Vendor_Settings
                     local newSettings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings)
                     self:migrateSettings(oldSettings, newSettings)
                     Vendor_Settings = newSettings
                     Vendor_SettingsPerCharacter = nil
-                    Addon:Debug("Settings have been migrated.")
+                    Addon:Debug("config", "Settings have been migrated.")
                 end
 
                 -- If rules config doesn't exist, initialize it with the defaults.
                 if (not Vendor_RulesConfig) then
                     Vendor_RulesConfig = Addon.DeepTableCopy(Addon.DefaultConfig.Rules)
-                    Addon:Debug("Rules config has been set from defaults.")
+                    Addon:Debug("config", "Rules config has been set from defaults.")
 
                 -- Migration can get complex, logic is moved out of this area.
                 elseif (NeedsMigration()) then
@@ -338,18 +338,18 @@ end
 -- another, both of the tables will be non-nil so you can access them directly.
 --*****************************************************************************
 function Addon.Config:migrateSettings(oldSettings, newSettings)
-    Addon:Debug("[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
+    Addon:Debug("config", "[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
     -- Migrate the sell_never to the new version
     if (rawget(oldSettings, NEVER_SELL)) then
-        Addon:Debug("[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
+        Addon:Debug("config", "[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
         rawset(newSettings, NEVER_SELL, rawget(oldSettings, NEVER_SELL))
     end
 
     if (rawget(oldSettings, ALWAYS_SELL)) then
-        Addon:Debug("[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
+        Addon:Debug("config", "[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
         rawset(newSettings, ALWAYS_SELL, rawget(oldSettings, ALWAYS_SELL))
     end
-    Addon:Debug("[Config] +Setting migration complete")
+    Addon:Debug("config", "[Config] +Setting migration complete")
 end
 
 --*****************************************************************************
@@ -357,24 +357,24 @@ end
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
 function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
-    Addon:Debug("[Config]: +Begin migrating rules from v=%d to v=%d", oldSettings.version, newSettings.version)
+    Addon:Debug("config", "[Config]: +Begin migrating rules from v=%d to v=%d", oldSettings.version, newSettings.version)
 
     if (oldSettings.version == 3) and (newSettings.version == 4) then
         if (rawget(oldSettings, KEEP_RULES)) then
-            Addon:Debug("[Config]: |         Copying keep rules with with %d items", #rawget(oldSettings, KEEP_RULES))
+            Addon:Debug("config", "[Config]: |         Copying keep rules with with %d items", #rawget(oldSettings, KEEP_RULES))
             rawset(newSettings, KEEP_RULES, rawget(oldSettings, KEEP_RULES))
-            Addon:Debug("[Config]: |         adding equipmentset keep rule");
+            Addon:Debug("config", "[Config]: |         adding equipmentset keep rule");
             table.insert(rawget(newSettings, KEEP_RULES), "equipmentset");
         end
 
         if (rawget(oldSettings, SELL_RULES)) then
-            Addon:Debug("[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
+            Addon:Debug("config", "[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
             rawset(newSettings, SELL_RULES, rawget(oldSettings, SELL_RULES))
         end
     end
 
     if (oldSettings.version < 5) then
-        Addon:Debug("[Config]: |         Need to migrate rule ids")
+        Addon:Debug("config", "[Config]: |         Need to migrate rule ids")
 
         local function migrateIds(prefix, list)
             local l = {};
@@ -393,7 +393,7 @@ function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
         rawset(newSettings, KEEP_RULES, migrateIds("keep.", rawget(oldSettings, KEEP_RULES)));
     end
 
-    Addon:Debug("[Config] +Rules migration complete");
+    Addon:Debug("config", "[Config] +Rules migration complete");
 end
 
 --*****************************************************************************

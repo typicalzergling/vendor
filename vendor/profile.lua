@@ -1,5 +1,5 @@
 local AddonName, Addon = ...;
-local DEFAULT_PROFILE = "-[DEFUALT]-";
+local DEFAULT_PROFILE = "-[DEFAULT]-";
 
 local SELL_LIST = Addon.c_Config_SellAlways;
 local KEEP_LIST = Addon.c_Config_SellNever;
@@ -51,7 +51,7 @@ function Profile:Create(_profileName)
 		},
 	};
 
-	Addon:DebugChannel("profile", "Created new profile '%s'", _profileName);
+	Addon:Debug("profile", "Created new profile '%s'", _profileName);
 	table.insert(Vendor_Profiles, savedVariable);
     local instance = {
 		profile = savedVariable,
@@ -101,7 +101,7 @@ function Profile:DeleteProfile(profileName)
 	end
 
 	if (index > 0) then
-		Addon:DebugChannel("profile", "Deleting profile '%s' (index=%d)", profileName, index);
+		Addon:Debug("profile", "Deleting profile '%s' (index=%d)", profileName, index);
 		table.remove(Vendor_Profiles, index);
 	end
 end
@@ -119,7 +119,7 @@ function Profile:GetDefaultProfile()
 	profile.profile.rules = Addon.DeepTableCopy(Addon.DefaultConfig.Rules);
 	profile.profile.settings[SELL_LIST] = nil;
 	profile.profile.settings[KEEP_LIST] = nil;
-	Addon:DebugChannel("profile", "Created default profile");
+	Addon:Debug("profile", "Created default profile");
 	return profile;
 end
 
@@ -152,7 +152,7 @@ function Profile:CreateDefaultFromOldConfig()
 	--Vendor_RulesConfig = nil;
 	--Vendor_Settings = nil;
 
-	Addon:DebugChannel("profile", "Create default profile from existing settings");
+	Addon:Debug("profile", "Create default profile from existing settings");
 	return profile;
 end
 
@@ -186,16 +186,16 @@ local function invoke(self, index, rank, observer)
 	if (type(observer) == "function") then
 		local r, msg = xpcall(observer, CallErrorHandler, self);
 		if (not r) then
-			Addon:DebugChannel("profile", "%s|    |r%d) [%d] Error: %s%s|r", GREEN_FONT_COLOR_CODE, index, rank, RED_FONT_COLOR_CODE, msg);
+			Addon:Debug("profile", "%s|    |r%d) [%d] Error: %s%s|r", GREEN_FONT_COLOR_CODE, index, rank, RED_FONT_COLOR_CODE, msg);
 		else
-			Addon:DebugChannel("profile", "%s|    |r%d) [%s] %sSuccess|r", GREEN_FONT_COLOR_CODE, index, rank,  GREEN_FONT_COLOR_CODE);
+			Addon:Debug("profile", "%s|    |r%d) [%s] %sSuccess|r", GREEN_FONT_COLOR_CODE, index, rank,  GREEN_FONT_COLOR_CODE);
 		end
 	end
 end
 
 
 local function sendChangeEvents(self)
-	Addon:DebugChannel("profile", "%s+  |rStarting change notifications [%d handlers]", GREEN_FONT_COLOR_CODE, table.getn(profileObservers));
+	Addon:Debug("profile", "%s+  |rStarting change notifications [%d handlers]", GREEN_FONT_COLOR_CODE, table.getn(profileObservers));
 
 	if (self.timer) then
 		self.timer:Cancel();
@@ -208,7 +208,7 @@ local function sendChangeEvents(self)
 			invoke(self, i, observer.rank, observer.callback)
 		end
 	end
-	Addon:DebugChannel("profile", "%s+  |rCompleted change notifications", GREEN_FONT_COLOR_CODE)
+	Addon:Debug("profile", "%s+  |rCompleted change notifications", GREEN_FONT_COLOR_CODE)
 end	
 
 
@@ -276,7 +276,7 @@ function Profile:SetValue(settingName, value)
 
 	if (self.profile.settings[settingName] ~= value) then
 		self.profile.settings[settingName] = value;
-		Addon:DebugChannel("profile", "Profile '%s' has changed setting '%s'", self.profile.name, settingName);
+		Addon:Debug("profile", "Profile '%s' has changed setting '%s'", self.profile.name, settingName);
 		self:NotifyChanges();
 	end
 end
@@ -305,24 +305,24 @@ function Profile:SetRules(ruleType, config)
 
 	if (ruleType == RuleType.SELL) then
 		self.profile.rules[SELL_RULES] = table.copy(config);
-		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
+		Addon:Debug("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
 		self:NotifyChanges();
 		return;
 	elseif (ruleType == RuleType.KEEP) then
 		self.profile.rules[KEEP_RULES] = table.copy(config);
-		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
+		Addon:Debug("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
 		self:NotifyChanges();
 		return;
 	elseif (ruleType == RuleType.DELETE) then 
 		self.profile.rules[DELETE_RULES] = table.copy(config);
-		Addon:DebugChannel("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
+		Addon:Debug("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
 		self:NotifyChanges();
 		return;
 	end
 
 	--@debug@
 	error(string.format("There is not a rule type '%s'", ruleType));
-	--@end--debug@
+	--@end-debug@
 end
 
 -- Retrieves the specified block list from the profile.

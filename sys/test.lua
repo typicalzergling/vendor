@@ -23,7 +23,7 @@ function Addon:AddTest(name, category, setup, exec, cleanup)
     test.Setup = setup
     test.Cleanup = cleanup
     table.insert(testlist, test)
-    self:Debug("Added Test: %s", test.Name)
+    self:Debug("test", "Added Test: %s", test.Name)
 end
 
 -- Persisted list of failures
@@ -149,35 +149,35 @@ end
 Addon:AddTest(
     "Add Tests",
     "Test", 
-    function () Addon:Debug("In Setup") end,
-    function () Addon:Debug("In Execution") end,
-    function () Addon:Debug("In Cleanup") end) 
+    function () Addon:Debug("test", "In Setup") end,
+    function () Addon:Debug("test", "In Execution") end,
+    function () Addon:Debug("test", "In Cleanup") end) 
 
 Addon:AddTest(
     "Fail Setup",
     "Test", 
     function () error("Setup failed") end,
-    function () Addon:Debug("In Execution") end,
-    function () Addon:Debug("In Cleanup") end) 
+    function () Addon:Debug("test", "In Execution") end,
+    function () Addon:Debug("test", "In Cleanup") end) 
 
 Addon:AddTest(
     "Fail Execution",
     "Test", 
-    function () Addon:Debug("In Setup") end,
+    function () Addon:Debug("test", "In Setup") end,
     function () error("Execution failed") end,
-    function () Addon:Debug("In Cleanup") end) 
+    function () Addon:Debug("test", "In Cleanup") end) 
 
 Addon:AddTest(
     "Fail Cleanup",
     "Test", 
-    function () Addon:Debug("In Setup") end,
-    function () Addon:Debug("In Execution") end,
+    function () Addon:Debug("test", "In Setup") end,
+    function () Addon:Debug("test", "In Execution") end,
     function () error("Cleanup failed") end) 
 
 Addon:AddTest(
     "Fail Execution & Cleanup",
     "Test", 
-    function () Addon:Debug("In Setup") end,
+    function () Addon:Debug("test", "In Setup") end,
     function () error("Execution failed") end,
     function () error("Cleanup failed") end) 
 
@@ -185,5 +185,5 @@ Addon:AddTest(
     "Test Nil Cleanup",
     "Test", 
     nil,
-    Addon:Debug("In Execution"),
+    Addon:Debug("test", "In Execution"),
     nil) 

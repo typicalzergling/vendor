@@ -60,10 +60,10 @@ local function invokePanelMethod(method, panel, ...)
     if (type(fn) == "function") then
         local result, msg = xpcall(fn, CallErrorHandler, panel, ...);
         if (not result) then
-            Addon:DebugChannel("config", "Failed to invoke '%s' on '%s': %s%s|r", method, panel.PanelType, RED_FONT_COLOR_CODE, msg);
+            Addon:Debug("config", "Failed to invoke '%s' on '%s': %s%s|r", method, panel.PanelType, RED_FONT_COLOR_CODE, msg);
             return false;
         else
-            Addon:DebugChannel("config", "Succesfully invoked '%s' on '%s'", method, panel.PanelType);
+            Addon:Debug("config", "Succesfully invoked '%s' on '%s'", method, panel.PanelType);
         end
     end
 
@@ -83,7 +83,7 @@ local function applySubclass(panel, name)
 end
 
 function Addon.ConfigPanel:Save()
-    Addon:DebugChannel("config", "Apply panel settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Apply panel settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Apply", panel);
     end
@@ -94,7 +94,7 @@ function Addon.ConfigPanel.OnShow(self)
 end
 
 function Addon.ConfigPanel:SetDefaults()
-    Addon:DebugChannel("config", "Apply default settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Apply default settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Default", panel);
     end
@@ -103,14 +103,14 @@ function Addon.ConfigPanel:SetDefaults()
 end
 
 function Addon.ConfigPanel:Cancel()
-    Addon:DebugChannel("config", "Cancel panel settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Cancel panel settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Cancel", panel);
     end
 end
 
 function Addon.ConfigPanel:Refresh()
-    Addon:DebugChannel("config", "Refresh panel settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Refresh panel settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Set", panel);
     end
@@ -132,7 +132,7 @@ function Addon.ConfigPanel:AddPanel(panel, name)
     InterfaceOptions_AddCategory(panel);    
     table.insert(configPanels, panel);
 
-    Addon:DebugChannel("config", "Add panel '%s' [%s] (%d panels)", title, name, table.getn(configPanels));
+    Addon:Debug("config", "Add panel '%s' [%s] (%d panels)", title, name, table.getn(configPanels));
 end
 
 --*****************************************************************************
@@ -153,7 +153,7 @@ function Addon.ConfigPanel.InitMainPanel(self, name)
     self.cancel = function() Addon.ConfigPanel:Cancel() end;
 
     table.insert(configPanels, self);
-    Addon:DebugChannel("config", "Initialize main panel: %s", name);
+    Addon:Debug("config", "Initialize main panel: %s", name);
 end
 
 -- Must make this public.

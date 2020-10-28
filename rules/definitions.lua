@@ -413,20 +413,20 @@ end
     | CheckMigration:
     ========================================================================--]]
 function Rules.CheckMigration()
-    Addon:Debug("%s+|r Checking for rule definition migration", YELLOW_FONT_COLOR_CODE);
+    Addon:Debug("rules", "%s+|r Checking for rule definition migration", YELLOW_FONT_COLOR_CODE);
     if (Vendor_CustomRuleDefinitions) then
         for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
             ruleDef.Locked = false;
             if (not ruleDef.needsMigration) then
                 local riv = ruleDef.interfaceversion or 0;
                 if ((INTERFACE_VERSION >=SHADOWLANDS_VERSION) and (riv < SHADOWLANDS_VERSION)) then
-                    Addon:Debug("%s| |rrule '%s' needs migration (iv=%s)", GREEN_FONT_COLOR_CODE, ruleDef.Id, riv or "<none>");
+                    Addon:Debug("rules", "%s| |rrule '%s' needs migration (iv=%s)", GREEN_FONT_COLOR_CODE, ruleDef.Id, riv or "<none>");
                     ruleDef.needsMigration = true;
                 end
             end
         end
     end
-    Addon:Debug("+ Completed rule defintion migration");
+    Addon:Debug("rules", "+ Completed rule defintion migration");
 end
 
 --[[===========================================================================

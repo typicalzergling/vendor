@@ -175,7 +175,7 @@ function Addon.RuleFunctions.tostring(...)
 end
 
 function Addon.RuleFunctions.print(...)
-    return Addon:DebugRules(...)
+    return Addon:Debug("rules", ...)
 end
 --@end-do-not-package@
 

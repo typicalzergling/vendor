@@ -16,14 +16,15 @@ end
 function BlockList:Add(itemId)
     -- Validate ItemId
     if not Addon:IsItemIdValid(itemId) then
-        Addon:Debug("Invalid Item ID: %s", tostring(itemId))
+        Addon:Debug("blocklists", "Invalid Item ID: %s", tostring(itemId))
         return false
     end
+
 
     local list = self.profile:GetList(self.listType);
     if (not list[itemId]) then
         list[itemId] = true;
-        Addon:DebugChannel("blocklists", "Added %d to '%s' list", itemId, self.listType);
+        Addon:Debug("blocklists", "Added %d to '%s' list", itemId, self.listType);
         self.profile:SetList(self.listType, list);
     end
 
@@ -34,7 +35,7 @@ function BlockList:Add(itemId)
         if (other[itemId]) then
             other[itemId] = nil;
             self.profile:SetList(Addon.c_NeverSellList, other);
-            Addon:DebugChannel("blocklists", "Removed %d to '%s' list", itemId, Addon.c_NeverSellList);
+            Addon:Debug("blocklists", "Removed %d to '%s' list", itemId, Addon.c_NeverSellList);
         end
     elseif self.listType == Addon.c_NeverSellList then
         -- Remove from Always sell list
@@ -42,7 +43,7 @@ function BlockList:Add(itemId)
         if (other[itemId]) then
             other[itemId] = nil;
             self.profile:SetList(Addon.c_AlwaysSellList, other);
-            Addon:DebugChannel("blocklists", "Removed %d to '%s' list", itemId, Addon.c_AlwaysSellList);
+            Addon:Debug("blocklists", "Removed %d to '%s' list", itemId, Addon.c_AlwaysSellList);
         end
     end
 
@@ -53,7 +54,7 @@ function BlockList:Remove(itemId)
     local list = self.profile:GetList(self.listType);
     if (list[itemId]) then
         list[itemId] = nil;
-        Addon:DebugChannel("BlockLists", "Removed %d from '%s' list", itemId, self.listType);
+        Addon:Debug("blocklists", "Removed %d from '%s' list", itemId, self.listType);
         self.profile:SetList(self.listType, list);
         return true;
     end
@@ -173,16 +174,12 @@ function Addon:RemoveInvalidEntriesFromBlocklist(listType)
 
     -- Remove said bad entries.
     for _, id in pairs (invalid) do
-        self:Debug("Removing invalid ItemID: %s from %s list.", tostring(id), tostring(listType))
+        Addon:Debug("blocklists", "Removing invalid ItemID: %s from %s list.", tostring(id), tostring(listType))
         list:Remove(id)
     end
 end
 
 function Addon:RemoveInvalidEntriesFromAllBlocklists()
-    local success, msg = pcall(
-    function () 
     self:RemoveInvalidEntriesFromBlocklist(self.c_NeverSellList)
     self:RemoveInvalidEntriesFromBlocklist(self.c_AlwaysSellList)
-    end)
-    Addon:Print("Success = %s, msg = %s", tostring(success), tostring(msg))
 end

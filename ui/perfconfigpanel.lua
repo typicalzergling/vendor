@@ -14,7 +14,7 @@ local TIME_MULT = 10
 -- Called to sync the values on our page with the config.
 --*****************************************************************************
 function Addon.ConfigPanel.Perf.Set(self)
-    Addon:DebugChannel("config", "Setting performance panel config")
+    Addon:Debug("config", "Setting performance panel config")
 
     local profile = Addon:GetProfile();
     local time = math.max(MIN_TIME_THROTTLE, math.min(MAX_TIME_THROTTLE, profile:GetValue(Addon.c_Config_ThrottleTime) or 0))
@@ -42,7 +42,7 @@ end
 -- Called to push the values from page into the config
 --*****************************************************************************
 function Addon.ConfigPanel.Perf.Apply(self)
-    Addon:DebugChannel("config", "Applying performance options");
+    Addon:Debug("config", "Applying performance options");
 
     local profile = Addon:GetProfile();
     profile:SetValue(Addon.c_Config_SellThrottle, self.SellThrottle.Value:GetValue())

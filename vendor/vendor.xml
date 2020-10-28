@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="profile.lua"/>
+    <Script file="items.lua"/>
+    <Script file="blocklists.lua"/>
+    <Script file="tooltipscan.lua"/>
+    <Script file="itemproperties.lua"/>
+    <Script file="itemcache.lua"/>	
+    <Script file="evaluation.lua"/>	
+    <Script file="merchant.lua"/>
+    <Script file="delete.lua"/>
+    <Script file="releasenotes.lua"/>
+</Ui>
