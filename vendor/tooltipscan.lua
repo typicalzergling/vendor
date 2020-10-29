@@ -50,8 +50,8 @@ function Addon:TooltipHasRedText(bag, slot)
 
     -- Never use Gametoolip as other addons can taint it.
     -- Eg "Better transmog and wardrobe" addon adding red text that you havn't collected the full set of an appearance.
-    tooltipName = "VendorScanningTip"
-    tooltip = scanningtip
+    local tooltipName = "VendorScanningTip"
+    local tooltip = scanningtip
     tooltip:ClearLines()
     if bag and slot then
         tooltip:SetBagItem(bag, slot)
