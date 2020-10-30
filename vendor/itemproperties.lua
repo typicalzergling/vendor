@@ -210,10 +210,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
     item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
 
-    -- We can't use GameTooltip as other addons could easily taint the results by adding red text before we get to scan it.
-    if not tooltip then
-        item.TooltipHasRedText = self:TooltipHasRedText(bag, slot)
-    end
+    item.TooltipHasRedText = self:TooltipHasRedText(bag, slot, link)
 
     Addon:AddItemToCache(item)
     return item, count
