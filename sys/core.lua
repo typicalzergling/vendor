@@ -70,7 +70,7 @@ local function lifetimeEventHandler(frame, event, ...)
 
         -- Safe call all initialization functions.
         for i, h in ipairs(onInitializeActions) do
-            local status, err = pcall(h, ...)
+            local status, err = xpcall(h, CallErrorHandler, ...)
             if not status then
                 Addon:Print("Error executing initialize function: %s", tostring(err))
             end
@@ -93,7 +93,7 @@ local function lifetimeEventHandler(frame, event, ...)
     -- This happens on client exit, disconnect, and logout.
     elseif event == "PLAYER_LOGOUT" then
         for i, h in ipairs(onTerminateActions) do
-            pcall(h, ...)
+            xpcall(h, CallErrorHandler, ...)
             -- We don't bother printing errors becuase nobody is here to see them.
             -- We could try to add them to saved vars, perhaps, but who will bother looking there?
         end
@@ -117,14 +117,22 @@ addonLifetimeFrame:RegisterEvent("PLAYER_LOGOUT")
     | use "event.lua" to handle events for the addon, and use the OnInitialize
     | function for addon setup. These are intended for Skeleton framework use.
     =======================================================================--]]
-function Addon:AddInitializeAction(action)
+function Addon:AddInitializeAction(action, ...)
     assert(type(action) == "function", "Initialize Action must be a function.")
-    table.insert(onInitializeActions, action)
+    if (select("#", ...) > 0) then
+        table.insert(onInitializeActions, GenerateClosure(action, ...));
+    else
+        table.insert(onInitializeActions, action)
+    end
 end
 
-function Addon:AddTerminateAction(action)
+function Addon:AddTerminateAction(action, ...)
     assert(type(action) == "function", "Terminate Action must be a function.")
-    table.insert(onTerminateActions, action)
+    if (select("#", ...) > 0) then
+        table.insert(onTerminateActions, GenerateClosure(action, ...));
+    else
+        table.insert(onTerminateActions, action)
+    end
 end
 
 
