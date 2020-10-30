@@ -46,7 +46,7 @@ function Addon:ImportTooltipTextRight(tooltip, bag, slot)
     return importTooltipTextToTable(tooltip, "Right", bag, slot)
 end
 
-function Addon:TooltipHasRedText(bag, slot)
+function Addon:TooltipHasRedText(bag, slot, link)
 
     -- Never use Gametoolip as other addons can taint it.
     -- Eg "Better transmog and wardrobe" addon adding red text that you havn't collected the full set of an appearance.
@@ -55,6 +55,8 @@ function Addon:TooltipHasRedText(bag, slot)
     tooltip:ClearLines()
     if bag and slot then
         tooltip:SetBagItem(bag, slot)
+    elseif link then
+        tooltip:SetHyperlink(link)
     else
         error("Invalid arguments to TooltipHasRedText")
     end
