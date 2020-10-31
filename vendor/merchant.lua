@@ -30,6 +30,7 @@ end
 
 -- For checking to make sure merchant window is open prior to selling anything.
 function Addon:IsMerchantOpen()
+    if Addon.IsDebug and Addon:GetDebugSetting("simulate") then return true end
     return isMerchantOpen
 end
 
@@ -124,7 +125,11 @@ function Addon:AutoSell()
                     end
 
                     -- Still open, so OK to sell it.
-                    UseContainerItem(bag, slot)
+                    if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
+                        UseContainerItem(bag, slot)
+                    else
+                        self:Print("Simulating selling of: %s", tostring(item.Link))
+                    end
                     local netValue = item.UnitValue * itemCount
                     self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue))
                     numSold = numSold + 1

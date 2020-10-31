@@ -52,8 +52,13 @@ function Addon:AutoDeleteItems()
                 if result == 2 then
                     currentDeletedItem = item.Link
                     self:Print(L["DELETE_DELETING_ITEM"], tostring(currentDeletedItem))
-                    PickupContainerItem(bag, slot)
-                    DeleteCursorItem()
+                    if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
+                        PickupContainerItem(bag, slot)
+                        DeleteCursorItem()
+                    else
+                        self:Print("Simulating deletion of: %s", tostring(item.Link))
+                    end
+
                     currentDeletedItem = nil
                     numDeleted = numDeleted + 1
                     
