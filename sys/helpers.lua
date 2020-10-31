@@ -41,11 +41,13 @@ end
 -- Add table.forEach
 if (type(table.forEach) ~= "function") then
     table.forEach = function(t, c, ...) 
-        assert(type(t) == "table");
-        assert(type(c) == "function");
-        if (t and table.getn(t)) then
-            for k, v in pairs(t) do
-                xpcall(c, CallErrorHandler, v, k, ...);
+        if (t) then
+            assert(type(t) == "table");
+            assert(type(c) == "function");
+            if (t and table.getn(t)) then
+                for k, v in pairs(t) do
+                    xpcall(c, CallErrorHandler, v, k, ...);
+                end
             end
         end
     end;
@@ -94,5 +96,21 @@ if (type(table.copy) ~= "function") then
     table.copy = function(t)
         assert(type(t) == "table");
         return Addon.DeepTableCopy(t);
+    end
+end
+
+-- Add table.merge
+if (type(table.merge) ~= "function") then
+    table.merge = function(...)
+        local r = {};
+        local args = { ... };
+        for _, s in ipairs(args) do 
+            if (type(s) == "table") then
+                for k, v in pairs(s) do
+                    r[k] = v;
+                end
+            end
+        end
+        return r;
     end
 end

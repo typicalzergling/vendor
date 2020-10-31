@@ -8,6 +8,7 @@
     <Script file="console.lua"/>
     <Script file="thread.lua"/>
     <Script file="helpers.lua"/>
+    <Script file="savedvariable.lua"/>
 
     <!--@do-not-package@-->
     <Script file="debug.lua"/>
