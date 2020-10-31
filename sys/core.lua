@@ -135,10 +135,8 @@ function Addon:AddTerminateAction(action, ...)
     end
 end
 
-
 -- Useful for any Addon to know.
 Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
-
 
 -- Debug Stubs. This is so you can include debug messages and then exclude
 -- Debug files from being packaged without having unnecessary code executing.
