@@ -65,7 +65,7 @@ Addon.SavedVariable = {
 		local var = self:GetOrCreate();
 		assert(type(callback) == "function");
 		for key, value in pairs(var) do
-			xpcall(callback, CallErrroHandler, value, key, ...);
+			xpcall(callback, CallErrorHandler, value, key, ...);
 		end
 	end
 };
