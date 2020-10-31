@@ -206,9 +206,8 @@ function Addon:GetItemProperties(arg1, arg2)
         end
     end
 
-    -- Determine if this is an already-collected item
-    -- For now limit to toys, but it could be other types, like Recipes
-    if item.IsToy then
+    -- Determine if this is an already-collected item, which should only be usable items.
+    if item.IsUsable then
         if self:IsItemAlreadyKnownInTooltip(tooltip, bag, slot) then
             item.IsAlreadyKnown = true
         end

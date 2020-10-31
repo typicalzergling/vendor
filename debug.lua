@@ -77,6 +77,12 @@ function Addon:DumpItemPropertiesFromTooltip()
 	Addon:DumpTooltipItemProperties()
 end
 
+Addon:MakePublic(
+    "DumpItemPropertiesFromTooltip",
+    function () Addon:DumpItemPropertiesFromTooltip() end,
+    "DumpItemPropertiesFromTooltip",
+    "Dumps properties for item over toolip.")
+
 -- Sorted Pairs from Lua-Users.org. We use this for pretty-printing tables for debugging purposes.
 
 function Addon.__genOrderedIndex( t )
