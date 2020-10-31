@@ -125,8 +125,7 @@ Rules.SystemRules =
         Order = 1600,
     },
     --@end-retail@
-
-    --@non-retail@
+    --[===[@non-retail@
     {
         Id = "sell.uncommongear_classic",
         Type = SELL_RULE,
@@ -165,8 +164,7 @@ Rules.SystemRules =
         Params = ITEM_LEVEL_PARAMS,
         Order = 1601,
     },
-
-    --@end-non-retail@
+    --@end-non-retail@]===]
 
     --*****************************************************************************
     -- Keep Rules
@@ -297,23 +295,6 @@ Rules.SystemRules =
         Order = 1050,
     },
     --@end-retail@
-
-    --*****************************************************************************
-    -- Scrap rules
-    --*****************************************************************************
-
-    --@retail@
-    {
-        Id = "scrap.scrapable",
-        Type = SCRAP_RULE,
-        Name = "Scrappable Items",
-        Description = "Scrappable Items",
-        ScriptText = "IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains(\"Scrapable\")",
-        Script = function() return (IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains("Scrapable")) end,
-        Order = 3000,
-    },
-    --@end-retail@
-
 };
 
 -- While creating this closure sort the rules table by order, this prevents us from
