@@ -16,6 +16,7 @@ function Addon:SetupDebugConsoleCommands()
     self:AddConsoleCommand("disabledebug", "Turn off all debug channels.", "DisableAllDebugChannels")
     self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
     self:AddConsoleCommand("simulate", "Simulates deleting and selling items, without actually doing it.", "ToggleSimulate_Cmd")
+    self:AddConsoleCommand("cache", "Clears all caches.", "ClearCache_Cmd")
 
     -- Register debug channels for the addon. Register must be done after addon loaded.
     Addon:RegisterDebugChannel("autosell")
@@ -53,6 +54,12 @@ end
 function Addon:ToggleSimulate_Cmd()
     Addon:SetDebugSetting("simulate", not Addon:GetDebugSetting("simulate"))
     Addon:Print("Simulate set to %s", tostring(Addon:GetDebugSetting("simulate")))
+end
+
+function Addon:ClearCache_Cmd()
+    Addon:ClearItemCache()
+    Addon:ClearResultCache()
+    Addon:Print("Item cache and result cache cleared.")
 end
 
 -- Beyond this point are debug related functions that are not packaged.
