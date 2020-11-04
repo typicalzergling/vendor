@@ -4,36 +4,20 @@
 	<Script file="ruleslist.lua"/>
 
 
-    <EditBox name="Vendor_Rule_Numeric_Param" virtual="true" visble="false" inherits="InputBoxTemplate" letters="4" numeric="true" autoFocus="false" multiLne="false" enabled="false" parentKey="params">
-        <Size x="68" y="18"/>
+    <Frame name="Vendor_Rule_Numeric_Param" virtual="true" visble="false" inherits="Vendor_Edit" letters="4">
+        <Size x="80" y="28"/>
         <Layers>
             <Layer level="ARTWORK">
-                <FontString parentKey="label" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormalSmall" text="ITEM_LEVEL_LABEL">
-                    <Size x="1" y="10"/>
+                <FontString parentKey="Label" justifyH="RIGHT" justifyV="MIDDLE" inherits="GameFontNormalSmall">
+                    <Size x="250" y="14"/>
                     <Anchors>
-                        <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" y="2"/>
-                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" y="2"/>
+                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="-4"/>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="-4"/>
                     </Anchors>
                 </FontString>
             </Layer>
         </Layers>
-        <Scripts>
-			<OnEscapePressed function="EditBox_ClearFocus"/>
-			<OnEnterPressed function="EditBox_ClearFocus"/>
-            <OnDisable>
-                self:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-                self.label:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-	            self:SetAlpha(0.5);
-	            self.label:SetAlpha(0.5)
-            </OnDisable>
-            <OnEnable>
-                self:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-                self.label:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	            self:SetAlpha(1.0);
-	            self.label:SetAlpha(1.0)
-            </OnEnable>
-        </Scripts>
-    </EditBox>
+    </Frame>
 
     <Button name="Vendor_Tooltip_Button" virtual="true">
         <Scripts>
@@ -52,31 +36,37 @@
         </Scripts>
     </Button>
 
-   	<ScrollFrame name="Vendor_Rules_List" virtual="true" inherits="FauxScrollFrameTemplate">
+   	<Frame name="Vendor_Rules_List" virtual="true" inherits="Vendor_FrameBorder">
         <KeyValues>
-            <KeyValue key="itemHeight" value="64" type="number"/>
+            <KeyValue key="Implementation" value="RulesList" type="string"/>
         </KeyValues>
 		<Layers>
-			<Layer level="BORDER" textureSubLevel="-2">
-				<Texture parentKey="scrollbarBackground">
-					<Color r="0" g="0" b="0" a="0.65"/>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
+			<Layer level="OVERLAY">
 				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="-8"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+						<Anchor point="TOPLEFT" x="16" y="-16"/>
+						<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
+		<Frames>
+			<ScrollFrame parentKey="List" inherits="UIPanelScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="6"/>
+				</Anchors>
+				<ScrollChild>
+					<Frame>
+						<Anchor point="TOPLEFT"/>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
 		<Scripts>
-			<OnLoad>Vendor.RulesList.OnLoad(self);</OnLoad>
-			<OnShow>self:OnShow(self);</OnShow>
-			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
+			<OnLoad>Vendor.LoadImplementation(self);</OnLoad>
 		</Scripts>
-	</ScrollFrame>
+	</Frame>
 
 	<!-- -->
 	<Button name="Vendor_Rule_Template" virtual="true">
@@ -125,7 +115,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture parentKey="selectedBackground" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.2" alphaMode="ADD" hidden="true">
+				<Texture parentKey="Selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.2" alphaMode="ADD" hidden="true">
 					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
 				</Texture>
 			</Layer>
@@ -207,4 +197,59 @@
             <OnLeave>self:OnMouseLeave()</OnLeave>
 		</Scripts>
 	</Button>
+
+	<Button name="Vendor_Base_RuleItem" virtual="true">
+		<Size x="1" y="24"/>
+		<KeyValues>
+			<KeyValue key="collpasedHeight" value="24" type="number"/>
+		</KeyValues>
+		<Layers>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="Hover" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1"/>
+						<Anchor point="BOTTOMRIGHT" x="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.2" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1"/>
+						<Anchor point="BOTTOMRIGHT" x="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+                <Texture parentKey="Check" file="Interface\RAIDFRAME\ReadyCheck-Ready" hidden="true">
+                    <Size x="20" y="20"/>
+                   <Anchors>
+                        <Anchor point="TOPLEFT" x="4" y="-2"/>
+                    </Anchors>
+                </Texture>
+				<FontString parentKey="Name" inherits="GameFontHighlightLarge" justifyH="LEFT" JustifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="TOP"/>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Check" relativePoint="TOPRIGHT"  x="8"/>
+						<Anchor point="BOTTOM" relativeKey="$parent.Check" relativePoint="BOTTOM"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Params" hidden="true">
+				<Size x="1" y="10"/>
+				<Anchors>
+					<Anchor point="LEFT" x="8"/>
+					<Anchor point="RIGHT" x="-8"/>
+					<Anchor point="TOP" relativeKey="$parent.Name" relativePoint="BOTTOM"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Button>
+
+	<Button name="Vendor_RuleItem_Simple" virtual="true" inherits="Vendor_Base_RuleItem"/>
+
 </Ui>

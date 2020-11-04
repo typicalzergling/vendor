@@ -97,8 +97,20 @@ function EditHost:SetText(text)
 	self.Edit:SetText(text);
 end
 
+function EditHost:SetNumber(number)
+	assert(type(number) == "number");
+	assert(self.Edit:IsNumeric());
+	self.Edit.lastText = tostring(number);
+	self.Edit:SetNumber(number);
+end
+
 function EditHost:GetText()
 	return self.Edit:GetText();
+end
+
+function EditHost:GetNumber()
+	assert(self.Edit:IsNumeric());
+	return self.Edit:GetNumber();
 end
 
 function EditHost:RegisterCallback(event, ...)

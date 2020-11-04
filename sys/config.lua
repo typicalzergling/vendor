@@ -93,6 +93,10 @@ Addon.DefaultConfig.Rules =
         "sell.oldfood",
         "sell.knowntoys",
     },
+
+    delete = {
+        -- Empty
+    }
 }
 
 -- NOTE: Per character isn't fully implemented

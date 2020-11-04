@@ -26,25 +26,28 @@ end
 
 local Profile = {}
 local profileObservers = {};
-
-Vendor_Profiles = Vendor_Profiles or {};
-Vendor_ActiveProfile = Vendor_ActiveProfile or nil;
+local profileSavedVariable = Addon.SavedVariable:new("Profiles");
+local activeProfileVariable = Addon.SavedVariable:new("ActiveProfile");
 
 --[[ Static Methods ]]--
 
 -- Create a new instance of a profile object.
 function Profile:Create(_profileName)
 	if (Profile:HasProfile(_profileName)) then
-		error(string.format("Cannot create a profile with an already existing name: %s", _profileName));
+		error(string.format("Cannot create a profile with an already existing name: '%s'", _profileName));
 	end
 
-	local savedVariable={
+	local savedVar={
 		name=_profileName,
-		id=_profileName,
+		id=string.lower(_profileName),
 		version=PROFILE_VERSION,
 		interfaceversion=INTERFACE_VERSION,
 		settings={},
-		rules={},
+		rules={
+			sell = {},
+			delete = {},
+			keep = {},
+		},
 		lists={
 			[SELL_LIST] = {},
 			[KEEP_LIST] = {},
@@ -52,9 +55,10 @@ function Profile:Create(_profileName)
 	};
 
 	Addon:Debug("profile", "Created new profile '%s'", _profileName);
-	table.insert(Vendor_Profiles, savedVariable);
+	profileSavedVariable:Set(savedVar.id, savedVar);
     local instance = {
-		profile = savedVariable,
+		key = savedVar.id,
+		cache = savedVar,
     };
 
    setmetatable(instance, self);
@@ -64,45 +68,34 @@ end
 
 -- Checks if a profile with the specified name exists, if the profile does 
 -- not exist then it will return false.
-function Profile:HasProfile(profileName)
-	for _, profile in ipairs(Vendor_Profiles) do 
-		if (profile.name == profileName) then
-			return true;
-		end
-	end
-	return false;
+function Profile:HasProfile(profileId)
+	local profile = profileSavedVariable:Get(string.lower(profileId));
+	return (type(profile) == "table");
 end
 
 -- Checks for the existence of a profile with the specified name, if the name 
 -- isn't found this return nil, otherwise it returns a profile object.
-function Profile:GetProfile(profileName)
-	for _, _profile in ipairs(Vendor_Profiles) do 
-		if (_profile.name == profileName) then
-			local instance = {
-				profile = _profile,
-			};
+function Profile:GetProfile(profileId)
+	local profile = profileSavedVariable:Get(string.lower(profileId));
+	if (type(profile) == "table") then
+		local instance = {
+			key = profile.id,
+			cache = profile
+		};
 
-			setmetatable(instance, self)
-			self.__index = self
-			return instance
-		end
+		setmetatable(instance, self)
+		self.__index = self
+		return instance
 	end
 
 	return nil;
 end
 
-function Profile:DeleteProfile(profileName)
-	local index = -1;
-
-	for i, profile in ipairs(Vendor_Profiles) do 
-		if (profile.name == profileName) then
-			index = i;
-		end
-	end
-
-	if (index > 0) then
-		Addon:Debug("profile", "Deleting profile '%s' (index=%d)", profileName, index);
-		table.remove(Vendor_Profiles, index);
+function Profile:DeleteProfile(profileId)
+	local profile = profileSavedVariable:Get(string.lower(profileId));
+	if (type(profile) == "table") then
+		Addon:Debug("profile", "Deleting profile '%s'", profile.name);
+		profileSavedVariable:Set(profile.id, nil);
 	end
 end
 
@@ -115,11 +108,13 @@ function Profile:GetDefaultProfile()
 	end
 
 	local profile = Profile:Create(DEFAULT_PROFILE);
-	profile.profile.settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings);
-	profile.profile.rules = Addon.DeepTableCopy(Addon.DefaultConfig.Rules);
-	profile.profile.settings[SELL_LIST] = nil;
-	profile.profile.settings[KEEP_LIST] = nil;
-	Addon:Debug("profile", "Created default profile");
+	profile.cache.settings = Addon.DeepTableCopy(Addon.DefaultConfig.Settings);
+	profile.cache.rules = table.copy(Addon.DefaultConfig.Rules);
+	profile.cache.settings[SELL_LIST] = nil;
+	profile.cache.settings[KEEP_LIST] = nil;
+
+	profileSavedVariable:Set(profile.key, profile.cache);
+	Addon:Debug("profile", "Created default profile (%s)", profile.key);
 	return profile;
 end
 
@@ -130,29 +125,30 @@ function Profile:CreateDefaultFromOldConfig()
 
 	-- Migrate settings variable.
 	if (Vendor_Settings) then
-		profile.profile.settings = table.copy(Vendor_Settings);
-		profile.profile.settings[SELL_LIST] = nil;
-		profile.profile.settings[KEEP_LIST] = nil;
-		profile.profile.settings["debugrules"] = nil;
-		profile.profile.settings["debug"] = nil;
-		profile.profile.settings.version = nil;
-		profile.profile.settings.interfaceversion = nil;
-		profile.profile.lists[KEEP_LIST] = table.copy(Vendor_Settings[KEEP_LIST]);
-		profile.profile.lists[SELL_LIST] = table.copy(Vendor_Settings[SELL_LIST]);
+		profile.cache.settings = table.copy(Vendor_Settings);
+		profile.cache.settings[SELL_LIST] = nil;
+		profile.cache.settings[KEEP_LIST] = nil;
+		profile.cache.settings["debugrules"] = nil;
+		profile.cache.settings["debug"] = nil;
+		profile.cache.settings.version = nil;
+		profile.cache.settings.interfaceversion = nil;
+		profile.cache.lists[KEEP_LIST] = table.copy(Vendor_Settings[KEEP_LIST]);
+		profile.cache.lists[SELL_LIST] = table.copy(Vendor_Settings[SELL_LIST]);
 	end
 
 	-- Migrate rule configuation varible.
 	if (Vendor_RulesConfig) then
-		profile.profile.rules = table.copy(Vendor_RulesConfig);
-		profile.profile.rules.version = nil;
-		profile.profile.rules.interfaceversion = nil;
+		profile.cache.rules = table.copy(Vendor_RulesConfig);
+		profile.cache.rules.version = nil;
+		profile.cache.rules.interfaceversion = nil;
 	end
 
 	-- Clear the existing saved variables.
 	--Vendor_RulesConfig = nil;
 	--Vendor_Settings = nil;
 
-	Addon:Debug("profile", "Create default profile from existing settings");
+	Addon:Debug("profile", "Created default profile from existing settings");
+	profileSavedVariable:Set(profile.key, profile.cache);
 	return profile;
 end
 
@@ -225,7 +221,11 @@ end
 
 -- Gets the name of this profile.
 function Profile:GetName()
-	return self.profile.name;
+	return self.cache.name;
+end
+
+function Profile:GetId()
+	return self.key;
 end
 
 -- Changes the name of this profile.
@@ -234,11 +234,8 @@ function Profile:SetName(profileName)
 		error("The profile name must be a string");
 	end
 
-	if (Profile:HasProfile(profileName)) then
-		error(string.format("A profile with the specified name '%s' already exists.", profileName));
-	end
-
-	self.profile.name = profileName;
+	self.cache.name = profileName;
+	profileSavedVariable:Set(self.key, self.cache);
 	self:notifyChanges();
 end
 
@@ -247,14 +244,14 @@ end
 -- In debug we verify the setting name is valid.
 function Profile:GetValue(settingName)
 	--@debug@
-	if (not key_exists(self.profile.settings, settingName) or
+	if (not table.hasKey(Addon.DefaultConfig.Settings, settingName) or
 		(settingName == KEEP_LIST) or
 		(settignName == SELL_LIST)) then
 		error(string.format("There is no setting '%s'", settingName));
 	end
 	--@end-debug@
 
-	local val = self.profile.settings[settingName];
+	local val = self.cache.settings[settingName];
 	if (val == nil) then
 		val = Addon.DefaultConfig.Settings[settingName];
 	end
@@ -267,34 +264,46 @@ end
 -- In debug we verify the setting name is valid.
 function Profile:SetValue(settingName, value)
 	--@debug@--
-	if (not key_exists(Addon.DefaultConfig.Settings, settingName) or
+	if (not table.hasKey(Addon.DefaultConfig.Settings, settingName) or
 		(settingName == KEEP_LIST) or
 		(settignName == SELL_LIST)) then
 		error(string.format("There is no setting '%s'", settingName));
 	end
 	--@end-debug@--
 
-	if (self.profile.settings[settingName] ~= value) then
-		self.profile.settings[settingName] = value;
-		Addon:Debug("profile", "Profile '%s' has changed setting '%s'", self.profile.name, settingName);
+	if (self.cache.settings[settingName] ~= value) then
+		self.cache.settings[settingName] = value;
+		Addon:Debug("profile", "Profile '%s' has changed setting '%s'", self.cache.name, settingName);
+		profileSavedVariable:Set(self.key, self.cache);
 		self:NotifyChanges();
 	end
+end
+
+-- Maps the external rule type to our internal rule key name
+local function RuleTypeToRuleKey(ruleType)
+	if (ruleType == RuleType.SELL) then
+		return SELL_RULES;
+	elseif (ruleType == RuleType.KEEP) then
+		return KEEP_RULES;
+	elseif (ruleType == RuleType.DELETE) then
+		return DELETE_RULES;
+	end 
+
+	return nil;
 end
 
 -- Retreive the list of enabled rules (and their parameters) for
 -- this profile.
 function Profile:GetRules(ruleType)
-	if (ruleType == RuleType.SELL) then
-		return table.copy(self.profile.rules[SELL_RULES] or {});
-	elseif (ruleType == RuleType.KEEP) then
-		return table.copy(self.profile.rules[KEEP_RULES] or {});
-	elseif (ruleType == RuleType.DELETE) then
-		return table.copy(self.profile.rules[DELETE_RULES] or {});
+	local key = RuleTypeToRuleKey(ruleType);
+	if (key) then
+		return table.copy(self.cache.rules[key] or {});
 	end
 
 	--@debug@
-	error(string.format("There is not rule type '%s'", ruleType));
+	error(string.format("Unable to retrive rules '%s' as it is invalid.", ruleType));
 	--@end-debug@
+	return {};
 end
 
 -- Called to change the value of a rules list.
@@ -303,19 +312,11 @@ function Profile:SetRules(ruleType, config)
 		error("The rule config must be a table");
 	end
 
-	if (ruleType == RuleType.SELL) then
-		self.profile.rules[SELL_RULES] = table.copy(config);
+	local key = RuleTypeToRuleKey(ruleType);
+	if (key) then
+		self.cache.rules[key] = table.copy(config);
 		Addon:Debug("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
-		self:NotifyChanges();
-		return;
-	elseif (ruleType == RuleType.KEEP) then
-		self.profile.rules[KEEP_RULES] = table.copy(config);
-		Addon:Debug("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
-		self:NotifyChanges();
-		return;
-	elseif (ruleType == RuleType.DELETE) then 
-		self.profile.rules[DELETE_RULES] = table.copy(config);
-		Addon:Debug("profile", "Profile '%s', %s rule changed", self:GetName(), ruleType);
+		profileSavedVariable:Set(self.key, self.cache);
 		self:NotifyChanges();
 		return;
 	end
@@ -323,27 +324,32 @@ function Profile:SetRules(ruleType, config)
 	--@debug@
 	error(string.format("There is not a rule type '%s'", ruleType));
 	--@end-debug@
+end 
+
+local function ListTypeToKey(listType)
+	if (listType == Addon.c_AlwaysSellList) then
+		return SELL_LIST;
+	elseif (listType == Addon.c_NeverSellList) then
+		return KEEP_LIST;
+	end 
+	return nil;
 end
 
 -- Retrieves the specified block list from the profile.
 function Profile:GetList(listType)
-	if (listType == Addon.c_AlwaysSellList) then
-		return table.copy(self.profile.lists[SELL_LIST] or {});
-	elseif (listType == Addon.c_NeverSellList) then
-		return table.copy(self.profile.lists[KEEP_LIST] or {});
+	local key = ListTypeToKey(listType);
+	if (key) then
+		return table.copy(self.cache.lists[key] or {});
 	end
-
 	error(string.format("There is no '%s' list", listType));
 end
 
 -- Sets the specified list
 function Profile:SetList(listType, list)
-	if (listType == Addon.c_AlwaysSellList) then
-		self.profile.lists[SELL_LIST] = table.copy(list);
-		self:NotifyChanges();
-		return;
-	elseif (listType == Addon.c_NeverSellList) then
-		self.profile.lists[KEEP_LIST] = table.copy(list);
+	local key = ListTypeToKey(listType);
+	if (key) then
+		self.cache.lists[key] = table.copy(list);
+		profileSavedVariable:Set(self.key, self.cache);
 		self:NotifyChanges();
 		return;
 	end
@@ -363,41 +369,39 @@ function Profile:IsEqual(other)
 		return true;
 	end
 
-	return self:GetName() == other:GetName();
+	return self:GetId() == other:GetId();
 end
 
 -- Retrieves the currently active profile
 function Addon:GetProfile()
+	if (self.activeProfile) then
+		return self.activeProfile;
+	end
+
 	local profile = nil;
+	local active = activeProfileVariable:GetOrCreate("");
 
 	-- If we have not yet migrated the profiles, 
 	-- then we need to migrate teh default profile.
-	if ((Vendor_ActiveProfile == nil) or 
-		(table.getn(Vendor_Profiles) == 0)) then
+	if ((active ~= nil) and (string.len(active) ~= 0)) then
+		profile = Profile:GetProfile(active);
+	end
+
+	if (not profile and Vendor_Settings) then
 		profile = Profile:CreateDefaultFromOldConfig();
-	else
-		-- Load the named profile which is active.
-		profile = Profile:GetProfile(Vendor_ActiveProfile);
+		activeProfileVariable:Replace(profile:GetId());
 	end
 
 	-- If we don't have a profile then assign it to
 	-- the default profile.
 	if (not profile) then
 		profile = Profile:GetDefaultProfile();
+		activeProfileVariable:Replace(profile:GetId());
 	end
 
-	-- Cache the profile
-	if (not self.profile) then
-		self.profile = profile;
-	end
-
-	-- Update our saved variable
-	if (Vendor_ActiveProfile ~= profile:GetName()) then
-		Vendor_ActiveProfile = profile:GetName();
-	end
-
-	-- Return the prfile.
-	return self.profile;
+	self.activeProfile = profile;
+	Addon:Debug("profile", "Setting active profile to '%s'", profile:GetName());
+	return self.activeProfile;
 end
 
 function Addon:SetProfile(profileName)

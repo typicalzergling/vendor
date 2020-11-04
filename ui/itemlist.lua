@@ -34,6 +34,7 @@ end
 -- a list of item links, or numeric list of item ids.
 function ItemList:SetContents(itemList)
 	self.contents = itemList or {};
+	print("-----> itemList", table.getn(itemList));
 	self.List:UpdateView(self.contents);
 end
 	
@@ -44,7 +45,7 @@ function ItemList.OnLoad(self)
 	self:OnBackdropLoaded();
 	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
 
-	Mixin(self.List, Addon.ListBase);
+	Addon.ListBase.OnLoad(Mixin(self.List, Addon.ListBase));
 	self.List.emptyText.LocKey = self.EmptyTextKey;
 	self.List:AdjustScrollbar();
 

@@ -264,7 +264,8 @@ EDITRULE_EXTENSION_RULE_TEXT = "This rules comes from '%s' extension and cannot 
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
 
-RULEITEM_MIGRATE_WARNING = HIGHLIGHT_FONT_COLOR_CODE .. "Warning: " .. FONT_COLOR_CODE_CLOSE .. "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to review.",
+RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to review.",
+RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
 
 -- ITEM PROPERTIES HELP

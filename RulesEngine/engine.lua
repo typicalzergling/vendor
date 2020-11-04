@@ -203,7 +203,6 @@ function engine_AddRule(self, categoryId, ruleDef, params)
         self.log:Write("Failed to add '%s' to category=%d due to error: %s", ruleDef.Id, categoryId, message);
         return false, message;
     end
-
     category:Add(rule);
     self.log:Write("Added '%s' [%d]", ruleDef.Id, categoryId);
     return true, nil;

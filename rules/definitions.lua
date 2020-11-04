@@ -29,6 +29,10 @@ local ITEM_LEVEL_PARAMS =
         Type="numeric",
         Name=L["RULEUI_LABEL_ITEMLEVEL"],
         Key="ITEMLEVEL",
+        Default = function()
+            local avg, equip = GetAverageItemLevel();
+            return math.max(0, math.floor(math.min(avg, equip) * 0.90));
+        end,
     },
 };
 
@@ -95,7 +99,9 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = ITEM_LEVEL_PARAMS,
+        Params = table.merge(ITEM_LEVEL_PARAMS, {
+            Description = "Uncommon gear item description"
+        }),
         Order = 1400,
     },
 

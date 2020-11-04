@@ -19,8 +19,8 @@ local function findObject(name, context)
 end
 
 -- Simple helper function for laoding an implementation into the frame
-Addon.LoadImplementation = function(frame, context)
-	implementation = frame.Implementation;
+Addon.LoadImplementation = function(frame, context, impl)
+	implementation = impl or frame.Implementation;
 	if (implementation and (type(implementation) == "string")) then
 		local mixin = findObject(implementation, context);
 		assert(mixin and (type(mixin) == "table"), "Expected implementation to be a valid table");

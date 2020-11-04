@@ -5,8 +5,8 @@ local function scrollbarHide(self)
 	local control = self:GetParent();
 
 	-- If the scrollbar is being hiddem we can have whole space.
-	control:SetPoint("BOTTOMRIGHT", control:GetParent(),  -5, 4);
-	control:GetScrollChild():SetWidth(control:GetWidth());
+	control:SetPoint("BOTTOMRIGHT", control:GetParent(), -5, 4);
+	control:GetScrollChild():SetWidth(control:GetWidth() - 5);
 	if (self._sbbg) then
 		self._sbbg:Hide();
 	end
@@ -15,14 +15,18 @@ end
 
 local function scrollbarShow(self)
 	local control = self:GetParent();
+	local child = control:GetScrollChild();
 
 	-- If the scrollbar is showing we need to subtract it's width.
-	control:SetPoint("BOTTOMRIGHT", control:GetParent(), "BOTTOMRIGHT", -self:GetWidth(), 4);
-	control:GetScrollChild():SetWidth(control:GetWidth() - 5);
+	control:SetPoint("BOTTOMRIGHT", control:GetParent(), "BOTTOMRIGHT", -(self:GetWidth() + 5), 4);
+	child:SetWidth(control:GetWidth() - 5);
+	
 	if (self._sbbg) then
 		self._sbbg:Show();
 	end
 	getmetatable(self).__index.Show(self);
+
+	print("--->>>>> control width:", control:GetWidth() - 5, control:GetHeight());
 end
 
 function AutoScrollbarMixin:AdjustScrollBar(control, autoHide)
@@ -37,8 +41,8 @@ function AutoScrollbarMixin:AdjustScrollBar(control, autoHide)
 	end
 
 	scrollbar:ClearAllPoints();
-	scrollbar:SetPoint("TOPLEFT", control, "TOPRIGHT", -5, -up:GetHeight());
-	scrollbar:SetPoint("BOTTOMLEFT", control, "BOTTOMRIGHT", -5, down:GetHeight());
+	scrollbar:SetPoint("TOPLEFT", control, "TOPRIGHT", 0, -up:GetHeight());
+	scrollbar:SetPoint("BOTTOMLEFT", control, "BOTTOMRIGHT", 0, down:GetHeight());
 
 	up:ClearAllPoints();
 	up:SetPoint("BOTTOM", scrollbar, "TOP");
@@ -55,18 +59,20 @@ function AutoScrollbarMixin:AdjustScrollBar(control, autoHide)
 	scrollbar._sbbg = bg;
 
 	if (autoHide) then
-		control.scrollBarHideable = 1;
+		control.scrollBarHideable = true;
 		scrollbarHide(scrollbar);
 	else	
+		control.scrollBarHideable = false;
 		scrollbarShow(scrollbar);
 	end
 end
 
 function AutoScrollbarMixin:GetContainerWidth(control)
 	local width = control:GetWidth();
-	if (control.ScrollBar and control.ScrollBar:IsShown()) then
-		return (width - 5 - control.ScrollBar:GetWidth());
-	end
+	--if (control.ScrollBar and control.ScrollBar:IsShown()) then
+	--	return (width - 5 - control.ScrollBar:GetWidth());
+	--end
+	return width;
 end
 
 Addon.Controls = Addon.Controls or {};

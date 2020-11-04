@@ -37,7 +37,7 @@
 	<Frame name="Vendor_Edit" virtual="true" inherits="Vendor_FrameBorder">
    		<Layers>
    			<Layer level="BACKGROUND">
-				<FontString parentKey="Placeholder" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE" text="placeholder">
+				<FontString parentKey="Placeholder" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
 					<Color r="0.6" g="0.6" b="0.6" a="0.6"/>
 					<Anchors>
 						<Anchor relativeKey="$parent.Edit" point="TOPLEFT" x="12" y="0"/>

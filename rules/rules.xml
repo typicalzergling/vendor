@@ -6,4 +6,5 @@
     <Script file="evaluate.lua"/>
     <Script file="extensions.lua"/>	
     <Script file="rulehelp.lua"/>
+    <Script file="ruleconfig.lua"/>
 </Ui>

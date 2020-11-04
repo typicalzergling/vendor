@@ -34,18 +34,12 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame parentKey="outline" inherits="Vendor_List_Container">
+			<Frame inherits="Vendor_Rules_List" parentKey="list">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentHeaderText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
 					<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
 				</Anchors>
 			</Frame>
-			<ScrollFrame inherits="Vendor_Rules_List" parentKey="list">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.outline" relatvePoint="TOPLEFT" x="4" y="-5"/>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.outline" relativePoint="BOTTOMRIGHT" x="-4" y="4"/>
-				</Anchors>
-			</ScrollFrame>
 		</Frames>
 	</Frame>
 

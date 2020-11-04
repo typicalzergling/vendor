@@ -30,10 +30,57 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
-local ItemBase = {};
 local MODEL_KEY = {};
 local MODEL_INDEX_KEY = {};
 local function __noop(...) end
+
+local ItemBase = {
+    --[[===========================================================================
+      | Returns the data/model item this visual is using
+      ========================================================================--]]
+    GetModel  = function(self)
+        return rawget(self, MODEL_KEY);
+    end,
+
+    --[[===========================================================================
+      | Sets the mode for this item base
+      ========================================================================--]]
+    SetModel = function(self, model)
+        return rawset(self, MODEL_KEY, model)
+    end,
+
+    --[[===========================================================================
+      | Sets the mode for this item base
+      ========================================================================--]]
+    GetIndex = function(self)
+        return self:GetParent():FindIndexOfItem(self);
+    end,
+
+    SetModelIndex = function(self, modelIndex)
+        rawset(self, MODEL_INDEX_KEY, modelIndex);
+    end,
+
+    GetModelIndex = function(self)
+        return rawget(self, MODEL_INDEX_KEY);
+    end,
+
+    IsSameModel = function(self, other)
+        return (rawget(self, MODEL_KEY) == rawget(other, MODEL_KEY));
+    end,
+
+    IsModel = function(self, model)
+        return (rawget(self, MODEL_KEY) == model);
+    end,
+
+    CompareTo = function(self, other)
+        if (type(self.Compare) == "function") then
+            return self.Compare(self, other);
+        end        
+        return (rawget(self, MODEL_INDEX_KEY) or 0) < 
+                (rawget(self, MODEL_INDEX_KKEY) or 0);
+    end,
+};
+
 
 local ListBase = {
     UpdateHandler = function(self)
@@ -59,35 +106,13 @@ local ListBase = {
             self:SetScript("OnUpdate", nil);
             self._hooked = false;
         end
+    end,
+
+    OnLoad = function(self)
+        self:SetClipsChildren(true);
+        self:SetScript("OnVerticalScroll", self.OnVerticalScroll);
     end
 };
-
-
---[[===========================================================================
-    | ItemBase:GetModel:
-    |   Returns the data/model item this visual is using
-    ========================================================================--]]
-function ItemBase:GetModel()
-    return rawget(self, MODEL_KEY);
-end
-
---[[===========================================================================
-   | ItemBase:GetIndex:
-   |    Returns the index in the view of this item.  This index they are laid
-   |    out in the list.
-    ========================================================================--]]
-function ItemBase:GetIndex()
-    return self:GetParent():FindIndexOfItem(self);
-end
-
---[[===========================================================================
-   | ItemBase:GetModelIndex
-   |    Returns the index of the model in the collection used to build the
-   |    view, this will be different in the view is sorted.
-    ========================================================================--]]
-function ItemBase:GetModelIndex()
-    return rawget(self, MODEL_INDEX_KEY);
-end
 
 
 --[[===========================================================================
@@ -96,20 +121,16 @@ end
     |   is not compare items function the list remains unsorted.
     ========================================================================--]]
 function ListBase:SortItems()
-    local sortFunction = self.CompareItems;
-    if (self.items and sortFunction) then
+    if (self.items) then
 
         -- Check if some prep work needs to be done before sorting
         local prepareSort = self.PrepareSort;
-        if (prepareSort) then
-            prepareSort(self);
+        if (type(self.PrepareSort) == "function") then
+            xpcall(self.PrepareSort, CallErrorHandler, self);
         end
 
         -- Execute the sort
-        table.sort(self.items,
-            function (a, b)
-                return sortFunction(self, a, b);
-            end);
+        table.sort(self.items, ItemBase.CompareTo);
     end
 end
 
@@ -132,11 +153,10 @@ end
     ========================================================================--]]
 function ListBase:FindItem(model)
     if (self.items) then
-        for _, item in ipairs(self.items) do
-            if (model == rawget(item, MODEL_KEY)) then
-                return item;
-            end
-        end
+        return table.find(self.items, 
+            function(item) 
+                return ListBase.IsModel, item, model;
+            end);
     end
 end
 
@@ -146,9 +166,9 @@ end
     ========================================================================--]]
 function ListBase:FindIndexOfItem(item)
     if (self.items) then
-        local model = rawget(item, MODEL_KEY);
+        local model = item:GetModel();
         for index, i in ipairs(self.items) do
-            if (model == rawget(i, MODEL_KEY)) then
+            if (i:IsModel(model)) then
                 return index;
             end
         end
@@ -195,15 +215,14 @@ function ListBase:EnsureItems(model)
         ids[element] = true;
         local item = self:FindItem(element);
         if (not item) then
-            item =createItemCallback(self, element);
-            rawset(item, MODEL_KEY, element);
-            item = Mixin(item, ItemBase);
+            item = Mixin(createItemCallback(self, element), ItemBase);
+            item:SetModel(element);
             table.insert(self.items, item);
         else
             refreshItemCallback(self, item, element);
         end
 
-        rawset(item, MODEL_INDEX_KEY, modelIndex)
+        item:SetModelIndex(modelIndex);
         modelIndex = (modelIndex + 1);
     end
 
@@ -212,10 +231,11 @@ function ListBase:EnsureItems(model)
         local index = 1;
         while (index <= #self.items) do
             local item = self.items[index];
-            if (not ids[rawget(item, MODEL_KEY)]) then
+            if (not ids[item:GetModel()]) then
                 table.remove(self.items, index);
                 item:Hide();
                 item:SetParent(nil);
+                item:SetModel(nil);
             else
                 index = (index + 1);
             end
@@ -225,7 +245,9 @@ function ListBase:EnsureItems(model)
     -- After we've created the view give our subclass a chance do something
     -- with the items.
     local onViewBuilt = self.OnViewBuilt or __noop;
-    xpcall(onViewBuilt, self);
+    if (type(self.OnViewBuild) == "function") then
+        xpcall(self.OnViewBuilt, CallErrorHandler, self);
+    end
 
     -- Sort the items if a sort function was provided.
     self:SortItems();

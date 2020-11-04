@@ -45,8 +45,6 @@ function RulesDialog:SetupTab(tabId, helpText)
 end
 
 function RulesDialog:OnShow()
-    self.KeepPanel.list:RefreshView();
-    self.SellPanel.list:RefreshView();
 end
 
 function RulesDialog:OnOk()
