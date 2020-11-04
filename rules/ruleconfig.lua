@@ -141,7 +141,6 @@ Addon.RuleConfig = {
 	LoadFrom = function(self, saved)
 		assert(not saved or (type(saved) == "table"), "The saved rule configuration must be a table");
 		local obj = Addon.RuleConfig.Create();
-		table.forEach(saved, print, "saved");
 		RuleConfigObject.Load(obj, saved or {});
 		return obj;
 	end,
