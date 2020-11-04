@@ -2,7 +2,6 @@ local _, Addon = ...;
 
 -- Check if the character is a space
 local function isspace(c)
-    print("isspace", c);
     return (c == '\n') or (c == '\t') or (c == '\r') or (c == ' ');
 end
 

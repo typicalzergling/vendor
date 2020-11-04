@@ -25,8 +25,6 @@ local function scrollbarShow(self)
 		self._sbbg:Show();
 	end
 	getmetatable(self).__index.Show(self);
-
-	print("--->>>>> control width:", control:GetWidth() - 5, control:GetHeight());
 end
 
 function AutoScrollbarMixin:AdjustScrollBar(control, autoHide)

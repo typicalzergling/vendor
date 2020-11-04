@@ -34,7 +34,6 @@ end
 -- a list of item links, or numeric list of item ids.
 function ItemList:SetContents(itemList)
 	self.contents = itemList or {};
-	print("-----> itemList", table.getn(itemList));
 	self.List:UpdateView(self.contents);
 end
 	

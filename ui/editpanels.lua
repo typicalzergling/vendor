@@ -32,16 +32,13 @@ end
 
 
 function ItemInfo:Drop()
-    print("iteminfo: drop");
     if (not CursorHasItem()) then
         return;
     end
 
     local _, _, link = GetCursorInfo();
     ClearCursor();
-    print(link);
     local itemProps = Addon:GetItemProperties(GameTooltip, link);
-    print("itemProps", itemProps);
     local props = {}
     if (itemProps) then
         for name, value in spairs(itemProps) do

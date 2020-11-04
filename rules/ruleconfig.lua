@@ -55,14 +55,12 @@ end
 -- Loads / Populates this object with the contentes of the saved variable.
 function RuleConfigObject:Load(saved)
 	debug("Loading rule configuration");
-	table.forEach(saved, print);
 	self.rules = table.copy(saved or {});
 end
 
 -- Saves our current configuration
 function RuleConfigObject:Save()
 	debug("Saving rule configuration");
-	table.forEach(self.rules, print);
 	return table.copy(self.rules or  {});
 end
 
