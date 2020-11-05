@@ -69,15 +69,6 @@ function RulesList:CreateItem(ruleDef, _, self)
     return frame;
 end
 
-function RulesList:OnUpdateItem(item, isFirst, isLast)
-   --item:ShowDivider(not isLast);
-    --item:SetMove(not isFirst, not isLast);
-end
-
-function RulesList:OnViewBuilt()
-    self:SetConfigState();
-end
-
 function RulesList:CompareItems(itemA, itemB)
     local selA = itemA:GetSelected();
     local selB = itemB:GetSelected(); -- todo make this isselected
@@ -102,22 +93,43 @@ function RulesList.OnLoad(self)
     self:AdjustScrollBar(self.List, false);
     self.cache = {};
 
+    -- Set our empty text
+    local emptyText = self.EmptyTextKey;
+    if (not emptyText) then
+        emptyText = self:GetParent().EmptyTextKey;
+    end
+    if (emptyText) then
+        self.EmptyText:SetText(L[emptyText]);
+    else
+        self.EmptyText:SetText("");
+    end
+
+    -- Determine our rule type
     if (not self.ruleType) then
         self.ruleType = self:GetParent().ruleType;
     end
 
-    if (self.ruleType) then
-        Rules.OnDefinitionsChanged:Add(
-            function() 
-                self:Populate();
-            end);
-    end 
+    self.callback = function(action, ruleId)
+        if (self.cache[ruleId] or (action == "CREATE")) then
+            self:Populate();
+            self.needsLayout = true;
+        end
+    end;
+
+    self.layoutCallback = function()
+            self.needsLayout = true;
+        end;
 
     self:SetScript("OnShow", self.OnShow);
     self:SetScript("OnHide", self.OnHide);
     self:SetScript("OnUpdate", self.OnUpdate);
 end
 
+--[[===========================================================================
+  | Compare two items in the list, our sort order is as follows:
+  |  - Enabled state
+  |  - Alphabetically by name
+  ===========================================================================]]
 function ItemCompare(itemA, itemB)
     if (not itemA or not itemB) then
         return nil;
@@ -147,12 +159,15 @@ function RulesList:OnShow()
         function()
             self.needsSave = true;
         end, self);    
+
+    Addon.Rules.OnDefinitionsChanged:Add(self.callback);
 end
 
 function RulesList:OnHide()
     if (self.ruleConfig) then
         self.ruleConfig:UnregisterCallback("OnChanged", self);
-    end
+    end 
+    Addon.Rules.OnDefinitionsChanged:Remove(self.callback); 
 end
 
 function RulesList:OnUpdate()
@@ -192,10 +207,17 @@ function RulesList:Layout()
     local parent = self.List:GetScrollChild();
     local viewHeight = self.List:GetHeight();
 
+    if (table.getn(self.items) == 0) then
+        self.EmptyText:Show();
+    else    
+        self.EmptyText:Hide();
+    end
+
     for _, frame in ipairs(self.items) do 
         frame:ClearAllPoints();
         frame:SetWidth(width);
         frame:SetPoint("TOPLEFT", 0, -height);
+        frame:Show();
 
         height = height + frame:GetHeight();
         prev = frame;
@@ -206,6 +228,16 @@ function RulesList:Layout()
 end
 
 function RulesList:Populate()
+    -- Make sure anything which may already be showing disappears.
+    if (self.items) then
+        for _, item in ipairs(self.items) do 
+            item:ClearAllPoints();
+            item:Hide();
+            item:SetScript("OnSizeChanged", nil);
+        end
+    end
+
+    -- Layout the new, or empty item
     self.items = {};
     local defs = Rules.GetDefinitions(self.ruleType);
     local parent = self.List:GetScrollChild();
@@ -215,12 +247,11 @@ function RulesList:Populate()
         if (not item) then
             item = Addon.RuleItem:new(parent, self.ruleConfig, ruleDef);
             self.cache[ruleDef.Id] = item;
-            item:SetScript("OnSizeChanged", function(s) 
-                self.needsLayout = true;
-            end);    
         else 
             item:SetConfig(self.ruleConfig);
         end
+
+        item:SetScript("OnSizeChanged", self.layoutCallback);    
         table.insert(self.items, item);
     end
 end

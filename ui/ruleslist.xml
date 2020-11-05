@@ -42,7 +42,7 @@
         </KeyValues>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString inherits="GameFontHighlight" justifyV="TOP" justifyH="CENTER" parentKey="emptyText">
+				<FontString inherits="GameFontDisableSmall" justifyV="TOP" justifyH="CENTER" parentKey="EmptyText" text="empty text">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="16" y="-16"/>
 						<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>

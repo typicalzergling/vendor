@@ -41,6 +41,9 @@
 				</Anchors>
 			</Frame>
 		</Frames>
+		<Scripts>
+			<OnLoad>self.TopText.LocKey = self.HelpTextKey;</OnLoad>
+		</Scripts>
 	</Frame>
 
 	<Include file="rulespanels.xml"/>
@@ -108,6 +111,8 @@
 			<Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="1">
 				<KeyValues>
 					<KeyValue key="ruleType" value="Keep" type="string"/>
+					<KeyValue key="EmptyTextKey" value="RULES_DIALOG_EMPTY_KEEP_LIST" type="string"/>
+					<KeyValue key="HelpTextKey" value="CONFIG_DIALOG_KEEPRULES_TEXT" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
@@ -119,6 +124,8 @@
 			<Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="2">
 				<KeyValues>
 					<KeyValue key="ruleType" value="Sell" type="string"/>
+					<KeyValue key="EmptyTextKey" value="RULES_DIALOG_EMPTY_SELL_LIST" type="string"/>
+					<KeyValue key="HelpTextKey" value="CONFIG_DIALOG_SELLRULES_TEXT" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
@@ -130,6 +137,8 @@
 			<Frame name="$parentCustomPanel" parentKey="DeletePanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
 				<KeyValues>
 					<KeyValue key="ruleType" value="Delete" type="string"/>
+					<KeyValue key="EmptyTextKey" value="RULES_DIALOG_EMPTY_DELETE_LIST" type="string"/>
+					<KeyValue key="HelpTextKey" value="CONFIG_DIALOG_DELETERULES_TEXT" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>

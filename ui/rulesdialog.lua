@@ -33,9 +33,9 @@ function RulesDialog:SetupTab(tabId, helpText)
 
     local panel = assert(self:FindPanel(tabId), string.format("Unable to locate PANEL(%d)", tabId));
     if (panel) then
-        if (panel.TopText and helpText) then
-            panel.TopText:SetText(L[helpText]);
-        end
+        --if (panel.TopText and helpText) then
+         --   panel.TopText:SetText(L[helpText]);
+        --end
 
         if (tabId == LISTS_TABID) then
             panel.alwaysSellLabel:SetText(L["CONFIG_DIALOG_LISTS_ALWAYS_LABEL"]);

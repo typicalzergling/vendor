@@ -29,7 +29,11 @@ end
 local function event_Call(self, ...) 
     local handlers = rawget(self, EVENT_DATA_KEY);
     for _, handler in ipairs(handlers) do
-        local status, msg = pcall(handler, ...);
+        args = { ... };
+        if (table.getn(handler.args) ~= 0) then
+            args = { unpack(handler.args), ... };
+        end
+        local status, msg = xpcall(handler.fn, CallErrorHandler, unpack(args));
         if (not status) then
             print(string.format("Failed to invoke handler for '%s': %s", rawget(self, EVENT_NAME_KEY), msg));
         end
@@ -43,7 +47,7 @@ end
     =======================================================================--]]
 local function event_findHandler(handlers, handler)
     for i, h in ipairs(handlers) do
-        if (h == handler) then
+        if (h.fn == handler) then
             return i;
         end
     end        
@@ -54,12 +58,15 @@ end
     |   Adds the specified handler to the array of handlers, if and only if
     |   it is not already in the list.
     =======================================================================--]]
-local function event_Add(self, handler)
+local function event_Add(self, handler, ...)
     assert(type(handler) == "function", "You can only register functions as event handlers");
 
     local handlers = rawget(self, EVENT_DATA_KEY);
     if (not event_findHandler(handlers, handler)) then
-        table.insert(handlers, handler);
+        table.insert(handlers, { 
+            fn = handler,
+            args = { ... }
+        });
     end
 end
 
@@ -103,7 +110,7 @@ end
     |   error messages.
     =======================================================================--]]
 local function create_event(name)
-    assert(type(name) == "string", "They nae of the event must be a string");
+    assert(type(name) == "string", "They name of the event must be a string");
     local object = 
     {
         [EVENT_DATA_KEY] = {},

@@ -147,7 +147,7 @@ API_GETPRICESTRING_TITLE = "Get Price String",
 API_GETPRICESTRING_DOCS = "Converts passed in integer to a color coded and icon embedded price string.",
 
 -- Rules
-RULEUI_LABEL_ITEMLEVEL = "Level:",
+RULEUI_LABEL_ITEMLEVEL = "Item Level:",
 CONFIG_DIALOG_CAPTION = "Vendor Rules",
 CONFIG_DIALOG_KEEPRULES_TAB = "Keep Rules",
 CONFIG_DIALOG_KEEPRULES_TEXT = "These rules are safeguards to prevent selling things you don't want sold. All Keep Rules are checked before Sell Rules; However, anything you mark as 'Always Sell' will ignore Keep Rules.",
@@ -161,8 +161,6 @@ CONFIG_DIALOG_CONFIRM_DELETE_FMT1 = "Deleting '%s' will make it unavailable to a
 CONFIG_DIALOG_SHARE_TOOLTIP = "Share",
 CONFIG_DIALOG_MOVEUP_TOOLTIP = "Click to move the rule sooner in evaluation order",
 CONFIG_DIALOG_MOVEDOWN_TOOLTIP = "Click to move the rule later in the evaluation order",
-CONFIG_DIALOG_SCRAPRULES_TAB = "Scrap Rules",
-CONFIG_DIALOG_SCRAPRULES_TEXT =  "The scrap rules will be removed at Shadowlands launch.",
 CONFIG_DIALOG_LISTS_TAB = "Sell Lists",
 CONFIG_DIALOG_LISTS_TEXT = "" ..
     YELLOW_FONT_COLOR_CODE .. "Left-Click" .. FONT_COLOR_CODE_CLOSE .. " removes the item from the list.|n" ..
@@ -172,6 +170,9 @@ CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Always Sell:",
 CONFIG_DIALOG_LISTS_NEVER_LABEL = "Never Sell:",
 RULES_DIALOG_HELP_HEADING = "You can find the latest release notes as well as links to the project and it's tutorials on this page.",
 RULES_DIALOG_HELP_TAB = "Help",
+RULES_DIALOG_EMPTY_SELL_LIST = "There are no rules in your sell list",
+RULES_DIALOG_EMPTY_KEEP_LIST = "There are no rules in your keep list",
+RULES_DIALOG_EMPTY_DELETE_LIST = "There are no rules in your delete list",
 
 -- Sell Rules
 SYSRULE_SELL_ALWAYSSELL = "Items in Always Sell List",
