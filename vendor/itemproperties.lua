@@ -17,20 +17,37 @@ local function clearTooltipState()
 end
 
 -- Hook for tooltip SetBagItem
+-- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
 function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
-    tooltipLocation = ItemLocation:CreateFromBagAndSlot(bag, slot)
+    local status, err = xpcall(
+        function(b, s)
+            tooltipLocation = ItemLocation:CreateFromBagAndSlot(b, s)
+        end,
+        CallErrorHandler, bag, slot)
+    if not status then
+        Addon:Debug("itemerrors", "Error executing OnGameTooltipSetBagItem: ", tostring(err))
+    end
 end
 
 -- Hook for SetInventoryItem
+-- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
 function Addon:OnGameTooltipSetInventoryItem(tooltip, unit, slot)
-    if unit == "player" then
-        tooltipLocation = ItemLocation:CreateFromEquipmentSlot(slot)
-    else
-        clearTooltipState()
+    local status, err = xpcall(
+        function(u, s)
+            if u == "player" then
+                tooltipLocation = ItemLocation:CreateFromEquipmentSlot(s)
+            else
+                clearTooltipState()
+            end
+        end,
+        CallErrorHandler, unit, slot)
+    if not status then
+        Addon:Debug("itemerrors", "Error executing OnGameTooltipSetInventoryItem: ", tostring(err))
     end
 end
 
 -- Hook for Hide
+-- This is a secure hook.
 function Addon:OnGameTooltipHide(tooltip)
     clearTooltipState()
 end
