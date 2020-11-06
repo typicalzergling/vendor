@@ -40,6 +40,34 @@
 		</Frames>
 	</Frame>
 
+	<Frame name="ItemInfo_Template" virtual="true" hidden="true">
+		<Size x="1" y="20"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString  parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false">
+					<Size x="120"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-2"/>
+						<Anchor pointer="BOTTOMLEFT" x="4" y="2"/>
+					</Anchors>
+				</FontString>		
+				<FontString  parentKey="Equals" inherits="GameFontDisable" justifyH="CENTER" text="=">
+					<Size x="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>a
+				</FontString>		
+				<FontString  parentKey="Value" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Equals" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOM" relativeKey="$parent.Equals"/>
+						<Anchor point="RIGHT" x="-4"/>
+					</Anchors>
+				</FontString>		
+			</Layer>
+		</Layers>
+	</Frame>
 
 	<Frame name="Vendor_EditPanel_ItemInfo" inherits="Vendor_EditPanel_Base" virtual="true">
 		<KeyValues>
@@ -47,13 +75,46 @@
 			<KeyValue key="Implementation" value="ItemInfoPanel" type="string"/>
 		</KeyValues>
 		<Frames>
-			<Frame parentKey="View" inherits="Vendor_HtmlView">
-				<Size x="200" y="48"/>
+			<Frame inherits="TooltipBackdropTemplate" parentKey="Container">
+				<KeyValues>
+					<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
+					<KeyValue key="backdropColor" value="DARKGRAY_COLOR" type="global"/>
+					<KeyValue key="backdropColorAlpha" value="0.25" type="number"/>
+				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 					<Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
 				</Anchors>
 			</Frame>
+			<ScrollFrame parentKey="View" inherits="FauxScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="ItemTemplate" value="ItemInfo_Template" type="string"/>
+					<KeyValue key="ItemHeight" value="20" type="number"/>
+					<KeyValue key="Implementation" value="ItemList" type="string"/>
+				</KeyValues>
+				<Size x="200" y="48"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="5" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-5" y="6"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="EmptyText" inherits="GameFontDisable" justifyV="TOP" justifyH="CENTER" text="empty text">
+							<KeyValues>
+								<KeyValue key="LocKey" value="EDITRULE_ITEM_PROPERTIES_EMPTY" type="string"/>
+							</KeyValues>
+							<Size x="22" y="48"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="16" y="-16"/>
+								<Anchor point="BOTTOMRIGHT" x="-32" y="8"/>
+							</Anchors>
+						</FontString>		
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
+				</Scripts>
+			</ScrollFrame>
 		</Frames>
 		<Scripts>
 			<OnMouseUp>self:Drop()</OnMouseUp>

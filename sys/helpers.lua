@@ -37,6 +37,16 @@ if (type(string.trim) ~= "function") then
     end
 end
 
+-- Add string splitting based on the specified delimiter.
+if (type(string.split) ~= "function") then
+    string.split = function(str, delim) 
+        local result = {};
+        for match in (str .. delim):gmatch("(.-)" .. delim) do
+            table.insert(result, match);
+        end
+        return result;
+    end
+end
 
 -- Add table.forEach
 if (type(table.forEach) ~= "function") then

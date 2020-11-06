@@ -12,54 +12,73 @@ local ITEM_HTML_FMT = "<p>%s == %s%s%s</p>";
 local NIL_ITEM_STRING = GRAY_FONT_COLOR_CODE .. "nil" .. FONT_COLOR_CODE_CLOSE;
 local MATCHES_HTML_START = "<html><body>";
 
+local ItemInfoItem = {
+    OnModelChanged = function(self, model)
+        local t = type(model.Value);
+        local value = self.Value;
+        self.Name:SetText(model.Name);
+
+        if (model.Value == nil) then
+            value:SetText("nil");
+            value:SetTextColor(DISABLE_FONT_COLOR:GetRGB());
+        elseif (t == "string") then
+            value:SetFormattedText("\"%s\"", model.Value);
+            value:SetTextColor(GREEN_FONT_COLOR:GetRGB());
+        elseif (t == "boolean") then
+            value:SetText(tostring(model.Value));
+            value:SetTextColor(EPIC_PURPLE_COLOR:GetRGB());
+        elseif (t == "number") then
+            value:SetText(tostring(model.Value));
+            value:SetTextColor(ORANGE_FONT_COLOR:GetRGB());
+        else
+            value:SetText(tostring(model.Value));
+            value:SetTextColor(WHITE_TEXT_COLOR:GetRGB());
+        end
+    end
+}
+
 function ItemInfo:OnLoad()
+    self.props = {};
     self:EnableMouse(true);
+    self.dropHandler = function()
+        self:Drop();
+    end;
+
+    self.View.GetItems = function()
+        return self.props or  {};
+    end;
+
+    self.View.OnItemCreated = function(_, item)
+        Mixin(item, ItemInfoItem);
+        item:SetScript("OnMouseDown", self.dropHandler);
+        item:SetScript("OnMouseUp", self.dropHandler);
+    end;
 end
-
-local function spairs(t, order)
-    local keys = {};
-    for key in pairs(t) do
-        table.insert(keys, key);
-    end
-    table.sort(keys)
-
-    local iter = 0
-    return function()
-        iter = iter + 1
-        return keys[iter], t[keys[iter]];
-    end
-end
-
 
 function ItemInfo:Drop()
-    if (not CursorHasItem()) then
+    local item = Addon.ItemList.GetCursorItem();
+    if (not item or (type(item) ~= "table") or not item:IsBagAndSlot()) then
         return;
     end
 
-    local _, _, link = GetCursorInfo();
     ClearCursor();
-    local itemProps = Addon:GetItemProperties(GameTooltip, link);
-    local props = {}
-    if (itemProps) then
-        for name, value in spairs(itemProps) do
-            if ((type(name) == "string") and
-                ((type(value) ~= "table") and (type(value) ~= "function"))) then
-                local valStr = tostring(value);
-                if (type(value) == "string") then
-                    valStr = string.format("\"%s\"", value);
-                else
-                    if ((value == nil) or (valStr == "") or (string.len(valStr) == 0)) then
-                        valStr = NIL_ITEM_STRING;
-                    end
-                end
-
-                table.insert(props, string.format(ITEM_HTML_FMT, name, GREEN_FONT_COLOR_CODE, htmlEncode(valStr), FONT_COLOR_CODE_CLOSE));
+    local itemProps = Addon:GetItemProperties(item:GetBagAndSlot());
+    local model = {}
+    for name, value in pairs(itemProps) do 
+        if (type(value) ~= "table") then
+            if (name ~= "GUID") then
+                table.insert(model, { Name=name, Value=value });
             end
         end
-
-        self.View:SetHtml(string.format(ITEM_INFO_HTML_BODY_FMT, link, table.concat(props)));
-        print(string.format(ITEM_INFO_HTML_BODY_FMT, link, table.concat(props)));
     end
+
+    table.sort(model, 
+        function (a, b)
+            return a.Name < b.Name
+        end);
+
+    self.props = model;
+    self.View:Update();
 end
 
 local LARGE_MARGIN = 12;
