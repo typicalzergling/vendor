@@ -42,6 +42,7 @@ local result = 0
 local blocklist = nil
 local ruleId = nil
 local ruleName = nil
+local ruleType = nil
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Addon:ClearTooltipResultCache()
@@ -50,6 +51,7 @@ function Addon:ClearTooltipResultCache()
     blocklist = nil
     ruleId = nil
     ruleName = nil
+    ruleType = nil
     Addon:Debug("tooltip", "TooltipResultCache cleared.")
 end
 
@@ -61,7 +63,7 @@ function Addon:AddItemTooltipLines(tooltip, link)
     -- TODO: We could keep a larger cache so we don't re-evaluate an item unless inventory changed, the rules changed, or the blocklist changed.
     if not (itemLink == link) then
         -- Evaluate the item
-        result, ruleId, ruleName  = self:EvaluateItem(self:GetItemPropertiesFromTooltip(tooltip, link))
+        result, ruleId, ruleName, ruleType  = self:EvaluateItem(self:GetItemPropertiesFromTooltip(tooltip, link))
 
         -- Check if the item is in the Always or Never sell lists
         blocklist = self:GetBlocklistForItem(link)
@@ -105,7 +107,7 @@ function Addon:AddItemTooltipLines(tooltip, link)
     if (ruleId) then
         -- If we had a rule match (make a choice) then add it to the tooltip, if we didn't get a match then
         -- no line means we didn't match anything.
-        tooltip:AddLine(string.format("%s RuleId: %s[%s]%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleId, FONT_COLOR_CODE_CLOSE))
+        tooltip:AddLine(string.format("%s RuleId: %s[%s] %s%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleType, ruleId, FONT_COLOR_CODE_CLOSE))
     end
     --@end-debug@
 end

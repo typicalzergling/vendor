@@ -28,38 +28,49 @@ function Addon:EvaluateItem(item)
     end
 
     -- See if this item is already in the cache.
-    local retval, ruleid, rule = Addon:GetCachedResult(item.GUID)
+    local retval, ruleid, rule, ruletype = Addon:GetCachedResult(item.GUID)
     if retval and type(retval) == "number" then
-        return retval, ruleid, rule
+        self:Debug("items", "Retrieved %s from cache with result: %d - [%s] %s", item.Link, retval, tostring(ruletype), tostring(rule))
+        return retval, ruleid, rule, ruletype
     end
 
     if (not self.ruleManager) then
         self.ruleManager = Addon.RuleManager:Create();
     end
     local result = nil
-    result, ruleid, rule = self.ruleManager:Run(item)
+    result, ruleid, rule, ruletype = self.ruleManager:Run(item)
     retval = 0
     if result then
-        -- Only items explicitly in the always sell list are considered for deletion.
-        if item.IsUnsellable then
-            if Addon:GetList(Addon.c_AlwaysSellList):Contains(item.Id) then
-                retval = 2
+        if Addon.RuleType.SELL == ruletype then
+            -- Only items explicitly in the always sell list are considered for deletion if unsellable.
+            if item.IsUnsellable then
+                if Addon:GetList(Addon.c_AlwaysSellList):Contains(item.Id) then
+                    retval = 2
+                else
+                    -- If it's to be sold but is unsellable and not in the Always Sell List, then
+                    -- we ignore it completely.
+                    ruleid = nil
+                    rule = nil
+                    ruletype = nil
+                    retval = 0
+                end
+            else
+                retval = 1
             end
-            -- What to do about items that are to be sold, but are unsellable and not in the list?
-            -- We can't sell them, but the user wants them sold. There's nothing Vendor
-            -- can do here, but we should potentially catch this and inform the user and update
-            -- the tooltip (as in, add this to the always-sell list to delete it).
-            -- For now, we will let this fall through and take no action to fix immediate bug.
-            -- TODO: Consider Possible new state of -1 to indicate error state/conflict.
+        elseif Addon.RuleType.DELETE == ruletype then
+            retval = 2
+        elseif Addon.RuleType.KEEP == ruletype then
+            retval = 0
         else
-            retval = 1
+            error("Unknown ruletype: "..tostring(ruletype))
         end
     end
 
     -- Add item to cache
-    Addon:AddResultToCache(item.Link, retval, ruleid, rule)
+    self:Debug("items", "Adding %s to cache with result: %d - [%s] %s", item.Link, retval, tostring(ruletype), tostring(rule))
+    Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype)
     
-    return retval, ruleid, rule
+    return retval, ruleid, rule, ruletype
 end
 
 -- Results are cached by guid.
@@ -68,9 +79,9 @@ function Addon:GetCachedResult(guid)
     assert(guid)
     result = resultCache[guid]
     if result then
-        return result.Result, result.RuleId, result.Rule
+        return result.Result, result.RuleId, result.Rule, result.RuleType
     else
-        return nil, nil, nil
+        return nil, nil, nil, nil
     end
 end
 
@@ -86,13 +97,14 @@ end
 
 Addon.Profile:RegisterForChanges(function() Addon:ClearResultCache() end, 10)
 
-function Addon:AddResultToCache(guid, result, ruleid, rule)
+function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype)
     assert(type(guid) == "string" and type(result) == "number")
 
     local cacheEntry = {}
     cacheEntry.Result = result
     cacheEntry.RuleId = ruleid
     cacheEntry.Rule = rule
+    cacheEntry.RuleType = ruletype
 
     assert(guid ~= "")
     self:Debug("items", "Cached result: %s = %s", guid, tostring(result))

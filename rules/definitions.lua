@@ -31,7 +31,7 @@ local ITEM_LEVEL_PARAMS =
         Key="ITEMLEVEL",
         Default = function()
             local avg, equip = GetAverageItemLevel();
-            return math.max(0, math.floor(math.min(avg, equip) * 0.90));
+            return math.max(0, math.floor(math.min(avg, equip) * 0.8));
         end,
     },
 };
