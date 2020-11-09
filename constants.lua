@@ -44,4 +44,9 @@ Addon.RuleType = {
 Addon.ListType = {
 	AlwaysSell = "always",
 	NeverSell = "never",
+	AlwaysDelete = "delete",
+
+	ALWAYS = "always",
+	NEVER = "never",
+	DELETE = "delete,"
 };
