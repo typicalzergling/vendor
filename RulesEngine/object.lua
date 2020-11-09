@@ -1,3 +1,4 @@
+local AddonName, Addon = ...;
 local _, Package = ...;
 local EVENT_DATA_KEY = {};
 local EVENT_NAME_KEY = {};
@@ -82,19 +83,18 @@ local function event_Remove(self, handler)
     end        
 end
 
+local event_API = {
+    Raise = event_Call,
+    Add = event_Add,
+    Remove = event_Remove,
+};
+
 --[[===========================================================================
     | event_Index
     |   Handles delegating API calls to our functions, in the event that 
     |   we cannot find a function this raises a member not found exception.
     =======================================================================--]]
 local function event_Index(self, key)
-    local event_API =
-    {
-        Raise = event_Call,
-        Add = event_Add,
-        Remove = event_Remove,
-    };
-
     local member = rawget(event_API, key);
     if (member) then
         return member;
@@ -136,8 +136,12 @@ end
     |   and events on the specified instance. Each method is a thunk to the
     |   method specified (allowing us to proxy them). This adds overhead 
     |   but is helpful to find bugs.
+    |
+    |   Since we pass instance through the thunk, we need to give that table
+    |   a metatable equal to the API we want to expose so that works.
     =======================================================================--]]
 local function create_object_debug(name, instance, API)
+    setmetatable(instance, {  __index = API });
 
     local function object_Index(self, key)
         -- Check for a member function
@@ -166,6 +170,75 @@ local function create_object_debug(name, instance, API)
         });
 end
 
+local TypeInformation = {};
+
+local function Debug_CreateObject(typeName, instance, API)    
+    local thunk = {};
+    return setmetatable(thunk, {
+        __metatable = typeName,
+        __index = function(self, key)
+        -- Check for a member function
+            local member = rawget(API, key);
+            if (type(member) == "function") then
+                return function(...) 
+                        return member(...) 
+                    end;
+            else
+                member = rawget(instance, key);
+                if (member ~= nil) then
+                    return member;
+                end
+
+                error(string.format("Type '%s' has no member '%s'", typeName, key));
+            end
+        end,
+        __newindex = function(self, key, value)
+            if (rawget(instance, key) == nil) then
+                error(string.format("New members are not allowed on '%s' attempted to set '%s'", typeName, key));                
+            else
+                rawset(instance, key, value);
+            end
+        end
+    });
+end
+
+local function CreateObject_New(typeName, instance, API, events)
+    local fullName = string.format("%s.%s", AddonName, typeName);
+    local fullApi = rawget(TypeInformation, typeName);
+    if (not fullApi) then
+        fullApi = {};
+
+        -- Copy the functions over the API
+        for name, value in pairs(API) do
+            if (type(value) == "function") then
+                fullApi[name] = value;
+            else
+                --@debug@
+                error(string.format("Type '%s' API contains member '%s' which is not a function", fullName, name));
+                --@end-debug@                    
+            end
+        end
+
+        -- If the object has events then mixin the callback registry
+        if (type(events) == "table") then
+            fullApi.RegisterCallback = CallbackRegistryMixin.RegisterCallback;
+            fullApi.TriggerEvent = CallbackRegistryMixin.TriggerEvent;
+            fullApi.UnregisterCallback = CallbackRegistryMixin.UnregisterCallback;
+        end
+
+        rawset(TypeInformation, typeName, fullApi);
+    end
+
+    -- If the object has events, then register them
+    if (type(events) == "table") then
+        CallbackRegistryMixin.OnLoad(instance);
+        CallbackRegistryMixin.SetUndefinedEventsAllowed(instance, false);
+        CallbackRegistryMixin.GenerateCallbackEvents(instance, events);
+    end
+
+    return Debug_CreateObject(fullName, instance, fullApi);
+end
+
 --[[===========================================================================
     | create_object
     |   Give the specified API and instance this sets up dispatch to the 
@@ -183,4 +256,6 @@ Package.CreateEvent = create_event;
 -- TEMP
 local _, Addon = ...
 Addon.CreateEvent = create_event
+
+Addon.CreateObject_N = CreateObject_New;
 

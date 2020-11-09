@@ -9,6 +9,8 @@
     <Script file="thread.lua"/>
     <Script file="helpers.lua"/>
     <Script file="savedvariable.lua"/>
+    <Script file="profile.lua"/>
+    <Script file="profilemanager.lua"/>
 
     <!--@do-not-package@-->
     <Script file="debug.lua"/>
