@@ -215,6 +215,9 @@ function RuleManager:Update()
 
     -- Step 4: Apply delete rules
     self:ApplyConfig(RULE_TYPE_DELETE, RuleType.DELETE);
+
+    -- Clear the result cache
+    Addon:ClearResultCache();
 end
 
 --*****************************************************************************

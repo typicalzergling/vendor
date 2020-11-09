@@ -146,9 +146,3 @@ end
 -- Placeholder for now
 function Addon:OnBagUpdate(event, bag)
 end
-
--- Register for profile changes
-Addon:AddInitializeAction(
-    function()
-        Addon:GetProfileManager():RegisterCallback("OnProfileChanged", Addon.ClearResultCache, Addon);
-    end);
