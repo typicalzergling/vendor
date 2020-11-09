@@ -152,4 +152,3 @@ Addon:AddInitializeAction(
     function()
         Addon:GetProfileManager():RegisterCallback("OnProfileChanged", Addon.ClearResultCache, Addon);
     end);
-S
