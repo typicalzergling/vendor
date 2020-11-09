@@ -49,7 +49,7 @@ function Profile:GetRules(ruleType)
 	end
 
 	--@debug@
-	error(string.format("Unable to retrive rules '%s' as it is invalid.", ruleType));
+	error(string.format("Unable to retrieve rules '%s' as it is invalid.", ruleType));
 	--@end-debug@
 	return {};
 end

@@ -126,7 +126,7 @@ end
     ==========================================================================]]
 function Addon.RuleFunctions.PlayerItemLevel()
     assert(not Addon.IsClassic);
-    local itemLevel = GetAvergeItemLevel();
+    local itemLevel = GetAverageItemLevel();
 	return floor(itemLevel);
 end
 --@end-retail@
