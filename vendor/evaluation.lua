@@ -42,18 +42,13 @@ function Addon:EvaluateItem(item)
     retval = 0
     if result then
         if Addon.RuleType.SELL == ruletype then
-            -- Only items explicitly in the always sell list are considered for deletion if unsellable.
             if item.IsUnsellable then
-                if Addon:GetList(Addon.c_AlwaysSellList):Contains(item.Id) then
-                    retval = 2
-                else
-                    -- If it's to be sold but is unsellable and not in the Always Sell List, then
-                    -- we ignore it completely.
-                    ruleid = nil
-                    rule = nil
-                    ruletype = nil
-                    retval = 0
-                end
+                -- Items in sell list but are unsellable take no action.
+                ruleid = nil
+                rule = nil
+                ruletype = nil
+                retval = 0
+                self:Debug("items", "Item %s is unsellable, changing result to no action.", item.Link)
             else
                 retval = 1
             end

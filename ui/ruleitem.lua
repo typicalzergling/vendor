@@ -81,25 +81,25 @@ local VIEW_ITEM = {
 };
 
 local CUSTOM_MENU = {
+    EDIT_ITEM,
     MOVE_UP_ITEM,
     MOVE_DOWN_ITEM,
     HIDE_ITEM,
-    EDIT_ITEM,
     DELETE_ITEM
 }
 
 local EXTENSION_MENU = {
+    VIEW_ITEM,
     MOVE_UP_ITEM,
     MOVE_DOWN_ITEM,
     HIDE_ITEM,
-    VIEW_ITEM,
 };
 
 local BUILTIN_MENU = {
+    VIEW_ITEM,
     MOVE_UP_ITEM,
     MOVE_DOWN_ITEM,
     HIDE_ITEM,
-    VIEW_ITEM,
 };
 
 local NumericParameter = {

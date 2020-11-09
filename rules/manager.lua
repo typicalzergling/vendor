@@ -66,8 +66,8 @@ function RuleManager:Create()
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
     rulesEngine:CreateCategory(RULE_TYPE_KEEP, RuleType.KEEP);
-    rulesEngine:CreateCategory(RULE_TYPE_SELL, RuleType.SELL);
     rulesEngine:CreateCategory(RULE_TYPE_DELETE, RuleType.DELETE);
+    rulesEngine:CreateCategory(RULE_TYPE_SELL, RuleType.SELL);
     rulesEngine.OnRuleStatusChange:Add(
         function(what, categoryId, ruleId, message)
             if (what == "UNHEALTHY") then
@@ -210,11 +210,11 @@ function RuleManager:Update()
     -- Step 2: Add the keep rules from our configuration
     self:ApplyConfig(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
 
-    -- Step 3: Add the sell rules from our configuration
-    self:ApplyConfig(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
-
-    -- Step 4: Apply delete rules
+    -- Step 3: Apply delete rules
     self:ApplyConfig(RULE_TYPE_DELETE, RuleType.DELETE);
+
+    -- Step 4: Add the sell rules from our configuration
+    self:ApplyConfig(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
 
     -- Clear the result cache
     Addon:ClearResultCache();
@@ -230,11 +230,11 @@ function RuleManager:Run(object, ...)
     local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
     Addon:Debug("rules", "Evaluated \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
     if (result) then
-        if ((categoryId == RULE_TYPE_KEEP) or (categoryId == RULE_TYPE_LOCKED_KEEP) or (categoryId == RULE_TYPE_SCRAP)) then
+        if ((categoryId == RULE_TYPE_KEEP) or (categoryId == RULE_TYPE_LOCKED_KEEP)) then
             return false, ruleId, name, RuleType.KEEP;
         elseif ((categoryId == RULE_TYPE_SELL) or (categoryId == RULE_TYPE_LOCKED_SELL)) then
             return true, ruleId, name, RuleType.SELL;
-        elseif ((CateogryID == RULE_TYPE_DELETE)) then
+        elseif ((categoryId == RULE_TYPE_DELETE)) then
             return true, ruleId, name, RuleType.DELETE;
         end
     end
