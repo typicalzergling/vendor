@@ -60,3 +60,81 @@ function Addon.invoke(object, method, ...)
 	end 
 	return nil;
 end
+
+local TypeInformation = {};
+
+--[[===========================================================================
+   | Create a new "class" which may or may not raise events.  
+   ==========================================================================]]
+function Addon.object(typeName, instance, API, events)
+    local fullName = string.format("%s.%s", AddonName, typeName);
+    local fullApi = rawget(TypeInformation, fullName);
+
+    if (not fullApi) then
+        fullApi = {};
+
+        -- Copy the functions over the API
+        for name, value in pairs(API) do
+            if (type(value) == "function") then
+                fullApi[name] = value;
+            else
+                --@debug@
+                error(string.format("Type '%s' API contains member '%s' which is not a function", fullName, name));
+                --@end-debug@                    
+            end
+        end
+
+        -- If the object has events then mixin the callback registry
+        if (type(events) == "table") then
+            fullApi.RegisterCallback = CallbackRegistryMixin.RegisterCallback;
+            fullApi.TriggerEvent = CallbackRegistryMixin.TriggerEvent;
+            fullApi.UnregisterCallback = CallbackRegistryMixin.UnregisterCallback;
+        end
+
+        rawset(TypeInformation, fullName, fullApi);
+    end
+
+    -- If the object has events, then register them
+    if (type(events) == "table") then
+        CallbackRegistryMixin.OnLoad(instance);
+        CallbackRegistryMixin.SetUndefinedEventsAllowed(instance, false);
+        CallbackRegistryMixin.GenerateCallbackEvents(instance, events);
+    end
+
+    --@debug@
+    local thunk = {};
+    return setmetatable(thunk, {
+        __metatable = fullName,
+        __index = function(self, key)
+        -- Check for a member function
+            local member = rawget(fullApi, key);
+            if (type(member) == "function") then
+                return function(...) 
+                        return member(...);
+                    end;
+            else
+                member = rawget(instance, key);
+                if (member ~= nil) then
+                    return member;
+                end
+
+                error(string.format("Type '%s' has no member '%s'", typeName, key));
+            end
+        end,
+        __newindex = function(self, key, value)
+            -- Don't allow new fields/members that didn't exist when
+            -- we were created.
+            if (rawget(instance, key) == nil) then
+                error(string.format("New members are not allowed on '%s' attempted to set '%s'", typeName, key));                
+            else
+                rawset(instance, key, value);
+            end
+        end,
+    });
+    --@end-debug@
+
+    --return setmetatable(instance, {
+    --    __metatable = fullName,
+    --    __index = fullApi,
+    --});
+end

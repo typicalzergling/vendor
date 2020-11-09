@@ -90,8 +90,6 @@ function Addon:ClearResultCache(arg)
     self:ClearTooltipResultCache()
 end
 
-Addon.Profile:RegisterForChanges(function() Addon:ClearResultCache() end, 10)
-
 function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype)
     assert(type(guid) == "string" and type(result) == "number")
 
@@ -143,3 +141,10 @@ end
 -- Placeholder for now
 function Addon:OnBagUpdate(event, bag)
 end
+
+-- Register for profile changes
+Addon:AddInitializeAction(
+    function()
+        Addon:GetProfileManager():RegisterCallback("OnProfileChanged", Addon.ClearResultCache, Addon);
+    end);
+S

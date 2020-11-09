@@ -238,11 +238,7 @@ local ListsPanel =
         self.selllist:RegisterCallback("OnAddItem", self.AddToSell, self);
         self.keeplist:RegisterCallback("OnDeleteItem", self.RemoveFromKeep, self);
         self.keeplist:RegisterCallback("OnAddItem", self.AddToKeep, self);
-
-        Addon.Profile:RegisterForChanges(
-            function()
-                self:Update();
-            end);
+        Addon:GetProfileManager():RegisterCallback("OnProfileChanged", self.Update, self);
     end,
 
     OnShow = function(self)

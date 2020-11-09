@@ -52,6 +52,7 @@ local L = Addon:GetLocale()
 local Package = select(2, ...);
 local AddonName = select(1, ...);
 local RuleType = Addon.RuleType;
+local ExtensionCallbacks = {};
 
 local Extensions =
 {
@@ -198,13 +199,15 @@ local function addOnRuleUpdateCallback(ext, cbdef)
     -- Add the callback to the config table.concat, this is the primary invocation point.
     local function fn()
         Addon:Debug("extensions", "Executing callback from (%s)...", ext.Source)
-        local result, msg = pcall(cbdef);
+        local result, msg = xpcall(cbdef, CallErrorHandler);
+        --@debug@
         if (not result) then
             Addon:Debug("extensions", "%sFailed to invoke extenion callback %s: %s|r", RED_FONT_COLOR_CODE, cb.Source, msg);
         end
+        --@end-debug@
     end
 
-    Addon.Profile:RegisterForChanges(fn, 32000);
+    table.insert(ExtensionCallbacks, fn);
 end
 
 
@@ -472,10 +475,44 @@ function Extensions:Register(extension)
     return true;
 end
 
+-- Handle notifying our extensions of a change. THis is async, which allows vendor
+-- to update before our addons, it also, allows us to not require special handling 
+-- for our addons.
+function Extensions:ChangeCallback()
+    if (self.timer) then
+        self.timer:Cancel();
+        self.timer = nil;
+    end
+    
+    self.timer = C_Timer.NewTimer(0.05, 
+        function()
+            if (self.timer) then
+                self.timer:Cancel();
+                self.timer = nil;
+            end            
+
+            for _, fn in ipairs(ExtensionCallbacks) do 
+                fn();
+            end                    
+        end);
+end
+
 -- Expose the extensions (private to the addon) and public
 -- for main registration function.
 Package.Extensions = Extensions;
 function Addon:RegisterExtension(extension)
-    return Extensions:Register(extension);
+    local result = Extensions:Register(extension);
+    if (result) then
+        if (not Extensions.registeredCallbacks) then
+            Extensions.registeredCallbacks = true;
+            Addon:GetProfileManager():RegisterCallback("OnProfileChanged", Extensions.ChangeCallback, Extensions);
+            --Addon.Rules:RegisterCallback("OnDefinitionsChanged", ....)
+            Addon.Rules.OnDefinitionsChanged:Add(
+                function()
+                    Extensions:ChangeCallback();
+                end);
+        end
+    end
+    return result;
 end
 
