@@ -82,6 +82,10 @@ function ItemListItem:SetItem(item)
 	end
 end
 
+function ItemListItem:OnModelChanged(model)
+	self:SetItem(model);
+end
+
 --[[============================================================================
 	| Called when the "delete" button is clicked
 	==========================================================================]]

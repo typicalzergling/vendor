@@ -5,7 +5,8 @@
 	<!-- -->
    	<ScrollFrame name="Vendor_Item_List" virtual="true" inherits="FauxScrollFrameTemplate">
         <KeyValues>
-            <KeyValue key="itemHeight" value="24" type="number"/>
+            <KeyValue key="ItemHeight" value="24" type="number"/>
+			<KeyValue key="ItemClass" value="ItemListItem" type="string"/>
         </KeyValues>
 		<Layers>
 			<Layer level="BACKGROUND" textureSubLevel="-2">
@@ -23,7 +24,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
+			<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
 			<OnMouseUp>self:GetParent():OnDrop(button)</OnMouseUp>
 		</Scripts>
 	</ScrollFrame>

@@ -127,23 +127,6 @@ end
    ==========================================================================]]
 function Addon:GetProfile()
 	local profileManager = Addon:GetProfileManager();
-
-	if (not self.initialized) then		
-		self.initialized = true;
-		profileManager.OnProfileCreated:Add(
-			function(profile)
-				profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
-				profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
-			end);
-
-		--@debug@
-		profileManager.OnProfileChanged:Add(
-			function (profile)
-				Addon:Debug("profile", "Active profile is now '%s' [%s]", profile:GetName(), profile:GetId());
-			end)
-		--@end-debug@
-	end
-	
 	return profileManager:GetProfile();
 end
 
@@ -191,6 +174,8 @@ function Addon:OnCreateDefaultProfile(profile)
 		Addon:Debug("profile", "Migrated existing vendor settings");
 	end
 
+	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
+	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
 	profile:SetName(L["DEFAULT_PROFILE_NAME"]);
 end
 
@@ -198,6 +183,10 @@ end
    | Handle initializing a new profile, populating it with the default config.
    ==========================================================================]]
 function Addon:OnInitializeProfile(profile)
+	-- Set the version
+	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
+	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
+
 	-- Lists start empty
 	profile:SetValue(PROFILE_DELETE_LIST, {});
 	profile:SetValue(PROFILE_KEEP_LIST, {});

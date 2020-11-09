@@ -27,7 +27,7 @@ end
 	| Sets the mode for this item base, if the model has changed then
     | OnModelChanged is invoked allowing the item to update itself.
 	========================================================================--]]
-	function ListItem:SetModel(model)
+function ListItem:SetModel(model)
 	local m = rawget(self, MODEL_KEY);
 	if (m ~= model) then
 		rawset(self, MODEL_KEY, model)

@@ -83,6 +83,7 @@ local ListBase = {
 		self:AdjustScrollbar();
 		self:SetScript("OnVerticalScroll", self.OnVerticalScroll);
 		self:SetScript("OnShow", self.Update);
+		self:SetScript("OnUpdate", self.OnUpdate);
 	end
 };
 
@@ -143,7 +144,7 @@ end
     | Populates our list of items.
 	========================================================================--]]
 function ListBase:Populate()
-	local items = invoke(self, "GetItems");
+	local items = Addon.invoke(self, "GetItems");
 	if (not items) then
 		return
 	end
@@ -258,6 +259,16 @@ function ListBase:RebuildView(model)
 	self:UpdateView(model);
 end
 
+function ListBase:OnUpdate()
+	if (self.frames) then
+		for _, frame in ipairs(self.frames) do
+			if (frame:IsVisible()) then
+				Addon.invoke(frame, "OnUpdate");
+			end
+		end
+	end
+end
+
 --[[===========================================================================
 	| setEmptyText (local):
 	|   This is a local helper which shows/hide the optional empty text
@@ -290,12 +301,14 @@ function ListBase:CreateItem()
 	local class = self.ItemClass;
 	if ((type(class) == "string") and (string.len(class) ~= 0)) then
 		local scope = Addon;
-		for _, t in string.split(class, ".") do
+		for _, t in ipairs(string.split(class, ".")) do
 			if (scope) then
 				subclass = scope[t];
 				scope = scope[t];
 			end
 		end
+	elseif (type(class) == "table") then
+		subclass = class;
 	end
 
 	local frame = CreateFrame(self.FrameType or "Button", nil, self, self.ItemTemplate);
@@ -335,13 +348,17 @@ function ListBase:Update()
 			end
 
 			item:ClearAllPoints();
-			item:SetModel(items[modelIndex]);
-			item:SetModelIndex(modelIndex);
-			item:SetWidth(width);
-			item:Show();
-			item:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -top);
+			if (items[modelIndex]) then
+				item:SetModel(items[modelIndex]);
+				item:SetModelIndex(modelIndex);
+				item:SetWidth(width);
+				item:Show();
+				item:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -top);
 
-			top = top + itemHeight;
+				top = top + itemHeight;
+			else
+				item:Hide();
+			end
 			modelIndex = modelIndex + 1;
 		end
 	end

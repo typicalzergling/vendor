@@ -5,16 +5,7 @@
     ========================================================================--]]
 
 local AddonName, Addon = ...
-
-local ItemList = {
-	OnShow = function(self)
-		self.List:EnsureUpdate();
-	end,
-
-	OnHide = function(self)
-		self.List:ClearUpdate();
-	end,
-}
+local ItemList = {};
 
 -- Returns true if the item is read-only
 function ItemList:IsReadOnly()
@@ -33,8 +24,9 @@ end
 -- Sets the list of items to display, this is either an array of ItemLocations,
 -- a list of item links, or numeric list of item ids.
 function ItemList:SetContents(itemList)
-	self.contents = itemList or {};
-	self.List:UpdateView(self.contents);
+	self.contents = table.copy(itemList or {});
+	table.sort(self.contents, function(a, b) return a < b; end);
+	self.List:Update();
 end
 	
 function ItemList.OnLoad(self)
@@ -44,27 +36,18 @@ function ItemList.OnLoad(self)
 	self:OnBackdropLoaded();
 	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
 
-	Addon.ListBase.OnLoad(Mixin(self.List, Addon.ListBase));
-	self.List.emptyText.LocKey = self.EmptyTextKey;
-	self.List:AdjustScrollbar();
+	--self.List.emptyText.LocKey = self.EmptyTextKey;
 
-	self.itemTemplate = "Vendor_ListItem_Item";
+	self.List.GetItems = function()
+		return self.contents or {};
+	end;
+	
+	-- Set the item template on our list
+	self.List.ItemClass = Addon.ItemListItem;
+	self.List.ItemTemplate = "Vendor_ListItem_Item";
 	if (self:IsReadOnly()) then
-		self.itemTemplate = "Vendor_ListItem_Item_ReadOnly";
+		self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";
 	end
-
-	self.List.CreateItem = function(list, item) 
-		local frame = CreateFrame("Button", nil, list, self.itemTemplate);
-		frame:SetItem(item);
-		return frame;
-	end;
-
-	self.List.RefreshItem = function(list, frame, item)
-		frame:SetItem(item);
-	end;
-
-	self:SetScript("OnShow", self.OnShow);
-	self:SetScript("OnHide", self.OnHide);
 end
 
 function ItemList:OnDrop(button)

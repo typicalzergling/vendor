@@ -33,7 +33,7 @@ function Profile:RaiseOnChanged()
 	if (self.active) then
 		if (self.timer) then
 			self.timer:Cancel();
-			self.timer = nil;
+			self.timer = false;
 		end
 
 		self.timer = C_Timer.NewTimer(0.15, 

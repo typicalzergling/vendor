@@ -24,7 +24,7 @@ end
    | or may cause migration.
    ==========================================================================]]
 function ProfileManager:GetProfile()
-	local profile = rawget(self, PROFILE_KEY);
+	local profile = self.activeProfile;
 	if (profile) then
 		return profile;
 	end
@@ -43,14 +43,12 @@ function ProfileManager:GetProfile()
 		Addon.invoke(Addon, "OnCreateDefaultProfile", profile);
 		activeProfileVariable:Replace(profile:GetId());
 		debug("Created default profile '%s'", profile:GetId());
-		self.OnProfileCreated:Raise(profile);
 	else
 		Addon.invoke(Addon, "OnCheckProfileMigration", profile);
 	end
 
 	profile:SetActive(true);
-	rawset(self, PROFILE_KEY, profile);
-	self.OnProfileChanged:Raise(profile);
+	self.activeProfile = profile;
 	profile:RegisterCallback("OnChanged", function()
 			debug("Broadcasting change '%s'", profile:GetName());
 			self:TriggerEvent("OnProfileChanged", profile);
@@ -74,7 +72,6 @@ function ProfileManager:CreateProfile(profileName)
 
 	Addon.invoke(Addon, "OnInitializeProfile", profile);	
 	debug("Created new profile '%s'", profile:GetId());
-	self.OnProfileCreated:Raise(profile);
 	self:TriggerEvent("OnProfileCreated", profile);
 	return profile;
 end
@@ -96,7 +93,6 @@ function ProfileManager:CopyProfile(profile, newProfileName)
 	profilesVariable:Set(profile:GetId(), data);
 	profile:SetName(newProfileName);
 	debug("Copied profile '%s' to '%s'", profileId, data.id);
-	self.OnProfileCreated:Raise(profile);
 	self:TriggerEvent("OnProfileCreated", profile);
 	return profile;
 end
@@ -156,12 +152,14 @@ end
 function Addon:GetProfileManager()
 	local profileManager = rawget(self, PMGR_KEY);
 	if (not profileManager) then
-		profileManager = Mixin(ProfileManager, CallbackRegistryMixin);
-		CallbackRegistryMixin.OnLoad(profileManager);
-		CallbackRegistryMixin.GenerateCallbackEvents(profileManager, { "OnProfileChanged", "OnProfileCreated", "OnProfileDeleted" });
-		profileManager.OnProfileCreated = Addon.CreateEvent("ProfileMaanger.Created");
-		profileManager.OnProfileDeleted = Addon.CreateEvent("ProfileManagee.Deleted");
-		profileManager.OnProfileChanged = Addon.CreateEvent("ProfileManager.Changed");		
+		local instance = {
+			activeProfile = false;
+		};
+
+		profileManager = Addon.object("ProfileManager", instance, ProfileManager, {
+			"OnProfileChanged", "OnProfileCreated", "OnProfileDeleted"
+		});
+
 		rawset(self, PMGR_KEY, profileManager);
 	end
 
