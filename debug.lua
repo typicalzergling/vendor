@@ -34,6 +34,7 @@ function Addon:SetupDebugConsoleCommands()
     Addon:RegisterDebugChannel("test")
     Addon:RegisterDebugChannel("threads")
     Addon:RegisterDebugChannel("tooltip")
+    Addon:RegisterDebugChannel("tooltiperrors")
 end
 
 -- Debug Commands

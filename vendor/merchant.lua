@@ -114,9 +114,9 @@ function Addon:AutoSell()
                 local result = Addon:EvaluateItem(item)
 
                 -- Determine if it is to be sold
-                -- Result of 0 is no action, 1 is sell, 2 is must be deleted.
-                -- So we only try to sell if Result is exactly 1.
-                if result == 1 then
+                -- Result of 0 is no action, 1 is sell, 2 is delete.
+                -- We will attempt to sell to-delete items if they are sellable.
+                if result >= 1 and not item.IsUnsellable then
                     -- UseContainerItem is really just a limited auto-right click, and it will equip/use the item if we are not in a merchant window!
                     -- So before we do this, make sure the Merchant frame is still open. If not, terminate the coroutine.
                     if not self:IsMerchantOpen() then

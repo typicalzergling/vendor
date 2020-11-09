@@ -30,9 +30,17 @@ end
 
 -- Hooks for item tooltips
 function Addon:OnTooltipSetItem(tooltip, ...)
-    local name, link = tooltip:GetItem()
-    if name then
-        self:AddItemTooltipLines(tooltip, link)
+    -- Insecure hook, so wrap what we call in xpcall to prevent taint.
+    local status, err = xpcall(
+        function(t, ...)
+            local name, link = t:GetItem()
+            if name then
+                Addon:AddItemTooltipLines(t, link)
+            end
+        end,
+        CallErrorHandler, tooltip)
+    if not status then
+        Addon:Debug("tooltiperrors", "Error executing OnTooltipSetItem: ", tostring(err))
     end
 end
 
@@ -43,6 +51,8 @@ local blocklist = nil
 local ruleId = nil
 local ruleName = nil
 local ruleType = nil
+local callCount = 0
+local recipe = false
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Addon:ClearTooltipResultCache()
@@ -52,6 +62,8 @@ function Addon:ClearTooltipResultCache()
     ruleId = nil
     ruleName = nil
     ruleType = nil
+    callCount = 0
+    recipe = false
     Addon:Debug("tooltip", "TooltipResultCache cleared.")
 end
 
@@ -63,20 +75,41 @@ function Addon:AddItemTooltipLines(tooltip, link)
     -- TODO: We could keep a larger cache so we don't re-evaluate an item unless inventory changed, the rules changed, or the blocklist changed.
     if not (itemLink == link) then
         -- Evaluate the item
-        result, ruleId, ruleName, ruleType  = self:EvaluateItem(self:GetItemPropertiesFromTooltip(tooltip, link))
+        local item = self:GetItemPropertiesFromTooltip(tooltip, link)
+        result, ruleId, ruleName, ruleType  = self:EvaluateItem(item)
 
         -- Check if the item is in the Always or Never sell lists
+        -- TODO: Change this to return a table of lists to which this item belongs.
         blocklist = self:GetBlocklistForItem(link)
+
+        -- This is for suppressing every other call due to recipe items calling this for the embedded tooltip item also.
+        callCount = 0
+        if item and item.TypeId == 9 then
+            recipe = true
+        else
+            recipe = false
+        end
 
         -- Mark it as the current cached item.
         itemLink = link
         self:Debug("tooltip", "Cached item for tooltip: %s", link)
     end
 
+    -- Check for recipe item, which means this will be called twice
+    -- We want to skip the first call, which is the embedded tooltip item.
+    callCount = callCount + 1
+    if recipe then
+        if callCount % 2 == 1 then
+            return
+        end
+    end
+
     -- Add lines to the tooltip we are scanning after we've scanned it.
     -- We always add if the item is in the Always-Sell or Never-Sell list.
     if blocklist then
         -- Add Addon state to the tooltip.
+        -- TODO: After blocklist is changed to a table, iterate over each list to which the item belongs and add to
+        -- the tooltip.
         if blocklist == self.c_AlwaysSellList then
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
         else
@@ -95,8 +128,10 @@ function Addon:AddItemTooltipLines(tooltip, link)
     
     -- Add Advanced Rule information if set and available.
     if (ruleName and profile:GetValue(Addon.c_Config_Tooltip_Rule)) then
-        if result > 0 then
+        if result == 1 then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
+        elseif result == 2 then
+            tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_DESTROY"], ruleName))
         else
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_KEEP"], ruleName))
         end
