@@ -82,7 +82,7 @@ local function ListTypeToKey(listType)
 		return PROFILE_SELL_LIST;
 	elseif (listType == ListType.NEVER) then
 		return PROFILE_KEEP_LIST;
-	elseif (listType == ListType.DELETE) then
+	elseif (listType == ListType.AlwaysDelete) then
 		return PROFILE_DELETE_LIST;
 	end 
 

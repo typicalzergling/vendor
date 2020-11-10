@@ -36,87 +36,26 @@
 
 local AddonName, Addon = ...
 local ListItem = Addon.Controls.ListItem;
-local L = Addon:GetLocale()
-local function __noop() end
-
--- Simple helper for invoking handlers.
-local function invoke(object, method, ...)
-	local fn = object[method];
-	if (type(fn) == "function") then
-		local results = { xpcall(fn, CallErrorHandler, object, ...) };
-		if (results[1]) then
-			table.remove(results, 1);
-			return unpack(results);
-		end
-	end 
-	return nil;
-end
-	
-local ListBase = {
-	UpdateHandler = function(self)
-		if (self:IsShown()) then
-			self:ForEach(function(item)
-				local update = item.OnUpdate;
-				if (type(update) == "function") then
-					update(item);
-				end
-			end)
-		end
-	end,
-
-	EnsureUpdate = function(self)
-		if (not self._hooked) then
-			self:SetScript("OnUpdate", self.UpdateHandler);
-			self._hooked = true;
-		end
-	end,
-
-	ClearUpdate = function(self)
-		if (self._hooked) then
-			self:SetScript("OnUpdate", nil);
-			self._hooked = false;
-		end
-	end,
-
-	OnLoad = function(self)
-		self:SetClipsChildren(true);
-		self:AdjustScrollbar();
-		self:SetScript("OnVerticalScroll", self.OnVerticalScroll);
-		self:SetScript("OnShow", self.Update);
-		self:SetScript("OnUpdate", self.OnUpdate);
-	end
-};
-
-	
---[[===========================================================================
-    | Sorts the items in the view
-	========================================================================--]]
-function ListBase:SortView()
-	if (self.items) then
-		invoke(self, "OnSort");
-		table.sort(self.items, ListItem.CompareTo);
-	end
-end
+local ListBase = {};
 
 --[[===========================================================================
-	| ListBase:ForEach:
-	|   Calls the provided function for each item in the list.
+	| OnLoad handler for the list base, sets some defaults and hooks up
+	| some scripts.
 	========================================================================--]]
-function ListBase:ForEach(callback)
-	assert(type(callback) == "function");
-	if (self.items) then
-		for _, item in ipairs(self.items) do
-			callback(item);
-		end
-	end
+function ListBase:OnLoad()
+	self:SetClipsChildren(true);
+	self:AdjustScrollbar();
+	self:SetScript("OnVerticalScroll", self.OnVerticalScroll);
+	self:SetScript("OnShow", self.Update);
+	self:SetScript("OnUpdate", self.OnUpdate);
 end
 
 --[[===========================================================================
 	| Searches the list to locate the item which the specified view/model
 	========================================================================--]]
 function ListBase:FindItem(model)
-	if (self.items) then
-		for _, item in ipairs(self.items) do
+	if (self.frames) then
+		for _, item in ipairs(self.frames) do
 			if (item:HasModel(model)) then
 				return item;
 			end 
@@ -141,70 +80,11 @@ function ListBase:FindIndexOfItem(item)
 end
 
 --[[===========================================================================
-    | Populates our list of items.
-	========================================================================--]]
-function ListBase:Populate()
-	local items = Addon.invoke(self, "GetItems");
-	if (not items) then
-		return
-	end
-
-	assert(type(model) == "table");
-
-	-- Make sure we've got an item for each element of our model, if
-	-- not then we'll call the create function to make one.
-	local ids = {};
-	local modelIndex = 1;    
-	self.items = self.items or {};
-	for _, element in pairs(model) do
-		ids[element] = true;
-		local item = self:FindItem(element);
-		if (not item) then
-			item = Mixin(createItemCallback(self, element), ItemBase);
-			item:SetModel(element);
-			table.insert(self.items, item);
-		else
-			refreshItemCallback(self, item, element);
-		end
-
-		item:SetModelIndex(modelIndex);
-		modelIndex = (modelIndex + 1);
-	end
-
-	-- Remove any elements which are no-longer present in the list
-	if (self.items) then
-		local index = 1;
-		while (index <= #self.items) do
-			local item = self.items[index];
-			if (not ids[item:GetModel()]) then
-				table.remove(self.items, index);
-				item:Hide();
-				item:SetParent(nil);
-				item:SetModel(nil);
-			else
-				index = (index + 1);
-			end
-		end
-	end
-
-	-- After we've created the view give our subclass a chance do something
-	-- with the items.
-	local onViewBuilt = self.OnViewBuilt or __noop;
-	if (type(self.OnViewBuild) == "function") then
-		xpcall(self.OnViewBuilt, CallErrorHandler, self);
-	end
-
-	-- Sort the items if a sort function was provided.
-	self:SortItems();
-end
-
---[[===========================================================================
-	| ListBase:AdjustScrollbar:
-	|   We want the scrollbar to occupy the space inside of dimensions rather 
-	|   than outside, we also sometimes want a background behind it, so if we've 
-	|   got one the anchor it the scrollbar.  Finally we want the buttons 
-	|   stuck to the bottom of the scrollbar rather than a big space.
-	|   TODO: possibly share this as it's own mix-in.
+	| We want the scrollbar to occupy the space inside of dimensions rather 
+	| than outside, we also sometimes want a background behind it, so if we've 
+	| got one the anchor it the scrollbar.  Finally we want the buttons 
+	| stuck to the bottom of the scrollbar rather than a big space.
+	| TODO: possibly share this as it's own mix-in.
 	========================================================================--]]
 function ListBase:AdjustScrollbar()
 	-- than being offset
@@ -233,32 +113,60 @@ function ListBase:AdjustScrollbar()
 end
 
 --[[===========================================================================
-	| ListBase:UpdateView:
-	|   Handles synchronizing the view the specified model, and then laying
-	|   out all the frames. 
+	| Selects the specified item, called from the list items, will invoke
+	| OnSelection only if the selection has changed.
 	========================================================================--]]
-function ListBase:UpdateView(model)
-	self:EnsureItems(model);
-	self:Update();
+function ListBase:Select(item)
+	if (self.frames) then
+		local sel = nil;
+		local currentSel = self:GetSelected();
+		local newSel = nil;
+
+		if (type(item) == "number") then
+			sel = self.frames[item];
+		elseif (type(item) == "table") then
+			sel = self:FindItem(item);
+		end
+
+		for _, frame in ipairs(self.frames) do
+			if (frame == sel) then
+				newSel = frame;
+				frame:SetSelected(true);
+			else
+				frame:SetSelected(false);
+			end
+		end
+
+		if (newSel ~= currentSel) then
+			local model = nil;
+			if (newSel) then
+				model = newSel:GetModel();
+			end
+			Addon.invoke(self, "OnSelection", model);
+		end
+	end
 end
 
 --[[===========================================================================
-	| ListBase:UpdateView:
-	|   Rebuilds the view from the ground up, throwing out all of the 
-	|   existing items.
+	| Gets the currently selected item in the view.
 	========================================================================--]]
-function ListBase:RebuildView(model)
-	if (self.items) then
-		for _, item in ipairs(self.items) do
-			item:ClearAllPoints();
-			item:Hide();
-			item:SetParent(nil);
-		end            
+function ListBase:GetSelected()
+	if (self.frames) then
+		for _, frame in ipairs(self.frames) do
+			if (frame:IsVisible()) then
+				if (frame:IsSelected()) then
+					return frame:GetModel();
+				end
+			end
+		end
 	end
-	self.items = nil;
-	self:UpdateView(model);
+
+	return nil;
 end
 
+--[[===========================================================================
+	| Update handler, delegates to each of the frames (if they are visible)
+	========================================================================--]]
 function ListBase:OnUpdate()
 	if (self.frames) then
 		for _, frame in ipairs(self.frames) do
@@ -270,11 +178,9 @@ function ListBase:OnUpdate()
 end
 
 --[[===========================================================================
-	| setEmptyText (local):
-	|   This is a local helper which shows/hide the optional empty text
-	|   element for the view.
+	| Shows or hides the empty text
 	========================================================================--]]
-function ListBase:SetEmptyText(show)
+function ListBase:ShowEmptyText(show)
 	local empty = self.EmptyText;
 	if (empty) then
 		if (show) then
@@ -286,14 +192,30 @@ function ListBase:SetEmptyText(show)
 end
 
 --[[===========================================================================
-	| ListBase:OnVerticalScroll
-	|   Handles implementing the vertical scroll event, this should be hooked
-	|   to the item via XML or SetScript.
+	| Modifies the empty text
+	========================================================================--]]
+function ListBase:SetEmptyText(text)
+	if (self.EmptyText) then
+		self.EmptyText:SetText(text or "");
+	end
+end
+
+function ListBase:ResetOffset()
+	FauxScrollFrame_SetOffset(self, 0);
+end
+
+--[[===========================================================================
+	| Handles implementing the vertical scroll event, this should be hooked
+	|  to the item via XML or SetScript.
 	========================================================================--]]
 function ListBase:OnVerticalScroll(offset)
 	FauxScrollFrame_OnVerticalScroll(self, offset, self.ItemHeight or 1, self.Update);
 end
 
+--[[===========================================================================
+	| Handles the creation of new item in the list, these items are recycled
+	| and gave the model changed.  
+	========================================================================--]]
 function ListBase:CreateItem()
 	local subclass = nil;
 
@@ -314,8 +236,8 @@ function ListBase:CreateItem()
 	local frame = CreateFrame(self.FrameType or "Button", nil, self, self.ItemTemplate);
 	frame = Mixin(frame, (subclass or {}));
 	frame = ListItem:Attach(frame);
-	invoke(frame, "OnCreated");
-	invoke(self, "OnItemCreated", frame);
+	Addon.invoke(frame, "OnCreated");
+	Addon.invoke(self, "OnItemCreated", frame);
 	return frame;
 end
 
@@ -325,13 +247,18 @@ end
 	|   layout to synchronize the view state.
 	========================================================================--]]
 function ListBase:Update()
-	local items = invoke(self, "GetItems");
+	local items = Addon.invoke(self, "GetItems");
+	self.frames = self.frames or {};
+
 	if (not items or (table.getn(items) == 0)) then
-		self:SetEmptyText(true);
+		for _, frame in ipairs(self.frames) do
+			frame:ResetAll();
+		end
+
+		self:ShowEmptyText(true);
 	else
-		self:SetEmptyText(false);
-		
-		self.frames = self.frames or {};
+		self:ShowEmptyText(false);
+
 		local offset = FauxScrollFrame_GetOffset(self);
 		local itemHeight = (self.ItemHeight or 1);
 		local visible = math.ceil(self:GetHeight() / itemHeight);
@@ -354,10 +281,11 @@ function ListBase:Update()
 				item:SetWidth(width);
 				item:Show();
 				item:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -top);
+				item:SetPoint("TOPRIGHT", self, "TOPLEFT", width, -top);
 
 				top = top + itemHeight;
 			else
-				item:Hide();
+				item:ResetAll();
 			end
 			modelIndex = modelIndex + 1;
 		end

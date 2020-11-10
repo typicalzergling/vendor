@@ -162,13 +162,16 @@ CONFIG_DIALOG_CONFIRM_DELETE_FMT1 = "Deleting '%s' will make it unavailable to a
 CONFIG_DIALOG_SHARE_TOOLTIP = "Share",
 CONFIG_DIALOG_MOVEUP_TOOLTIP = "Click to move the rule sooner in evaluation order",
 CONFIG_DIALOG_MOVEDOWN_TOOLTIP = "Click to move the rule later in the evaluation order",
-CONFIG_DIALOG_LISTS_TAB = "Sell Lists",
+CONFIG_DIALOG_LISTS_TAB = "Lists",
 CONFIG_DIALOG_LISTS_TEXT = "" ..
     YELLOW_FONT_COLOR_CODE .. "Left-Click" .. FONT_COLOR_CODE_CLOSE .. " removes the item from the list.|n" ..
     YELLOW_FONT_COLOR_CODE .. "Right-Click" .. FONT_COLOR_CODE_CLOSE .. " swaps the item to the other list.|n" ..
     YELLOW_FONT_COLOR_CODE .. "Dragging an item from your bags over a list" .. FONT_COLOR_CODE_CLOSE .. " adds it to that list.",
-CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Always Sell:",
-CONFIG_DIALOG_LISTS_NEVER_LABEL = "Never Sell:",
+CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Always Sell",
+CONFIG_DIALOG_LISTS_NEVER_LABEL = "Never Sell",
+ALWAYS_SELL_LIST_NAME = "Always Sell",
+NEVER_SELL_LIST_NAME = "Never Sell",
+ALWAYS_DESTROY_LIST_NAME = "Always Destroy",
 RULES_DIALOG_HELP_HEADING = "You can find the latest release notes as well as links to the project and it's tutorials on this page.",
 RULES_DIALOG_HELP_TAB = "Help",
 RULES_DIALOG_EMPTY_SELL_LIST = "There are no rules in your sell list",

@@ -96,6 +96,20 @@ function ListItem:CompareTo(other)
 			(rawget(self, MODEL_INDEX_KKEY) or 0);
 end
 
+function ListItem:IsSelected()
+	return (self.selected == true);
+end
+
+function ListItem:SetSelected(selected)
+	if (self.selected ~= selected) then
+		self.selected = selected;
+		local cb = self.OnSelected;
+		if (type(cb) == "function") then
+			xpcall(cb, CallErrorHandler, self, selected);
+		end
+	end
+end
+
 Addon.Controls = Addon.Controls or {};
 Addon.Controls.ListItem = {
 	Attach = function(self, control)

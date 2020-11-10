@@ -15,7 +15,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-                <FontString justifyH="LEFT" justifyV="TOP" inherits="ObjectiveFont" parentKey="emptyText" hidden="false">
+                <FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontDisable" parentKey="EmptyText" hidden="false">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="12" y="-16"/>
 						<Anchor point="BOTTOMRIGHT" x="-12" y="16" relativeKey="$parent.ScrollBar" relativePoint="BOTTOMLEFT"/>

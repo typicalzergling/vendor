@@ -230,82 +230,165 @@ end
 --[[ Lists Panel ]]
 
 local ListType = Addon.ListType;
+local ListsItem = {};
+
+function ListsItem:OnCreated()
+    self:SetScript("OnClick", self.OnClick);
+end
+
+function ListsItem:OnModelChanged(model)
+    self.Name:SetText(model.name);
+end
+
+function ListsItem:OnUpdate()
+    if (self:IsMouseOver()) then
+        self.Hover:Show();
+    else
+        self.Hover:Hide();
+    end
+end
+
+function ListsItem:OnSelected(selected)
+    if (selected) then
+        self.Selected:Show();
+        self.Name:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB());
+    else
+        self.Selected:Hide();
+        self.Name:SetTextColor(NORMAL_FONT_COLOR:GetRGB());
+    end
+end
+
+function ListsItem:OnClick()
+    self:GetParent():Select(self:GetModel());
+end
+
+local SystemListId = 
+{
+    ALWAYS = "system:always-sell",
+    NEVER = "system:never-sell",
+    DESTROY = "system:always-destroy",
+};
+
+local SYSTEM_LISTS = 
+{
+    {
+        id = SystemListId.ALWAYS,
+        name  = L.ALWAYS_SELL_LIST_NAME,
+        empty = L.RULES_DIALOG_EMPTY_SELL_LIST,
+    },
+    {
+        id = SystemListId.NEVER,
+        name  = L.NEVER_SELL_LIST_NAME,
+        empty = L.RULES_DIALOG_EMPTY_KEEP_LIST,
+    },
+    {
+        id = SystemListId.DESTROY,
+        name  = L.ALWAYS_DESTROY_LIST_NAME,
+        empty = L.RULES_DIALOG_EMPTY_DELETE_LIST,
+    }
+};
 
 local ListsPanel = 
 {
     OnLoad = function(self)
-        self.selllist:RegisterCallback("OnDeleteItem", self.RemoveFromSell, self);
-        self.selllist:RegisterCallback("OnAddItem", self.AddToSell, self);
-        self.keeplist:RegisterCallback("OnDeleteItem", self.RemoveFromKeep, self);
-        self.keeplist:RegisterCallback("OnAddItem", self.AddToKeep, self);
-        Addon:GetProfileManager():RegisterCallback("OnProfileChanged", self.Update, self);
+        self.Lists.ItemHeight = 20;
+        self.Lists.ItemTemplate = "Vendor_ItemLists_ListItem";
+        self.Lists.ItemClass = ListsItem;
+        self.Items.isReadOnly = false;
+
+        self.Lists.GetItems = function()
+            return SYSTEM_LISTS;
+        end
+
+        self.Lists.OnSelection = function() 
+            self:OnSelectionChanged();
+        end
+
+        self.Items.OnAddItem = function(list, item)
+            self:OnAddItem(item);
+        end
+
+        self.Items.OnDeleteItem=  function(list, item)
+            self:OnDeleteItem(item);
+        end
+
+        self:SetScript("OnShow", self.OnShow);
+        self:SetScript("OnHide", self.OnHide);
     end,
 
     OnShow = function(self)
-        self:Update();
-    end,
-
-    setList = function(list, count, contents)
-        local ids = {};
-
-        table.forEach(contents, 
-            function(value, itemId)
-                if (value) then
-                    table.insert(ids, itemId);
-                end
-            end);
-
-        if (table.getn(ids) ~= 0) then
-            count:Show();
-            count:SetFormattedText("(%d)", table.getn(ids));
-        else
-            count:Hide();
+        self.Lists:Update();
+        Addon:GetProfileManager():RegisterCallback("OnProfileChanged", self.OnSelectionChanged, self);
+        if (not self.Lists:GetSelected()) then
+            self.Lists:Select(1);
         end
-
-        list:SetContents(ids);
-    end,
-
-    Update = function(self)
-        local profile = Addon:GetProfile();
-        self.setList(self.selllist, self.SellCount, profile:GetList(ListType.AlwaysSell));
-        self.setList(self.keeplist, self.KeepCount, profile:GetList(ListType.NeverSell));
     end,
 
     OnHide = function(self)
+        Addon:GetProfileManager():UnregisterCallback("OnProfileChanged", self.OnSelectionChanged, self);
     end,
+};
 
-    AddToSell = function(self, item)
-        local itemId = Addon.ItemList.GetItemId(item);
-        if (itemId) then
-            local list = Addon:GetList(ListType.AlwaysSell);
-            list:Add(itemId);
-        end
-    end,
+function ListsPanel:OnDeleteItem(item)
+    local list = assert(self:GetSelectedList());
+    if (list) then
+        list:Remove(Addon.ItemList.GetItemId(item));
+    end
+end
 
-    AddToKeep = function(self, item)
-        local itemId = Addon.ItemList.GetItemId(item);
-        if (itemId) then
-            local list = Addon:GetList(ListType.NeverSell);
-            list:Add(itemId);
-        end
-    end,
+function ListsPanel:OnAddItem(item)
+    local list = assert(self:GetSelectedList());
+    if (list) then
+        list:Add(Addon.ItemList.GetItemId(item));
+    end
+end
 
-    RemoveFromSell = function(self, item)
-        local itemId = Addon.ItemList.GetItemId(item);
-        if (itemId) then
-            local list = Addon:GetList(ListType.AlwaysSell);
-            list:Remove(itemId);
-        end
-    end,
-
-    RemoveFromKeep = function(self, item)
-        local itemId = Addon.ItemList.GetItemId(item);
-        if (itemId) then
-            local list = Addon:GetList(ListType.NeverSell);
-            list:Remove(itemId);
+--[[===========================================================================
+    | Retrieves the currently selected list, returns the list, or nil to 
+    | indicate there was no selection. Also returns the empty text to show
+    | for the specified list.
+	========================================================================--]]
+function ListsPanel:GetSelectedList()
+    local selection = self.Lists:GetSelected();
+    if (selection) then
+        local id = selection.id;        
+        if (id == SystemListId.NEVER) then
+            return Addon:GetList(ListType.NeverSell), selection.empty;
+        elseif (id == SystemListId.ALWAYS) then
+            return Addon:GetList(ListType.AlwaysSell), selection.empty;
+        elseif (id == SystemListId.DESTROY) then
+            return Addon:GetList(ListType.AlwaysDelete), selection.empty;
         end
     end
-};
+
+    return nil;
+end
+
+--[[===========================================================================
+    | Called to handle selction changed, this simply populates the contents of
+    | the list with the items from the currently selected list.
+	========================================================================--]]
+function ListsPanel:OnSelectionChanged()
+    local list, empty = self:GetSelectedList();
+    self.Items:SetEmptyText(empty);
+
+    if (not list) then
+        -- List is empty
+        self.Items:SetContents();
+        self.ItemCount:Hide();
+    else
+        local contents = list:GetItems();
+        local count = table.getn(contents);
+        
+        self.Items:SetContents(contents);
+        if  (count ~= 0) then
+            self.ItemCount:SetFormattedText("(%d)", count);
+            self.ItemCount:Show();
+        else
+            self.ItemCount:Hide();
+        end
+    end
+end
 
 Addon.RulesPanels.HelpPanel = HelpPanel;
 Addon.RulesPanels.ListsPanel = ListsPanel;

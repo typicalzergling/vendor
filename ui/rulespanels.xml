@@ -1,6 +1,39 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 	<Script file="rulespanels.lua"/>
 
+	<!-- Item List, List Template -->
+	<Button virtual="true" name="Vendor_ItemLists_ListItem">
+		<Size x="2" y="20"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="Name" text="iiiii">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8"/>
+						<Anchor point="BOTTOMRIGHT" x="-8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="Hover" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+
 	<!-- Help Rules Panel -->
 	<Frame name="Vendor_Base_RulesPanel" virtual="true" inherits="Vendor_TabPanel_Base">
 		<Layers>

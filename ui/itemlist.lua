@@ -25,7 +25,22 @@ end
 -- a list of item links, or numeric list of item ids.
 function ItemList:SetContents(itemList)
 	self.contents = table.copy(itemList or {});
-	table.sort(self.contents, function(a, b) return a < b; end);
+	self.List.ItemTemplate = "Vendor_ListItem_Item";
+	if (self:IsReadOnly()) then
+		self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";
+	end
+
+	--if (table.getn(self.contents) ~= 0) then
+		--table.sort(self.contents, 
+		--	function(a, b) 
+		--		print("a, b", a, b)
+		--		if (not a or not b) then
+		--			return nil;
+		--		end				
+		--		return a < b; 
+		--	end);
+	--end
+	self.List:ResetOffset();
 	self.List:Update();
 end
 	
@@ -44,18 +59,19 @@ function ItemList.OnLoad(self)
 	
 	-- Set the item template on our list
 	self.List.ItemClass = Addon.ItemListItem;
-	self.List.ItemTemplate = "Vendor_ListItem_Item";
-	if (self:IsReadOnly()) then
-		self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";
-	end
+	self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";
 end
 
 function ItemList:OnDrop(button)
 	local cursorItem = ItemList.GetCursorItem();
 	if (not self:IsReadOnly() and (button == "LeftButton") and cursorItem) then
-		self:TriggerEvent("OnAddItem", cursorItem);
 		ClearCursor();
+		Addon.invoke(self, "OnAddItem", cursorItem);
 	end
+end
+
+function ItemList:SetEmptyText(text)
+	self.List:SetEmptyText(text);
 end
 
 function ItemList.GetCursorItem()
