@@ -55,8 +55,10 @@ local totalCountStr = ""
 local sellCountStr = ""
 local sellValueStr = ""
 local deleteCountStr = ""
+local sellItems = {}
+local deleteItems = {}
 local function updateStats()
-    totalCount, sellValue, sellCount, deleteCount = Vendor.GetEvaluationStatus()
+    totalCount, sellValue, sellCount, deleteCount, sellItems, deleteItems = Vendor.GetEvaluationStatus()
 
     if totalCount > 0 then
         totalCountStr = TitanUtils_GetColoredText(tostring(totalCount), BATTLENET_FONT_COLOR)
@@ -120,10 +122,11 @@ end
 
 function VendorTitan_GetTooltipText()
     local out = ""
-    out = out.."\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_ITEMEVALUATION"])
-    out = out.."\n"..TitanUtils_GetHighlightText(L["TITAN_TOOLTIP_TOSELL"]).."\t"..sellCountStr
-    out = out.."\n"..TitanUtils_GetHighlightText(L["TITAN_TOOLTIP_TODELETE"]).."\t"..deleteCountStr
-    out = out.."\n\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_VALUE"]).."\t"..sellValueStr
+    out = out..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_VALUE"]).."\t"..sellValueStr
+    out = out.."\n\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_TOSELL"]).."\t"..sellCountStr
+    out = out.."\n    "..table.concat(sellItems, "\n    ")
+    out = out.."\n\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_TODELETE"]).."\t"..deleteCountStr
+    out = out.."\n    "..table.concat(deleteItems, "\n    ")
     return out
 end
 
