@@ -77,11 +77,11 @@ function ProfileManager:SetProfile(profile)
     local active = self.activeProfile;
     if (active) then
         active:SetActive(false);
-        active:UnregisterCallback("onChanged", self)
+        active:UnregisterCallback("OnChanged", self)
     end
     
     local prof = CreateProfile(profileId);
-    prof:SetActive();
+    prof:SetActive(true);
     self.activeProfile = prof;
     activeProfileVariable:Replace(prof:GetId());
     prof:RegisterCallback("OnChanged", function()

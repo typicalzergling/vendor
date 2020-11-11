@@ -353,11 +353,11 @@ function ListsPanel:GetSelectedList()
     if (selection) then
         local id = selection.id;        
         if (id == SystemListId.NEVER) then
-            return Addon:GetList(ListType.NeverSell), selection.empty;
+            return Addon:GetList(ListType.KEEP), selection.empty;
         elseif (id == SystemListId.ALWAYS) then
-            return Addon:GetList(ListType.AlwaysSell), selection.empty;
+            return Addon:GetList(ListType.SELL), selection.empty;
         elseif (id == SystemListId.DESTROY) then
-            return Addon:GetList(ListType.AlwaysDelete), selection.empty;
+            return Addon:GetList(ListType.DESTROY), selection.empty;
         end
     end
 

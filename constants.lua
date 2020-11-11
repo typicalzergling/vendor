@@ -14,8 +14,7 @@ Addon.c_NeverSellList = "never"
 Addon.c_RuleType_Sell = "Sell"
 Addon.c_RuleType_Keep = "Keep"
 Addon.c_RuleType_Custom = "Custom"
-Addon.c_RuleType_Scrap = "Scrap"
-Addon.c_RuleType_Delete = "Delete";
+Addon.c_RuleType_Destroy = "Delete";
 Addon.c_BuybackLimit = 12
 Addon.c_DeleteThottle = 3
 Addon.c_ItemSellerThreadName = "ItemSeller"
@@ -36,17 +35,13 @@ Addon.c_Config_GuildRepair = "guildrepair"
 
 -- Rule Types
 Addon.RuleType = {
-	SELL = "Sell",
-	KEEP = "Keep",
-	DELETE  = "Delete",
+    SELL = "Sell",
+    KEEP = "Keep",
+    DESTROY  = "Delete",
 };
 
 Addon.ListType = {
-	AlwaysSell = "always",
-	NeverSell = "never",
-	AlwaysDelete = "delete",
-
-	ALWAYS = "always",
-	NEVER = "never",
-	DELETE = "delete,"
+    SELL = "always",
+    KEEP = "never",
+    DESTROY = "delete",
 };

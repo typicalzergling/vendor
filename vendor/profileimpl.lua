@@ -6,15 +6,15 @@ local SELL_LIST = Addon.c_Config_SellAlways;
 local KEEP_LIST = Addon.c_Config_SellNever;
 local KEEP_RULES = "keep";
 local SELL_RULES = "sell";
-local DELETE_RULES ="delete";
+local DESTROY_RULES ="delete";
 
 -- Profile Constants
 local PROFILE_KEEP_LIST = "list:never";
 local PROFILE_SELL_LIST = "list:always";
-local PROFILE_DELETE_LIST = "list:delete";
+local PROFILE_DESTROY_LIST = "list:delete";
 local PROFILE_SELL_RULES = "rules:sell";
 local PROFILE_KEEP_RULES = "rules:keep";
-local PROFILE_DELETE_RULES = "rules:delete";
+local PROFILE_DESTROY_RULES = "rules:delete";
 local PROFILE_VERSION = "profile:version";
 local CURRENT_VERSION = 1;
 local PROFILE_INTERFACEVERSION = "profile:interface";
@@ -32,9 +32,10 @@ local function RuleTypeToRuleKey(ruleType)
 		return PROFILE_SELL_RULES;
 	elseif (ruleType == RuleType.KEEP) then
 		return PROFILE_KEEP_RULES;
-	elseif (ruleType == RuleType.DELETE) then
-		return PROFILE_DELETE_RULES;
-	end 
+	elseif (ruleType == RuleType.DESTROY) then
+		return PROFILE_DESTROY_RULES;
+    end 
+    print(tostring(ruleType))
 
 	return nil;
 end
@@ -78,12 +79,12 @@ end
    | Helper to map list type to profile key
    ==========================================================================]]
 local function ListTypeToKey(listType)
-	if (listType == ListType.ALWAYS) then
+	if (listType == ListType.SELL) then
 		return PROFILE_SELL_LIST;
-	elseif (listType == ListType.NEVER) then
+	elseif (listType == ListType.KEEP) then
 		return PROFILE_KEEP_LIST;
-	elseif (listType == ListType.AlwaysDelete) then
-		return PROFILE_DELETE_LIST;
+	elseif (listType == ListType.DESTROY) then
+		return PROFILE_DESTROY_LIST;
 	end 
 
 	return nil;

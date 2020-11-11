@@ -21,31 +21,11 @@ function BlockList:Add(itemId)
         return false
     end
 
-
     local list = self.profile:GetList(self.listType);
     if (not list[itemId]) then
         list[itemId] = true;
         Addon:Debug("blocklists", "Added %d to '%s' list", itemId, self.listType);
         self.profile:SetList(self.listType, list);
-    end
-
-    -- If it was in the other list, remove it.
-    if self.listType == Addon.c_AlwaysSellList then
-         -- Remove from Never Sell list
-        local other = self.profile:GetList(Addon.c_NeverSellList);
-        if (other[itemId]) then
-            other[itemId] = nil;
-            self.profile:SetList(Addon.c_NeverSellList, other);
-            Addon:Debug("blocklists", "Removed %d to '%s' list", itemId, Addon.c_NeverSellList);
-        end
-    elseif self.listType == Addon.c_NeverSellList then
-        -- Remove from Always sell list
-        local other =self.profile:GetList(Addon.c_AlwaysSellList);
-        if (other[itemId]) then
-            other[itemId] = nil;
-            self.profile:SetList(Addon.c_AlwaysSellList, other);
-            Addon:Debug("blocklists", "Removed %d to '%s' list", itemId, Addon.c_AlwaysSellList);
-        end
     end
 
     return false;
@@ -116,29 +96,36 @@ function Addon:ToggleItemInBlocklist(list, item)
     end
 end
 
--- Quick direct accessor for Never Sell List
-function Addon:IsItemIdInNeverSellList(id)
-    local list = self:GetList(self.c_NeverSellList);
-    return list:Contains(id);
-
+-- Generic list accessor
+function Addon:IsItemInList(id, listType)
+    local list = self:GetList(listType)
+    if not list then return false end
+    return list:Contains(id)
 end
 
--- Quick direct accessor for Always Sell List
+-- Quick direct accessor for Keep List
+function Addon:IsItemIdInNeverSellList(id)
+    return self:IsItemInList(id, ListType.KEEP)
+end
+
+-- Quick direct accessor for Sell List
 function Addon:IsItemIdInAlwaysSellList(id)
-    local list = self:GetList(self.c_AlwaysSellList);
-    return list:Contains(id);
+    return self:IsItemInList(id, ListType.SELL)
+end
+
+-- Quick direct accessor for Destroy List
+function Addon:IsItemIdInAlwaysDestroyList(id)
+    return self:IsItemInList(id, ListType.DESTROY)
 end
 
 -- Returns whether an item is in the list and which one.
 function Addon:GetBlocklistForItem(item)
     local id = self:GetItemIdFromString(item)
     if id then
-        if self:IsItemIdInNeverSellList(id) then
-            return self.c_NeverSellList
-        elseif self:IsItemIdInAlwaysSellList(id) then
-            return self.c_AlwaysSellList
-        else
-            return nil
+        for _, list in pairs(ListType) do
+            if self:IsItemInList(id, list) then
+                return list
+            end
         end
     end
     return nil
@@ -152,22 +139,22 @@ end
 
 -- Permanently deletes the associated blocklist.
 function Addon:ClearBlocklist(list)
-    if ((list == self.c_AlwaysSellList) or
-        (list == self.c_NeverSellList)) then
+    if ((list == ListType.SELL) or
+        (list == ListType.KEEP) or
+        (list == ListType.DESTROY)) then
         Addon:GetProfile():SetList(list, {});
         -- Blocklist changed, so clear the Tooltip cache.
         self:ClearTooltipResultCache()
         return;
     end
-
     error(string.format("There is not '%s' list", list));
 end
 
 -- Retrieve the specified list
 function Addon:GetList(listType)
-    if ((listType == ListType.AlwaysSell) or
-        (listType == ListType.NeverSell) or
-        (listType == ListType.AlwaysDelete)) then
+    if ((listType == ListType.SELL) or
+        (listType == ListType.KEEP) or
+        (listType == ListType.DESTROY)) then
         return BlockList:Create(listType, self:GetProfile());
     end
 
@@ -195,6 +182,7 @@ function Addon:RemoveInvalidEntriesFromBlocklist(listType)
 end
 
 function Addon:RemoveInvalidEntriesFromAllBlocklists()
-    self:RemoveInvalidEntriesFromBlocklist(self.c_NeverSellList)
-    self:RemoveInvalidEntriesFromBlocklist(self.c_AlwaysSellList)
+    self:RemoveInvalidEntriesFromBlocklist(ListType.SELL)
+    self:RemoveInvalidEntriesFromBlocklist(ListType.KEEP)
+    self:RemoveInvalidEntriesFromBlocklist(ListType.DESTROY)
 end

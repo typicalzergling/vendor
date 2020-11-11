@@ -146,31 +146,29 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
                 L_UIDropDownMenu_AddButton(info, L_UIDROPDOWNMENU_MENU_LEVEL)
             end
         end
-		return 
-	end
+        return 
+    end
 
-	-- level 1 menu
-	if L_UIDROPDOWNMENU_MENU_LEVEL == 1 then
-		TitanPanelRightClickMenu_AddTitle(TitanPlugins[Addon.id].menuText);
-         
+    -- level 1 menu
+    if L_UIDROPDOWNMENU_MENU_LEVEL == 1 then
+        TitanPanelRightClickMenu_AddTitle(TitanPlugins[Addon.id].menuText);
 
         -- Rules Menu
-		info = {};
+        info = {};
         info.text = L["TITAN_MENU_RULES"]
         info.notCheckable = true
         info.func = function () Vendor.ShowRules() end
         L_UIDropDownMenu_AddButton(info);
-        
 
         -- Settings Button
-		info = {};
+        info = {};
         info.text = L["TITAN_MENU_SETTINGS"]
         info.notCheckable = true
         info.func = function () Vendor.ShowSettings() end
         L_UIDropDownMenu_AddButton(info);
         
         -- Keybinds Button
-		info = {};
+        info = {};
         info.text = L["TITAN_MENU_KEYBINDINGS"]
         info.notCheckable = true
         info.func = function () Vendor.ShowKeybindings() end
@@ -179,20 +177,21 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
         TitanPanelRightClickMenu_AddSpacer()
 
         -- Profiles
-		info = {};
-		info.text = L["TITAN_MENU_PROFILES"]
-		info.value = "Profiles"
-		info.hasArrow = 1;
-		L_UIDropDownMenu_AddButton(info);
+        info = {};
+        info.text = L["TITAN_MENU_CHANGE_PROFILES"]
+        info.value = "Profiles"
+        info.notCheckable = true
+        info.hasArrow = 1;
+        L_UIDropDownMenu_AddButton(info);
 
         -- Default Titan options
         TitanPanelRightClickMenu_AddSpacer();     
         TitanPanelRightClickMenu_AddToggleIcon(Addon.id);
-		TitanPanelRightClickMenu_AddToggleLabelText(Addon.id);
+        TitanPanelRightClickMenu_AddToggleLabelText(Addon.id);
         TitanPanelRightClickMenu_AddToggleColoredText(Addon.id);
 
         -- Button to hide the money string
-		--[[info = {};
+        --[[info = {};
         info.text = "Show Value Text"
         info.checked = TitanGetVar(Addon.id, "ShowValueText")
         info.keepShownOnClick = true
@@ -204,10 +203,10 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
 
         TitanPanelRightClickMenu_AddToggleVar(L["TITAN_MENU_SHOWVALUETEXT"], Addon.id, "ShowValueText", nil, L_UIDROPDOWNMENU_MENU_LEVEL)
 
-		TitanPanelRightClickMenu_AddSpacer();     
-		TitanPanelRightClickMenu_AddCommand(L["TITAN_MENU_HIDE"], Addon.id, TITAN_PANEL_MENU_FUNC_HIDE);
-		-- SDK : The routine above is used to put a "Hide" (localized) in the menu.
-	end
+        TitanPanelRightClickMenu_AddSpacer();
+        TitanPanelRightClickMenu_AddCommand(L["TITAN_MENU_HIDE"], Addon.id, TITAN_PANEL_MENU_FUNC_HIDE);
+        -- SDK : The routine above is used to put a "Hide" (localized) in the menu.
+    end
 end
 
 -- Vendor Extension for callback when rules change.

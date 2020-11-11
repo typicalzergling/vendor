@@ -493,8 +493,8 @@ function EditRuleDialog:GetRule()
             ruleDef.Type = RuleType.SELL;
         elseif (ruleType == "KEEP") then
             ruleDef.Type = RuleType.KEEP;
-        elseif (ruleType == "DELETE") then
-            ruleDef.Type = RuleType.DELETE;
+        elseif (ruleType == "DESTROY") then
+            ruleDef.Type = RuleType.DESTROY;
         else
             error(string.format("Unknown rule type '%s'", ruleType));
         end
@@ -539,8 +539,8 @@ function EditRuleDialog:SetRule(ruleDef)
         self.RuleTypeSell:SetSelected("SELL");
     elseif (ruleType == RuleType.KEEP) then
         self.RuleTypeSell:SetSelected("KEEP");
-    elseif (ruleType == RuleType.DELETE) then
-        self.RuleTypeSell:SetSelected("DELETE");
+    elseif (ruleType == RuleType.DESTROY) then
+        self.RuleTypeSell:SetSelected("DESTROY");
     else
         error(string.format("Unknown rule type '%d'", ruleType));
     end

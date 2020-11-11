@@ -52,7 +52,7 @@ function Addon:EvaluateItem(item)
             else
                 retval = 1
             end
-        elseif Addon.RuleType.DELETE == ruletype then
+        elseif Addon.RuleType.DESTROY == ruletype then
             retval = 2
         elseif Addon.RuleType.KEEP == ruletype then
             retval = 0

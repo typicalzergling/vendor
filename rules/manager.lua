@@ -6,9 +6,10 @@ Addon.RuleManager = {}
 local RuleManager = Addon.RuleManager;
 local RULE_TYPE_LOCKED_KEEP = 1;
 local RULE_TYPE_LOCKED_SELL = 2;
+local RULE_TYPE_LOCKED_DESTROY = 3;
 local RULE_TYPE_KEEP = 10;
 local RULE_TYPE_SELL = 1000;
-local RULE_TYPE_DELETE = 2000;
+local RULE_TYPE_DESTROY = 2000;
 local RuleType = Addon.RuleType;
 
 local ITEM_CONSTANTS =
@@ -65,8 +66,9 @@ function RuleManager:Create()
     local rulesEngine = Addon:CreateRulesEngine(Addon:IsDebugChannelEnabled("rulesengine"));
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
+    rulesEngine:CreateCategory(RULE_TYPE_LOCKED_DESTROY, "<locked-destroy>");
     rulesEngine:CreateCategory(RULE_TYPE_KEEP, RuleType.KEEP);
-    rulesEngine:CreateCategory(RULE_TYPE_DELETE, RuleType.DELETE);
+    rulesEngine:CreateCategory(RULE_TYPE_DESTROY, RuleType.DESTROY);
     rulesEngine:CreateCategory(RULE_TYPE_SELL, RuleType.SELL);
     rulesEngine.OnRuleStatusChange:Add(
         function(what, categoryId, ruleId, message)
@@ -202,19 +204,21 @@ function RuleManager:Update()
             rulesEngine:AddRule(RULE_TYPE_LOCKED_SELL, ruleDef);
         elseif (ruleDef.Type == Addon.c_RuleType_Keep) then
             rulesEngine:AddRule(RULE_TYPE_LOCKED_KEEP, ruleDef);
+        elseif (ruleDef.Type == Addon.c_RuleType_Destroy) then
+            rulesEngine:AddRule(RULE_TYPE_LOCKED_DESTROY, ruleDef);
         else
             assert(false, "An unknown rule type was encountered: " .. ruleDef.Type);
         end
     end
 
     -- Step 2: Add the keep rules from our configuration
-    self:ApplyConfig(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
+    self:ApplyConfig(RULE_TYPE_KEEP, RuleType.KEEP);
 
     -- Step 3: Apply delete rules
-    self:ApplyConfig(RULE_TYPE_DELETE, RuleType.DELETE);
+    self:ApplyConfig(RULE_TYPE_DESTROY, RuleType.DESTROY);
 
     -- Step 4: Add the sell rules from our configuration
-    self:ApplyConfig(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
+    self:ApplyConfig(RULE_TYPE_SELL, RuleType.SELL);
 
     -- Clear the result cache
     Addon:ClearResultCache();
@@ -234,8 +238,8 @@ function RuleManager:Run(object, ...)
             return false, ruleId, name, RuleType.KEEP;
         elseif ((categoryId == RULE_TYPE_SELL) or (categoryId == RULE_TYPE_LOCKED_SELL)) then
             return true, ruleId, name, RuleType.SELL;
-        elseif ((categoryId == RULE_TYPE_DELETE)) then
-            return true, ruleId, name, RuleType.DELETE;
+        elseif ((categoryId == RULE_TYPE_DESTROY) or (categoryId == RULE_TYPE_LOCKED_DESTROY)) then
+            return true, ruleId, name, RuleType.DESTROY;
         end
     end
 

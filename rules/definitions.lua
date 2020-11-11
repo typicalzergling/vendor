@@ -6,7 +6,7 @@ Addon.Rules = Addon.Rules or {}
 local Rules = Addon.Rules;
 local SELL_RULE = Addon.c_RuleType_Sell;
 local KEEP_RULE = Addon.c_RuleType_Keep;
-local SCRAP_RULE = Addon.c_RuleType_Scrap;
+local DESTROY_RULE = Addon.c_RuleType_Destroy;
 local INTERFACE_VERSION = tonumber(select(4, GetBuildInfo()));
 local SHADOWLANDS_VERSION = 90000;
 
@@ -301,6 +301,22 @@ Rules.SystemRules =
         Order = 1050,
     },
     --@end-retail@
+
+    --*****************************************************************************
+    -- Destroy Rules
+    --*****************************************************************************
+
+    -- Item is in the Never Sell list.
+    {
+        Id = "destroy.alwaysdestroy",
+        Type = DESTROY_RULE,
+        Name = L["SYSRULE_DESTROYLIST"],
+        Description = L["SYSRULE_DESTROYLIST_DESC"],
+        ScriptText = "IsInList(\"Destroy\")",
+        Script = function() return IsDestroyItem() end,
+        Locked = true,
+        Order = -1000,
+    },
 };
 
 -- While creating this closure sort the rules table by order, this prevents us from

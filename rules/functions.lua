@@ -104,6 +104,24 @@ function Addon.RuleFunctions.IsAlwaysSellItem()
 end
 
 --*****************************************************************************
+-- Rule function which checks if the item is in the list of items which
+-- should always be destroyed.
+function Addon.RuleFunctions.IsDestroyItem()
+    if Addon:IsItemIdInAlwaysDestroyList(Id) then
+        return true
+    end
+end
+
+--*****************************************************************************
+-- Rule function which checks if the item is in a particular list.
+function Addon.RuleFunctions.IsItemInList(list)
+    if not type(list) == "string" then return false end
+    if Addon:IsItemInList(Id, list) then
+        return true
+    end
+end
+
+--*****************************************************************************
 -- Rule function which returns the level of the player.
 --*****************************************************************************
 function Addon.RuleFunctions.PlayerLevel()

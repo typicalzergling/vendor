@@ -110,11 +110,15 @@ function Addon:AddItemTooltipLines(tooltip, link)
         -- Add Addon state to the tooltip.
         -- TODO: After blocklist is changed to a table, iterate over each list to which the item belongs and add to
         -- the tooltip.
-        if blocklist == self.c_AlwaysSellList then
+        if blocklist == self.ListType.SELL then
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
-        else
+        elseif blocklist == self.ListType.KEEP then
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"])
+        elseif blocklist == self.ListType.DESTROY then
+            tooltip:AddLine(L["TOOLTIP_ITEM_IN_DESTROY_LIST"])
         end
+
+        -- TODO: For custom lists, need to enumerate and list memberships.
     end
 
     -- Add a warning that this item will be auto-sold on next vendor trip.

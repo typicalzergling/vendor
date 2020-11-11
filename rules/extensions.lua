@@ -284,7 +284,7 @@ local function validateRule(rdef)
     end
 
     -- Rule Type
-    if (not validateStringValue(rdef.Type, RuleType.SELL, RuleType.KEEP, RuleType.DELETE)) then
+    if (not validateStringValue(rdef.Type, RuleType.SELL, RuleType.KEEP, RuleType.DESTROY)) then
         return false, string.format("The rule (%s) has an invalid 'Type' field", rdef.Id);
     end
 
