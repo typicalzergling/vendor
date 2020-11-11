@@ -130,14 +130,35 @@ function Addon:GetProfile()
     return profileManager:GetProfile();
 end
 
+<<<<<<< HEAD:vendor/profileimpl.lua
+=======
+--[[===========================================================================
+   | Finds the default profile, if "nil" if there isn't one.
+   ==========================================================================]]
+function Addon:FindDefaultProfile()
+	for _, profile in Addon:GetProfileManager():EnumerateProfiles() do
+		if (profile:GetValue("profile:default") == true) then
+			return profile;
+		end
+	end
+	return nil;
+end
+>>>>>>> 70a04cb2aa4b9150fa2b3c2109347c135eb85bd8:vendor/profile.lua
 
 --[[===========================================================================
    | Handle creating a new default profile (either by migration or new)
    ==========================================================================]]
 function Addon:OnCreateDefaultProfile(profile)
 	if (not Vendor_Settings and not Vendor_RulesConfig) then
-		Addon:Debug("profile", "Initialized new default vendor profile");
-		self:OnInitializeProfile(profile);
+		local defaultProfile = Addon:FindDefaultProfile();
+		if (defaultProfile) then
+			return defaultProfile;
+		else
+			Addon:Debug("profile", "Initialized new default vendor profile");
+			self:OnInitializeProfile(profile);
+			profile:SetName(L"DEFAULT_PROFILE_NAME");
+			profile:SetValue("profile:default", true);
+		end
 	else
 		-- Migrate settings variable.
 		if (Vendor_Settings) then
@@ -170,7 +191,7 @@ function Addon:OnCreateDefaultProfile(profile)
 
 	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
 	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
-	profile:SetName(L["DEFAULT_PROFILE_NAME"]);
+	profile:SetName(string.format("%s - %s", UnitFullName("player")));
 end
 
 --[[===========================================================================

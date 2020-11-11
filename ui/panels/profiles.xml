@@ -1,8 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="config/profiles.lua"/>
+	<Script file="panels/profiles.lua"/>
 
 	<!-- Profile Item -->
-	<Button name="Vendor_Options_Profile" virtual="true">
+	<Button name="Vendor_Profile_Item" virtual="true">
 		<Size x="1" y="24"/>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -43,21 +43,37 @@
 
     <!-- Profile Config Panel  -->
 
-    <Frame name="VendorProfilesConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
-		<KeyValues>
-			<KeyValue key="TitleKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
-			<KeyValue key="HelpTextKey" value="OPTIONS_PROIFLE_HELPTEXT" type="string"/>
-		</KeyValues>
+    <Frame name="Vendor_ProfilesPanel" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString inherits="GameFontHighlightSmall" parentKey="CreateText" justifyH="LEFT">
+				<FontString inherits="GameFontHighlight" parentKey="HelpText" justifyH="LEFT" justifyV="TOP">
+					<Size x="1" y="36"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="OPTIONS_PROIFLE_HELPTEXT" type="string"/>					
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="-16"/>
+						<Anchor point="TOPRIGHT" x="-16" y="-16"/>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontNormal" parentKey="CreateLabel" justifyH="LEFT" justifyV="BOTTOM">
+					<Size x="1" y="16"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="OPTIONS_PROFILE_CREATE_LABEL" type="string"/>					
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-310"/>
+						<Anchor point="RIGHT" relativeKey='$parent.HelpText'/>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontHighlight" parentKey="CreateText" justifyH="LEFT">
 					<KeyValues>
 						<KeyValue key="LocKey" value="OPTIONS_PROFILE_CREATETEXT" type="string"/>
 					</KeyValues>
-					<Size x="1" y="24"/>
+					<Size x="1" y="32"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-308"/>
-						<Anchor point="RIGHT" relativeKey='$parent.HelpText'/>
+						<Anchor point="TOPLEFT" relativeKey="$parent.CreateLabel" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.CreateLabel" relativePoint="BOTTOMRIGHT" x="0" y="-4"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -68,13 +84,13 @@
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_SET" type="string"/>
 				</KeyValues>
-                <Size x="148" y="28"/>
+                <Size x="148" y="24"/>
                 <Anchors>
-                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CreateText" relativePoint="TOPRIGHT" y="24"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CreateText" relativePoint="TOPRIGHT" y="48"/>
                 </Anchors>				
             </Button>
             <Button parentKey="Delete" inherits="UIPanelButtonTemplate" text="DELETE">
-                <Size x="148" y="28"/>
+                <Size x="148" y="24"/>
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Set" relativePoint="TOPLEFT" x="-6"/>
                 </Anchors>				
@@ -89,7 +105,7 @@
 			<ScrollFrame parentKey="Profiles" inherits="FauxScrollFrameTemplate">
 				<KeyValues>
 					<KeyValue key="ItemHeight" value="24" type="number"/>
-					<KeyValue key="ItemTemplate" value="Vendor_Options_Profile" type="string"/>
+					<KeyValue key="ItemTemplate" value="Vendor_Profile_Item" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Border" x="6" y="-6"/>
@@ -107,7 +123,7 @@
 					<KeyValue key="PlaceholderKey" value="OPTIONS_PROFILE_NAME_PLACEHOLDER" type="string"/>
 				</KeyValues>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.CreateText" relativePoint="BOTTOMLEFT" y="-4"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.CreateText" relativePoint="BOTTOMLEFT" y="-8"/>
 					<Anchor point="RIGHT" relativeKey="$parent.CreateText"/>
                 </Anchors>
 			</Frame>
@@ -115,7 +131,7 @@
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_COPY" type="string"/>
 				</KeyValues>
-                <Size x="148" y="28"/>
+                <Size x="148" y="24"/>
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT" y="-6"/>
                 </Anchors>
@@ -124,7 +140,7 @@
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_CREATE" type="string"/>
 				</KeyValues>
-                <Size x="148" y="28"/>
+                <Size x="148" y="24"/>
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Copy" relativePoint="TOPLEFT" x="-6"/>
                 </Anchors>
@@ -134,4 +150,5 @@
             <OnLoad>Vendor.LoadImplementation(self, nil, "ProfileConfigPanel")</OnLoad>
         </Scripts>
     </Frame>
+
 </Ui>

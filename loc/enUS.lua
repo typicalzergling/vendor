@@ -102,6 +102,8 @@ OPTIONS_PROFILE_SET = "Set",
 OPTIONS_PROFILE_NAME_PLACEHOLDER = "type the name of the profile to create or copy here",
 OPTIONS_PROFILE_CREATETEXT = "You can create a new profile from scratch (starts with the vendor defaults) or you can copy an existing profile in the list",
 OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = "Are you sure you want to delete profile '%s'?",
+OPTIONS_PROFILE_CREATE_LABEL = "Create Profile",
+OPTIONS_PROFILE_DEFAULT_COPY_NAME = "%s (Copy)",
 
 -- Console Commands
 CMD_HELP_HEADER = "Command Reference: ",
