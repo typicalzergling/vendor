@@ -126,16 +126,10 @@ end
    | Retrieves the currently active profile
    ==========================================================================]]
 function Addon:GetProfile()
-	local profileManager = Addon:GetProfileManager();
-	return profileManager:GetProfile();
+    local profileManager = Addon:GetProfileManager();
+    return profileManager:GetProfile();
 end
 
---[[===========================================================================
-   |
-   ==========================================================================]]
-   function Addon:SetProfile(profileName)
-	error("not-yet-implemented");
-end
 
 --[[===========================================================================
    | Handle creating a new default profile (either by migration or new)
@@ -207,5 +201,7 @@ end
 function Addon:OnCheckProfileMigration(profile)
 	-- Current a no-op
 end
+
+
 
 Addon.Profile = Profile;

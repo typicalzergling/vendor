@@ -75,24 +75,7 @@ end
    | Creates a list of the profile objects, then sorts that list by name
    ==========================================================================]]
 function ProfileConfig:LoadProfiles()
-	local profiles = {};
-
-	for _, profile in Addon:GetProfileManager():EnumerateProfiles() do
-		table.insert(profiles, profile);
-	end
-
-	table.sort(profiles, 
-		function(a, b)
-			if (not a) then
-				return false;
-			elseif (not b) then 
-				return true;
-			else
-				return a:GetName() < b:GetName()
-			end
-		end)
-
-	self.profiles = profiles;
+	self.profiles = Addon:GetProfileList()
 end
 
 --[[===========================================================================

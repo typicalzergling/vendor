@@ -17,6 +17,7 @@ function Addon:SetupDebugConsoleCommands()
     self:AddConsoleCommand("link", "Dump hyperlink information", "DumpLink_Cmd")
     self:AddConsoleCommand("simulate", "Simulates deleting and selling items, without actually doing it.", "ToggleSimulate_Cmd")
     self:AddConsoleCommand("cache", "Clears all caches.", "ClearCache_Cmd")
+    self:AddConsoleCommand("profile", "Profile management.", "Profile_Cmd")
 
     -- Register debug channels for the addon. Register must be done after addon loaded.
     Addon:RegisterDebugChannel("autosell")
@@ -63,6 +64,81 @@ function Addon:ClearCache_Cmd()
     Addon:ClearResultCache()
     Addon:Print("Item cache and result cache cleared.")
 end
+
+function Addon:Profile_Cmd(cmd, arg1, arg2)
+    if cmd then
+        cmd = string.lower(cmd)
+    end
+    if not cmd then
+        local profiles = Addon:GetProfileList()
+        local active = Addon:GetProfile()
+        Addon:Print("All available profiles:")
+        for _, profile in pairs(profiles) do
+            Addon:Print("  %s [%s]", tostring(profile:GetName()), tostring(profile:GetId()))
+        end
+        Addon:Print("Active profile: %s", tostring(active:GetName()))
+
+    elseif cmd == "get" then
+        local active = Addon:GetProfile()
+        Addon:Print("Active profile: %s", tostring(active:GetName()))
+
+    elseif cmd == "set" and type(arg1) == "string" then
+        if not Addon:ProfileExists(arg1) then
+            Addon:Print("Profile '%s' does not exist.", arg1)
+            return
+        end
+        if Addon:SetProfile(arg1) then
+            Addon:Print("Active profile set to '%s'", arg1)
+        else
+            Addon:Print("Failed setting active profile.")
+        end
+
+    elseif cmd == "copy" and type(arg1) == "string" and type(arg2) == "string" then
+        if not Addon:ProfileExists(arg1) then
+            Addon:Print("Profile '%s' does not exist.", arg1)
+            return
+        end
+        if Addon:ProfileExists(arg2) then
+            Addon:Print("Profile '%s' already exists.", arg2)
+            return 
+        end
+        if Addon:CopyProfile(arg1, arg2) then
+            Addon:Print("Profile '%s' copied as profile '%s'", arg1, arg2)
+        else
+            Addon:Print("Failed copying the profile.")
+        end
+
+    elseif cmd == "delete" and type(arg1) == "string" then
+        if not Addon:ProfileExists(arg1) then
+            Addon:Print("Profile '%s' does not exist.", arg1)
+            return
+        end
+        if Addon:DeleteProfile(arg1) then
+            Addon:Print("Profile '%s' has been deleted.", arg1)
+        else
+            Addon:Print("Failed deleting the profile.")
+        end
+
+    elseif cmd == "create" and type(arg1) == "string" then
+        if Addon:ProfileExists(arg1) then
+            Addon:Print("Profile '%s' already exists.", arg1)
+            return
+        end
+        if Addon:NewProfile(arg1) then
+            Addon:Print("Profile '%s' has been created and set to the active profile.", arg1)
+        else
+            Addon:Print("Failed creating the profile.")
+        end
+
+    elseif cmd == "rename" and type(arg1) == "string" and type(arg2) == "string" then
+        Addon:Print("Rename successful")
+
+    else
+        Addon:Print("profile usage: <none> | get | set | create | copy | delete | rename")
+    end
+end
+
+
 
 -- Beyond this point are debug related functions that are not packaged.
 function Addon:DumpTooltipItemProperties()

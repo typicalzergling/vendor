@@ -1,7 +1,6 @@
 local AddonName, Addon = ...;
 local profilesVariable = Addon.SavedVariable:new("Profiles");
 local Profile = {};
-local function debug(...) Addon:Debug("profile", ...); end
 
 --[[===========================================================================
    | Retrieves the ID for this profile.
@@ -49,7 +48,6 @@ end
    ==========================================================================]]
 function Profile:SetValue(key, value)
 	local var = profilesVariable:Get(self.profileId) or {};
-
 	--@debug@
 	assert(type(key) == "string", "The profile key must be a string value: " .. tostring(key));
 	--@end-debug@
@@ -61,7 +59,7 @@ function Profile:SetValue(key, value)
 			var[key] = table.copy(value);
 		end
 
-		debug("Profile[%s] has had '%s' changed", self.profileId, key);
+		Addon:Debug("profile", "Profile[%s] has had '%s' changed", self.profileId, key);
 		var["profile:timestamp"] = time();
 		profilesVariable:Set(self.profileId, var);
 		self:RaiseOnChanged();
@@ -103,7 +101,7 @@ end
 function Profile:SetName(name)
 	if ((type(name) ~= "string") or (string.len(name) == 0)) then
 		error("The profile name is invalid it must be a non-empty string")
-	end
+    end
 	self:SetValue("profile:name", name);
 end
 
