@@ -40,7 +40,11 @@ function ProfileManager:GetProfile()
 
 	if (not profile) then
 		profile = CreateProfile();
-		Addon.invoke(Addon, "OnCreateDefaultProfile", profile);
+		local override = Addon.invoke(Addon, "OnCreateDefaultProfile", profile);
+		if (override and (override:GetId() ~= profile:GetId())) then
+			profilesVariable:Set(profile:GetId(), nil);
+			profile = override;
+		end
 		activeProfileVariable:Replace(profile:GetId());
 		debug("Created default profile '%s'", profile:GetId());
 	else

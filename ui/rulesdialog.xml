@@ -214,6 +214,13 @@
 				</Anchors>
 			</Frame>
 
+			<Frame parentKey="ProfilesPanel" id="6" inherits="Vendor_ProfilesPanel,Vendor_TabPanel_Base" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
+				</Anchors>
+			</Frame>
+
 			<!-- Keep Tab -->
 			<Button name="$parentKeepTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="KeepTab">
 				<KeyValues>
@@ -244,7 +251,6 @@
 				</Anchors>
 			</Button>
 
-
 			<!-- Lists Tab -->
 			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ListsTab" enabled="false">
 				<KeyValues>
@@ -264,6 +270,16 @@
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" relativePoint="TOPRIGHT" x="-6" y="-2"/>
 				</Anchors>
 			</Button>
+
+			<!-- Profiles -->
+			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="6" parentKey="ProfileTab">
+				<KeyValues>
+					<KeyValue key="LocKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.HelpTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
+				</Anchors>
+			</Button>	
 
 		</Frames>
 		<Scripts>

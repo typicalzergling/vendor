@@ -12,5 +12,11 @@
     <Include file="itemlist.xml"/>
     <Include file="editpanels.xml"/>
     <Include file="configpanels.xml"/>
-    <Include file="config/profiles.xml"/>
+    <Include file="panels/profiles.xml"/>
+    <Include file="ruleslist.xml"/>
+
+
+    <Include file="rulesdialog.xml"/>
+    <Include file="editruledialog.xml"/>
+    <Script file="tooltip.lua"/>
 </Ui>

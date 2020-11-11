@@ -32,10 +32,11 @@ end
 function ProfileItem:OnModelChanged(profile)
 	self.Name:SetText(profile:GetName());
 	if (profile:IsActive()) then
-		self.Active:Show();
-		self.Name:SetTextColor(WHITE_FONT_COLOR:GetRGB());
+		self.Active:Show()
+		self.Name:SetTextColor(WHITE_FONT_COLOR:GetRGB())
 	else
-		self.Active:Hide();
+		self.Active:Hide()
+		self.Name:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
 	end
 end
 
@@ -88,6 +89,10 @@ function ProfileConfig:LoadProfiles()
 			elseif (not b) then 
 				return true;
 			else
+				if (a:GetName() == b:GetName()) then
+					return a:GetId() < b:GetId()
+				end
+				
 				return a:GetName() < b:GetName()
 			end
 		end)
@@ -104,7 +109,7 @@ function ProfileConfig:UpdateState()
 
 	-- Copy it only enable if we have both a selectrion and a valid 
 	-- profile name.
-	if (selected and text and (string.len(text) ~= 0)) then
+	if (selected) then
 		self.Copy:Enable();
 	else
 		self.Copy:Disable();
@@ -132,8 +137,9 @@ end
    | items on our page.
    ==========================================================================]]
 function ProfileConfig:OnLoad()
+	print("--> profiule config load");
 	Addon.LocalizeFrame(self);
-	Addon.ConfigPanel:AddPanel(self);
+	--Addon.ConfigPanel:AddPanel(self);
 	self:SetScript("OnShow", self.OnShow);
 	self:SetScript("OnHide", self.OnHide);
 
@@ -204,7 +210,21 @@ function ProfileConfig:OnCreateProfile(copy)
 	local text = self.Name:GetText();
 	local selected = self.Profiles:GetSelected();
 
-	-- TODO: Validate the name is unique?
+	if (copy and not text or (string.len(text) == 0)) then
+		text = string.format(L.OPTIONS_PROFILE_DEFAULT_COPY_NAME, selected:GetName());
+	else
+		local duplicate = false;
+		for _, profile in profileManager:EnumerateProfiles() do
+			if (string.lower(profile:GetName()) == string.lower(text)) then
+				duplicate = true;
+			end
+		end
+
+		if (duplicate) then
+			StaticPopup_Show("VENDOR_CONFIG_PROFILE_EXISTS", text)
+			return;
+		end
+	end
 
 	local profile = nil;
 	if (copy) then
@@ -246,6 +266,16 @@ StaticPopupDialogs["VENDOR_CONFIG_PROFILE_DELETE"] = {
 		local profileManager = Addon:GetProfileManager();
 		profileManager:DeleteProfile(profileId);
     end,
+    timeout = 0,
+    hideOnEscape = true,
+    whileDead = true,
+    exclusive = true,
+};
+
+StaticPopupDialogs["VENDOR_CONFIG_PROFILE_EXISTS"] = {
+	--text = L["OPTIONS_CONFIRM_PROFILE_DELETE_FMT1"],
+	text = "A profile with then name '%s' already exists please choose another name",
+    button1 = OKAY,
     timeout = 0,
     hideOnEscape = true,
     whileDead = true,

@@ -32,11 +32,6 @@ rules\rules.xml
 
 # User Interface
 ui\ui.xml
-ui\tooltip.lua
-ui\ruleslist.xml
-ui\customrules.xml
-ui\rulesdialog.xml
-ui\editruledialog.xml
 
 # public API export should be last
 publicAPI.lua
