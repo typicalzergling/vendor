@@ -23,40 +23,40 @@ end
    | or may cause migration.
    ==========================================================================]]
 function ProfileManager:GetProfile()
-	local profile = self.activeProfile;
-	if (profile) then
-		return profile;
-	end
+    local profile = self.activeProfile;
+    if (profile) then
+        return profile;
+    end
 
-	local activeId = activeProfileVariable:GetOrCreate("");
-	if ((type(activeId) == "string") and (string.len(activeId) ~= 0)) then
-		local data = profilesVariable:Get(activeId);
-		if (type(data) == "table") then
-			debug("Using profile '%s'", activeId);
-			profile = CreateProfile(activeId);
-		end
-	end
+    local activeId = activeProfileVariable:GetOrCreate("");
+    if ((type(activeId) == "string") and (string.len(activeId) ~= 0)) then
+        local data = profilesVariable:Get(activeId);
+        if (type(data) == "table") then
+            Addon:Debug("profile", "Using profile '%s'", activeId);
+            profile = CreateProfile(activeId);
+        end
+    end
 
-	if (not profile) then
-		profile = CreateProfile();
-		local override = Addon.invoke(Addon, "OnCreateDefaultProfile", profile);
-		if (override and (override:GetId() ~= profile:GetId())) then
-			profilesVariable:Set(profile:GetId(), nil);
-			profile = override;
-		end
-		activeProfileVariable:Replace(profile:GetId());
-		debug("Created default profile '%s'", profile:GetId());
-	else
-		Addon.invoke(Addon, "OnCheckProfileMigration", profile);
-	end
+    if (not profile) then
+        profile = CreateProfile();
+        local override = Addon.invoke(Addon, "OnCreateDefaultProfile", profile);
+        if (override and (override:GetId() ~= profile:GetId())) then
+            profilesVariable:Set(profile:GetId(), nil);
+            profile = override;
+        end
+        activeProfileVariable:Replace(profile:GetId());
+        Addon:Debug("profile", "Created default profile '%s'", profile:GetId());
+    else
+        Addon.invoke(Addon, "OnCheckProfileMigration", profile);
+    end
 
-	profile:SetActive(true);
-	self.activeProfile = profile;
-	profile:RegisterCallback("OnChanged", function()
-			debug("Broadcasting change '%s'", profile:GetName());
-			self:TriggerEvent("OnProfileChanged", profile);
-		end, self);
-	return profile;
+    profile:SetActive(true);
+    self.activeProfile = profile;
+    profile:RegisterCallback("OnChanged", function()
+            Addon:Debug("profile", "Broadcasting change '%s'", profile:GetName());
+            self:TriggerEvent("OnProfileChanged", profile);
+        end, self);
+    return profile;
 end
 
 --[[===========================================================================

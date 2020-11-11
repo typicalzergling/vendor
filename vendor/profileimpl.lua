@@ -130,8 +130,6 @@ function Addon:GetProfile()
     return profileManager:GetProfile();
 end
 
-<<<<<<< HEAD:vendor/profileimpl.lua
-=======
 --[[===========================================================================
    | Finds the default profile, if "nil" if there isn't one.
    ==========================================================================]]
@@ -143,7 +141,6 @@ function Addon:FindDefaultProfile()
 	end
 	return nil;
 end
->>>>>>> 70a04cb2aa4b9150fa2b3c2109347c135eb85bd8:vendor/profile.lua
 
 --[[===========================================================================
    | Handle creating a new default profile (either by migration or new)

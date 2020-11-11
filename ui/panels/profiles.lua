@@ -76,32 +76,7 @@ end
    | Creates a list of the profile objects, then sorts that list by name
    ==========================================================================]]
 function ProfileConfig:LoadProfiles()
-<<<<<<< HEAD:ui/config/profiles.lua
 	self.profiles = Addon:GetProfileList()
-=======
-	local profiles = {};
-
-	for _, profile in Addon:GetProfileManager():EnumerateProfiles() do
-		table.insert(profiles, profile);
-	end
-
-	table.sort(profiles, 
-		function(a, b)
-			if (not a) then
-				return false;
-			elseif (not b) then 
-				return true;
-			else
-				if (a:GetName() == b:GetName()) then
-					return a:GetId() < b:GetId()
-				end
-				
-				return a:GetName() < b:GetName()
-			end
-		end)
-
-	self.profiles = profiles;
->>>>>>> 70a04cb2aa4b9150fa2b3c2109347c135eb85bd8:ui/panels/profiles.lua
 end
 
 --[[===========================================================================
