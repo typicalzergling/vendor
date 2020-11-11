@@ -14,6 +14,19 @@ function Addon.ConfigPanel.SetVersionInfo(self)
     end
 end
 
+--[[===========================================================================
+	| Set thext fields for this panel
+    ========================================================================--]]
+function Addon.ConfigPanel.SetText(panel)
+    if (panel.TitleKey and panel.Title) then
+        panel.Title:SetText(L[panel.TitleKey]);
+    end
+
+    if (panel.HelpTextKey and panel.HelpText) then
+        panel.HelpText:SetText(L[panel.HelpTextKey]);
+    end
+end
+
 --*****************************************************************************
 -- Called when on of the check boxes in our base template is clicked, this
 -- forwards the to a handler if it was provied.
@@ -86,17 +99,19 @@ function Addon.ConfigPanel:Save()
     Addon:Debug("config", "Apply panel settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Apply", panel);
+        Addon.invoke(panel, "OnSave");
     end
 end
 
 function Addon.ConfigPanel.OnShow(self)
-    invokePanelMethod("Set", self);
+    invokePanelMethod("Set", self);    
 end
 
 function Addon.ConfigPanel:SetDefaults()
     Addon:Debug("config", "Apply default settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Default", panel);
+        Addon.invoke(panel, "OnSetDefault");
     end
 
     self:Refresh();
@@ -106,6 +121,7 @@ function Addon.ConfigPanel:Cancel()
     Addon:Debug("config", "Cancel panel settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Cancel", panel);
+        Addon.invoke(panel, "OnCancel");
     end
 end
 
@@ -113,17 +129,21 @@ function Addon.ConfigPanel:Refresh()
     Addon:Debug("config", "Refresh panel settings (%d panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Set", panel);
+        Addon.invoke(panel, "OnSet");
     end
 end
 
 function Addon.ConfigPanel:AddPanel(panel, name)
     applySubclass(panel, name);
+
+    Addon.ConfigPanel.SetText(panel);
     local title = "<unknown>";
     if (panel.Title) then
         title = panel.Title:GetText();
     end
 
     invokePanelMethod("Init", panel);
+    --Addon.LocalizeFrame(panel);
     Addon.ConfigPanel.SetVersionInfo(panel);
 
     panel.parent = L["ADDON_NAME"];
@@ -142,9 +162,12 @@ function Addon.ConfigPanel.InitMainPanel(self, name)
     self.name = L["ADDON_NAME"]
     self:SetScript("OnShow", Addon.ConfigPanel.OnShow);
     applySubclass(self, name);
-    
+
     invokePanelMethod("Init", self);
+    table.forEach(Addon.ConfigPanel, print, name);
+    --Addon.LocalizeFrame(self);
     Addon.ConfigPanel.SetVersionInfo(self);
+    Addon.ConfigPanel.SetText(self);
     InterfaceOptions_AddCategory(self);
 
     self.okay = function() Addon.ConfigPanel:Save() end;
@@ -158,5 +181,6 @@ end
 
 -- Must make this public.
 -- This is tricky becuase all the child panels have already been created.
-assert(Addon.Public.ConfigPanel)
+--assert(Addon.Public.ConfigPanel)
+Addon.Public.ConfigPanel = Addon.Public.ConfigPanel or {};
 Addon:MergeTable(Addon.Public.ConfigPanel, Addon.ConfigPanel)

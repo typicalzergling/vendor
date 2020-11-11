@@ -134,7 +134,7 @@
 			</Frame>
 
 			<!-- Delete Panel -->
-			<Frame name="$parentCustomPanel" parentKey="DeletePanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
+			<Frame name="$parentDeletePanel" parentKey="DeletePanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
 				<KeyValues>
 					<KeyValue key="ruleType" value="Delete" type="string"/>
 					<KeyValue key="EmptyTextKey" value="RULES_DIALOG_EMPTY_DELETE_LIST" type="string"/>
@@ -154,73 +154,54 @@
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString name="$parentHeaderText" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="TopText">
+						<FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="TopText">
+							<KeyValues>
+								<KeyValue key="LocKey" value="CONFIG_DIALOG_LISTS_TEXT" type="string"/>
+							</KeyValues>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="16" y="-16"/>
 								<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
 							</Anchors>
 						</FontString>
-						<FontString parentKey="alwaysSellLabel" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal">
+						<FontString parentKey="ItemCount" justifyH="RIGHT" justifyV="MIDDLE" inherits="GameFontHighlight" text="Number of Items: %d">
 							<Size x="1" y="18"/>
 							<Anchors>
-								<Anchor point="TOPLEFT" relativeKey="$parent.TopText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
-								<Anchor point="RIGHT" relativePoint="CENTER" x="-5" y="0"/>
+								<Anchor point="LEFT" relativeKey="$parent.TopText" relativePoint="LEFT" x="208"/>
+								<Anchor point="BOTTOM" y="16"/>
+								<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
 							</Anchors>
-						</FontString>                        
-						<FontString parentKey="SellCount" justifyH="RIGHT" justifyV="TOP" inherits="GameFontHighlight">
-							<Size x="1" y="18"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" relativeKey="$parent.alwaysSellLabel"/>
-								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.alwaysSellLabel" x="-10"/>
-							</Anchors>
-						</FontString>                        
-						<FontString parentKey="alwaysKeepLabel" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal">
-							<Anchors>
-								<Anchor point="TOPLEFT" relativeKey="$parent.alwaysSellLabel" relativePoint="TOPRIGHT" x="10" y="0"/>
-								<Anchor point="RIGHT" relativePoint="RIGHT" x="-5" y="0"/>
-								<Anchor point="BOTTOM" relativePoint="BOTTOM" relativeKey="$parent.alwaysSellLabel"/>
-							</Anchors>
-						</FontString>                        
-						<FontString parentKey="KeepCount" justifyH="RIGHT" justifyV="TOP" inherits="GameFontHighlight">
-							<Size x="1" y="18"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" relativeKey="$parent.alwaysKeepLabel"/>
-								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.alwaysKeepLabel" x="-10"/>
-							</Anchors>
-						</FontString>                        
+						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
-					<Frame parentKey="selllist" inherits="Vendor_ItemList">
-						<KeyValues>
-							<KeyValue key="isReadOnly" value="false" type="boolean"/>
-							<KeyValue key="EmptyListKey" value="ITEMLIST_EMPTY_SELL_LIST" type="string"/>
-						</KeyValues>
+					<Frame inherits="Vendor_BorderFrame" parentKey="listsBorder">
+						<Size x="200" y="20"/>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.alwaysSellLabel" relativePoint="BOTTOMLEFT" x="0" y="0"/>
-							<Anchor point="RIGHT" relativeKey="$parent.alwaysSellLabel" relativePoint="RIGHT" x="-5" y="0"/>
-							<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="16"/>    
+							<Anchor point="TOPLEFT" relativeKey="$parent.TopText" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
+							<Anchor point="BOTTOM" x="0" y="16"/>
 						</Anchors>
 					</Frame>
 
-					<Frame parentKey="keeplist" inherits="Vendor_ItemList">
-						<KeyValues>
-							<KeyValue key="isReadOnly" value="false" type="boolean"/>
-							<KeyValue key="EmptyListKey" value="ITEMLIST_EMPTY_KEEP_LIST" type="string"/>
-						</KeyValues>
+					<ScrollFrame parentKey="Lists" inherits="FauxScrollFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.alwaysKeepLabel" relativePoint="BOTTOMLEFT" x="0" y="0"/>
-							<Anchor point="RIGHT" relativeKey="$parent.alwaysKeepLabel" relativePoint="RIGHT" x="-5" y="0"/>
-							<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="16"/>
+							<Anchor point="TOPLEFT" relativeKey="$parent.listsBorder" x="6" y="-6"/>
+							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.listsBorder" x="-6" y="6"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
+						</Scripts>
+					</ScrollFrame>
+
+					<Frame parentKey="Items" inherits="Vendor_ItemList">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.listsBorder" relativePoint="TOPRIGHT" x="16" />
+							<Anchor point="LEFT" relativeKey="$parent.ItemCount"/>
+							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ItemCount" relativePoint="TOPRIGHT"/>
 						</Anchors>
 					</Frame>
-
 				</Frames>
 				<Scripts>
-					<OnLoad>
-						self.Implementation = "ListsPanel"; 
-						Vendor.LoadImplementation(self, "RulesPanels")
-					</OnLoad>
+					<OnLoad>Vendor.LoadImplementation(self, "RulesPanels", "ListsPanel")</OnLoad>
 					<OnShow>self:OnShow()</OnShow>
 					<OnHide>self:OnHide()</OnHide>
 				</Scripts>

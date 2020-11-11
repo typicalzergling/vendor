@@ -27,7 +27,7 @@ end
 	| Sets the mode for this item base, if the model has changed then
     | OnModelChanged is invoked allowing the item to update itself.
 	========================================================================--]]
-	function ListItem:SetModel(model)
+function ListItem:SetModel(model)
 	local m = rawget(self, MODEL_KEY);
 	if (m ~= model) then
 		rawset(self, MODEL_KEY, model)
@@ -77,6 +77,11 @@ end
 	| Returns true of the item has the model specified.
 	========================================================================--]]
 function ListItem:HasModel(model)
+	local compare = self.CompareModel;
+	if (type(compare) == "function") then
+		return compare(self, model);
+	end
+
 	return (rawget(self, MODEL_KEY) == model);
 end
 
@@ -94,6 +99,20 @@ function ListItem:CompareTo(other)
 
 	return (rawget(self, MODEL_INDEX_KEY) or 0) < 
 			(rawget(self, MODEL_INDEX_KKEY) or 0);
+end
+
+function ListItem:IsSelected()
+	return (self.selected == true);
+end
+
+function ListItem:SetSelected(selected)
+	if (self.selected ~= selected) then
+		self.selected = selected;
+		local cb = self.OnSelected;
+		if (type(cb) == "function") then
+			xpcall(cb, CallErrorHandler, self, selected);
+		end
+	end
 end
 
 Addon.Controls = Addon.Controls or {};

@@ -33,7 +33,7 @@ function Profile:RaiseOnChanged()
 	if (self.active) then
 		if (self.timer) then
 			self.timer:Cancel();
-			self.timer = nil;
+			self.timer = false;
 		end
 
 		self.timer = C_Timer.NewTimer(0.15, 
@@ -117,8 +117,8 @@ local function CreateProfile(id)
 		active = false,
 		timer = false,
 	};
+	
 	-- Create our object and return it
-	debug("Created new profile object '%s'", instance.profileId);
 	return Addon.object("Profile", instance, table.merge(Addon.Profile or {}, Profile), { "OnChanged" });
 end
 

@@ -1,5 +1,6 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
+local ListType = Addon.ListType;
 
 local BlockList = {}
 function BlockList:Create(_listType, _profile)
@@ -69,6 +70,19 @@ end
 function BlockList:GetContents()
     --todo: this should be a clone of the table
     return self.profile:GetList(self.listType);
+end
+
+function BlockList:GetItems()
+    local items = {};
+    local ids = self.profile:GetList(self.listType);
+    if (ids) then
+        for id in pairs(ids) do
+            if (C_Item.DoesItemExistByID(id)) then
+                table.insert(items, id);
+            end
+        end
+    end
+    return items;
 end
 
 function BlockList:GetType()
@@ -151,12 +165,13 @@ end
 
 -- Retrieve the specified list
 function Addon:GetList(listType)
-    if ((listType == self.c_AlwaysSellList) or
-        (listType == self.c_NeverSellList)) then
+    if ((listType == ListType.AlwaysSell) or
+        (listType == ListType.NeverSell) or
+        (listType == ListType.AlwaysDelete)) then
         return BlockList:Create(listType, self:GetProfile());
     end
 
-    error(string.format("There is not '%s' list", listType));    
+    error(string.format("There is no '%s' list", listType or ""));    
 end
 
 function Addon:RemoveInvalidEntriesFromBlocklist(listType)

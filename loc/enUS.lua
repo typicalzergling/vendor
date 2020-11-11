@@ -94,6 +94,15 @@ OPTIONS_DESC_FREQUENCY = "Sets how frequently a throttled task executes per seco
 OPTIONS_SETTINGNAME_CYCLE_RATE = "Cycle Rate",
 OPTIONS_SETTINGDESC_CYCLE_RATE = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 
+OPTIONS_PROFILE_TITLE = "Profiles",
+OPTIONS_PROIFLE_HELPTEXT = "Profiles help text << write me >>",
+OPTIONS_PROFILE_COPY = "Copy",
+OPTIONS_PROFILE_CREATE = "Create",
+OPTIONS_PROFILE_SET = "Set",
+OPTIONS_PROFILE_NAME_PLACEHOLDER = "type the name of the profile to create or copy here",
+OPTIONS_PROFILE_CREATETEXT = "You can create a new profile from scratch (starts with the vendor defaults) or you can copy an existing profile in the list",
+OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = "Are you sure you want to delete profile '%s'?",
+
 -- Console Commands
 CMD_HELP_HEADER = "Command Reference: ",
 CMD_HELP_HELP = "Show this command list reference.",
@@ -162,13 +171,16 @@ CONFIG_DIALOG_CONFIRM_DELETE_FMT1 = "Deleting '%s' will make it unavailable to a
 CONFIG_DIALOG_SHARE_TOOLTIP = "Share",
 CONFIG_DIALOG_MOVEUP_TOOLTIP = "Click to move the rule sooner in evaluation order",
 CONFIG_DIALOG_MOVEDOWN_TOOLTIP = "Click to move the rule later in the evaluation order",
-CONFIG_DIALOG_LISTS_TAB = "Sell Lists",
+CONFIG_DIALOG_LISTS_TAB = "Lists",
 CONFIG_DIALOG_LISTS_TEXT = "" ..
     YELLOW_FONT_COLOR_CODE .. "Left-Click" .. FONT_COLOR_CODE_CLOSE .. " removes the item from the list.|n" ..
     YELLOW_FONT_COLOR_CODE .. "Right-Click" .. FONT_COLOR_CODE_CLOSE .. " swaps the item to the other list.|n" ..
     YELLOW_FONT_COLOR_CODE .. "Dragging an item from your bags over a list" .. FONT_COLOR_CODE_CLOSE .. " adds it to that list.",
-CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Always Sell:",
-CONFIG_DIALOG_LISTS_NEVER_LABEL = "Never Sell:",
+CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Always Sell",
+CONFIG_DIALOG_LISTS_NEVER_LABEL = "Never Sell",
+ALWAYS_SELL_LIST_NAME = "Always Sell",
+NEVER_SELL_LIST_NAME = "Never Sell",
+ALWAYS_DESTROY_LIST_NAME = "Always Destroy",
 RULES_DIALOG_HELP_HEADING = "You can find the latest release notes as well as links to the project and it's tutorials on this page.",
 RULES_DIALOG_HELP_TAB = "Help",
 RULES_DIALOG_EMPTY_SELL_LIST = "There are no rules in your sell list",

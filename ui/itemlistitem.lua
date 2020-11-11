@@ -82,12 +82,16 @@ function ItemListItem:SetItem(item)
 	end
 end
 
+function ItemListItem:OnModelChanged(model)
+	self:SetItem(model);
+end
+
 --[[============================================================================
 	| Called when the "delete" button is clicked
 	==========================================================================]]
-	function ItemListItem:HandleDelete()
+function ItemListItem:HandleDelete()
 	if (self.item) then
-		self:GetParent():GetParent():TriggerEvent("OnDeleteItem", self.item);
+		Addon.invoke(self:GetParent():GetParent(), "OnDeleteItem", self.item);
 	end
 end
 		

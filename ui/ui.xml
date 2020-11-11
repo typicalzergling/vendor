@@ -1,8 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Include file="common.xml"/>
+    <Script file="localize.lua"/>
     <Script file="controls/autoscrollbar.lua"/>
     <Script file="controls/listitem.lua"/>
     <Script file="controls/list.lua"/>
-    <Script file="localize.lua"/>
     <Script file="tabbedframe.lua"/>	
     <Include file="dialog.xml"/>
     <Include file="htmlview.xml"/>
@@ -10,4 +11,6 @@
     <Include file="radiobutton.xml"/>
     <Include file="itemlist.xml"/>
     <Include file="editpanels.xml"/>
+    <Include file="configpanels.xml"/>
+    <Include file="config/profiles.xml"/>
 </Ui>
