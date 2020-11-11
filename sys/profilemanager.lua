@@ -57,10 +57,35 @@ function ProfileManager:GetProfile()
 end
 
 --[[===========================================================================
-   |	
+   | Changes the currently active profile the specified profile, then send\
+   | the profile changed event so everything can update.
    ==========================================================================]]
 function ProfileManager:SetProfile(profile)
-	error("not yet implemented");
+	local profileId = getProfileId(profile);
+	if (not profileId or (string.len(profileId) == 0)) then
+		error("Usage: ProfileManager:SetProfile( profile | profileId )");
+	end
+
+	local data = profilesVariable:Get(profileId)
+	if (not data) then
+		error(string.format("The specified profile '%s' does not exist", profileId));		
+	end
+
+	local active = self.activeProfile;
+	if (active) then
+		active:SetActive(false);
+		active:UnregisterCallback("onChanged", self)
+	end
+	
+	local prof = CreateProfile(profileId);
+	prof:SetActive();
+	self.activeProfile = prof;
+	activeProfileVariable:Replace(prof:GetId());
+	prof:RegisterCallback("OnChanged", function()
+			debug("Broadcasting changes '%s'", prof:GetName())
+			self:TriggerEvent("OnProfileChanged", prof)
+		end, self)
+	self:TriggerEvent("OnProfileChanged", prof)
 end
 
 --[[===========================================================================
@@ -70,7 +95,7 @@ function ProfileManager:CreateProfile(profileName)
 	local profile = CreateProfile();
 	profile:SetName(profileName);
 
-	Addon.invoke(Addon, "OnInitializeProfile", profile);	
+	Addon.invoke(Addon, "OnInitializeProfile", profile);
 	debug("Created new profile '%s'", profile:GetId());
 	self:TriggerEvent("OnProfileCreated", profile);
 	return profile;
@@ -119,8 +144,12 @@ end
 function ProfileManager:EnumerateProfiles()
 	-- Create an array of the profiles
 	local results = {};
+	local active = self.activeProfile;
+
 	profilesVariable:ForEach(function(profile, id)
-			table.insert(results, CreateProfile(id));
+			local profile = CreateProfile(id);
+			profile:SetActive(id == active:GetId());
+			table.insert(results, profile);
 		end);
 
 	-- Return an iterator of the profiles.

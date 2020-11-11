@@ -117,8 +117,8 @@ local function CreateProfile(id)
 		active = false,
 		timer = false,
 	};
+	
 	-- Create our object and return it
-	debug("Created new profile object '%s'", instance.profileId);
 	return Addon.object("Profile", instance, table.merge(Addon.Profile or {}, Profile), { "OnChanged" });
 end
 

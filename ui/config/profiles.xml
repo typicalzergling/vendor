@@ -1,0 +1,137 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="config/profiles.lua"/>
+
+	<!-- Profile Item -->
+	<Button name="Vendor_Options_Profile" virtual="true">
+		<Size x="1" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+                <Texture parentKey="Active" file="Interface\RAIDFRAME\ReadyCheck-Ready">
+                    <Size x="20" y="20"/>
+                   <Anchors>
+                        <Anchor point="LEFT" x="4"/>
+                    </Anchors>
+                </Texture>
+				<FontString inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" parentKey="Name">
+					<Size x="1" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.Active" x="4"/>
+						<Anchor point="RIGHT" x="-4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="Hover" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+
+    <!-- Profile Config Panel  -->
+
+    <Frame name="VendorProfilesConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
+		<KeyValues>
+			<KeyValue key="TitleKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
+			<KeyValue key="HelpTextKey" value="OPTIONS_PROIFLE_HELPTEXT" type="string"/>
+		</KeyValues>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlightSmall" parentKey="CreateText" justifyH="LEFT">
+					<KeyValues>
+						<KeyValue key="LocKey" value="OPTIONS_PROFILE_CREATETEXT" type="string"/>
+					</KeyValues>
+					<Size x="1" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-308"/>
+						<Anchor point="RIGHT" relativeKey='$parent.HelpText'/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+        <Frames>
+			<!-- Profile List -->
+            <Button parentKey="Set" inherits="UIPanelButtonTemplate">
+				<KeyValues>
+					<KeyValue key="LocKey" value="OPTIONS_PROFILE_SET" type="string"/>
+				</KeyValues>
+                <Size x="148" y="28"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CreateText" relativePoint="TOPRIGHT" y="24"/>
+                </Anchors>				
+            </Button>
+            <Button parentKey="Delete" inherits="UIPanelButtonTemplate" text="DELETE">
+                <Size x="148" y="28"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Set" relativePoint="TOPLEFT" x="-6"/>
+                </Anchors>				
+            </Button>
+			<Frame inherits="Vendor_BorderFrame" parentKey="Border">
+				<Size x="1" y="1"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Set" relativePoint="TOPRIGHT" x="0" y="4"/>
+				</Anchors>
+			</Frame>
+			<ScrollFrame parentKey="Profiles" inherits="FauxScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="ItemHeight" value="24" type="number"/>
+					<KeyValue key="ItemTemplate" value="Vendor_Options_Profile" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Border" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Border" x="-6" y="6"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+
+			<!-- Create Profile -->
+			<Frame parentKey="Name" inherits="Vendor_Edit">
+				<Size x="1" y="32"/>
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="OPTIONS_PROFILE_NAME_PLACEHOLDER" type="string"/>
+				</KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.CreateText" relativePoint="BOTTOMLEFT" y="-4"/>
+					<Anchor point="RIGHT" relativeKey="$parent.CreateText"/>
+                </Anchors>
+			</Frame>
+            <Button parentKey="Copy" inherits="UIPanelButtonTemplate">
+				<KeyValues>
+					<KeyValue key="LocKey" value="OPTIONS_PROFILE_COPY" type="string"/>
+				</KeyValues>
+                <Size x="148" y="28"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT" y="-6"/>
+                </Anchors>
+            </Button>            
+            <Button parentKey="Create" inherits="UIPanelButtonTemplate">
+				<KeyValues>
+					<KeyValue key="LocKey" value="OPTIONS_PROFILE_CREATE" type="string"/>
+				</KeyValues>
+                <Size x="148" y="28"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Copy" relativePoint="TOPLEFT" x="-6"/>
+                </Anchors>
+            </Button>            
+		</Frames>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, nil, "ProfileConfigPanel")</OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>

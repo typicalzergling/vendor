@@ -199,7 +199,7 @@ function Addon:OnInitializeProfile(profile)
 
 	-- Copy the default settings into the new profile.
 	table.forEach(Addon.DefaultConfig.Settings, 
-		function(name, value)
+		function(value, name)
 			profile:SetValue(name, value);
 		end);
 end

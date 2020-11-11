@@ -77,6 +77,11 @@ end
 	| Returns true of the item has the model specified.
 	========================================================================--]]
 function ListItem:HasModel(model)
+	local compare = self.CompareModel;
+	if (type(compare) == "function") then
+		return compare(self, model);
+	end
+
 	return (rawget(self, MODEL_KEY) == model);
 end
 
