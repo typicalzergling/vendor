@@ -200,57 +200,47 @@ end
 
 function Addon:GetProfileList()
     local profiles = {};
-
     for _, profile in Addon:GetProfileManager():EnumerateProfiles() do
         table.insert(profiles, profile);
     end
-
-    table.sort(profiles, 
-        function(a, b)
-            if (not a) then
-                return false;
-            elseif (not b) then 
-                return true;
-            else
-                return a:GetName() < b:GetName()
-            end
-        end)
-
     return profiles
 end
 
-function Addon:GetProfileNames()
-    local profiles = Addon:GetProfileList()
-    local profilenames = {}
-    for _, profile in pairs(profiles) do
-        table.insert(profilenames, profile:GetName())
+function Addon:GetProfiles()
+    local profilelist = {}
+    for _, profile in Addon:GetProfileManager():EnumerateProfiles() do
+        local entry = {}
+        entry.Name = profile:GetName()
+        entry.Id = profile:GetId()
+        entry.Active = profile:IsActive()
+        table.insert(profilelist, entry)
     end
-    return profilenames
+    return profilelist
 end
 
-function Addon:FindProfile(profileName)
-    if not profileName then return nil end
+function Addon:FindProfile(profileNameOrId)
+    if not profileNameOrId then return nil end
     for _, profile in Addon:GetProfileManager():EnumerateProfiles() do
-        if profile:GetName() == profileName then
+        if profile:GetId() == profileNameOrId or profile:GetName() == profileNameOrId then
             return profile
         end
     end
     return nil
 end
 
-function Addon:ProfileExists(profileName)
-    if Addon:FindProfile(profileName) then return true else return false end
+function Addon:ProfileExists(profileNameOrId)
+    if Addon:FindProfile(profileNameOrId) then return true else return false end
 end
 
-function Addon:SetProfile(profileName)
-    local profile = Addon:FindProfile(profileName)
+function Addon:SetProfile(profileNameOrId)
+    local profile = Addon:FindProfile(profileNameOrId)
     if not profile then return false end
     Addon:GetProfileManager():SetProfile(profile)
     return true
 end
 
-function Addon:DeleteProfile(profileName)
-    local profile = Addon:FindProfile(profileName)
+function Addon:DeleteProfile(profileNameOrId)
+    local profile = Addon:FindProfile(profileNameOrId)
     if not profile then return false end
     return Addon:GetProfileManager():DeleteProfile(profile)
 end
@@ -261,15 +251,15 @@ function Addon:NewProfile(profileName)
     return true
 end
 
-function Addon:RenameProfile(profileName, newProfileName)
-    if not Addon:ProfileExists(profileName) then return false end
-    local profile = Addon:FindProfile(profileName)
+function Addon:RenameProfile(profileNameOrId, newProfileName)
+    if not Addon:ProfileExists(profileNameOrId) then return false end
+    local profile = Addon:FindProfile(profileNameOrId)
     profile:SetName(newProfileName)
     return true
 end
 
-function Addon:CopyProfile(profileName, newProfileName)
-    local profile = Addon:FindProfile(profileName)
+function Addon:CopyProfile(profileNameOrId, newProfileName)
+    local profile = Addon:FindProfile(profileNameOrId)
     if not profile then return false end
     local newprofile = Addon:FindProfile(newProfileName)
     if newprofile then return false end

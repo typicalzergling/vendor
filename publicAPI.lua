@@ -65,4 +65,15 @@ Addon:MakePublic(
     L["API_GETPRICESTRING_TITLE"],
     L["API_GETPRICESTRING_DOCS"])
 
+Addon:MakePublic(
+    "GetProfiles",
+    function () return Addon:GetProfiles() end,
+    L["API_GETPROFILE_TITLE"],
+    L["API_GETPROFILE_DOCS"])
+
+Addon:MakePublic(
+    "SetProfile",
+    function (profileNameOrId) return Addon:SetProfile(profileNameOrId) end,
+    L["API_SETPROFILE_TITLE"],
+    L["API_SETPROFILE_DOCS"])
 

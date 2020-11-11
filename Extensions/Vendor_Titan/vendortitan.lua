@@ -135,6 +135,17 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
     local info
     
     if L_UIDROPDOWNMENU_MENU_LEVEL == 2 then
+        if L_UIDROPDOWNMENU_MENU_VALUE == "Profiles" then
+            TitanPanelRightClickMenu_AddTitle(L["TITAN_MENU_PROFILES"], L_UIDROPDOWNMENU_MENU_LEVEL)
+            local profiles = Vendor.GetProfiles()
+            for _, profile in pairs(profiles) do
+                info = {}
+                info.text = profile.Name
+                info.func = function () Vendor.SetProfile(profile.Id) end
+                info.checked = profile.Active
+                L_UIDropDownMenu_AddButton(info, L_UIDROPDOWNMENU_MENU_LEVEL)
+            end
+        end
 		return 
 	end
 
@@ -165,6 +176,15 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
         info.func = function () Vendor.ShowKeybindings() end
         L_UIDropDownMenu_AddButton(info);
         
+        TitanPanelRightClickMenu_AddSpacer()
+
+        -- Profiles
+		info = {};
+		info.text = L["TITAN_MENU_PROFILES"]
+		info.value = "Profiles"
+		info.hasArrow = 1;
+		L_UIDropDownMenu_AddButton(info);
+
         -- Default Titan options
         TitanPanelRightClickMenu_AddSpacer();     
         TitanPanelRightClickMenu_AddToggleIcon(Addon.id);

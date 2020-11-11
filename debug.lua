@@ -131,8 +131,15 @@ function Addon:Profile_Cmd(cmd, arg1, arg2)
         end
 
     elseif cmd == "rename" and type(arg1) == "string" and type(arg2) == "string" then
-        Addon:Print("Rename successful")
-
+        if not Addon:ProfileExists(arg1) then
+            Addon:Print("Profile '%s' does not exist.", arg1)
+            return
+        end
+        if Addon:RenameProfile(arg1, arg2) then
+            Addon:Print("Profile '%s' has been renamed to '%s'.", arg1, arg2)
+        else
+            Addon:Print("Failed renaming the profile.")
+        end
     else
         Addon:Print("profile usage: <none> | get | set | create | copy | delete | rename")
     end
