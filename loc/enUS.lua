@@ -94,6 +94,15 @@ OPTIONS_DESC_FREQUENCY = "Sets how frequently a throttled task executes per seco
 OPTIONS_SETTINGNAME_CYCLE_RATE = "Cycle Rate",
 OPTIONS_SETTINGDESC_CYCLE_RATE = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 
+OPTIONS_PROFILE_TITLE = "Profiles",
+OPTIONS_PROIFLE_HELPTEXT = "Profiles help text << write me >>",
+OPTIONS_PROFILE_COPY = "Copy",
+OPTIONS_PROFILE_CREATE = "Create",
+OPTIONS_PROFILE_SET = "Set",
+OPTIONS_PROFILE_NAME_PLACEHOLDER = "type the name of the profile to create or copy here",
+OPTIONS_PROFILE_CREATETEXT = "You can create a new profile from scratch (starts with the vendor defaults) or you can copy an existing profile in the list",
+OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = "Are you sure you want to delete profile '%s'?",
+
 -- Console Commands
 CMD_HELP_HEADER = "Command Reference: ",
 CMD_HELP_HELP = "Show this command list reference.",
