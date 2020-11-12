@@ -35,7 +35,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("ITEM_LOCK_CHANGED", "OnItemLockChanged")
-    self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
+    --self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
 
     -- Tooltip hooks

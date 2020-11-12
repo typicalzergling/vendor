@@ -28,6 +28,19 @@ function BlockList:Add(itemId)
         self.profile:SetList(self.listType, list);
     end
 
+    -- If this is a built in list type, remove the item from the other list types.
+    if self.listType == ListType.SELL or self.listType == ListType.KEEP or self.listType == ListType.DESTROY then
+        if self.listType ~= ListType.SELL then
+            Addon:GetList(ListType.SELL):Remove(itemId)
+        end
+        if self.listType ~= ListType.KEEP then
+            Addon:GetList(ListType.KEEP):Remove(itemId)
+        end
+        if self.listType ~= ListType.DESTROY then
+            Addon:GetList(ListType.DESTROY):Remove(itemId)
+        end
+    end
+
     return false;
 end
 

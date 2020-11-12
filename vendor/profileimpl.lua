@@ -177,11 +177,11 @@ function Addon:OnCreateDefaultProfile(profile)
 		if (Vendor_RulesConfig) then
 			profile:SetValue(PROFILE_KEEP_RULES, Vendor_RulesConfig.keep or {});
 			profile:SetValue(PROFILE_SELL_RULES, Vendor_RulesConfig.sell or {});
-			profile:SetValue(PROFILE_DELETE_RULES, {});
+			profile:SetValue(PROFILE_DESTROY_RULES, {});
 		else
 			profile:SetValue(PROFILE_KEEP_RULES, Addon.DefaultConfig.Rules.keep or {});
 			profile:SetValue(PROFILE_SELL_RULES, Addon.DefaultConfig.Rules.sell or {});
-			profile:SetValue(PROFILE_DELETE_RULES, Addon.DefaultConfig.Rules.delete or {});
+			profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.delete or {});
 		end
 
 		Addon:Debug("profile", "Migrated existing vendor settings");
