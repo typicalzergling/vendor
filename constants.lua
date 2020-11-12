@@ -38,6 +38,7 @@ Addon.RuleType = {
     SELL = "Sell",
     KEEP = "Keep",
     DESTROY  = "Delete",
+    HIDDEN = "-Hidden-",
 };
 
 Addon.ListType = {
