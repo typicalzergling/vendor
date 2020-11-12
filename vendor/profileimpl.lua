@@ -15,6 +15,7 @@ local PROFILE_DESTROY_LIST = "list:delete";
 local PROFILE_SELL_RULES = "rules:sell";
 local PROFILE_KEEP_RULES = "rules:keep";
 local PROFILE_DESTROY_RULES = "rules:delete";
+local PROFILE_HIDDEN_RULES = "rules:hidden"
 local PROFILE_VERSION = "profile:version";
 local CURRENT_VERSION = 1;
 local PROFILE_INTERFACEVERSION = "profile:interface";
@@ -34,8 +35,9 @@ local function RuleTypeToRuleKey(ruleType)
 		return PROFILE_KEEP_RULES;
 	elseif (ruleType == RuleType.DESTROY) then
 		return PROFILE_DESTROY_RULES;
-    end 
-    print(tostring(ruleType))
+	elseif (ruleType == RuleType.HIDDEN) then
+		return PROFILE_HIDDEN_RULES
+	end
 
 	return nil;
 end
@@ -170,7 +172,7 @@ function Addon:OnCreateDefaultProfile(profile)
 
 			profile:SetValue(PROFILE_KEEP_LIST, Vendor_Settings[KEEP_LIST] or {});
 			profile:SetValue(PROFILE_SELL_LIST, Vendor_Settings[SELL_LIST] or {});
-			profile:SetValue(PROFILE_DELETE_LIST, {});
+			profile:SetValue(PROFILE_DESTROY_LIST, {});
 		end
 
 		-- Migrate rule configuation varible.
@@ -181,7 +183,7 @@ function Addon:OnCreateDefaultProfile(profile)
 		else
 			profile:SetValue(PROFILE_KEEP_RULES, Addon.DefaultConfig.Rules.keep or {});
 			profile:SetValue(PROFILE_SELL_RULES, Addon.DefaultConfig.Rules.sell or {});
-			profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.delete or {});
+			profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.destroy or {});
 		end
 
 		Addon:Debug("profile", "Migrated existing vendor settings");
@@ -201,14 +203,14 @@ function Addon:OnInitializeProfile(profile)
 	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
 
 	-- Lists start empty
-	profile:SetValue(PROFILE_DELETE_LIST, {});
+	profile:SetValue(PROFILE_DESTROY_LIST, {});
 	profile:SetValue(PROFILE_KEEP_LIST, {});
 	profile:SetValue(PROFILE_SELL_LIST, {});
 
 	-- Copy the default rules from the config
 	profile:SetValue(PROFILE_KEEP_RULES, Addon.DefaultConfig.Rules.keep or {});
 	profile:SetValue(PROFILE_SELL_RULES, Addon.DefaultConfig.Rules.sell or {});
-	profile:SetValue(PROFILE_DELETE_RULES, Addon.DefaultConfig.Rules.delete or {});
+	profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.destroy or {});
 
 	-- Copy the default settings into the new profile.
 	table.forEach(Addon.DefaultConfig.Settings, 
@@ -220,7 +222,5 @@ end
 function Addon:OnCheckProfileMigration(profile)
 	-- Current a no-op
 end
-
-
 
 Addon.Profile = Profile;
