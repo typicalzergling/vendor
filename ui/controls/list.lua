@@ -35,8 +35,8 @@
     ========================================================================--]]
 
 local AddonName, Addon = ...
-local ListItem = Addon.Controls.ListItem;
-local ListBase = {};
+local ListItem = Addon.Controls.ListItem
+local ListBase = table.copy(Addon.Controls.EmptyListMixin)
 
 --[[===========================================================================
 	| OnLoad handler for the list base, sets some defaults and hooks up
@@ -93,8 +93,8 @@ function ListBase:AdjustScrollbar()
 		local buttonHeight = scrollbar.ScrollUpButton:GetHeight();
 		local background = self.scrollbarBackground;
 		if (not background) then
-			background = self:CreateTexture(nil, "BACKGROUND", -2);
-			background:SetColorTexture(0.0, 0.0, 0.0, 0.50);
+			background = self:CreateTexture(nil, "BACKGROUND");
+			background:SetColorTexture(0.0, 0.0, 0.0);
 		end
 		if (background) then
 			background:ClearAllPoints();
@@ -178,28 +178,8 @@ function ListBase:OnUpdate()
 end
 
 --[[===========================================================================
-	| Shows or hides the empty text
+	| Reset the list positino to the top.
 	========================================================================--]]
-function ListBase:ShowEmptyText(show)
-	local empty = self.EmptyText;
-	if (empty) then
-		if (show) then
-			empty:Show();
-		else
-			empty:Hide();
-		end
-	end
-end
-
---[[===========================================================================
-	| Modifies the empty text
-	========================================================================--]]
-function ListBase:SetEmptyText(text)
-	if (self.EmptyText) then
-		self.EmptyText:SetText(text or "");
-	end
-end
-
 function ListBase:ResetOffset()
 	FauxScrollFrame_SetOffset(self, 0);
 end
@@ -293,5 +273,5 @@ function ListBase:Update()
 end
 
 Addon.Controls = Addon.Controls or {}
-Addon.Controls.List = ListBase;
+Addon.Controls.List = ListBase
 	

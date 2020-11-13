@@ -107,7 +107,7 @@
 				</KeyValues>
 			</Frame>
 
-			<!-- Keep Panel -->
+			<!-- Keep Panel 
 			<Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="1">
 				<KeyValues>
 					<KeyValue key="ruleType" value="Keep" type="string"/>
@@ -120,7 +120,6 @@
 				</Anchors>
 			</Frame>
 
-			<!-- Sell Panel -->
 			<Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="2">
 				<KeyValues>
 					<KeyValue key="ruleType" value="Sell" type="string"/>
@@ -133,7 +132,6 @@
 				</Anchors>
 			</Frame>
 
-			<!-- Delete Panel -->
 			<Frame name="$parentDeletePanel" parentKey="DeletePanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
 				<KeyValues>
 					<KeyValue key="ruleType" value="Delete" type="string"/>
@@ -144,10 +142,10 @@
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
 				</Anchors>
-			</Frame>
+			</Frame>-->
 				
 			<!-- Lists Panel -->
-			<Frame name="$parentListsPanel" parentKey="ListsPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="4">
+			<Frame name="$parentListsPanel" parentKey="ListsPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="2">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
@@ -221,43 +219,30 @@
 				</Anchors>
 			</Frame>
 
+			<Frame parentKey="RulesPanel" id="1" inherits="Vendor_RulesPanel,Vendor_TabPanel_Base" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
+				</Anchors>
+			</Frame>
+
 			<!-- Keep Tab -->
-			<Button name="$parentKeepTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="KeepTab">
+			<Button name="$parentRulesTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="RulesTab">
 				<KeyValues>
-					<KeyValue key="LocKey" value="CONFIG_DIALOG_KEEPRULES_TAB" type="string"/>
+					<KeyValue key="LocKey" value="CONFIG_DIALOG_RULES_TAB" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeKey="$parent.Container" relativePoint="TOPLEFT" x="6" y="-2"/>
 				</Anchors>
 			</Button>
 
-			<!-- Sell Tab -->
-			<Button name="$parentSellTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="SellTab">
-				<KeyValues>
-					<KeyValue key="LocKey" value="CONFIG_DIALOG_SELLRULES_TAB" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeKey="$parent.KeepTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
-				</Anchors>
-			</Button>
-
-			<!-- Custom Tab -->
-			<Button name="$parentCustomTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="CustomTab">
-				<KeyValues>
-					<KeyValue key="LocKey" value="CONFIG_DIALOG_DELETERULES_TAB" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeKey="$parent.SellTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
-				</Anchors>
-			</Button>
-
 			<!-- Lists Tab -->
-			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ListsTab" enabled="false">
+			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="ListsTab" enabled="false">
 				<KeyValues>
 					<KeyValue key="LocKey" value="CONFIG_DIALOG_LISTS_TAB" type="string"/>
 				</KeyValues>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeKey="$parent.CustomTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.RulesTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
 				</Anchors>
 			</Button>
 

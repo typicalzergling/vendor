@@ -11,6 +11,13 @@ ADDON_LOADED = "is loaded. Type '/vendor help' for usage.",
 VENDOR_URL = "https://www.curseforge.com/wow/addons/vendor",
 VENDOR_TUTORIAL = "https://youtu.be/j93Orw3vPKQ",
 
+-- Rule types
+RULE_TYPE_KEEP_NAME = "Keep",
+RULE_TYPE_KEEP_DESCR = "These rules are safeguards to prevent selling things you don't want sold. All Keep Rules are checked before Sell Rules; However, anything you mark as 'Always Sell' will ignore Keep Rules.",
+RULE_TYPE_SELL_NAME = "Sell",
+RULE_TYPE_SELL_DESCR = "Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
+RULE_TYPE_DELETE_NAME = "Destroy",
+RULE_TYPE_DELETE_DESCR = "Delete rules description",
 
 -- Bindings
 BINDING_HEADER_VENDORQUICKLIST = "Quick Add/Remove items from the sell lists when mousing over the item",
@@ -104,6 +111,22 @@ OPTIONS_PROFILE_CREATETEXT = "You can create a new profile from scratch (starts 
 OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = "Are you sure you want to delete profile '%s'?",
 OPTIONS_PROFILE_CREATE_LABEL = "Create Profile",
 OPTIONS_PROFILE_DEFAULT_COPY_NAME = "%s (Copy)",
+
+OPTIONS_RULES_SHOW_HIDDEN = "Show Hidden",
+
+RULE_TOOLTIP_SOURCE = "Source: %s",
+RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",
+RULE_TOOLTIP_CUSTOM_RULE = "Custom Rule",
+RULE_TOOLTIP_SYSTEM_RULE = "Built-In",
+
+RULE_CMENU_ENABLE = "Enable",
+RULE_CMENU_DISABLE = "Disable",
+RULE_CMENU_HIDE = "Hide",
+RULE_CMENU_SHOW = "Show",
+RULE_CMENU_VIEW = "View",
+RULE_CMENU_EDIT = "Edit",
+RULE_CMENU_DELETE = "Delete",
+RULE_CMENU_CLOSE = "Close",
 
 -- Console Commands
 CMD_HELP_HEADER = "Command Reference: ",

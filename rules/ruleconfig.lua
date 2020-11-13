@@ -6,6 +6,22 @@ local function debug(...)
 	Addon:Debug("ruleconfig", ...);
 end
 
+-- Validates if the rule type is valid
+local function IsValidRuleType(ruleType)
+	if (type(ruleType) ~= "string") then
+		return false;
+	end
+
+	local valid = false;
+	for _, value in pairs(Addon.RuleType)  do
+		if (value == ruleType) then
+			valid = true;
+			break;
+		end
+	end
+	return valid;
+end
+
 local function ValidateRuleConfig(config)
 	local t = type(config);
 	if (t == "string") then	
@@ -105,6 +121,7 @@ function RuleConfigObject:Remove(ruleId)
 		debug("Removed rule '%s'", ruleId);
 		table.remove(self.rules, index);
 		self:TriggerEvent("OnChanged", self);
+		return true
 	end
 end
 
@@ -116,6 +133,20 @@ function RuleConfigObject:Get(ruleId)
 		return CreateConfig(self.rules[index]);
 	end
 	return nil;
+end
+
+function RuleConfigObject:Contains(ruleId)
+	local index = GetIndexOf(self.rules, ruleId);
+	if (index and (index >= 1)) then
+		return true;
+	end
+	return false;
+end
+
+function RuleConfigObject:Commit()
+	local profile = assert(Addon:GetProfileManager():GetProfile(), "Expected a valid active profile");
+	profile:SetRules(self.type, self.rules);
+	debug("Commited rules '%s' to the profile", self.type)
 end
 
 local RuleConfigAPI = Mixin(CallbackRegistryMixin, RuleConfigObject);
@@ -145,3 +176,18 @@ Addon.RuleConfig = {
 		return obj;
 	end,
 }
+
+function Addon.RuleConfig:Get(ruleType)
+	if (not IsValidRuleType(ruleType)) then
+		error(string.format("The specified rule type '%s' is invalid", ruleType or ""), 2);
+	end
+
+	local profile = Addon:GetProfileManager():GetProfile()
+	local instance = {
+		type = ruleType,
+		profile = profile,
+		rules = profile:GetRules(ruleType),
+	}
+
+	return Addon.object("RuleConfig", instance, RuleConfigObject, { "OnChanged" })
+end

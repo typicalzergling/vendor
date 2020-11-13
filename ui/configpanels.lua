@@ -164,7 +164,6 @@ function Addon.ConfigPanel.InitMainPanel(self, name)
     applySubclass(self, name);
 
     invokePanelMethod("Init", self);
-    table.forEach(Addon.ConfigPanel, print, name);
     --Addon.LocalizeFrame(self);
     Addon.ConfigPanel.SetVersionInfo(self);
     Addon.ConfigPanel.SetText(self);

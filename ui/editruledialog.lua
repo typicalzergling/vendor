@@ -68,7 +68,7 @@ StaticPopupDialogs["VENDOR_CONFIRM_DELETE_RULE"] = {
     OnAccept = function(self, ruleId, dialog)
         Addon:Debug("editrule", "Deleting rule '%s'", ruleId);
         Addon.Rules.DeleteDefinition(self.data); 
-        if (dialog.ruleId == ruleId) then
+        if (dialog and dialog.ruleId == ruleId) then
             dialog:Hide();
         end
     end,

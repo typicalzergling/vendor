@@ -101,10 +101,16 @@ function ListItem:CompareTo(other)
 			(rawget(self, MODEL_INDEX_KKEY) or 0);
 end
 
+--[[===========================================================================
+	| returns true if the item is selected
+	========================================================================--]]
 function ListItem:IsSelected()
 	return (self.selected == true);
 end
 
+--[[===========================================================================
+	| Modifies the selected state of this item
+	========================================================================--]]
 function ListItem:SetSelected(selected)
 	if (self.selected ~= selected) then
 		self.selected = selected;
@@ -113,6 +119,25 @@ function ListItem:SetSelected(selected)
 			xpcall(cb, CallErrorHandler, self, selected);
 		end
 	end
+end
+
+--[[===========================================================================
+	| Retrieves the list for this item by walking the parent and looking 
+	| sentinal which marks the list
+	========================================================================--]]
+function ListItem:GetList()
+	local parent = self:GetParent();
+
+	if (parent and (rawget(parent, "@@list@@") == true)) then
+		return parent
+	end
+
+	parent = parent:GetParent()
+	if (parent and (rawget(parent, "@@list@@") == true)) then
+		return parent;
+	end
+
+	return nil
 end
 
 Addon.Controls = Addon.Controls or {};

@@ -210,7 +210,7 @@ function Addon:OnInitializeProfile(profile)
 	-- Copy the default rules from the config
 	profile:SetValue(PROFILE_KEEP_RULES, Addon.DefaultConfig.Rules.keep or {});
 	profile:SetValue(PROFILE_SELL_RULES, Addon.DefaultConfig.Rules.sell or {});
-	profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.delete or {});
+	profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.destroy or {});
 
 	-- Copy the default settings into the new profile.
 	table.forEach(Addon.DefaultConfig.Settings, 

@@ -13,14 +13,14 @@ function RulesDialog.OnLoad(self)
     self:SetClampedToScreen(true)
 
     -- Setup the panels
-    self:SetupTab(KEEP_TABID, "CONFIG_DIALOG_KEEPRULES_TEXT")
-    self:SetupTab(SELL_TABID, "CONFIG_DIALOG_SELLRULES_TEXT")
-    self:SetupTab(CUSTOM_TABID, "CONFIG_DIALOG_CUSTOMRULES_TEXT")
-    self:SetupTab(LISTS_TABID, "CONFIG_DIALOG_LISTS_TEXT")
-    self.createNewRule:SetText(L.CREATE_BUTTON);
+    --self:SetupTab(KEEP_TABID, "CONFIG_DIALOG_KEEPRULES_TEXT")
+    --self:SetupTab(SELL_TABID, "CONFIG_DIALOG_SELLRULES_TEXT")
+    --self:SetupTab(CUSTOM_TABID, "CONFIG_DIALOG_CUSTOMRULES_TEXT")
+    --self:SetupTab(LISTS_TABID, "CONFIG_DIALOG_LISTS_TEXT")
+    --self.createNewRule:SetText(L.CREATE_BUTTON);
 
     -- Initialize the tabs
-    self:InitTabs(SELL_TABID);
+    self:InitTabs(1);
 
     table.insert(UISpecialFrames, self:GetName());
     self:RegisterForDrag("LeftButton");

@@ -127,7 +127,11 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = ITEM_LEVEL_PARAMS,
+        Params = {
+            table.merge(ITEM_LEVEL_PARAMS[1], {
+                Name = "Any " ..ITEM_QUALITY_COLORS[4].hex .. "Epic|r gear below the this item level will be sold",
+            })
+        },
         Order = 1600,
     },
     --@end-retail@
