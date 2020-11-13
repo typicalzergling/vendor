@@ -43,8 +43,6 @@ end
 
 function NumericParameter:SetValue(value)
 	local param = assert(rawget(self, PARAM_KEY))
-	print("--> set value: ", value);
-
 	if (value == nil or (type(value) ~= "number")) then
 		value = self:GetDefaultValue();
 	end
