@@ -102,7 +102,8 @@ OPTIONS_SETTINGNAME_CYCLE_RATE = "Cycle Rate",
 OPTIONS_SETTINGDESC_CYCLE_RATE = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 
 OPTIONS_PROFILE_TITLE = "Profiles",
-OPTIONS_PROIFLE_HELPTEXT = "Profiles help text << write me >>",
+OPTIONS_PROIFLE_HELPTEXT = "All rules settings, addon settings, and Sell / Keep / Destroy list contents are stored per-profile. "..
+    "Profiles are stored globally across all servers and characters, and selected per-character.",
 OPTIONS_PROFILE_COPY = "Copy",
 OPTIONS_PROFILE_CREATE = "Create",
 OPTIONS_PROFILE_SET = "Set",
@@ -197,15 +198,14 @@ CONFIG_DIALOG_SHARE_TOOLTIP = "Share",
 CONFIG_DIALOG_MOVEUP_TOOLTIP = "Click to move the rule sooner in evaluation order",
 CONFIG_DIALOG_MOVEDOWN_TOOLTIP = "Click to move the rule later in the evaluation order",
 CONFIG_DIALOG_LISTS_TAB = "Lists",
-CONFIG_DIALOG_LISTS_TEXT = "" ..
-    YELLOW_FONT_COLOR_CODE .. "Left-Click" .. FONT_COLOR_CODE_CLOSE .. " removes the item from the list.|n" ..
-    YELLOW_FONT_COLOR_CODE .. "Right-Click" .. FONT_COLOR_CODE_CLOSE .. " swaps the item to the other list.|n" ..
-    YELLOW_FONT_COLOR_CODE .. "Dragging an item from your bags over a list" .. FONT_COLOR_CODE_CLOSE .. " adds it to that list.",
-CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Always Sell",
-CONFIG_DIALOG_LISTS_NEVER_LABEL = "Never Sell",
-ALWAYS_SELL_LIST_NAME = "Always Sell",
-NEVER_SELL_LIST_NAME = "Never Sell",
-ALWAYS_DESTROY_LIST_NAME = "Always Destroy",
+CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, Sold, or Destroyed.|n"..
+    "Drag items onto the list area to add it to that list.|n"..
+    "You can drag an item from one list to another.",
+CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Sell",
+CONFIG_DIALOG_LISTS_NEVER_LABEL = "Keep",
+ALWAYS_SELL_LIST_NAME = "Sell",
+NEVER_SELL_LIST_NAME = "Keep",
+ALWAYS_DESTROY_LIST_NAME = "Destroy",
 RULES_DIALOG_HELP_HEADING = "You can find the latest release notes as well as links to the project and it's tutorials on this page.",
 RULES_DIALOG_HELP_TAB = "Help",
 RULES_DIALOG_EMPTY_SELL_LIST = "There are no rules in your sell list",

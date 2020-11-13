@@ -264,22 +264,22 @@ end
 
 local SystemListId = 
 {
-    ALWAYS = "system:always-sell",
     NEVER = "system:never-sell",
+    ALWAYS = "system:always-sell",
     DESTROY = "system:always-destroy",
 };
 
 local SYSTEM_LISTS = 
 {
     {
-        id = SystemListId.ALWAYS,
-        name  = L.ALWAYS_SELL_LIST_NAME,
-        empty = L.RULES_DIALOG_EMPTY_SELL_LIST,
-    },
-    {
         id = SystemListId.NEVER,
         name  = L.NEVER_SELL_LIST_NAME,
         empty = L.RULES_DIALOG_EMPTY_KEEP_LIST,
+    },
+    {
+        id = SystemListId.ALWAYS,
+        name  = L.ALWAYS_SELL_LIST_NAME,
+        empty = L.RULES_DIALOG_EMPTY_SELL_LIST,
     },
     {
         id = SystemListId.DESTROY,

@@ -143,5 +143,5 @@ function Addon:LoadAllBagItemLinks()
 end
 
 -- Placeholder for now
-function Addon:OnBagUpdate(event, bag)
-end
+--function Addon:OnBagUpdate(event, bag)
+--end
