@@ -177,7 +177,7 @@ CONFIG_DIALOG_MOVEDOWN_TOOLTIP = "Click to move the rule later in the evaluation
 CONFIG_DIALOG_LISTS_TAB = "Lists",
 CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, Sold, or Destroyed.|n"..
     "Drag items onto the list area to add it to that list.|n"..
-    "It is possible for an item to exist in multiple lists.",
+    "You can drag an item from one list to another.",
 CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Sell",
 CONFIG_DIALOG_LISTS_NEVER_LABEL = "Keep",
 ALWAYS_SELL_LIST_NAME = "Sell",
