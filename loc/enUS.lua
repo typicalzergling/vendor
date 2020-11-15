@@ -125,7 +125,7 @@ RULE_TOOLTIP_SOURCE = "Source: %s",
 RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",
 RULE_TOOLTIP_CUSTOM_RULE = "Custom Rule",
 RULE_TOOLTIP_SYSTEM_RULE = "Built-In",
-RULE_LIST_EMPTY = "There are no rules for this category. Create one!"
+RULE_LIST_EMPTY = "There are no rules for this category. Create one!",
 
 RULE_CMENU_ENABLE = "Enable",
 RULE_CMENU_DISABLE = "Disable",
