@@ -32,6 +32,7 @@ function SimpleList:Update()
 			frame:ResetAll()
 		end	
 		self:ShowEmptyText(true)
+		self:GetScrollChild():SetHeight(0)
 	else
 		local container = self:GetScrollChild();
 	

@@ -167,10 +167,17 @@ function RulesConfig:Refresh()
 
 	if (numHidden ~= 0) then
 		self.Counts:SetFormattedText("(%d/%d/%d)", numEnabled, numHidden, total)
-		self.ShowHidden:Enable()		
+		
+		local suffix
+		if (numHidden == 1) then
+			suffix = L.OPTIONS_RULES_ONE_HIDDEN
+		else
+			suffix = string.format(L.OPTIONS_RULES_N_HIDDEN, numHidden)
+		end
+		self.ShowHidden.label:SetText(L.OPTIONS_RULES_SHOW_HIDDEN .. suffix)
 	else
 		self.Counts:SetFormattedText("(%d/%d)", numEnabled, total)
-		self.ShowHidden:Disable()
+		self.ShowHidden.label:SetText(L.OPTIONS_RULES_SHOW_HIDDEN)
 	end
 
 	self.Rules:SetEmptyText(model.Empty)
