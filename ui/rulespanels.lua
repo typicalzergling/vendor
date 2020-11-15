@@ -17,122 +17,6 @@ local function setLocalizedText(frame, control, keyname)
     end
 end
 
-local UrlEditBox = {};
-function UrlEditBox.OnLoad(self)
-    Mixin(self, UrlEditBox);
-
-    -- Set the text to the url key
-    local key = self.UrlKey;
-    if (type(key) == "string") then
-        local text = L[key] or string.upper(key);
-        self.text = text;
-    else
-        self.text = "";
-    end
-
-    self:SetText(self.text);
-    self:SetBlinkSpeed(0);
-    self:SetAutoFocus(false);
-    self:SetScript("OnChar", self.RestoreText);
-    self:SetScript("OnTextChanged", self.RestoreText);
-    self:SetScript("OnEditFocusGained", self.OnFocus);
-    self:SetScript("OnEditFocusLost", self.OnBlur);
-end
-
-function UrlEditBox.RestoreText(self)
-    self:SetText(self.text or "");
-end
-
-function UrlEditBox.OnFocus(self)
-    self:HighlightText();
-end
-
-function UrlEditBox.OnBlur(self)
-    self:HighlightText(0,0);
-end
-
-
-local SFrame =
-{
-    OnLoad = function(self)
-        ScrollFrame_OnLoad(self);
-        local scrollbar = self.ScrollBar;
-        local up = scrollbar.ScrollUpButton;
-        local down = scrollbar.ScrollDownButton;
-        local offsetY = self.ScrollBarOffsetY or 0
-        local offsetX = self.ScrollBarOffsetX or 0;
-        local spacing = self.ScrollAreaPadding or 12;
-        
-        -- Adjust the buttons
-        up:SetPoint("BOTTOMLEFT", scrollbar, "TOPLEFT");
-        up:SetPoint("BOTTOMRIGHT", scrollbar, "TOPRIGHT");
-        down:SetPoint("TOPLEFT", scrollbar, "BOTTOMLEFT");
-        down:SetPoint("TOPRIGHT", scrollbar, "BOTTOMRIGHT");
-
-        -- Adjust the scrollbar
-        scrollbar:ClearAllPoints()
-        scrollbar:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -up:GetHeight());
-        scrollbar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, down:GetHeight());
-
-        -- If we have a background then move it.
-        if (self.ScrollbarBg) then
-            local bg = self.ScrollbarBg;
-            bg:ClearAllPoints();
-            bg:SetPoint("LEFT", up, "LEFT");
-            bg:SetPoint("RIGHT", down, "RIGHT");
-            bg:SetPoint("TOP", up, "CENTER");
-            bg:SetPoint("BOTTOM", down, "CENTER");
-            scrollbar.ScrollbarBg = bg;
-        end
-        
-
-        -- Replace show so we can adjust our contents
-        scrollbar.Show = function(self)
-                local frame = self:GetParent();
-                local spacing = frame.ScrollAreaPadding or 0;
-                local width = (frame:GetWidth() - (self:GetWidth() + spacing));
-                local child = frame:GetScrollChild();
-                child:ClearAllPoints();
-                child:SetPoint("TOPLEFT");
-                child:SetPoint("RIGHT", scrollbar, "LEFT", -spacing, 0);
-
-                if (self.ScrollbarBg) then
-                    self.ScrollbarBg:Show();
-                end
-                
-                getmetatable(self).__index.Show(self);
-            end
-
-        -- Replace hide so we can adjust our contents
-        scrollbar.Hide = function(self)
-                local frame = self:GetParent();
-                local width = frame:GetWidth();
-                local child = frame:GetScrollChild();
-
-                child:SetWidth(width);
-                if (self.ScrollbarBg) then
-                    self.ScrollbarBg:Hide();
-                end
-                
-                getmetatable(self).__index.Hide(self);
-            end
-            
-        self.scrollBarHideable = 1;
-        self.scrollbar = scrollbar;
-        scrollbar:Hide();
-    end,
-}
-
-local function invoke(frame, method, ...)
-    local fn = frame[method];
-    if (type(fn) == "function") then
-        local result, msg = xpcall(fn, CallErrorHandler, frame, ...);
-        if (not result) then
-            Addon:Debug("rulesdialog", "Failed to invoke '%s': %s%s|r", method, RED_FONT_COLOR_CODE, msg);
-        end
-    end
-end
-
 -- Loads in initializes a new rules panel (called from the XML's onload)
 function RulesPanel.onInit(self)
     -- Mixin the implementation of the panel.
@@ -160,50 +44,13 @@ function RulesPanel.onInit(self)
     end
 
     -- Load the panel and attach an onevent in case the subclass registers.
-    self:SetScript("OnEvent", function(...) invoke(self, "OnEvent", ...) end);
-    self:SetScript("OnShow", function(...) invoke(self, "OnShow", ...) end);
-    self:SetScript("OnHide", function(...) invoke(self, "OnHide", ...) end);
+    self:SetScript("OnEvent", function(...) Addon.invoke(self, "OnEvent", ...) end);
+    self:SetScript("OnShow", function(...) Addon.invoke(self, "OnShow", ...) end);
+    self:SetScript("OnHide", function(...) Addon.invoke(self, "OnHide", ...) end);
     invoke(self, "OnLoad");
 end
 
 
---local VENDOR_URL = "https://bit.ly/3kcOKOT";
-local VENDOR_URL = "https://www.curseforge.com/wow/addons/vendor";
-local VENDOR_TUTORIAL = "https://youtu.be/j93Orw3vPKQ";
-
-local HelpPanel = {};
-function HelpPanel:OnLoad()
-    --self.ReleaseVersion.html = self.ReleaseNotesText:GetScrollChild();
-    --UIDropDownMenu_SetWidth(self.ReleaseVersion, self.Url:GetWidth() - 12);
-    --UIDropDownMenu_Initialize(self.ReleaseVersion, HelpPanel.CreateVersionList);
-    --UIDropDownMenu_JustifyText(self.ReleaseVersion, "LEFT");
-
-    self:CreateVersionList()
-
-    self.Releases.OnSelection = function(_, index) 
-        local notes = Addon.ReleaseNotes[index]
-        self.ReleaseNotesText:SetHtml(notes.html)
-    end
-end
-
-function HelpPanel:CreateVersionList()
-    local releases = {}
-    for index, notes in ipairs(Addon.ReleaseNotes) do
-        releases[index] = string.format("%s (%s)", notes.release, notes.on)
-        print("---> release", index, releases[index])
-    end
-    print(self.Releases)
-    self.Releases:SetItems(releases)
-end
-
-function HelpPanel:OnShow()
-    --local notes = Addon.ReleaseNotes[1];
-    --UIDropDownMenu_SetText(self.ReleaseVersion, string.format("%s (%s)", notes.release, notes.on));
-    --self.ReleaseNotesText:SetHtml(notes.html);
-end
-
-function HelpPanel:OnHide()
-end
 
 --[[ Lists Panel ]]
 
@@ -211,7 +58,9 @@ local ListType = Addon.ListType;
 local ListsItem = {};
 
 function ListsItem:OnCreated()
-    self:SetScript("OnClick", self.OnClick);
+    self:SetScript("OnClick", self.OnClick)
+    self:SetScript("OnEnter", self.OnEnter)
+    self:SetScript("OnLeave", self.OnLeave)
 end
 
 function ListsItem:OnModelChanged(model)
@@ -240,6 +89,23 @@ function ListsItem:OnClick()
     self:GetParent():Select(self:GetModel());
 end
 
+function ListsItem:OnEnter()
+    local model = assert(self:GetModel(), "Item should have a valid model")
+    if ((type(model.tooltip) == "string") and (string.len(model.tooltip) ~= 0)) then
+        GameTooltip:SetOwner(self, "ANCHOR_NONE")
+        GameTooltip:AddLine(model.name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+        GameTooltip:AddLine(model.tooltip, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
+        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+        GameTooltip:Show()
+    end
+end
+
+function ListsItem:OnLeave()
+    if (GameTooltip:GetOwner() == self) then
+        GameTooltip:Hide()
+    end
+end
+
 local SystemListId = 
 {
     NEVER = "system:never-sell",
@@ -253,16 +119,19 @@ local SYSTEM_LISTS =
         id = SystemListId.NEVER,
         name  = L.NEVER_SELL_LIST_NAME,
         empty = L.RULES_DIALOG_EMPTY_KEEP_LIST,
+        tooltip = L.NEVER_SELL_LIST_TOOLTIP,
     },
     {
         id = SystemListId.ALWAYS,
         name  = L.ALWAYS_SELL_LIST_NAME,
         empty = L.RULES_DIALOG_EMPTY_SELL_LIST,
+        tooltip = L.ALWAYS_SELL_LIST_TOOLTIP,
     },
     {
         id = SystemListId.DESTROY,
         name  = L.ALWAYS_DESTROY_LIST_NAME,
         empty = L.RULES_DIALOG_EMPTY_DELETE_LIST,
+        tooltip = L.ALWAYS_DESTROY_LIST_TOOLTIP,
     }
 };
 
@@ -371,95 +240,3 @@ end
 Addon.RulesPanels.HelpPanel = HelpPanel;
 Addon.RulesPanels.ListsPanel = ListsPanel;
 Addon.Public.RulesPanel = RulesPanel;
-
-local DropMenu = {}
-
-function DropMenu:OnLoad()
-    self.expanded = false
-    self:OnBackdropLoaded()
-    self:SetScript("OnMouseDown", function(_, button)
-        if (not self.expanded) then
-            self.expanded = true
-            self:OnExpand()
-        else
-            self.expanded = false
-            self:OnCollapse()
-        end
-    end)
-    self:SetScript("OnShow", function()
-        if (self.items) then
-            self:OnItemSelected(1)
-        end
-    end)
-end
-
-function DropMenu:SetItems(items)
-    assert(table.getn(items) >= 1, "There are no items in the drop-list")
-    self.items = items or {}
-    self:OnItemSelected(1)
-end
-
-function DropMenu:OnItemSelected(value)
-    if (self.selected ~= value and self.items) then
-        local text = self.items[value]
-        self.Current:SetText(text)
-        Addon.invoke(self, "OnSelection", value)
-    end
-
-    if (self.expanded) then
-        self.Expand:Show()
-        self.Collapse:Hide()
-        self.expanded = false
-    end
-end
-
-local function initalizeMenu(owner, width, frame, level, items)
-    assert(level == 1)
-    if (not items) then
-        return
-    end
-    
-    for value, text in pairs(items) do
-        UIDropDownMenu_AddButton({
-            isNotRadio = true,
-            notCheckable = true,
-            text = text,
-            minWidth = width,
-            func = function()
-                owner:OnItemSelected(value)
-            end
-        }, level)
-    end
-end
-
-function DropMenu:OnExpand()
-    if (not self.menu) then
-        self.menu = CreateFrame("Frame", "xxx", UIParent, "UIDropDownMenuTemplate")
-        UIDropDownMenu_Initialize(self.menu, function(...) initalizeMenu(self, self.Current:GetWidth(), ...) end, "MENU", 1, {
-            "Item 1",
-            "Item 2",
-            "Item 3",
-        }
-        )
-        --self.menu:ClearAllPoints()
-        --self.menu:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
-        --self.menu:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
-        UIDropDownMenu_SetAnchor(self.menu, 0, -1, "TOPLEFT", self, "BOTTOMLEFT")
-    end
-    --self.menu:Show()
-    ToggleDropDownMenu(1, nil, self.menu, nil, 0, 0, self.items)
-    self.Expand:Hide()
-    self.Collapse:Show()
-end
-
-function DropMenu:OnCollapse()
-    if (self.menu) then
-        ToggleDropDownMenu(1, nil, self.menu)
-    end
-    self.Expand:Show()
-    self.Collapse:Hide()
-end
-
-
-Addon.Controls = Addon.Controls or {}
-Addon.Controls.DropMenu = DropMenu
