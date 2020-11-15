@@ -21,11 +21,11 @@ end
 
 -- Called by keybinds to direct-add items to the blocklists
 function Addon:AddTooltipItemToAlwaysSellList()
-    self:AddTooltipItemToSellList(self.c_AlwaysSellList)
+    self:AddTooltipItemToSellList(self.ListType.SELL)
 end
 
 function Addon:AddTooltipItemToNeverSellList()
-    self:AddTooltipItemToSellList(self.c_NeverSellList)
+    self:AddTooltipItemToSellList(self.ListType.KEEP)
 end
 
 -- Hooks for item tooltips

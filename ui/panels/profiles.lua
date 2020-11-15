@@ -94,15 +94,6 @@ function ProfileConfig:UpdateState()
 		self.Copy:Disable();
 	end
 
-    -- Create is enable if we have a valid profile name.
-    --[[
-	if (text and (string.len(text) ~= 0)) then
-		self.Create:Enable();
-	else
-		self.Create:Disable();
-    end
-    ]]
-
 	-- The set buttonis only enabled if it will do something
 	if (selected and not selected:IsActive()) then
 		self.Set:Enable();
@@ -169,7 +160,6 @@ end
    | Called when the view is displayed, hookup our callbacks.
    ==========================================================================]]
 function ProfileConfig:OnShow()
-	self:Refresh();
 	self.Name:RegisterCallback("OnChange", self.UpdateState, self);
 	local profileManager = Addon:GetProfileManager()
 	profileManager:RegisterCallback("OnProfileChanged", self.Refresh, self);
@@ -177,6 +167,7 @@ function ProfileConfig:OnShow()
 
     -- Default name to 'Player - Realm'
     self.Name:SetText(string.format("%s - %s", UnitFullName("player")))
+    self:RefreshAndUpdateState();
 end
 
 --[[===========================================================================

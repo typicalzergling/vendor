@@ -37,6 +37,9 @@ function ProfileManager:GetProfile()
         end
     end
 
+    -- If this is a new profile, create it and then let addon decide how
+    -- to populate it. If the addon returns a profile, use that one as an
+    -- override.
     if (not profile) then
         profile = CreateProfile();
         local override = Addon.invoke(Addon, "OnCreateDefaultProfile", profile);
@@ -45,7 +48,7 @@ function ProfileManager:GetProfile()
             profile = override;
         end
         activeProfileVariable:Replace(profile:GetId());
-        Addon:Debug("profile", "Created default profile '%s'", profile:GetId());
+        Addon:Debug("profile", "Created new default profile '%s'", profile:GetId());
     else
         Addon.invoke(Addon, "OnCheckProfileMigration", profile);
     end
@@ -129,6 +132,23 @@ function ProfileManager:CopyProfile(profile, newProfileName)
     self:TriggerEvent("OnProfileCreated", profile);
     return profile;
 end
+
+--[[===========================================================================
+   | Copies all profile data from one profile onto another.
+   ==========================================================================]]
+function ProfileManager:OverrideProfile(profileFrom, profileTo)
+    local profileIdFrom = getProfileId(profileFrom)
+    local data = profilesVariable:Get(profileIdFrom)
+    if (not data) then
+        error("Unable to locate profile to copy data from.")
+        return nil;
+    end
+
+    data.id = profileTo:GetId()
+    profilesVariable:Set(profileTo:GetId(), data)
+    ddon:Debug("profile", "Overrode profile '%s' with '%s'", profileTo:GetId(), profileIdFrom);
+end
+
 
 --[[===========================================================================
    | Deletes the specified profile.	

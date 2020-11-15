@@ -2,8 +2,8 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
 -- Before Profile Constants
-local SELL_LIST = Addon.c_Config_SellAlways;
-local KEEP_LIST = Addon.c_Config_SellNever;
+local SELL_LIST = "sell_always"     -- Legacy Sell List key, needed for migration
+local KEEP_LIST = "sell_never"      -- Legacy Keep list key, needed for migration
 local KEEP_RULES = "keep";
 local SELL_RULES = "sell";
 local DESTROY_RULES ="destroy";
@@ -146,60 +146,81 @@ function Addon:FindDefaultProfile()
 end
 
 --[[===========================================================================
-   | Handle creating a new default profile (either by migration or new)
+   | Handle creating a new profile (either by migration or new)
    ==========================================================================]]
 function Addon:OnCreateDefaultProfile(profile)
-	if (not Vendor_Settings and not Vendor_RulesConfig) then
-		local defaultProfile = Addon:FindDefaultProfile();
-        if (defaultProfile) then
-            Addon:Debug("profile", "Using existing Vendor Default Profile");
-			return defaultProfile;
-		else
-			Addon:Debug("profile", "Initialized new default vendor profile");
-			self:OnInitializeProfile(profile);
-			profile:SetName(L.DEFAULT_PROFILE_NAME);
-			profile:SetValue("profile:default", true);
-		end
-	else
-		-- Migrate settings variable.
+
+    --[[ Ideally we create the Default Profile one time, and then for each character process the config. However, its possible
+        all data gets deleted, and therefore there is no default profile and we need to re-create it and use it for this
+        character. Ultimately three outcomes from this call:
+
+        1) Default Profile is Created and used.
+        2) Default Profile is found and used.
+        3) Default Profile is found, copied and a new profile created and used with user-specific rules overrides.
+
+        Scenarios:
+        1) No Default Profile -> Create it
+            1a) If no Vendor_Settings exists, use defaults, we're done.
+            1b) If Vendor_Settings exists, import when creating the Default Profile.
+
+        2) Default Profile Exists
+            2a) No Vendor_RulesConfig data -> Just Use default Profile as-is.
+            2b) Vendor_RulesConfig exists (which is per-character) -> Copy Default Profile, then apply RulesConfig overrides.
+
+        Returning a profile from this function tells the caller to override whatever profile they made and use the one
+        we return, otherwise we make inline changes to the profile.
+    ]]
+    -- First see if we already have a Default Profile.
+    local defaultProfile = Addon:FindDefaultProfile();
+
+    -- If no default profile, create one.
+    if not defaultProfile then
+        defaultProfile = Addon:GetProfileManager():CreateProfile(L.DEFAULT_PROFILE_NAME)
+        defaultProfile:SetValue("profile:default", true);
+
+        -- Override settings with what the user previously had.
 		if (Vendor_Settings) then
 			for setting, value in pairs(Vendor_Settings) do
 				if ((setting ~= "version") and (setting ~= "interfaceversion")) then
 					if (table.hasKey(Addon.DefaultConfig.Settings, setting)) then
-						profile:SetValue(setting, value);
+						defaultProfile:SetValue(setting, value);
 					end
 				end
 			end
 
-			profile:SetValue(PROFILE_KEEP_LIST, Vendor_Settings[KEEP_LIST] or {});
-			profile:SetValue(PROFILE_SELL_LIST, Vendor_Settings[SELL_LIST] or {});
-			profile:SetValue(PROFILE_DESTROY_LIST, {});
-		end
-
-		-- Migrate rule configuation varible.
-		if (Vendor_RulesConfig) then
-			profile:SetValue(PROFILE_KEEP_RULES, Vendor_RulesConfig.keep or {});
-			profile:SetValue(PROFILE_SELL_RULES, Vendor_RulesConfig.sell or {});
-			profile:SetValue(PROFILE_DESTROY_RULES, {});
-		else
-			profile:SetValue(PROFILE_KEEP_RULES, Addon.DefaultConfig.Rules.keep or {});
-			profile:SetValue(PROFILE_SELL_RULES, Addon.DefaultConfig.Rules.sell or {});
-			profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.destroy or {});
-		end
-
-		Addon:Debug("profile", "Migrated existing vendor settings");
+            -- These were global and are now per-profile.
+			defaultProfile:SetValue(PROFILE_KEEP_LIST, Vendor_Settings[KEEP_LIST] or {});
+			defaultProfile:SetValue(PROFILE_SELL_LIST, Vendor_Settings[SELL_LIST] or {});
+			defaultProfile:SetValue(PROFILE_DESTROY_LIST, {});
+        end
+        Addon:Debug("profile", "Created new default profile.");
     end
 
-    profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
-	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
+    -- If no per-user settings then the default profile is all that is needed.
+    if not Vendor_RulesConfig then
+        Addon:Debug("profile", "Found existing Vendor Default Profile");
+        return defaultProfile
+    end
+
+    -- Copy the Default Profile, and then override with per-user settings.
+    local defaultProfileCopy = Addon:GetProfileManager():CopyProfile(defaultProfile, string.format("%s - %s", UnitFullName("player")))
+
+    -- Now overwrite the rules with this character's old rules:
+    defaultProfileCopy:SetValue(PROFILE_KEEP_RULES, Vendor_RulesConfig.keep or {});
+    defaultProfileCopy:SetValue(PROFILE_SELL_RULES, Vendor_RulesConfig.sell or {});
+    defaultProfileCopy:SetValue(PROFILE_DESTROY_RULES, {});
+
+    -- Give new name to signify this player's profile is specific.
+    defaultProfileCopy:SetName(string.format("%s - %s", UnitFullName("player")))
+
+    Addon:Debug("profile", "Used default profile settings with per-user rules config");
+    return defaultProfileCopy
 end
 
 --[[===========================================================================
    | Handle initializing a new profile, populating it with the default config.
    ==========================================================================]]
 function Addon:OnInitializeProfile(profile)
-
-    profile:SetName(string.format("%s - %s", UnitFullName("player")));
 
 	-- Set the version
 	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);

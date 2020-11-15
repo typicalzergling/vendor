@@ -9,16 +9,12 @@ Addon.c_APIMethodColorCode = YELLOW_FONT_COLOR_CODE
 Addon.c_ThrottleTime = .15
 
 -- Addon Constants
-Addon.c_AlwaysSellList = "always"
-Addon.c_NeverSellList = "never"
 Addon.c_BuybackLimit = 12
 Addon.c_DeleteThottle = 3
 Addon.c_ItemSellerThreadName = "ItemSeller"
 Addon.c_ItemDeleterThreadName = "ItemDeleter"
 
 -- Config Constants
-Addon.c_Config_SellNever = "sell_never"        -- Needed for Migration
-Addon.c_Config_SellAlways = "sell_always"      -- Needed for Migration
 Addon.c_Config_AutoSell = "autosell"
 Addon.c_Config_Tooltip = "tooltip_basic"
 Addon.c_Config_Tooltip_Rule = "tooltip_addrule"
@@ -31,10 +27,10 @@ Addon.c_Config_GuildRepair = "guildrepair"
 
 -- Rule Types
 Addon.RuleType = {
-    SELL = "sell",
-    KEEP = "keep",
-    DESTROY  = "destroy",
-    HIDDEN = "-hidden-",
+    SELL = "Sell",
+    KEEP = "Keep",
+    DESTROY  = "Destroy",
+    HIDDEN = "-Hidden-",
 };
 
 Addon.ListType = {
