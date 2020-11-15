@@ -105,7 +105,7 @@ OPTIONS_SETTINGNAME_CYCLE_RATE = "Cycle Rate",
 OPTIONS_SETTINGDESC_CYCLE_RATE = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 
 OPTIONS_PROFILE_TITLE = "Profiles",
-OPTIONS_PROFiLE_HELPTEXT = "All rules settings, addon settings, and Sell / Keep / Destroy list contents are stored per-profile. "..
+OPTIONS_PROFILE_HELPTEXT = "All rules settings, addon settings, and Sell / Keep / Destroy list contents are stored per-profile. "..
     "Profiles are stored globally across all servers and characters, and selected per-character.",
 OPTIONS_PROFILE_COPY = "Copy",
 OPTIONS_PROFILE_CREATE = "Create",
@@ -223,7 +223,9 @@ RULES_DIALOG_EMPTY_KEEP_LIST = "There are no rules in your keep list",
 RULES_DIALOG_EMPTY_DELETE_LIST = "There are no rules in your delete list",
 
 RULES_DIALOG_RULES_TAB = "Rules",
-RULES_TAB_HELPTEXT = "<TBD>",
+RULES_TAB_HELPTEXT = "Rules are processed in the following order: Keep -> Sell -> Destroy|n"..
+    "The first match found stops further evaluation.|n"..
+    "Items in Keep/Sell/Destroy lists supercede rules.",
 
 -- Sell Rules
 SYSRULE_SELL_ALWAYSSELL = "Items in Always Sell List",
@@ -292,13 +294,13 @@ EDITRULE_HELP_TAB_NAME = "Help",
 EDITRULE_MATCHES_TAB_NAME = "Matches",
 EDITRULE_MATCHES_TAB_TEXT = "Below you can see all of the items currently in your inventory which would be matched by this rule.",
 EDITRULE_ITEMINFO_TAB_NAME = "Item Info",
-EDITRULE_ITEMINFO_TAB_TEXT = "Sam please do something with this space or reclaim it for the properties tab.",
+EDITRULE_ITEMINFO_TAB_TEXT = "<Place Itemlink Here>",
 EDITRULE_ITEM_PROPERTIES_EMPTY = "Drag an item into this panel o view the properties of that item. Properties with quotes (\") around them are strings, and the quotes are required for matching.",
 EDITRULE_SELLRULE_LABEL = "Sell Rule",
-EDITRULE_SELLRULE_TEXT = "A sell rule determines if Vendor will sell the item when the rule evaluates to true",
+EDITRULE_SELLRULE_TEXT = "A sell rule determines if Vendor will sell the item when the rule evaluates to true.",
 EDITRULE_KEEPRULE_LABEL = "Keep Rule",
-EDITRULE_KEEPRULE_TEXT = "A keep rule determines if Vendor will keep the item when the rule evaluates to true",
-EDITRULE_DELETERULE_TEXT = "A destroy rule allows you to matches items which Vendor will destory if they can bot be sold",
+EDITRULE_KEEPRULE_TEXT = "A keep rule determines if Vendor will keep the item when the rule evaluates to true.",
+EDITRULE_DELETERULE_TEXT = "A destroy rule allows you to matches items which Vendor will destroy when the rule evaluates to true.",
 EDITRULE_DELETERULE_LABEL = "Destroy Rule",
 
 EDITRULE_UNHEALTHY_RULE = "Unhealthy Rule",
