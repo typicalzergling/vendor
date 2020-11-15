@@ -47,7 +47,7 @@
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString inherits="GameFontHighlight" parentKey="HelpText" justifyH="LEFT" justifyV="TOP">
-					<Size x="1" y="36"/>
+					<Size x="1" y="48"/>
 					<KeyValues>
 						<KeyValue key="LocKey" value="OPTIONS_PROIFLE_HELPTEXT" type="string"/>					
 					</KeyValues>

@@ -6,10 +6,8 @@ local function scrollbarHide(self)
 	local parent = control:GetParent();
 	local offset = control.containerPadding or  0;
 
-	control:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -offset, offset);
 	control.Background:Hide();
 	control:GetScrollChild():SetWidth(control:GetWidth());
-	--control.Content:SetWidth(control:GetWidth());
 	getmetatable(self).__index.Hide(self);
 end
 
@@ -18,10 +16,8 @@ local function scrollbarShow(self)
 	local parent = control:GetParent();
 	local offset = control.containerPadding or  0;
 
-	control:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -(self:GetWidth() + (2 * offset)), offset);
 	control.Background:Show();
-	control:GetScrollChild():SetWidth(control:GetWidth());
-	--control.Content:SetWidth(control:GetWidth());
+	control:GetScrollChild():SetWidth(control:GetWidth() - (self:GetWidth() + 6));
 	getmetatable(self).__index.Show(self);
 end
 
@@ -37,8 +33,8 @@ local function setupScrollbar(self)
 	local down = self.ScrollDownButton;
 
 	self:ClearAllPoints();
-	self:SetPoint("TOPLEFT", control, "TOPRIGHT", offset + adjustX, -(up:GetHeight() - adjustY + 1));
-	self:SetPoint("BOTTOMLEFT", control, "BOTTOMRIGHT", offset + adjustX, down:GetHeight() - adjustY - 1);
+	self:SetPoint("TOPRIGHT", control, "TOPRIGHT", 0, -(up:GetHeight() - 6));
+	self:SetPoint("BOTTOMRIGHT", control, "BOTTOMRIGHT", 0, down:GetHeight() - 6)
 
 	up:ClearAllPoints();
 	up:SetPoint("BOTTOMLEFT", self, "TOPLEFT");
@@ -49,6 +45,12 @@ local function setupScrollbar(self)
 	down:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT");
 
 	local bg = control.Background;
+	if (not bg) then
+		bg = self:CreateTexture(nil, "BACKGROUND")
+		bg:SetColorTexture(0.20, 0.20, 0.20, 0.3)
+		control.Background = bg
+	end
+
 	bg:ClearAllPoints();
 	bg:SetPoint("LEFT", up, "LEFT");
 	bg:SetPoint("RIGHT", down, "RIGHT");
@@ -59,22 +61,19 @@ local function setupScrollbar(self)
 	self.Show = scrollbarShow;
 	self.Hide = scrollbarHide;
 	
-	control.scrollBarHideable = 1;	
+	--control.scrollBarHideable = 1;	
 	self:Hide();
 end
 
 local function finalizeScrollbar(self)
 	local control = self:GetParent();
-
-	self.ChildWidth = control:GetWidth() - self:GetWidth() - 
-		(2 * (control.containerPadding or  0));
-	control:GetScrollChild():SetWidth(self.ChildWidth);
+	self.ChildWidth = control:GetWidth() - self:GetWidth() - 6
+	control:GetScrollChild():SetWidth(self.ChildWidth)
 end
 
 function HtmlView:OnLoad()
-	ScrollFrame_OnLoad(self.Scroll);
-	setupScrollbar(self.Scroll.ScrollBar);
-	self.Bg:SetAlpha(0.6);
+	ScrollFrame_OnLoad(self);
+	setupScrollbar(self.ScrollBar);
 
 	self:RegisterEvent("ADDON_LOADED");
 	self:SetScript("OnEvent", 
@@ -83,13 +82,13 @@ function HtmlView:OnLoad()
 				return;
 			end
 
-			finalizeScrollbar(self.Scroll.ScrollBar);
+			finalizeScrollbar(self.ScrollBar);
 			self:UnregisterEvent(event);
 		end);
 end
 
 function HtmlView:SetHtml(html)
-	self.Scroll:GetScrollChild():SetText(html or "");
+	self:GetScrollChild():SetText(html or "");
 end
 
 Addon.Controls = Addon.Controls or {};

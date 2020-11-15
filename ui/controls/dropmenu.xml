@@ -1,0 +1,33 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="controls/dropmenu.lua"/>
+
+	<Frame virtual="true" name="Vendor_DropMenu" inherits="Vendor_BorderFrame">
+		<Size x="100" y="26"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Current" inherits="GameFontHighlight" text ="./.././" justifyV="MIDDLE" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="-5"/>
+						<Anchor point="BOTTOMRIGHT" x="-37" y="5"/>
+					</Anchors>
+				</FontString>
+				<Texture file="Interface\BUTTONS\Arrow-Up-Down" parentKey="Collapse" hidden="true">
+					<Size x="16" y="16"/>
+					<Anchors>
+					<Anchor point="TOPRIGHT" x="-7" y="-2"/>
+					</Anchors>
+				</Texture>
+				<Texture file="Interface\BUTTONS\Arrow-Down-Down" parentKey="Expand" hidden="false">
+					<Size x="16" y="16"/>
+					<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-7" y="2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self, "Controls", "DropMenu")</OnLoad>
+		</Scripts>
+	</Frame>
+
+</Ui>

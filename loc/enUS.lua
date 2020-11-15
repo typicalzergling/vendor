@@ -10,6 +10,9 @@ ADDON_NAME = "Vendor",
 ADDON_LOADED = "is loaded. Type '/vendor help' for usage.",
 VENDOR_URL = "https://www.curseforge.com/wow/addons/vendor",
 VENDOR_TUTORIAL = "https://youtu.be/j93Orw3vPKQ",
+ABOUT_PROJECT_LABEL = "Project:",
+ABOUT_TUTORIAL_LABEL = "Tutorial:",
+ABOUT_RELEASES_LABEL = "Releases:",
 
 -- Rule types
 RULE_TYPE_KEEP_NAME = "Keep",
