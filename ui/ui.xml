@@ -19,6 +19,7 @@
     <Include file="panels/profiles.xml"/>
     <Include file="panels/rules.xml"/>
     <Include file="panels/about.xml"/>
+    <Include file="panels/lists.xml"/>
 
     <Include file="rulesdialog.xml"/>
     <Include file="editruledialog.xml"/>

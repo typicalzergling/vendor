@@ -4,8 +4,7 @@ Bugs:
 Work Items:
 ===============================================================================
 - Reset in options, deletes all profiles with a a confirmation
-- Open rules dialog to a specific tab
-    - Update Titan Plugin when clicking on the profiles flyout menu, opens the profiles tab directly
+- Update Titan Plugin when clicking on the profiles flyout menu, opens the profiles tab directly
 - Move create to below list on rule page.
 - Fix localization of the create buttons
 - Documentation rending get wonky
