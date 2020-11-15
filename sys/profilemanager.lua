@@ -96,7 +96,11 @@ end
    ==========================================================================]]
 function ProfileManager:CreateProfile(profileName)
     local profile = CreateProfile();
-    profile:SetName(profileName);
+    if profileName and profileName ~= "" then
+        profile:SetName(profileName);
+    else
+        profile:SetName(profile:GetId());
+    end
 
     Addon.invoke(Addon, "OnInitializeProfile", profile);
     Addon:Debug("profile", "Created new profile '%s'", profile:GetId());
@@ -120,6 +124,7 @@ function ProfileManager:CopyProfile(profile, newProfileName)
     data.id = profile:GetId();
     profilesVariable:Set(profile:GetId(), data);
     profile:SetName(newProfileName);
+    Addon.invoke(Addon, "OnCopyProfile", profile)
     Addon:Debug("profile", "Copied profile '%s' to '%s'", profileId, data.id);
     self:TriggerEvent("OnProfileCreated", profile);
     return profile;
@@ -147,11 +152,19 @@ end
 function ProfileManager:EnumerateProfiles()
     -- Create an array of the profiles
     local results = {};
+
+    -- Check for active profile. We may not have one yet.
+    -- That's OK, we don't need one to enumerate
+    local activeId = ""
+    if self.activeProfile then
+        activeId = self.activeProfile:GetId()
+    end
+
     local active = self.activeProfile;
 
     profilesVariable:ForEach(function(profile, id)
             local profile = CreateProfile(id);
-            profile:SetActive(id == active:GetId());
+            profile:SetActive(id == activeId);
             table.insert(results, profile);
         end);
 

@@ -94,12 +94,14 @@ function ProfileConfig:UpdateState()
 		self.Copy:Disable();
 	end
 
-	-- Create is enable if we have a valid profile name.
+    -- Create is enable if we have a valid profile name.
+    --[[
 	if (text and (string.len(text) ~= 0)) then
 		self.Create:Enable();
 	else
 		self.Create:Disable();
-	end
+    end
+    ]]
 
 	-- The set buttonis only enabled if it will do something
 	if (selected and not selected:IsActive()) then
@@ -158,6 +160,11 @@ function ProfileConfig:Refresh()
 	end
 end
 
+function ProfileConfig:RefreshAndUpdateState()
+    self:Refresh()
+    self:UpdateState()
+end
+
 --[[===========================================================================
    | Called when the view is displayed, hookup our callbacks.
    ==========================================================================]]
@@ -166,7 +173,10 @@ function ProfileConfig:OnShow()
 	self.Name:RegisterCallback("OnChange", self.UpdateState, self);
 	local profileManager = Addon:GetProfileManager()
 	profileManager:RegisterCallback("OnProfileChanged", self.Refresh, self);
-	profileManager:RegisterCallback("OnProfileDeleted", self.Refresh, self);
+    profileManager:RegisterCallback("OnProfileDeleted", self.RefreshAndUpdateState, self);
+
+    -- Default name to 'Player - Realm'
+    self.Name:SetText(string.format("%s - %s", UnitFullName("player")))
 end
 
 --[[===========================================================================
@@ -188,21 +198,28 @@ function ProfileConfig:OnCreateProfile(copy)
 	local text = self.Name:GetText();
 	local selected = self.Profiles:GetSelected();
 
-	if (copy and not text or (string.len(text) == 0)) then
-		text = string.format(L.OPTIONS_PROFILE_DEFAULT_COPY_NAME, selected:GetName());
-	else
-		local duplicate = false;
-		for _, profile in profileManager:EnumerateProfiles() do
-			if (string.lower(profile:GetName()) == string.lower(text)) then
-				duplicate = true;
-			end
-		end
+    -- If copying, and no text, use default copy name.
+	if (copy and (not text or (string.len(text) == 0))) then
+        text = string.format(L.OPTIONS_PROFILE_DEFAULT_COPY_NAME, selected:GetName());
+    end
 
-		if (duplicate) then
-			StaticPopup_Show("VENDOR_CONFIG_PROFILE_EXISTS", text)
-			return;
-		end
-	end
+    -- Create button no copy defaults to "Playername - Realm"
+    if (not copy and (not text or (string.len(text) == 0))) then
+        text = string.format("%s - %s", UnitFullName("player"))
+    end
+
+    -- Check for duplicate names.
+    local duplicate = false;
+    for _, profile in profileManager:EnumerateProfiles() do
+        if (string.lower(profile:GetName()) == string.lower(text)) then
+            duplicate = true;
+        end
+    end
+
+    if (duplicate) then
+        StaticPopup_Show("VENDOR_CONFIG_PROFILE_EXISTS", text)
+        return;
+    end
 
 	local profile = nil;
 	if (copy) then
@@ -222,7 +239,7 @@ end
 function ProfileConfig:OnDeleteProfile()
 	local selected = assert(self.Profiles:GetSelected());
 	local dialog = StaticPopup_Show("VENDOR_CONFIG_PROFILE_DELETE", selected:GetName());
-	dialog.data = selected:GetId();
+    dialog.data = selected:GetId();
 end
 
 --[[===========================================================================
@@ -242,7 +259,7 @@ StaticPopupDialogs["VENDOR_CONFIG_PROFILE_DELETE"] = {
     button2 = NO,
 	OnAccept = function(self, profileId)
 		local profileManager = Addon:GetProfileManager();
-		profileManager:DeleteProfile(profileId);
+        profileManager:DeleteProfile(profileId);
     end,
     timeout = 0,
     hideOnEscape = true,

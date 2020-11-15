@@ -1,5 +1,5 @@
-local AddonName, Addon = ...;
-local L = Addon:GetLocale();
+local AddonName, Addon = ...
+local L = Addon:GetLocale()
 
 -- Before Profile Constants
 local SELL_LIST = Addon.c_Config_SellAlways;
@@ -151,12 +151,13 @@ end
 function Addon:OnCreateDefaultProfile(profile)
 	if (not Vendor_Settings and not Vendor_RulesConfig) then
 		local defaultProfile = Addon:FindDefaultProfile();
-		if (defaultProfile) then
+        if (defaultProfile) then
+            Addon:Debug("profile", "Using existing Vendor Default Profile");
 			return defaultProfile;
 		else
 			Addon:Debug("profile", "Initialized new default vendor profile");
 			self:OnInitializeProfile(profile);
-			profile:SetName(L"DEFAULT_PROFILE_NAME");
+			profile:SetName(L.DEFAULT_PROFILE_NAME);
 			profile:SetValue("profile:default", true);
 		end
 	else
@@ -187,17 +188,19 @@ function Addon:OnCreateDefaultProfile(profile)
 		end
 
 		Addon:Debug("profile", "Migrated existing vendor settings");
-	end
+    end
 
-	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
+    profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
 	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
-	profile:SetName(string.format("%s - %s", UnitFullName("player")));
 end
 
 --[[===========================================================================
    | Handle initializing a new profile, populating it with the default config.
    ==========================================================================]]
 function Addon:OnInitializeProfile(profile)
+
+    profile:SetName(string.format("%s - %s", UnitFullName("player")));
+
 	-- Set the version
 	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
 	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
@@ -218,6 +221,15 @@ function Addon:OnInitializeProfile(profile)
 			profile:SetValue(name, value);
 		end);
 end
+
+--[[===========================================================================
+   | Handle copying a profile
+   ==========================================================================]]
+function Addon:OnCopyProfile(profile)
+    -- Just in case we are copying the default profile, it does not become a default profile.
+    profile:SetValue("profile:default", false);
+end
+
 
 function Addon:OnCheckProfileMigration(profile)
 	-- Current a no-op
