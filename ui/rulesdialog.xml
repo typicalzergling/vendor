@@ -205,14 +205,14 @@
 				</Scripts>
 			</Frame>
 
-			<Frame inherits="Vendor_AboutPanel,Vendor_TabPanel_Base" parentKey="helpPanel" id="4" hidden="true">
+			<Frame inherits="Vendor_AboutPanel,Vendor_TabPanel_Base" parentKey="helpPanel" id="3" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
 				</Anchors>
 			</Frame>
 
-			<Frame parentKey="ProfilesPanel" id="3" inherits="Vendor_ProfilesPanel,Vendor_TabPanel_Base" hidden="true">
+			<Frame parentKey="ProfilesPanel" id="4" inherits="Vendor_ProfilesPanel,Vendor_TabPanel_Base" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
@@ -247,7 +247,7 @@
 			</Button>
 
 			<!-- Help Tab -->
-			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="HelpTab" enabled="false">
+			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="HelpTab" enabled="false">
 				<KeyValues>
 					<KeyValue key="LocKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
 				</KeyValues>
@@ -257,7 +257,7 @@
 			</Button>
 
 			<!-- Profiles -->
-			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="ProfileTab">
+			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ProfileTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
 				</KeyValues>
