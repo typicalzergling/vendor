@@ -79,7 +79,7 @@ StaticPopupDialogs["VENDOR_CONFIRM_DELETE_RULE"] = {
 };
 
 function EditRuleDialog:OnLoad()
-    Mixin(self, Addon.TabFrameMixin);
+    Mixin(self, Addon.Controls.TabFrameMixin);
     self:InitializeTabs(self.Tabs, self.infoPanels);
     self:SetClampedToScreen(true)
 
