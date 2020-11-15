@@ -205,7 +205,7 @@
 				</Scripts>
 			</Frame>
 
-			<Frame inherits="Vendor_RulesDialog_Help" parentKey="helpPanel" id="5" hidden="true">
+			<Frame inherits="Vendor_AboutPanel,Vendor_TabPanel_Base" parentKey="helpPanel" id="5" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>

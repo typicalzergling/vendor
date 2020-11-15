@@ -10,6 +10,9 @@ ADDON_NAME = "Vendor",
 ADDON_LOADED = "is loaded. Type '/vendor help' for usage.",
 VENDOR_URL = "https://www.curseforge.com/wow/addons/vendor",
 VENDOR_TUTORIAL = "https://youtu.be/j93Orw3vPKQ",
+ABOUT_PROJECT_LABEL = "Project:",
+ABOUT_TUTORIAL_LABEL = "Tutorial:",
+ABOUT_RELEASES_LABEL = "Releases:",
 
 -- Rule types
 RULE_TYPE_KEEP_NAME = "Keep",
@@ -114,6 +117,8 @@ OPTIONS_PROFILE_CREATE_LABEL = "Create Profile",
 OPTIONS_PROFILE_DEFAULT_COPY_NAME = "%s (Copy)",
 
 OPTIONS_RULES_SHOW_HIDDEN = "Show Hidden",
+OPTIONS_RULES_ONE_HIDDEN = " (1 rule)",
+OPTIONS_RULES_N_HIDDEN = " (%d rules)",
 
 RULE_TOOLTIP_SOURCE = "Source: %s",
 RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",
@@ -186,6 +191,7 @@ API_GETPRICESTRING_DOCS = "Converts passed in integer to a color coded and icon 
 RULEUI_LABEL_ITEMLEVEL = "Item Level:",
 CONFIG_DIALOG_CAPTION = "Vendor",
 CONFIG_DIALOG_KEEPRULES_TAB = "Keep Rules",
+CONFIG_DIALOG_RULES_TAB = "Rules",
 CONFIG_DIALOG_KEEPRULES_TEXT = "These rules are safeguards to prevent selling things you don't want sold. All Keep Rules are checked before Sell Rules; However, anything you mark as 'Always Sell' will ignore Keep Rules.",
 CONFIG_DIALOG_SELLRULES_TAB = "Sell Rules",
 CONFIG_DIALOG_SELLRULES_TEXT = "Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",

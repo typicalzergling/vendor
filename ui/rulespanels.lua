@@ -51,7 +51,6 @@ function UrlEditBox.OnBlur(self)
     self:HighlightText(0,0);
 end
 
-Addon.Public.UrlEditBox = UrlEditBox;
 
 local SFrame =
 {
@@ -172,56 +171,35 @@ end
 local VENDOR_URL = "https://www.curseforge.com/wow/addons/vendor";
 local VENDOR_TUTORIAL = "https://youtu.be/j93Orw3vPKQ";
 
-local WHATS_NEW = { 
-    ["v3.1.4"] = "<p>What's new in this version</p>",
-    ["v4.0.0"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-    ["v4.0.1"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-    ["v4.0.2"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-    ["v4.0.3"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-    ["v4.0.4"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-    ["v4.0.5"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-    ["v4.0.6"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-    ["v4.0.7"] = "<p>What's new in this other version</p><p>this is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still stringthis is a really long much longer, and longer still string</p>",
-};
-
 local HelpPanel = {};
 function HelpPanel:OnLoad()
-    if (self.ReleaseNotesText) then
-        SFrame.OnLoad(self.ReleaseNotesText);
-        self.ReleaseNotesText.content:SetText("<html><body><h1>Hello</h1><p>this is some text</p></body></html>");
-    end
+    --self.ReleaseVersion.html = self.ReleaseNotesText:GetScrollChild();
+    --UIDropDownMenu_SetWidth(self.ReleaseVersion, self.Url:GetWidth() - 12);
+    --UIDropDownMenu_Initialize(self.ReleaseVersion, HelpPanel.CreateVersionList);
+    --UIDropDownMenu_JustifyText(self.ReleaseVersion, "LEFT");
 
-    self.ReleaseVersion.html = self.ReleaseNotesText:GetScrollChild();
-    UIDropDownMenu_SetWidth(self.ReleaseVersion, self.Url:GetWidth() - 12);
-    UIDropDownMenu_Initialize(self.ReleaseVersion, HelpPanel.CreateVersionList);
-    UIDropDownMenu_JustifyText(self.ReleaseVersion, "LEFT");
+    self:CreateVersionList()
+
+    self.Releases.OnSelection = function(_, index) 
+        local notes = Addon.ReleaseNotes[index]
+        self.ReleaseNotesText:SetHtml(notes.html)
+    end
 end
 
-function HelpPanel.CreateVersionList(frame, level)
-    local info = UIDropDownMenu_CreateInfo();
-    info.isNotRadio = true;	
-    info.notCheckable = true;
-    info.arg1 = frame;
-
-    if (level == 1) then
-        for index, notes in ipairs(Addon.ReleaseNotes) do
-            local text = string.format("%s (%s)", notes.release, notes.on);
-            info.text = text
-            info.value = index;
-            info.arg2 = notes.html;
-            info.func = function(self, dropdown, html)
-                UIDropDownMenu_SetText(dropdown, self:GetText());
-                dropdown.html:SetText(html);
-            end;			
-            UIDropDownMenu_AddButton(info, 1);
-        end
+function HelpPanel:CreateVersionList()
+    local releases = {}
+    for index, notes in ipairs(Addon.ReleaseNotes) do
+        releases[index] = string.format("%s (%s)", notes.release, notes.on)
+        print("---> release", index, releases[index])
     end
+    print(self.Releases)
+    self.Releases:SetItems(releases)
 end
 
 function HelpPanel:OnShow()
-    local notes = Addon.ReleaseNotes[1];
-    UIDropDownMenu_SetText(self.ReleaseVersion, string.format("%s (%s)", notes.release, notes.on));
-    self.ReleaseVersion.html:SetText(notes.html);
+    --local notes = Addon.ReleaseNotes[1];
+    --UIDropDownMenu_SetText(self.ReleaseVersion, string.format("%s (%s)", notes.release, notes.on));
+    --self.ReleaseNotesText:SetHtml(notes.html);
 end
 
 function HelpPanel:OnHide()
@@ -393,3 +371,95 @@ end
 Addon.RulesPanels.HelpPanel = HelpPanel;
 Addon.RulesPanels.ListsPanel = ListsPanel;
 Addon.Public.RulesPanel = RulesPanel;
+
+local DropMenu = {}
+
+function DropMenu:OnLoad()
+    self.expanded = false
+    self:OnBackdropLoaded()
+    self:SetScript("OnMouseDown", function(_, button)
+        if (not self.expanded) then
+            self.expanded = true
+            self:OnExpand()
+        else
+            self.expanded = false
+            self:OnCollapse()
+        end
+    end)
+    self:SetScript("OnShow", function()
+        if (self.items) then
+            self:OnItemSelected(1)
+        end
+    end)
+end
+
+function DropMenu:SetItems(items)
+    assert(table.getn(items) >= 1, "There are no items in the drop-list")
+    self.items = items or {}
+    self:OnItemSelected(1)
+end
+
+function DropMenu:OnItemSelected(value)
+    if (self.selected ~= value and self.items) then
+        local text = self.items[value]
+        self.Current:SetText(text)
+        Addon.invoke(self, "OnSelection", value)
+    end
+
+    if (self.expanded) then
+        self.Expand:Show()
+        self.Collapse:Hide()
+        self.expanded = false
+    end
+end
+
+local function initalizeMenu(owner, width, frame, level, items)
+    assert(level == 1)
+    if (not items) then
+        return
+    end
+    
+    for value, text in pairs(items) do
+        UIDropDownMenu_AddButton({
+            isNotRadio = true,
+            notCheckable = true,
+            text = text,
+            minWidth = width,
+            func = function()
+                owner:OnItemSelected(value)
+            end
+        }, level)
+    end
+end
+
+function DropMenu:OnExpand()
+    if (not self.menu) then
+        self.menu = CreateFrame("Frame", "xxx", UIParent, "UIDropDownMenuTemplate")
+        UIDropDownMenu_Initialize(self.menu, function(...) initalizeMenu(self, self.Current:GetWidth(), ...) end, "MENU", 1, {
+            "Item 1",
+            "Item 2",
+            "Item 3",
+        }
+        )
+        --self.menu:ClearAllPoints()
+        --self.menu:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
+        --self.menu:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
+        UIDropDownMenu_SetAnchor(self.menu, 0, -1, "TOPLEFT", self, "BOTTOMLEFT")
+    end
+    --self.menu:Show()
+    ToggleDropDownMenu(1, nil, self.menu, nil, 0, 0, self.items)
+    self.Expand:Hide()
+    self.Collapse:Show()
+end
+
+function DropMenu:OnCollapse()
+    if (self.menu) then
+        ToggleDropDownMenu(1, nil, self.menu)
+    end
+    self.Expand:Show()
+    self.Collapse:Hide()
+end
+
+
+Addon.Controls = Addon.Controls or {}
+Addon.Controls.DropMenu = DropMenu
