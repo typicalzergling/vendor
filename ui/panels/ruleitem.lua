@@ -134,6 +134,9 @@ function RuleItem:SetActive(active)
     local model = self:GetModel();
     if (active ~= model.Enabled) then
         model.Enabled = active;
+        if (model.Enabled) then
+            model.Hidden = false
+        end
         self:ShowParameters(model.Enabled)
         self:Update(model)
 

@@ -292,6 +292,7 @@ end
 function RulesConfig:OnModelChanged(model)
 	local typeModel = assert(self:GetRuleType(), "We should have a valid 'RuleType' model")
 	local rules = Addon.RuleConfig:Get(typeModel.Type)
+	local hidden = Addon.RuleConfig:Get(RuleType.HIDDEN)
 		
 	if (model.Enabled) then
 		local count = 0
@@ -304,6 +305,9 @@ function RulesConfig:OnModelChanged(model)
 		Addon:Debug("config", "Enabling rule '%s' in '%s' list with %d parameter(s)", model.Rule.Name, typeModel.Name, count)
 		rules:Set(model.Rule.Id, model.Params)
 		rules:Commit()
+		if (hidden:Remove(model.Rule.Id)) then
+			hidden:Commit()
+		end
 	else
 		Addon:Debug("config", "Remving rule '%s' in '%s' list", model.Rule.Name, typeModel.Name)
 		if (rules:Remove(model.Rule.Id)) then
