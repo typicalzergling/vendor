@@ -102,7 +102,7 @@ OPTIONS_SETTINGNAME_CYCLE_RATE = "Cycle Rate",
 OPTIONS_SETTINGDESC_CYCLE_RATE = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 
 OPTIONS_PROFILE_TITLE = "Profiles",
-OPTIONS_PROIFLE_HELPTEXT = "All rules settings, addon settings, and Sell / Keep / Destroy list contents are stored per-profile. "..
+OPTIONS_PROFiLE_HELPTEXT = "All rules settings, addon settings, and Sell / Keep / Destroy list contents are stored per-profile. "..
     "Profiles are stored globally across all servers and characters, and selected per-character.",
 OPTIONS_PROFILE_COPY = "Copy",
 OPTIONS_PROFILE_CREATE = "Create",
@@ -184,7 +184,7 @@ API_GETPRICESTRING_DOCS = "Converts passed in integer to a color coded and icon 
 
 -- Rules
 RULEUI_LABEL_ITEMLEVEL = "Item Level:",
-CONFIG_DIALOG_CAPTION = "Vendor Rules",
+CONFIG_DIALOG_CAPTION = "Vendor",
 CONFIG_DIALOG_KEEPRULES_TAB = "Keep Rules",
 CONFIG_DIALOG_KEEPRULES_TEXT = "These rules are safeguards to prevent selling things you don't want sold. All Keep Rules are checked before Sell Rules; However, anything you mark as 'Always Sell' will ignore Keep Rules.",
 CONFIG_DIALOG_SELLRULES_TAB = "Sell Rules",
@@ -211,6 +211,9 @@ RULES_DIALOG_HELP_TAB = "Help",
 RULES_DIALOG_EMPTY_SELL_LIST = "There are no rules in your sell list",
 RULES_DIALOG_EMPTY_KEEP_LIST = "There are no rules in your keep list",
 RULES_DIALOG_EMPTY_DELETE_LIST = "There are no rules in your delete list",
+
+RULES_DIALOG_RULES_TAB = "Rules",
+RULES_TAB_HELPTEXT = "<TBD>",
 
 -- Sell Rules
 SYSRULE_SELL_ALWAYSSELL = "Items in Always Sell List",

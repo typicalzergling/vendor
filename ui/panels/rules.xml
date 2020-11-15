@@ -44,7 +44,7 @@
 				<FontString inherits="GameFontHighlight" parentKey="HelpText" justifyH="LEFT" justifyV="TOP">
 					<Size x="1" y="36"/>
 					<KeyValues>
-						<KeyValue key="LocKey" value="OPTION_RULES_HELPTEXT" type="string"/>					
+						<KeyValue key="LocKey" value="RULES_TAB_HELPTEXT" type="string"/>					
 					</KeyValues>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="16" y="-16"/>

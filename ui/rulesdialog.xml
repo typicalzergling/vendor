@@ -229,7 +229,7 @@
 			<!-- Keep Tab -->
 			<Button name="$parentRulesTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="RulesTab">
 				<KeyValues>
-					<KeyValue key="LocKey" value="CONFIG_DIALOG_RULES_TAB" type="string"/>
+					<KeyValue key="LocKey" value="RULES_DIALOG_RULES_TAB" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeKey="$parent.Container" relativePoint="TOPLEFT" x="6" y="-2"/>
