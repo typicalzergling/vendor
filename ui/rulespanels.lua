@@ -118,19 +118,19 @@ local SYSTEM_LISTS =
     {
         id = SystemListId.NEVER,
         name  = L.NEVER_SELL_LIST_NAME,
-        empty = L.RULES_DIALOG_EMPTY_KEEP_LIST,
+        empty = L.RULES_DIALOG_EMPTY_LIST,
         tooltip = L.NEVER_SELL_LIST_TOOLTIP,
     },
     {
         id = SystemListId.ALWAYS,
         name  = L.ALWAYS_SELL_LIST_NAME,
-        empty = L.RULES_DIALOG_EMPTY_SELL_LIST,
+        empty = L.RULES_DIALOG_EMPTY_LIST,
         tooltip = L.ALWAYS_SELL_LIST_TOOLTIP,
     },
     {
         id = SystemListId.DESTROY,
         name  = L.ALWAYS_DESTROY_LIST_NAME,
-        empty = L.RULES_DIALOG_EMPTY_DELETE_LIST,
+        empty = L.RULES_DIALOG_EMPTY_LIST,
         tooltip = L.ALWAYS_DESTROY_LIST_TOOLTIP,
     }
 };

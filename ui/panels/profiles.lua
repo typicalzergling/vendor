@@ -116,7 +116,6 @@ end
    | items on our page.
    ==========================================================================]]
 function ProfileConfig:OnLoad()
-	print("--> profiule config load");
 	Addon.LocalizeFrame(self);
 	--Addon.ConfigPanel:AddPanel(self);
 	self:SetScript("OnShow", self.OnShow);

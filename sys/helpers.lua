@@ -42,7 +42,6 @@ if (type(string.split) ~= "function") then
     string.split = function(str, delim) 
         local result = {};
         for match in (str .. delim):gmatch("(.-)" .. delim) do
-            print("---> match", match);
             table.insert(result, match);
         end
         return result;

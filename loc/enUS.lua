@@ -125,6 +125,7 @@ RULE_TOOLTIP_SOURCE = "Source: %s",
 RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",
 RULE_TOOLTIP_CUSTOM_RULE = "Custom Rule",
 RULE_TOOLTIP_SYSTEM_RULE = "Built-In",
+RULE_LIST_EMPTY = "There are no rules for this category. Create one!",
 
 RULE_CMENU_ENABLE = "Enable",
 RULE_CMENU_DISABLE = "Disable",
@@ -222,9 +223,7 @@ ALWAYS_DESTROY_LIST_NAME = "Destroy",
 ALWAYS_DESTROY_LIST_TOOLTIP = "",
 RULES_DIALOG_HELP_HEADING = "You can find the latest release notes as well as links to the project and it's tutorials on this page.",
 RULES_DIALOG_HELP_TAB = "Help",
-RULES_DIALOG_EMPTY_SELL_LIST = "There are no rules in your sell list",
-RULES_DIALOG_EMPTY_KEEP_LIST = "There are no rules in your keep list",
-RULES_DIALOG_EMPTY_DELETE_LIST = "There are no rules in your delete list",
+RULES_DIALOG_EMPTY_LIST = "There are no items in this list. Drag an item onto this area to add it to this list.",
 
 RULES_DIALOG_RULES_TAB = "Rules",
 RULES_TAB_HELPTEXT = "Rules are processed in the following order: Keep -> Sell -> Destroy|n"..
