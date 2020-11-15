@@ -13,6 +13,7 @@ VENDOR_TUTORIAL = "https://youtu.be/j93Orw3vPKQ",
 ABOUT_PROJECT_LABEL = "Project:",
 ABOUT_TUTORIAL_LABEL = "Tutorial:",
 ABOUT_RELEASES_LABEL = "Releases:",
+ABOUT_VERSION_LABEL = "Version:",
 
 -- Rule types
 RULE_TYPE_KEEP_NAME = "Keep",

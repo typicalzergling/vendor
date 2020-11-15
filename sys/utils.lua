@@ -102,41 +102,43 @@ function Addon.object(typeName, instance, API, events)
         CallbackRegistryMixin.SetUndefinedEventsAllowed(instance, false);
         CallbackRegistryMixin.GenerateCallbackEvents(instance, events);
     end
+    
+    if (Addon.Debug) then
+        --@debug@
+        local thunk = {};
+        return setmetatable(thunk, {
+            __metatable = fullName,
+            __index = function(self, key)
+            -- Check for a member function
+                local member = rawget(fullApi, key);
+                if (type(member) == "function") then
+                    return function(...) 
+                            return member(...);
+                        end;
+                else
+                    member = rawget(instance, key);
+                    if (member ~= nil) then
+                        return member;
+                    end
 
-    --@debug@
-    local thunk = {};
-    return setmetatable(thunk, {
-        __metatable = fullName,
-        __index = function(self, key)
-        -- Check for a member function
-            local member = rawget(fullApi, key);
-            if (type(member) == "function") then
-                return function(...) 
-                        return member(...);
-                    end;
-            else
-                member = rawget(instance, key);
-                if (member ~= nil) then
-                    return member;
+                    error(string.format("Type '%s' has no member '%s'", typeName, key));
                 end
+            end,
+            __newindex = function(self, key, value)
+                -- Don't allow new fields/members that didn't exist when
+                -- we were created.
+                if (rawget(instance, key) == nil) then
+                    error(string.format("New members are not allowed on '%s' attempted to set '%s'", typeName, key));                
+                else
+                    rawset(instance, key, value);
+                end
+            end,
+        })
+        --@end-debug@
+    end
 
-                error(string.format("Type '%s' has no member '%s'", typeName, key));
-            end
-        end,
-        __newindex = function(self, key, value)
-            -- Don't allow new fields/members that didn't exist when
-            -- we were created.
-            if (rawget(instance, key) == nil) then
-                error(string.format("New members are not allowed on '%s' attempted to set '%s'", typeName, key));                
-            else
-                rawset(instance, key, value);
-            end
-        end,
+    return setmetatable(instance, {
+        __metatable = fullName,
+        __index = fullApi,
     });
-    --@end-debug@
-
-    --return setmetatable(instance, {
-    --    __metatable = fullName,
-    --    __index = fullApi,
-    --});
 end
