@@ -40,25 +40,34 @@
 		</Frames>
 	</Frame>
 
-	<Frame name="ItemInfo_Template" virtual="true" hidden="true">
-		<Size x="1" y="20"/>
+	<Frame name="ItemInfo_Template" virtual="true" hidden="true" enableMouse="true">
+		<Size x="1" y="18"/>
 		<Layers>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="Hover" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.3" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
 			<Layer level="ARTWORK">
-				<FontString  parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false">
+				<FontString  parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" justifyV="MIDDLE">
 					<Size x="120"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="4" y="-2"/>
-						<Anchor pointer="BOTTOMLEFT" x="4" y="2"/>
+						<Anchor point="BOTTOMLEFT" x="4" y="2"/>
 					</Anchors>
 				</FontString>		
-				<FontString  parentKey="Equals" inherits="GameFontDisable" justifyH="CENTER" text="=">
+				<FontString  parentKey="Equals" inherits="GameFontDisable" justifyH="CENTER" text="=" justifyV="MIDDLE">
 					<Size x="16"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="TOPRIGHT"/>
 						<Anchor point="BOTTOMLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
 					</Anchors>a
 				</FontString>		
-				<FontString  parentKey="Value" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false">
+				<FontString  parentKey="Value" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" justifyV="MIDDLE">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.Equals" relativePoint="TOPRIGHT"/>
 						<Anchor point="BOTTOM" relativeKey="$parent.Equals"/>
@@ -75,12 +84,7 @@
 			<KeyValue key="Implementation" value="ItemInfoPanel" type="string"/>
 		</KeyValues>
 		<Frames>
-			<Frame inherits="TooltipBackdropTemplate" parentKey="Container">
-				<KeyValues>
-					<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
-					<KeyValue key="backdropColor" value="DARKGRAY_COLOR" type="global"/>
-					<KeyValue key="backdropColorAlpha" value="0.25" type="number"/>
-				</KeyValues>
+			<Frame inherits="Vendor_BorderFrame" parentKey="Container">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 					<Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
@@ -89,8 +93,7 @@
 			<ScrollFrame parentKey="View" inherits="FauxScrollFrameTemplate">
 				<KeyValues>
 					<KeyValue key="ItemTemplate" value="ItemInfo_Template" type="string"/>
-					<KeyValue key="ItemHeight" value="20" type="number"/>
-					<KeyValue key="Implementation" value="ItemList" type="string"/>
+					<KeyValue key="ItemHeight" value="18" type="number"/>
 				</KeyValues>
 				<Size x="200" y="48"/>
 				<Anchors>

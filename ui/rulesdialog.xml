@@ -247,7 +247,7 @@
 			</Button>
 
 			<!-- Help Tab -->
-			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="HelpTab" enabled="false">
+			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="HelpTab" enabled="false">
 				<KeyValues>
 					<KeyValue key="LocKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
 				</KeyValues>
@@ -257,7 +257,7 @@
 			</Button>
 
 			<!-- Profiles -->
-			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ProfileTab">
+			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="ProfileTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
 				</KeyValues>

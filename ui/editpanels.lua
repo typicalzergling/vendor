@@ -2,40 +2,75 @@ local _, Addon = ...;
 local ItemInfo = {};
 local Help = {};
 local Matches = {};
+local ItemInfoItem = {}
 
 local function htmlEncode(str)
     return str:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;");
 end
 
-local ITEM_INFO_HTML_BODY_FMT = "<html><body><h1>%s</h1>%s</body></html>";
-local ITEM_HTML_FMT = "<p>%s == %s%s%s</p>";
 local NIL_ITEM_STRING = GRAY_FONT_COLOR_CODE .. "nil" .. FONT_COLOR_CODE_CLOSE;
 local MATCHES_HTML_START = "<html><body>";
 
-local ItemInfoItem = {
-    OnModelChanged = function(self, model)
-        local t = type(model.Value);
-        local value = self.Value;
-        self.Name:SetText(model.Name);
+function ItemInfoItem:OnCreated()
+    self:SetScript("OnEnter", self.OnEnter)
+    self:SetScript("OnLeave", self.OnLeave)
+end
 
-        if (model.Value == nil) then
-            value:SetText("nil");
-            value:SetTextColor(DISABLE_FONT_COLOR:GetRGB());
-        elseif (t == "string") then
-            value:SetFormattedText("\"%s\"", model.Value);
-            value:SetTextColor(GREEN_FONT_COLOR:GetRGB());
-        elseif (t == "boolean") then
-            value:SetText(tostring(model.Value));
-            value:SetTextColor(EPIC_PURPLE_COLOR:GetRGB());
-        elseif (t == "number") then
-            value:SetText(tostring(model.Value));
-            value:SetTextColor(ORANGE_FONT_COLOR:GetRGB());
-        else
-            value:SetText(tostring(model.Value));
-            value:SetTextColor(WHITE_TEXT_COLOR:GetRGB());
+function ItemInfoItem:OnModelChanged(model)
+    local t = type(model.Value);
+    local value = self.Value;
+    self.Name:SetText(model.Name);
+
+    if (model.Value == nil) then
+        value:SetText("nil");
+        value:SetTextColor(DISABLE_FONT_COLOR:GetRGB());
+    elseif (t == "string") then
+        value:SetFormattedText("\"%s\"", model.Value);
+        value:SetTextColor(GREEN_FONT_COLOR:GetRGB());
+    elseif (t == "boolean") then
+        value:SetText(tostring(model.Value));
+        value:SetTextColor(EPIC_PURPLE_COLOR:GetRGB());
+    elseif (t == "number") then
+        value:SetText(tostring(model.Value));
+        value:SetTextColor(ORANGE_FONT_COLOR:GetRGB());
+    else
+        value:SetText(tostring(model.Value));
+        value:SetTextColor(WHITE_TEXT_COLOR:GetRGB());
+    end
+end
+
+function ItemInfoItem:OnEnter()
+    local model = assert(self:GetModel(), "The item should have a valid model")
+    local doc = Addon.ScriptReference.ItemProperties[model.Name]
+    if (doc) then
+        local text = doc;
+        if (type(doc) == "table") then
+            text = doc.Text
+        end
+
+        if ((type(text) == "string") and (string.len(text) ~= 0)) then
+            GameTooltip:SetOwner(self, "ANCHOR_NONE")
+            GameTooltip:AddLine(model.Name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+            GameTooltip:AddLine(text, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
+            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+            GameTooltip:Show()
         end
     end
-}
+end
+
+function ItemInfoItem:OnLeave()
+    if (GameTooltip:GetOwner() == self) then
+        GameTooltip:Hide()
+    end
+end
+
+function ItemInfoItem:OnUpdate()
+    if (self:IsMouseOver()) then
+        self.Hover:Show()
+    else
+        self.Hover:Hide()
+    end
+end
 
 function ItemInfo:OnLoad()
     self.props = {};
@@ -48,8 +83,8 @@ function ItemInfo:OnLoad()
         return self.props or  {};
     end;
 
+    self.View.ItemClass = ItemInfoItem
     self.View.OnItemCreated = function(_, item)
-        Mixin(item, ItemInfoItem);
         item:SetScript("OnMouseDown", self.dropHandler);
         item:SetScript("OnMouseUp", self.dropHandler);
     end;
