@@ -180,8 +180,48 @@ function RulesConfig:Refresh()
 		self.ShowHidden.label:SetText(L.OPTIONS_RULES_SHOW_HIDDEN)
 	end
 
+	self:UpdateCounts(numEnabled, numHidden, total)
 	self.Rules:SetEmptyText(model.Empty)
 	self.Rules:Update()
+end
+
+function RulesConfig:UpdateCounts(numEnabled, numHidden, total)
+	if (numEnabled == nil) then
+		local model = self:GetRuleType()
+		local hidden = Addon.RuleConfig:Get(RuleType.HIDDEN)
+		local rules = Addon.RuleConfig:Get(model.Type)
+
+		total = 0
+		numHidden = 0
+		numEnabled = 0
+	
+		for _, ruleDef in ipairs(Addon.Rules.GetDefinitions(model.Type)) do
+			total = total + 1
+
+			if (hidden:Contains(ruleDef.Id)) then
+				numHidden = numHidden + 1
+			end
+			
+			if (rules:Contains(ruleDef.Id)) then
+				numEnabled = numEnabled + 1
+			end	
+		end
+	end
+
+	if (numHidden ~= 0) then
+		self.Counts:SetFormattedText("(%d/%d/%d)", numEnabled, numHidden, total)
+		
+		local suffix
+		if (numHidden == 1) then
+			suffix = L.OPTIONS_RULES_ONE_HIDDEN
+		else
+			suffix = string.format(L.OPTIONS_RULES_N_HIDDEN, numHidden)
+		end
+		self.ShowHidden.label:SetText(L.OPTIONS_RULES_SHOW_HIDDEN .. suffix)
+	else
+		self.Counts:SetFormattedText("(%d/%d)", numEnabled, total)
+		self.ShowHidden.label:SetText(L.OPTIONS_RULES_SHOW_HIDDEN)
+	end
 end
 
 --[[===========================================================================
@@ -270,6 +310,8 @@ function RulesConfig:OnModelChanged(model)
 			rules:Commit()
 		end
 	end
+
+	self:UpdateCounts()
 end
 
 function RulesConfig:ShowContextMenu(item, menu)
@@ -285,6 +327,10 @@ end
 function RulesConfig:ChangeHiddenState(ruleId, hidden)
 	local rules = Addon.RuleConfig:Get(RuleType.HIDDEN)
 	if (hidden)	 then
+		local typeModel = assert(self:GetRuleType(), "We should have valid rule type")
+		local config = Addon.RuleConfig:Get(typeModel.Type)
+		config:Remove(ruleId)
+		config:Commit()
 		rules:Set(ruleId)
 	else
 		rules:Remove(ruleId)

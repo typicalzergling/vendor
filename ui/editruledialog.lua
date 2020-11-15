@@ -122,6 +122,7 @@ function EditRuleDialog:OnScriptChanged(text)
     if (self:IsReadOnly()) then
         self:UpdateMatches();
     else
+        self.dirty = true
         if (self:ValidateScript(text)) then
             self:UpdateMatches();
         end
@@ -238,19 +239,26 @@ function EditRuleDialog:UpdateButtonState()
         self.save:Disable();
     else
         local rule = self:GetRule();
-        local canSave = true;
+        local canSave = true
+        local startDef = self.ruleDef
 
         -- If we aren't read-only then we can only save if we've got
         -- a valid name, type, and script.
-        
-        if (not isValidString(rule.Name)) then
-            canSave = false;
-            Addon:Debug("editrule", "Can't save rule because name is invalid");
-        end
 
-        if (not isValidString(rule.Script) or (self.status ~= ScriptStatus.OK)) then
-            canSave = false;
-            Addon:Debug("editrule", "Can't save rule because script is invalid");
+        if (not self.dirty and startDef and startDef.needsMigration) then
+            canSave = true
+        else
+            if (not isValidString(rule.Name)) then
+                canSave = false;
+                Addon:Debug("editrule", "Can't save rule because name is invalid");
+            end
+
+            if (startDef and isValidString(startDef.Script) and (startDef.Script ~= rule.Script)) then
+                if (not isValidString(rule.Script) or (self.status ~= ScriptStatus.OK)) then
+                    canSave = false;
+                    Addon:Debug("editrule", "Can't save rule because script is invalid");
+                end
+            end
         end
 
         if (not canSave) then

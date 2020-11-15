@@ -350,6 +350,28 @@ function RuleItem:OnContextMenu()
         text = model.Rule.Name,
     })
 
+    if (not model.Rule.Custom) then
+        table.insert(menu, {
+            isNotRadio = true,
+            notCheckable = true,
+            text = L.RULE_CMENU_VIEW,
+            func = function()
+                VendorEditRuleDialog:EditRule(self:GetModel().Rule, true)
+            end
+        })		
+    else
+        table.insert(menu, {
+            isNotRadio = true,
+            notCheckable = true,
+            text = L.RULE_CMENU_EDIT,
+            func = function()
+                VendorEditRuleDialog:EditRule(self:GetModel().Rule, false)
+            end
+        })		
+    end
+
+    table.insert(menu, table.copy(MENU_DIVIDER))
+
     if (not model.Enabled) then
         table.insert(menu, {
             isNotRadio = true,
@@ -390,26 +412,9 @@ function RuleItem:OnContextMenu()
         })		
     end
 
-    table.insert(menu, table.copy(MENU_DIVIDER))
-
-    if (not model.Rule.Custom) then
-        table.insert(menu, {
-            isNotRadio = true,
-            notCheckable = true,
-            text = L.RULE_CMENU_VIEW,
-            func = function()
-                VendorEditRuleDialog:EditRule(self:GetModel().Rule, true)
-            end
-        })		
-    else
-        table.insert(menu, {
-            isNotRadio = true,
-            notCheckable = true,
-            text = L.RULE_CMENU_EDIT,
-            func = function()
-                VendorEditRuleDialog:EditRule(self:GetModel().Rule, false)
-            end
-        })		
+    if (model.Rule.Custom) then    
+        table.insert(menu, table.copy(MENU_DIVIDER))
+        
         table.insert(menu, {
             isNotRadio = true,
             notCheckable = true,
