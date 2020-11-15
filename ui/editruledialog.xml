@@ -126,7 +126,7 @@
 				<KeyValues>
 					<KeyValue key="HelpTextKey" value="EDITRULE_DELETERULE_TEXT" type="string"/>
 					<KeyValue key="LabelKey" value="EDITRULE_DELETERULE_LABEL" type="string"/>
-					<KeyValue key="Value" value="DELETE" type="string"/>
+					<KeyValue key="Value" value="DESTROY" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.RuleTypeKeep" x="0" y="-8"/>

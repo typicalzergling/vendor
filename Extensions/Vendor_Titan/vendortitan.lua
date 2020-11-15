@@ -155,9 +155,9 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
 
         -- Rules Menu
         info = {};
-        info.text = L["TITAN_MENU_RULES"]
+        info.text = L["TITAN_MENU_NEW_RULE"]
         info.notCheckable = true
-        info.func = function () Vendor.ShowRules() end
+        info.func = function () VendorEditRuleDialog:CreateRule() end
         L_UIDropDownMenu_AddButton(info);
 
         -- Settings Button

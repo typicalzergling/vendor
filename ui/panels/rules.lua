@@ -11,19 +11,19 @@ local RULE_TYPES =
 		Type = RuleType.KEEP,
 		Name = L.RULE_TYPE_KEEP_NAME,
 		Description = L.RULE_TYPE_KEEP_DESCR,
-		Empty = "empty keep",
+		Empty = L.RULE_LIST_EMPTY,
 	},
 	{
 		Type = RuleType.SELL,
 		Name = L.RULE_TYPE_SELL_NAME,
 		Description = L.RULE_TYPE_SELL_DESCR,
-		Empty = "Empty sell",
+		Empty = L.RULE_LIST_EMPTY,
 	},
 	{
 		Type = RuleType.DESTROY,
 		Name = L.RULE_TYPE_DELETE_NAME,
 		Description = L.RULE_TYPE_DELETE_DESCR,
-		Empty = "empty delete",
+		Empty = L.RULE_LIST_EMPTY,
 	}
 }
 

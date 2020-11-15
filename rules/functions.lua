@@ -116,7 +116,7 @@ end
 -- Rule function which checks if the item is in a particular list.
 function Addon.RuleFunctions.IsItemInList(list)
     if not type(list) == "string" then return false end
-    if Addon:IsItemInList(Id, list) then
+    if Addon.IsItemInList(Id, list) then
         return true
     end
 end
