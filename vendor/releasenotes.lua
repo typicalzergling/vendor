@@ -1,10 +1,10 @@
 local AddonName, Addon = ...
 
 Addon.ReleaseNotes = {
-	{
-		release="5.0",
-		on="November 15, 2020",
-		html=
+    {
+        release="5.0",
+        on="November 15, 2020",
+        html=
 [[<html>
 <body>
 <h1>Profiles</h1>
@@ -15,7 +15,7 @@ right-click menu on the Vendor Titan button. This makes it easy to swap between 
 <h1>New UI</h1>
 <p>As you've probably noticed, our User Interface has changed significantly. Gone are Scrap Rules and the custom rule definitions and that dangerous "defaults" button. With the addition
 of Destroy rules and list, as well as this help panel and profiles panels, we wanted to make the UI more compact scalable. All the rules are in one tab, and all the lists in one tab,
-with a selection menu on the left and the list of rules or items on the right. The "Create" button still creates a new custom rule and is on the main UI page for convenience.</p>
+with a selection menu on the left and the list of rules or items on the right. The "Create" button to create new rule has been renamed to "New Rule" and is now in the "Rules" tab.</p>
 <br/>
 <h1>Destroy Rules and List</h1>
 <p>By popular request, we now support Destroy rules and a Destroy list. These are items that will not be sold, but rather will be deleted from your inventory. Currently the destroy code
@@ -30,26 +30,10 @@ notice or correction if you place an unsellable item into the Sell list - the it
 deleting old content loot and easily switch to and from them when you're doing that content.
 </p>
 <br/>
-<h1>Fixes:</h1>
-<p>Fix 1</p>
-<p>Fix 2</p>
+<h1>Notable Bug Fixes:</h1>
+<p>Display of items in the Matches tab of the edit rule dialog now shows the exact item tooltips as in your inventory.</p>
+<p>Changed the hook for tooltip OnHide to a securehook to remove taint possibilities.</p>
 </body>
 </html>]]
-	},
-
-	{
-		release="4.1",
-		on="October 15, 2020",
-		html=
-[[<html>
-<body>
-<h1>Titan Panel Plugin</h1>
-<p>In Titan panel's <b>General</b> category you will find the Vendor plugin. The Vendor Titan plugin will display stats
-and value of the items matching all of your sell rules. In addition, mousing over the Titan button will show a breakdown of
-number of items to be sold, to be deleted, and the total sell value. Left-clicking the button will open the Vendor rules panel.
-Right-clicking will bring up shortcuts to the rules panel, settings, and keybindings. In the future\
-<br/>
-</body>
-</html>]]
-	},	
+    },
 }
