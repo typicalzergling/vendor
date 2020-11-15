@@ -6,6 +6,7 @@ local AboutPanel = {};
     ==========================================================================]]
 function AboutPanel:OnLoad()
 	self:CreateVersionList()
+    self.Version:SetText(Addon:GetVersion())
 
     self.Releases.OnSelection = function(_, index) 
         local notes = Addon.ReleaseNotes[index]
