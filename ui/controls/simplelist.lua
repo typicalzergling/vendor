@@ -32,7 +32,8 @@ function SimpleList:Update()
 			frame:ResetAll()
 		end	
 		self:ShowEmptyText(true)
-		self:GetScrollChild():SetHeight(0)
+		self:GetScrollChild():SetHeight(10)
+		self:SetVerticalScroll(0)
 	else
 		local container = self:GetScrollChild();
 	
@@ -40,7 +41,7 @@ function SimpleList:Update()
 			self:Layout()
 		end
 
-		self:ShowEmptyText(false)				
+		self:ShowEmptyText(false)	
 		for index, model in ipairs(items) do
 			local item = self.frames[index]
 			if (not item) then
@@ -59,8 +60,8 @@ function SimpleList:Update()
 			self.frames[index]:SetScript("OnSizeChanged", nil)
 		end
 
-		self:Layout()
 	end
+	self:Layout()
 end
 
 function SimpleList:Layout()
@@ -81,6 +82,14 @@ function SimpleList:Layout()
 
 		container:SetHeight(top);
 		container:SetWidth(width);
+
+		if (top == 0) then
+			self.ScrollBar:Disable()
+			self.ScrollBar:Hide()
+		else
+			self.ScrollBar:Enable()
+			self.ScrollBar:Show()
+		end
 	end
 end
 

@@ -43,6 +43,7 @@ local ListBase = table.copy(Addon.Controls.EmptyListMixin)
 	| some scripts.
 	========================================================================--]]
 function ListBase:OnLoad()
+	rawset(self, "@@list@@", true)
 	self:SetClipsChildren(true);
 	self:AdjustScrollbar();
 	self:SetScript("OnVerticalScroll", self.OnVerticalScroll);
@@ -90,16 +91,19 @@ function ListBase:AdjustScrollbar()
 	-- than being offset
 	local scrollbar = self.ScrollBar;
 	if (scrollbar) then
-		local buttonHeight = scrollbar.ScrollUpButton:GetHeight();
-		local background = self.scrollbarBackground;
+		local buttonHeight = scrollbar.ScrollUpButton:GetHeight()
+		local background = self.scrollbarBackground
 		if (not background) then
-			background = self:CreateTexture(nil, "BACKGROUND");
-			background:SetColorTexture(0.0, 0.0, 0.0);
+			background = scrollbar:CreateTexture(nil, "BACKGROUND");
+			background:SetColorTexture(0.20, 0.20, 0.20, 0.3)
 		end
 		if (background) then
 			background:ClearAllPoints();
 			background:SetPoint("TOPLEFT", scrollbar.ScrollUpButton, "BOTTOMLEFT", 0, buttonHeight / 2);
 			background:SetPoint("BOTTOMRIGHT", scrollbar.ScrollDownButton, "TOPRIGHT", 0, -buttonHeight / 2);
+			
+			scrollbar:SetScript("OnShow", function() background:Show() end)
+			scrollbar:SetScript("OnHide", function() background:Hide() end)
 		end
 
 		scrollbar:ClearAllPoints();
@@ -229,6 +233,8 @@ end
 function ListBase:Update()
 	local items = Addon.invoke(self, "GetItems");
 	self.frames = self.frames or {};
+	local itemHeight = (self.ItemHeight or 1);
+	local visible = math.ceil(self:GetHeight() / itemHeight);
 
 	if (not items or (table.getn(items) == 0)) then
 		for _, frame in ipairs(self.frames) do
@@ -236,12 +242,12 @@ function ListBase:Update()
 		end
 
 		self:ShowEmptyText(true);
+		FauxScrollFrame_SetOffset(self, 0);
+		FauxScrollFrame_Update(self, 0, visible, itemHeight, nil, nil, nil, nil, nil, nil, true);
 	else
 		self:ShowEmptyText(false);
 
 		local offset = FauxScrollFrame_GetOffset(self);
-		local itemHeight = (self.ItemHeight or 1);
-		local visible = math.ceil(self:GetHeight() / itemHeight);
 		local modelIndex = (1 + offset);
 		local width = (self:GetWidth() - self.ScrollBar:GetWidth() - 1);
 		local top = 0;
