@@ -1,0 +1,150 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="panels/rules.lua"/>
+	<Include file="panels/ruleitem.xml"/>
+
+	<!-- Profile Item -->
+	<Button name="Vendor_RuleType_Item" virtual="true">
+		<Size x="1" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" parentKey="Name">
+					<Size x="1" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8"/>
+						<Anchor point="RIGHT" x="-8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="Hover" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+
+    <!-- Rules Panel -->
+
+    <Frame name="Vendor_RulesPanel" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlight" parentKey="HelpText" justifyH="LEFT" justifyV="TOP">
+					<Size x="1" y="36"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="RULES_TAB_HELPTEXT" type="string"/>					
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="-16"/>
+						<Anchor point="TOPRIGHT" x="-16" y="-16"/>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontHighlightSmall" parentKey="Counts" justifyH="RIGHT" justifyV="MIDDLE">
+					<Size x="80" y="14"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+        <Frames>
+			<Frame inherits="Vendor_BorderFrame" parentKey="TypesBorder">
+				<Size x="176" y="20"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
+					<Anchor point="BOTTOM" x="0" y="16"/>
+				</Anchors>
+			</Frame>
+			<ScrollFrame parentKey="Types" inherits="FauxScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="ItemHeight" value="24" type="number"/>
+					<KeyValue key="ItemTemplate" value="Vendor_RuleType_Item" type="string"/>
+				</KeyValues>				
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TypesBorder" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.TypesBorder" x="-6" y="6"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+
+            <CheckButton parentKey="ShowHidden" inherits="OptionsBaseCheckButtonTemplate">
+                <Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.TypesBorder" relativePoint="BOTTOMRIGHT" x="12"/>
+					<Anchor point="BOTTOM" x="0" y="16"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString inherits="GameFontHighlightSmall" text="Show Hidden Rules" justifyH="LEFT" justifyV="MIDDLE" parentKey="label">
+							<KeyValues>
+								<KeyValue key="LocKey" value="OPTIONS_RULES_SHOW_HIDDEN" type="string"/>
+							</KeyValues>
+							<Size x="200" y="16"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="2"/>
+								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnable>self.label:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())</OnEnable>
+					<OnDisable>self.label:SetTextColor(DISABLED_FONT_COLOR:GetRGB())</OnDisable>
+				</Scripts>
+			</CheckButton>
+
+			<Frame inherits="Vendor_BorderFrame" parentKey="RulesBorder">
+				<Size x="200" y="20"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TypesBorder" relativePoint="TOPRIGHT" x="12"/>
+					<Anchor point="RIGHT" relativeKey="$parent.HelpText"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.ShowHidden" relativePoint="TOP" y="4"/>
+				</Anchors>
+			</Frame>
+			<ScrollFrame parentKey="Rules" inherits="UIPanelScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="ItemTemplate" value="Vendor_RuleList_Item" type="string"/>
+				</KeyValues>				
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.RulesBorder" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.RulesBorder" x="-6" y="6"/>
+				</Anchors>
+				<ScrollChild>
+					<Frame/>
+				</ScrollChild>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="EmptyText" inherits="GameFontDisable" justifyV="TOP" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="12" y="-12"/>
+								<Anchor point="BOTTOMRIGHT" x="-12" y="12"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>Vendor.LoadImplementation(self, "Controls", "SimpleList")</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+
+		</Frames>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, nil, "RulesConfigPanel")</OnLoad>
+        </Scripts>
+    </Frame>
+
+</Ui>

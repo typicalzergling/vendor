@@ -4,9 +4,9 @@ local L = Addon:GetLocale()
 local Package = select(2, ...);
 Addon.Rules = Addon.Rules or {}
 local Rules = Addon.Rules;
-local SELL_RULE = Addon.c_RuleType_Sell;
-local KEEP_RULE = Addon.c_RuleType_Keep;
-local SCRAP_RULE = Addon.c_RuleType_Scrap;
+local SELL_RULE = Addon.RuleType.SELL;
+local KEEP_RULE = Addon.RuleType.KEEP;
+local DESTROY_RULE = Addon.RuleType.DESTROY;
 local INTERFACE_VERSION = tonumber(select(4, GetBuildInfo()));
 local SHADOWLANDS_VERSION = 90000;
 
@@ -21,6 +21,11 @@ end
 -- This is event is fired when our custom rule definitions have changed.
 Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
 Rules.OnFunctionsChanged = Addon.CreateEvent("Rules.OnFunctionsChanged");
+
+local function DefaultItemLevel()
+    local avg, equip = GetAverageItemLevel();
+    return math.max(0, math.floor(math.min(avg, equip) * 0.8));
+end
 
 -- Param definition for our rules which use ITEMLEVEL
 local ITEM_LEVEL_PARAMS =
@@ -95,7 +100,15 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = ITEM_LEVEL_PARAMS,
+        Params = 
+        {
+            {
+                Key = "ITEMLEVEL",
+                Type = "numeric",
+                Name = L.RULEUI_SELL_UNCOMMON_INFO,
+                Default = DefaultItemLevel,
+            }
+        },
         Order = 1400,
     },
 
@@ -108,7 +121,15 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = ITEM_LEVEL_PARAMS,
+        Params = 
+        {
+            {
+                Type = "numeric",
+                Name = L.RULEUI_SELL_RARE_INFO,
+                Key = "ITEMLEVEL",
+                Default = DefaultItemLevel,
+            }
+        },
         Order = 1500,
     },
 
@@ -121,12 +142,19 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = ITEM_LEVEL_PARAMS,
+        Params = 
+        {
+            {
+                Type = "numeric",
+                Key = "ITEMLEVEL",
+                Name = L.RULEUI_SELL_EPIC_INFO,
+                Default = DefaultItemLevel,
+            }
+        },
         Order = 1600,
     },
     --@end-retail@
-
-    --@non-retail@
+    --[===[@non-retail@
     {
         Id = "sell.uncommongear_classic",
         Type = SELL_RULE,
@@ -165,8 +193,7 @@ Rules.SystemRules =
         Params = ITEM_LEVEL_PARAMS,
         Order = 1601,
     },
-
-    --@end-non-retail@
+    --@end-non-retail@]===]
 
     --*****************************************************************************
     -- Keep Rules
@@ -299,21 +326,20 @@ Rules.SystemRules =
     --@end-retail@
 
     --*****************************************************************************
-    -- Scrap rules
+    -- Destroy Rules
     --*****************************************************************************
 
-    --@retail@
+    -- Item is in the Never Sell list.
     {
-        Id = "scrap.scrapable",
-        Type = SCRAP_RULE,
-        Name = "Scrappable Items",
-        Description = "Scrappable Items",
-        ScriptText = "IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains(\"Scrapable\")",
-        Script = function() return (IsFromExpansion(BATTLE_FOR_AZEROTH) and TooltipContains("Scrapable")) end,
-        Order = 3000,
+        Id = "destroy.alwaysdestroy",
+        Type = DESTROY_RULE,
+        Name = L["SYSRULE_DESTROYLIST"],
+        Description = L["SYSRULE_DESTROYLIST_DESC"],
+        ScriptText = "IsInList(\"Destroy\")",
+        Script = function() return IsDestroyItem() end,
+        Locked = true,
+        Order = -1000,
     },
-    --@end-retail@
-
 };
 
 -- While creating this closure sort the rules table by order, this prevents us from
@@ -413,20 +439,20 @@ end
     | CheckMigration:
     ========================================================================--]]
 function Rules.CheckMigration()
-    Addon:Debug("%s+|r Checking for rule definition migration", YELLOW_FONT_COLOR_CODE);
+    Addon:Debug("rules", "%s+|r Checking for rule definition migration", YELLOW_FONT_COLOR_CODE);
     if (Vendor_CustomRuleDefinitions) then
         for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
             ruleDef.Locked = false;
             if (not ruleDef.needsMigration) then
                 local riv = ruleDef.interfaceversion or 0;
                 if ((INTERFACE_VERSION >=SHADOWLANDS_VERSION) and (riv < SHADOWLANDS_VERSION)) then
-                    Addon:Debug("%s| |rrule '%s' needs migration (iv=%s)", GREEN_FONT_COLOR_CODE, ruleDef.Id, riv or "<none>");
+                    Addon:Debug("rules", "%s| |rrule '%s' needs migration (iv=%s)", GREEN_FONT_COLOR_CODE, ruleDef.Id, riv or "<none>");
                     ruleDef.needsMigration = true;
                 end
             end
         end
     end
-    Addon:Debug("+ Completed rule defintion migration");
+    Addon:Debug("rules", "+ Completed rule defintion migration");
 end
 
 --[[===========================================================================

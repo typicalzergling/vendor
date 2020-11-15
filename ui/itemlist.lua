@@ -5,87 +5,110 @@
     ========================================================================--]]
 
 local AddonName, Addon = ...
-local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
+local ItemList = {};
 
-Addon.ItemList = Addon.ItemList or {}
-local ItemList = Addon.ItemList
-
-local Package = select(2, ...);
-local SELL_LIST = Addon.c_AlwaysSellList;
-local KEEP_LIST = Addon.c_NeverSellList;
-	
-function ItemList:CreateItem(itemId)
-	local item = Mixin(CreateFrame("Button", nil, self, "Vendor_Item_Template"), Package.ItemListItem);
-	item:SetItem(itemId);
-	return item;
-end
-
-function ItemList:createModel()
-	local list = Addon:GetList(self.listType);
-	local model = {};
-
-	for id, v in pairs(list:GetContents()) do
-		if (v) then
-			table.insert(model, id);
-		end
+-- Returns true if the item is read-only
+function ItemList:IsReadOnly()
+	local readOnly = self.isReadOnly;
+	if (readOnly == nil) then
+		readOnly = self:GetParent().isReadOnly;
 	end
 
-	return model;
-end
+	if (readOnly == nil) then
+		return true;
+	end
 	
-function ItemList:OnUpdateItem(item, isFirst, isLast)
+	return (readOnly == true);
 end
 
-function ItemList:OnViewBuilt()
+-- Sets the list of items to display, this is either an array of ItemLocations,
+-- a list of item links, or numeric list of item ids.
+function ItemList:SetContents(itemList)
+	self.contents = table.copy(itemList or {});
+	self.List.ItemTemplate = "Vendor_ListItem_Item";
+	if (self:IsReadOnly()) then
+		self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";
+	end
+
+	--if (table.getn(self.contents) ~= 0) then
+		--table.sort(self.contents, 
+		--	function(a, b) 
+		--		print("a, b", a, b)
+		--		if (not a or not b) then
+		--			return nil;
+		--		end				
+		--		return a < b; 
+		--	end);
+	--end
+	self.List:ResetOffset();
+	self.List:Update();
 end
 	
 function ItemList.OnLoad(self)
-	Mixin(self, ItemList, Package.ListBase);
-	self:AdjustScrollbar();
-	Config:AddOnChanged(
-		function()
-			if (self:IsShown()) then
-				self:UpdateView(self:createModel());
-			end
-		end
-	);
+	Mixin(self, CallbackRegistryMixin);
+	self.List.isReadOnly = (self.isReadOnly or false);
+	CallbackRegistryMixin.OnLoad(self);
+	self:OnBackdropLoaded();
+	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
 
-	if (self.emptyText) then
-		if (self.listType == SELL_LIST) then
-			self.emptyText:SetText(L["ITEMLIST_EMPTY_SELL_LIST"]);
-		elseif (self.listType == KEEP_LIST) then
-			self.emptyText:SetText(L["ITEMLIST_EMPTY_KEEP_LIST"]);
-		else
-			self.emptyText:SetText("");
-		end
-	end
+	--self.List.emptyText.LocKey = self.EmptyTextKey;
+
+	self.List.GetItems = function()
+		return self.contents or {};
+	end;
+	
+	-- Set the item template on our list
+	self.List.ItemClass = Addon.ItemListItem;
+	self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";
 end
 
-function ItemList:OnShow()
-	self:UpdateView(self:createModel());
-end
-
-function ItemList:RefreshView()
-end	
-
-function ItemList:OnDropItem(button)
-	if ((button == "LeftButton") and CursorHasItem()) then
-		local _, itemId, itemLink = GetCursorInfo();
-		Config:BeginBatch();
-		if (self.listType == KEEP_LIST) then
-			Addon:GetList(KEEP_LIST):Add(itemId);
-			Addon:GetList(SELL_LIST):Remove(itemId);
-			Addon:Print(L["ITEMLIST_ADD_TO_KEEP_FMT1"], itemLink);
-		elseif (self.listType == SELL_LIST) then
-			Addon:GetList(KEEP_LIST):Remove(itemId);
-			Addon:GetList(SELL_LIST):Add(itemId);
-			Addon:Print(L["ITEMLIST_ADD_TO_SELL_FMT1"], itemLink);
-		end
-		Config:EndBatch();
+function ItemList:OnDrop(button)
+	local cursorItem = ItemList.GetCursorItem();
+	if (not self:IsReadOnly() and (button == "LeftButton") and cursorItem) then
 		ClearCursor();
+		Addon.invoke(self, "OnAddItem", cursorItem);
 	end
+end
+
+function ItemList:SetEmptyText(text)
+	self.List:SetEmptyText(text);
+end
+
+function ItemList.GetCursorItem()
+	local what = GetCursorInfo();
+	if (not what or (what ~= "item")) then
+		return nil;
+	end
+	
+	item = C_Cursor.GetCursorItem();
+	if (item) then
+		return item;
+	end
+
+	local _, itemId, itemLink = GetCursorInfo();
+	if (type(itemLink) == "string") then
+		return itemLink;
+	end
+
+	if (type(itemId) == "number") then
+		return itemId;
+	end
+
+	return nil;
+end
+
+function ItemList.GetItemId(item)
+	if (type(item) == "table") then
+		return C_Item.GetItemID(item);
+	elseif (type(item) == "string") then
+		local itemInfo = Item:CreateFromItemLink(item);
+		return itemInfo:GetItemID();
+	elseif (type(item) == "number") then
+		return item;
+	end
+	return nil;
 end
 
 -- Export to Public
-Addon.Public.ItemList = Addon.ItemList
+Addon.ItemList = ItemList;
+Addon.Public.ItemList = ItemList

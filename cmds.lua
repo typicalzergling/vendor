@@ -25,7 +25,7 @@ function Addon:SellItem_Cmd(list, item)
     end
 
     -- get item id
-    local id = self:GetItemId(item)
+    local id = self:GetItemIdFromString(item)
 
     -- if id specified, add or remove it
     if id then

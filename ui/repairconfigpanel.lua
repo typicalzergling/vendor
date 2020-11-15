@@ -19,21 +19,35 @@ end
 --*****************************************************************************
 -- Called to sync the values on our page with the config.
 --*****************************************************************************
-function Addon.ConfigPanel.Repair.Set(self, config)
-    Addon:Debug("Setting repair panel config")
-    self.AutoRepair.State:SetChecked(not not config:GetValue(Addon.c_Config_AutoRepair))
-    self.GuildRepair.State:SetChecked(not not config:GetValue(Addon.c_Config_GuildRepair))
+function Addon.ConfigPanel.Repair.Set(self)
+    Addon:Debug("config", "Setting repair panel config");
+
+    local profile = Addon:GetProfile();
+    self.AutoRepair.State:SetChecked(profile:GetValue(Addon.c_Config_AutoRepair));
+    self.GuildRepair.State:SetChecked(profile:GetValue(Addon.c_Config_GuildRepair));
 end
 
 --*****************************************************************************
 -- Push the values from our UI into the config
 --*****************************************************************************
-function Addon.ConfigPanel.Repair.Apply(self, config)
-    Addon:Debug("Applying repair options")
+function Addon.ConfigPanel.Repair.Apply(self)
+    Addon:Debug("config", "Applying repair options")
 
+    local profile = Addon:GetProfile();
     local autorepair = self.AutoRepair.State:GetChecked()
-    config:SetValue(Addon.c_Config_AutoRepair, autorepair)
-    config:SetValue(Addon.c_Config_GuildRepair, autorepair and self.GuildRepair.State:GetChecked())
+    profile:SetValue(Addon.c_Config_AutoRepair, autorepair)
+    profile:SetValue(Addon.c_Config_GuildRepair, autorepair and self.GuildRepair.State:GetChecked())
+end
+
+--*****************************************************************************
+-- Apply the default settings
+--*****************************************************************************
+function Addon.ConfigPanel.Repair:Default()
+    local profile = Addon:GetProfile();
+    local defaults = Addon.DefaultConfig.Settings;
+
+    profile:SetValue(Addon.c_Config_AutoRepair, defaults[Addon.c_Config_AutoRepair]);
+    profile:SetValue(Addon.c_Config_GuildRepair, defaults[Addon.c_Config_GuildRepair]);
 end
 
 --*****************************************************************************

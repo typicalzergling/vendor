@@ -15,9 +15,10 @@ script: /home/travis/.luarocks/bin/luacheck . --no-color -q
 after_success:
  
 script: 
-  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.5 -m .pkgmeta-classic -p 297511
   - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
- 
+  # Stopping Classic builds for now due to significant UI changes in Shadowlands not being compatible. Classic is good and stable, we will fork if need be.
+  #  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.5 -m .pkgmeta-classic -p 297511
+
 branches:
   only:
   - /^\d+\.\d+(\.\d+)?(-\S*)?$/

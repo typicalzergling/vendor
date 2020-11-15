@@ -27,7 +27,7 @@ end
     |   what we're evaluating.
     =============================================================================]]
 function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
-    Addon:DebugRules("Evaluating '%s' against bags (no-cache)", ruleId);
+    Addon:Debug("rules", "Evaluating '%s' against bags (no-cache)", ruleId);
     local rulesEngine = engine or self:CreateRulesEngine();
     local results = {};
 
@@ -38,18 +38,18 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
     local result, message = rulesEngine:AddRule(1, { Id = ruleId, Name = ruleId, Script = ruleScript }, parameters);
     if (result) then
         withEachBagAndItem(
-            function(item)
+            function(item, bag, slot)
                 local result = rulesEngine:Evaluate(item);
                 if (result) then
-                    table.insert(results, item.Link);
+                    table.insert(results, ItemLocation:CreateFromBagAndSlot(bag, slot));
                 end
                 return true;
            end, 0, NUM_BAG_SLOTS);
     else
-        Addon:DebugRules("The rule '%s' failed to parse: %s", ruleId, message);
+        Addon:Debug("rules", "The rule '%s' failed to parse: %s", ruleId, message);
     end
 
-    Addon:DebugRules("Complete evaluation of rule '%s' with %d matches", ruleId, #results);
+    Addon:Debug("rules", "Complete evaluation of rule '%s' with %d matches", ruleId, #results);
     return results;
 end
 
@@ -60,7 +60,7 @@ end
     |   inside of their bags.
     ===========================================================================--]]
 function Addon:ValidateRuleAgainstBags(engine, script)
-    Addon:Debug("Validating script against bags (no-cache)");
+    Addon:Debug("rules", "Validating script against bags (no-cache)");
     local rulesEngine = engine or self:CreateRulesEngine();
     local message = "";
     local valid = withEachBagAndItem(

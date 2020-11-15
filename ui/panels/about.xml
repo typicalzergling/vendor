@@ -1,0 +1,104 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="panels/about.lua"/>
+
+	<Frame name="Vendor_AboutPanel" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="UrlLabel">
+					<KeyValues>
+						<KeyValue key="LocKey" value="ABOUT_PROJECT_LABEL" type="string"/>
+					</KeyValues>
+					<Size x="80" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" y="-16" x="16"/>
+					</Anchors>
+				</FontString>
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="TutorialLabel">
+					<KeyValues>
+						<KeyValue key="LocKey" value="ABOUT_TUTORIAL_LABEL" type="string"/>
+					</KeyValues>
+					<Size x="100" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.UrlLabel" relativePoint="BOTTOMLEFT" y="-4"/>
+						<Anchor point="RIGHT" relativeKey="$parent.UrlLabel"/>
+					</Anchors>
+				</FontString>
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="VersionLabel">
+					<KeyValues>
+						<KeyValue key="LocKey" value="ABOUT_VERSION_LABEL" type="string"/>
+					</KeyValues>
+					<Size x="100" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.TutorialLabel" relativePoint="BOTTOMLEFT" y="-4"/>
+						<Anchor point="RIGHT" relativeKey="$parent.TutorialLabel"/>
+					</Anchors>
+				</FontString>
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontHighlight" parentKey="Version">
+					<Size x="100" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.VersionLabel" x="4"/>
+						<Anchor point="RIGHT" x="-16"/>
+						<Anchor point="BOTTOM" relativeKey="$parent.VersionLabel"/>
+					</Anchors>
+				</FontString>
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="ReleaseNotes" text="Release:">
+					<KeyValues>
+						<KeyValue key="LocKey" value="ABOUT_RELEASES_LABEL" type="string"/>
+					</KeyValues>
+					<Size x="100" y="26"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.VersionLabel" relativePoint="BOTTOMLEFT" y="-8"/>
+						<Anchor point="RIGHT" relativeKey="$parent.VersionLabel"/>
+					</Anchors>
+				</FontString>				
+			</Layer>			
+		</Layers>
+		<Frames>
+			<EditBox inherits="Vendor_Url" parentKey="Url">
+				<KeyValues>
+					<KeyValue key="UrlKey" value="VENDOR_URL" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.UrlLabel" x="4"/>
+					<Anchor point="RIGHT" x="-16"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.UrlLabel"/>
+				</Anchors>
+			</EditBox>
+			<EditBox inherits="Vendor_Url" parentKey="Tutorial">
+				<KeyValues>
+					<KeyValue key="UrlKey" value="VENDOR_TUTORIAL" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.TutorialLabel" x="4"/>
+					<Anchor point="RIGHT" x="-16"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.TutorialLabel"/>
+				</Anchors>
+			</EditBox>
+
+			<Frame inherits="Vendor_DropMenu" parentKey="Releases">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.ReleaseNotes" x="4"/>
+					<Anchor point="RIGHT" x="-16"/>
+				</Anchors>
+			</Frame>
+
+			<Frame inherits="Vendor_BorderFrame" parentKey="Outline">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-4" relativeKey="$parent.ReleaseNotes" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="RIGHT" x="-16"/>
+					<Anchor point="BOTTOM"  y="16"/>
+				</Anchors>			
+			</Frame>
+			<ScrollFrame name="$parentHelpScrollFrame" parentKey="ReleaseNotesText"  inherits="Vendor_HtmlView">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Outline" x="12" y="-12"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Outline" x="-5" y="10"/>
+				</Anchors>
+			</ScrollFrame>			
+
+		</Frames>
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self, "Panels", "AboutPanel")</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

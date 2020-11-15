@@ -104,6 +104,26 @@ function Addon.RuleFunctions.IsAlwaysSellItem()
 end
 
 --*****************************************************************************
+-- Rule function which checks if the item is in the list of items which
+-- should always be destroyed.
+function Addon.RuleFunctions.IsDestroyItem()
+    if Addon:IsItemIdInAlwaysDestroyList(Id) then
+        return true
+    end
+end
+
+--*****************************************************************************
+-- Rule function which checks if the item is in a particular list.
+--[[ No worky just yet
+function Addon.RuleFunctions.IsInList(list)
+    if not type(list) == "string" then return false end
+    if Addon.IsItemInList(Id, list) then
+        return true
+    end
+end
+]]
+
+--*****************************************************************************
 -- Rule function which returns the level of the player.
 --*****************************************************************************
 function Addon.RuleFunctions.PlayerLevel()
@@ -118,20 +138,18 @@ function Addon.RuleFunctions.PlayerClass()
     return localizedClassName --This is intentional to avoid passing back extra args
 end
 
+--@retail@
 --[[============================================================================
     | Rule function which returns the average item level of the players 
 	| equipped gear, in classic this just sums all your equipped items and 
 	| divides it by the number of item of equipped.
     ==========================================================================]]
 function Addon.RuleFunctions.PlayerItemLevel()
-	if (not Addon.IsClassic) then
-		local _, itemLevel, _ = GetAvergeItemLevel();
-		return itemLevel;
-	end
-
-	-- What should we do here?
-	return 400;
+    assert(not Addon.IsClassic);
+    local itemLevel = GetAverageItemLevel();
+	return floor(itemLevel);
 end
+--@end-retail@
 
 --*****************************************************************************
 -- This function checks if the specified item is a member of an item set.
@@ -177,7 +195,7 @@ function Addon.RuleFunctions.tostring(...)
 end
 
 function Addon.RuleFunctions.print(...)
-    return Addon:DebugRules(...)
+    return Addon:Debug("rules", ...)
 end
 --@end-do-not-package@
 

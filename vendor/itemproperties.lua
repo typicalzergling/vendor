@@ -17,20 +17,38 @@ local function clearTooltipState()
 end
 
 -- Hook for tooltip SetBagItem
+-- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
+-- TODO: Move this into skeleton, since this should be what you do for every insecure hook
 function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
-    tooltipLocation = ItemLocation:CreateFromBagAndSlot(bag, slot)
+    local status, err = xpcall(
+        function(b, s)
+            tooltipLocation = ItemLocation:CreateFromBagAndSlot(b, s)
+        end,
+        CallErrorHandler, bag, slot)
+    if not status then
+        Addon:Debug("itemerrors", "Error executing OnGameTooltipSetBagItem: ", tostring(err))
+    end
 end
 
 -- Hook for SetInventoryItem
+-- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
 function Addon:OnGameTooltipSetInventoryItem(tooltip, unit, slot)
-    if unit == "player" then
-        tooltipLocation = ItemLocation:CreateFromEquipmentSlot(slot)
-    else
-        clearTooltipState()
+    local status, err = xpcall(
+        function(u, s)
+            if u == "player" then
+                tooltipLocation = ItemLocation:CreateFromEquipmentSlot(s)
+            else
+                clearTooltipState()
+            end
+        end,
+        CallErrorHandler, unit, slot)
+    if not status then
+        Addon:Debug("itemerrors", "Error executing OnGameTooltipSetInventoryItem: ", tostring(err))
     end
 end
 
 -- Hook for Hide
+-- This is a secure hook.
 function Addon:OnGameTooltipHide(tooltip)
     clearTooltipState()
 end
@@ -103,7 +121,9 @@ function Addon:GetItemProperties(arg1, arg2)
     end
 
     -- No link means no item.
-    if not link or not location then return nil end
+    if not link or not location then
+        return nil
+    end
 
     -- Guid is how we uniquely identify items.
     local guid = C_Item.GetItemGUID(location)
@@ -146,7 +166,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.Level = GetDetailedItemLevelInfo(item.Link)
 
     -- Rip out properties from GetItemInfo
-    item.Id = self:GetItemId(item.Link)
+    item.Id = self:GetItemIdFromString(item.Link)
     item.Name = getItemInfo[1]
     item.Quality = getItemInfo[3]
     item.EquipLoc = getItemInfo[9]          -- This is a non-localized string identifier. Wrap in _G[""] to localize.
@@ -206,9 +226,8 @@ function Addon:GetItemProperties(arg1, arg2)
         end
     end
 
-    -- Determine if this is an already-collected item
-    -- For now limit to toys, but it could be other types, like Recipes
-    if item.IsToy then
+    -- Determine if this is an already-collected item, which should only be usable items.
+    if item.IsUsable then
         if self:IsItemAlreadyKnownInTooltip(tooltip, bag, slot) then
             item.IsAlreadyKnown = true
         end
@@ -234,39 +253,4 @@ end
 
 function Addon:GetItemPropertiesFromLink(link)
     return self:GetItemProperties(GameTooltip, link);
-end
-
--- Item Helpers
-
--- Gets item ID from an itemstring or item link
--- If a number is passed in it assumes that is the ID
-function Addon:GetItemId(str)
-    -- extract the id
-    if type(str) == "number" or tonumber(str) then
-        return tonumber(str)
-    elseif type(str) == "string" then
-        return tonumber(string.match(str, "item:(%d+):"))
-    else
-        return nil
-    end
-end
-
--- Assumes link
-function Addon:GetLinkString(link)
-    if link and type(link) == "string" then
-        local _, _, lstr = link:find('|H(.-)|h')
-        return lstr
-    else
-        return nil
-    end
-end
-
--- Returns table of link properties
-function Addon:GetLinkProperties(link)
-    local lstr = self:GetLinkString(link)
-    if lstr then
-        return {strsplit(':', lstr)}
-    else
-        return {}
-    end
 end

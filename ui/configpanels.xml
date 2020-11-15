@@ -1,4 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="configpanels.lua"/>
+    <Script file="generalconfigpanel.lua"/>
+    <Script file="repairconfigpanel.lua"/>
+    <Script file="perfconfigpanel.lua"/>
 
     <!--
         Vendor.OptionsPanel.Template
@@ -343,36 +347,53 @@
             </Frame>
 
             <!-- Open rules / bindings buttons -->
-            <Button name="$parent.OpenRulesDialog" parentKey="OpenRules" inherits="UIPanelButtonTemplate">
+            <Button name="$parent.OpenRulesDialog" parentKey="openRules" inherits="UIPanelButtonTemplate">
                 <Size x="172" y="28"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="0" y="-68"/>
+                    <Anchor point="TOP" relativeKey="$parent.TooltipRule" relativePoint="BOTTOM" y="-48"/>
+                    <Anchor point="RIGHT" relativePoint="CENTER" x="-6"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Vendor.ConfigPanel.General.OnOpenRules()
+                        self:GetParent():OnOpenRules()
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parent.OpenBindings" parentKey="OpenBindings" inherits="UIPanelButtonTemplate">
+            <Button name="$parent.OpenBindings" parentKey="openBindings" inherits="UIPanelButtonTemplate">
                 <Size x="172" y="28"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent.OpenRulesDialog" relativePoint="TOPRIGHT" x="12" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Vendor.ConfigPanel.General.OpenBindings()
+                        self:GetParent():OpenBindings()
                         InterfaceOptionsFrame_Show()
                     </OnClick>
                 </Scripts>
             </Button>
+            <Button parentKey="resetRules" inherits="UIPanelButtonTemplate">
+                <Size x="172" y="28"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.openRules" relativePoint="BOTTOMLEFT" y="-12"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>self:GetParent():ResetRules()</OnClick>
+                </Scripts>
+            </Button>            
+            <Button parentKey="resetSettings" inherits="UIPanelButtonTemplate">
+                <Size x="172" y="28"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.resetRules" relativePoint="TOPRIGHT" x="12"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>self:GetParent():ApplyDefaults()</OnClick>
+                </Scripts>
+            </Button>            
         </Frames>
         <Scripts>
             <OnLoad>
-                Vendor.ConfigPanel.SetVersionInfo(self)
-                Vendor.ConfigPanel.General.Init(self)
-                Vendor.ConfigPanel.InitMainPanel(self)
+                Vendor.ConfigPanel.InitMainPanel(self, "General");
             </OnLoad>
         </Scripts>
     </Frame>
@@ -400,9 +421,7 @@
         </Frames>
         <Scripts>
             <OnLoad>
-                Vendor.ConfigPanel.SetVersionInfo(self)
-                Vendor.ConfigPanel.Repair.Init(self)
-                Vendor.ConfigPanel.InitChildPanel(self)
+                Vendor.ConfigPanel:AddPanel(self, "Repair");
             </OnLoad>
         </Scripts>
     </Frame>
@@ -430,44 +449,8 @@
         </Frames>
         <Scripts>
             <OnLoad>
-                Vendor.ConfigPanel.SetVersionInfo(self)
-                Vendor.ConfigPanel.Perf.Init(self)
-                Vendor.ConfigPanel.InitChildPanel(self)
+                Vendor.ConfigPanel:AddPanel(self, "Perf");
             </OnLoad>
         </Scripts>
     </Frame>
-
-    <!--@do-not-package@-->
-    <!--
-        VendorDebugConfigPanel
-            The debugging options for vendor, on used by active developers not available to
-            release versions
-    -->
-    <Frame name="VendorDebugConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
-        <Frames>
-            <Frame name="$parent.Debug" parentKey="Debug" inherits="Vendor.Options.CheckTemplate">
-                <Size x="250" y="54"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.HelpText" relativePoint="BOTTOMLEFT" x="16" y="-24"/>
-                    <Anchor point="RIGHT" x="-16" />
-                </Anchors>
-            </Frame>
-            <Frame name="$parent.DebugRules" parentKey="DebugRules" inherits="Vendor.Options.CheckTemplate">
-                <Size x="250" y="54"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.Debug" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
-                    <Anchor point="RIGHT" x="-16" />
-                </Anchors>
-            </Frame>
-        </Frames>
-        <Scripts>
-            <OnLoad>
-                Vendor.ConfigPanel.SetVersionInfo(self)
-                Vendor.ConfigPanel.Debug.Init(self)
-                Vendor.ConfigPanel.InitChildPanel(self)
-            </OnLoad>
-        </Scripts>
-    </Frame>
-    <!--@end-do-not-package@-->
-
 </Ui>

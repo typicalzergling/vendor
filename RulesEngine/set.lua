@@ -8,7 +8,6 @@ function flagsFromString(str, sep)
     local r = {};
     str = tostring(str or "");
     str:gsub("([^|]+)", function(f)
-            print(f);
             f = f:gsub("%s", "");
             table.insert(r, f);
         end);

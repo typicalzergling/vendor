@@ -1,18 +1,20 @@
 Bugs:
 ===============================================================================
-    1) Grammar/Spelling pass
     
 Work Items:
 ===============================================================================
-    1) Switch over LOC/API/INIT to new mode (aka Public)
-    
-    2) Interface settings should save with OK, Cancel or close window.
+- Reset in options, deletes all profiles with a a confirmation
+- Open rules dialog to a specific tab
+    - Update Titan Plugin when clicking on the profiles flyout menu, opens the profiles tab directly
+- Move create to below list on rule page.
+- Fix localization of the create buttons
+- Documentation rending get wonky
+- Item Properties
+    - Left click insterts into script
+    - right click goes to help
+- Cleanup existing duplicate code
 
-    3) Remove Cancel/Ok from rules dialog. Save when closed.
-
-    7) Remove defaults button in Rule list
-    
-    8) Add more player related variables like:  PlayerClass, PlayerIsEngineer, PlayerIsEnchanter, etc
 
 Future:
 ===============================================================================
+- Custom lists

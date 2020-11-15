@@ -50,8 +50,40 @@ function Addon:IsItemCached(arg)
     end
 end
 
-function Addon:ClearItemCache()
-    itemCache = {}
-    Addon:Debug("Item Cache cleared.")
+function Addon:ClearItemCache(arg)
+    if not arg then
+        itemCache = {}
+        Addon:Debug("items", "Item Cache cleared.")
+    elseif type(arg) == "string" then
+        itemCache[arg] = nil
+    else
+        itemCache[C_Item.GetItemGUID(arg)] = nil
+    end
     Addon:ClearTooltipResultCache()
+end
+
+-- Input is a location or a guid
+function Addon:GetItemFromCache(arg)
+    assert(arg)
+    if type(arg) == "table" then
+        return itemCache[C_Item.GetItemGUID(arg)]
+    elseif type(arg) == "string" then
+        return itemCache[arg]
+    else
+        error("Invalid input into AddItemToCache")
+    end
+end
+
+-- Fires when equipping items. This can change their properties, so both caches must be cleared.
+function Addon:OnItemLockChanged(arg1, arg2)
+    local location = nil
+    if not arg2 then
+        location = ItemLocation:CreateFromEquipmentSlot(arg1)
+    else
+        location = ItemLocation:CreateFromBagAndSlot(arg1, arg2)
+    end
+    if not location then return end
+    local guid = C_Item.GetItemGUID(location)
+    Addon:ClearItemCache(guid)
+    Addon:ClearResultCache(guid)
 end

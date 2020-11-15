@@ -21,7 +21,8 @@ function CustomRule:Init(ruleDef)
             self.author:SetText(ruleDef.EditedBy);
         end
 
-        if (ruleDef.Type == Addon.c_RuleType_Keep) then
+        -- Need to update this for Destroy rules
+        if (ruleDef.Type == Addon.RuleType.KEEP) then
             self.sellRule:Hide();
             self.keepRule:Show();
         else
@@ -108,17 +109,17 @@ end
 -- Add a static popup so we can show it.
 StaticPopupDialogs[VENDOR_STATICPOPUP_CONFIRM_DELETE] =
 {
-	text = L["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"];
-	button1 = YES,
-	button2 = NO,
-	OnAccept = function (self)
+    text = L["CONFIG_DIALOG_CONFIRM_DELETE_FMT1"];
+    button1 = YES,
+    button2 = NO,
+    OnAccept = function (self)
             Rules.DeleteDefinition(self.data);
         end,
-	OnCancel = function (self) end,
-	hideOnEscape = 1,
-	timeout = 0,
-	exclusive = 1,
-	whileDead = 1,
+    OnCancel = function (self) end,
+    hideOnEscape = 1,
+    timeout = 0,
+    exclusive = 1,
+    whileDead = 1,
 };
 
 Addon.Public.CustomRuleList = Addon.CustomRuleList

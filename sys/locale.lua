@@ -152,3 +152,11 @@ function Addon:GetLocale()
     -- Always return the proxy, which is set up at the same time localizedStrings is.
     return localizedStringsProxy
 end
+
+
+Addon.Public.SetLocalizedString = function(self, control, key)
+    if (key and (type(key) == "string")) then
+        local locale = Addon:GetLocale();
+        control:SetText(locale[key] or string.upper(key));
+    end
+end

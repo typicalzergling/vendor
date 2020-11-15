@@ -1,15 +1,16 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 local Package = select(2, ...);
 Addon.RuleManager = {}
 local RuleManager = Addon.RuleManager;
 local RULE_TYPE_LOCKED_KEEP = 1;
 local RULE_TYPE_LOCKED_SELL = 2;
+local RULE_TYPE_LOCKED_DESTROY = 3;
 local RULE_TYPE_KEEP = 10;
 local RULE_TYPE_SELL = 1000;
-local RULE_TYPE_SCRAP = 100;
+local RULE_TYPE_DESTROY = 2000;
+local RuleType = Addon.RuleType;
 
 local ITEM_CONSTANTS =
 {
@@ -59,13 +60,16 @@ function RuleManager:Create()
     local instance = setmetatable({ unhealthy = {}, outdated = {} }, self);
     self.__index = self;
 
+    local profile = Addon:GetProfile();
+
     -- Initialize the rule engine
-    local rulesEngine = Addon:CreateRulesEngine(Config:GetValue("debugrules"));
+    local rulesEngine = Addon:CreateRulesEngine(Addon:IsDebugChannelEnabled("rulesengine"));
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_KEEP, "<locked-keep>");
     rulesEngine:CreateCategory(RULE_TYPE_LOCKED_SELL, "<locked-sell>");
-    rulesEngine:CreateCategory(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
-    rulesEngine:CreateCategory(RULE_TYPE_SCRAP, Addon.c_RuleType_Scrap);
-    rulesEngine:CreateCategory(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
+    rulesEngine:CreateCategory(RULE_TYPE_LOCKED_DESTROY, "<locked-destroy>");
+    rulesEngine:CreateCategory(RULE_TYPE_KEEP, RuleType.KEEP);
+    rulesEngine:CreateCategory(RULE_TYPE_DESTROY, RuleType.DESTROY);
+    rulesEngine:CreateCategory(RULE_TYPE_SELL, RuleType.SELL);
     rulesEngine.OnRuleStatusChange:Add(
         function(what, categoryId, ruleId, message)
             if (what == "UNHEALTHY") then
@@ -78,7 +82,7 @@ function RuleManager:Create()
     -- we might have scrub rules, etc.
     Addon.Rules.OnDefinitionsChanged:Add(function() instance:Update(); end);
     Addon.Rules.CheckMigration();
-    Config:AddOnChanged(function() instance:Update(); end, 1);
+    Addon:GetProfileManager():RegisterCallback("OnProfileChanged", self.Update, instance);
     instance:Update();
 
     return instance
@@ -142,7 +146,8 @@ end
     |         custom rules are blended in the list.
     ========================================================================--]]
 function RuleManager:ApplyConfig(categoryId, ruleType)
-    local config = Config:GetRulesConfig(ruleType);
+    local profile = Addon:GetProfile();
+    local config = profile:GetRules(ruleType);
     local rulesEngine = self.rulesEngine;
     if (config) then
         for _, entry in ipairs(config) do
@@ -150,30 +155,30 @@ function RuleManager:ApplyConfig(categoryId, ruleType)
                 local ruleDef = Addon.Rules.GetDefinition(entry, ruleType);
                 if (ruleDef) then
                     if (ruleDef.needsMigration) then
-                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        Addon:Debug("rules", "Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
                         self:SetRuleOutdatedState(ruleDef.Id, true);
                     else
-                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        Addon:Debug("rules", "Adding rule '%s' [%s]", ruleDef.Id, ruleType);
                         rulesEngine:AddRule(categoryId, ruleDef);
                     end
                 else
-                    Addon:DebugRules("Rule '%s' [%s] was not found", entry, ruleType);
+                    Addon:Debug("rules", "Rule '%s' [%s] was not found", entry, ruleType);
                 end
             elseif ((type(entry) == "table") and (entry.rule)) then
                 local ruleDef = Addon.Rules.GetDefinition(entry.rule, ruleType);
                 if (ruleDef) then
                     if (ruleDef.needsMigration) then
-                        Addon:Debug("Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
+                        Addon:Debug("rules", "Marking rule '%s [%s]' as outdated", ruleDef.Id, ruleType)
                         self:SetRuleOutdatedState(ruleDef.Id, true);
                     else
-                        Addon:Debug("Adding rule '%s' [%s]", ruleDef.Id, ruleType);
+                        Addon:Debug("rules", "Adding rule '%s' [%s]", ruleDef.Id, ruleType);
                         rulesEngine:AddRule(categoryId, ruleDef, entry);
                     end
                 else
-                    Addon:DebugRules("Rule '%s' [%s] was not found", entry.rule, ruleType);
+                    Addon:Debug("rules", "Rule '%s' [%s] was not found", entry.rule, ruleType);
                 end
             else
-                Addon:DebugRules("Unknown configuration entry found (%s)", type(entry));
+                Addon:Debug("rules", "Unknown configuration entry found (%s)", type(entry));
             end
         end
     end
@@ -189,29 +194,34 @@ function RuleManager:Update()
 
     self.unhealthy = {};
     rulesEngine:ClearRules();
-    rulesEngine:SetVerbose(Config:GetValue("debugrules"));
+    rulesEngine:SetVerbose(Addon:IsDebugChannelEnabled("rulesmanager"));
 
     -- Step 1: We want to add all of the locked rules into the
     --         engine as those are always added independent of the config.
     for _, ruleDef in ipairs(Addon.Rules.GetLockedRules()) do
-        Addon:DebugRules("Adding LOCKED rule '%s' [%s]", ruleDef.Id, ruleDef.Type);
-        if (ruleDef.Type == Addon.c_RuleType_Sell) then
+        Addon:Debug("rules", "Adding LOCKED rule '%s' [%s]", ruleDef.Id, ruleDef.Type);
+        if (ruleDef.Type == RuleType.SELL) then
             rulesEngine:AddRule(RULE_TYPE_LOCKED_SELL, ruleDef);
-        elseif (ruleDef.Type == Addon.c_RuleType_Keep) then
+        elseif (ruleDef.Type == RuleType.KEEP) then
             rulesEngine:AddRule(RULE_TYPE_LOCKED_KEEP, ruleDef);
+        elseif (ruleDef.Type == RuleType.DESTROY) then
+            rulesEngine:AddRule(RULE_TYPE_LOCKED_DESTROY, ruleDef);
         else
             assert(false, "An unknown rule type was encountered: " .. ruleDef.Type);
         end
     end
 
     -- Step 2: Add the keep rules from our configuration
-    self:ApplyConfig(RULE_TYPE_KEEP, Addon.c_RuleType_Keep);
+    self:ApplyConfig(RULE_TYPE_KEEP, RuleType.KEEP);
 
-    -- Step 3: Add the sell rules from our configuration
-    self:ApplyConfig(RULE_TYPE_SELL, Addon.c_RuleType_Sell);
+    -- Step 3: Apply delete rules
+    self:ApplyConfig(RULE_TYPE_DESTROY, RuleType.DESTROY);
 
-    -- Step 4: Apply scrap rules
-    self:ApplyConfig(RULE_TYPE_SCRAP, Addon.c_RuleType_Scrap);
+    -- Step 4: Add the sell rules from our configuration
+    self:ApplyConfig(RULE_TYPE_SELL, RuleType.SELL);
+
+    -- Clear the result cache
+    Addon:ClearResultCache();
 end
 
 --*****************************************************************************
@@ -222,29 +232,18 @@ end
 --*****************************************************************************
 function RuleManager:Run(object, ...)
     local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
-    Addon:DebugRules("Evaluated \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
+    Addon:Debug("rules", "Evaluated \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
     if (result) then
-        if ((categoryId == RULE_TYPE_KEEP) or (categoryId == RULE_TYPE_LOCKED_KEEP) or (categoryId == RULE_TYPE_SCRAP)) then
-            return false, ruleId, name;
+        if ((categoryId == RULE_TYPE_KEEP) or (categoryId == RULE_TYPE_LOCKED_KEEP)) then
+            return false, ruleId, name, RuleType.KEEP;
         elseif ((categoryId == RULE_TYPE_SELL) or (categoryId == RULE_TYPE_LOCKED_SELL)) then
-            return true, ruleId, name;
+            return true, ruleId, name, RuleType.SELL;
+        elseif ((categoryId == RULE_TYPE_DESTROY) or (categoryId == RULE_TYPE_LOCKED_DESTROY)) then
+            return true, ruleId, name, RuleType.DESTROY;
         end
     end
 
     return false, nil, nil
-end
-
---[[===========================================================================
-    | CheckForScrap:
-    |   Checks if the object should be considered scrap.
-    =======================================================================--]]
-function RuleManager:CheckForScrap(object, ...)
-    local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
-    Addon:Debug("CheckScrap \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
-    if (result and (categoryId == RULE_TYPE_SCRAP)) then
-        return true, ruleId, name;
-    end
-    return false, nil, nil;
 end
 
 --*****************************************************************************

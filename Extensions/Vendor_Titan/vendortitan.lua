@@ -10,7 +10,7 @@ _G[AddonName] = Addon
 Addon.id = "VendorTitan"
 Addon.addon = AddonName
 Addon.button_label = L["TITAN_BUTTON_LABEL"]
-Addon.version = GetAddOnMetadata(AddonName, "Version")
+Addon.version = GetAddOnMetadata("Vendor", "Version")
 Addon.author = GetAddOnMetadata(AddonName, "Author")
 
 Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC)
@@ -21,7 +21,7 @@ function Addon:Load()
         id = Addon.id,
         version = Addon.version,
         category = "General",
-        menuText = L["TITAN_MENU_TEXT"],
+        menuText = L["TITAN_MENU_TEXT"] .. " - " .. Addon.version,
         buttonTextFunction = "VendorTitan_GetButtonText",
         tooltipTitle = L["TITAN_TOOLTIP_TITLE"],
         tooltipTextFunction = "VendorTitan_GetTooltipText",
@@ -55,8 +55,10 @@ local totalCountStr = ""
 local sellCountStr = ""
 local sellValueStr = ""
 local deleteCountStr = ""
+local sellItems = {}
+local deleteItems = {}
 local function updateStats()
-    totalCount, sellValue, sellCount, deleteCount = Vendor.GetEvaluationStatus()
+    totalCount, sellValue, sellCount, deleteCount, sellItems, deleteItems = Vendor.GetEvaluationStatus()
 
     if totalCount > 0 then
         totalCountStr = TitanUtils_GetColoredText(tostring(totalCount), BATTLENET_FONT_COLOR)
@@ -120,10 +122,11 @@ end
 
 function VendorTitan_GetTooltipText()
     local out = ""
-    out = out.."\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_ITEMEVALUATION"])
-    out = out.."\n"..TitanUtils_GetHighlightText(L["TITAN_TOOLTIP_TOSELL"]).."\t"..sellCountStr
-    out = out.."\n"..TitanUtils_GetHighlightText(L["TITAN_TOOLTIP_TODELETE"]).."\t"..deleteCountStr
-    out = out.."\n\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_VALUE"]).."\t"..sellValueStr
+    out = out..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_VALUE"]).."\t"..sellValueStr
+    out = out.."\n\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_TOSELL"]).."\t"..sellCountStr
+    out = out.."\n    "..table.concat(sellItems, "\n    ")
+    out = out.."\n\n"..TitanUtils_GetGoldText(L["TITAN_TOOLTIP_TODELETE"]).."\t"..deleteCountStr
+    out = out.."\n    "..table.concat(deleteItems, "\n    ")
     return out
 end
 
@@ -132,44 +135,63 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
     local info
     
     if L_UIDROPDOWNMENU_MENU_LEVEL == 2 then
-		return 
-	end
+        if L_UIDROPDOWNMENU_MENU_VALUE == "Profiles" then
+            TitanPanelRightClickMenu_AddTitle(L["TITAN_MENU_PROFILES"], L_UIDROPDOWNMENU_MENU_LEVEL)
+            local profiles = Vendor.GetProfiles()
+            for _, profile in pairs(profiles) do
+                info = {}
+                info.text = profile.Name
+                info.func = function () Vendor.SetProfile(profile.Id) end
+                info.checked = profile.Active
+                L_UIDropDownMenu_AddButton(info, L_UIDROPDOWNMENU_MENU_LEVEL)
+            end
+        end
+        return 
+    end
 
-	-- level 1 menu
-	if L_UIDROPDOWNMENU_MENU_LEVEL == 1 then
-		TitanPanelRightClickMenu_AddTitle(TitanPlugins[Addon.id].menuText);
-         
+    -- level 1 menu
+    if L_UIDROPDOWNMENU_MENU_LEVEL == 1 then
+        TitanPanelRightClickMenu_AddTitle(TitanPlugins[Addon.id].menuText);
 
         -- Rules Menu
-		info = {};
-        info.text = L["TITAN_MENU_RULES"]
+        info = {};
+        info.text = L["TITAN_MENU_NEW_RULE"]
         info.notCheckable = true
-        info.func = function () Vendor.ShowRules() end
+        info.func = function () VendorEditRuleDialog:CreateRule() end
         L_UIDropDownMenu_AddButton(info);
-        
 
         -- Settings Button
-		info = {};
+        info = {};
         info.text = L["TITAN_MENU_SETTINGS"]
         info.notCheckable = true
         info.func = function () Vendor.ShowSettings() end
         L_UIDropDownMenu_AddButton(info);
         
         -- Keybinds Button
-		info = {};
+        info = {};
         info.text = L["TITAN_MENU_KEYBINDINGS"]
         info.notCheckable = true
         info.func = function () Vendor.ShowKeybindings() end
         L_UIDropDownMenu_AddButton(info);
         
+        TitanPanelRightClickMenu_AddSpacer()
+
+        -- Profiles
+        info = {};
+        info.text = L["TITAN_MENU_CHANGE_PROFILES"]
+        info.value = "Profiles"
+        info.notCheckable = true
+        info.hasArrow = 1;
+        L_UIDropDownMenu_AddButton(info);
+
         -- Default Titan options
         TitanPanelRightClickMenu_AddSpacer();     
         TitanPanelRightClickMenu_AddToggleIcon(Addon.id);
-		TitanPanelRightClickMenu_AddToggleLabelText(Addon.id);
+        TitanPanelRightClickMenu_AddToggleLabelText(Addon.id);
         TitanPanelRightClickMenu_AddToggleColoredText(Addon.id);
 
         -- Button to hide the money string
-		--[[info = {};
+        --[[info = {};
         info.text = "Show Value Text"
         info.checked = TitanGetVar(Addon.id, "ShowValueText")
         info.keepShownOnClick = true
@@ -181,10 +203,10 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
 
         TitanPanelRightClickMenu_AddToggleVar(L["TITAN_MENU_SHOWVALUETEXT"], Addon.id, "ShowValueText", nil, L_UIDROPDOWNMENU_MENU_LEVEL)
 
-		TitanPanelRightClickMenu_AddSpacer();     
-		TitanPanelRightClickMenu_AddCommand(L["TITAN_MENU_HIDE"], Addon.id, TITAN_PANEL_MENU_FUNC_HIDE);
-		-- SDK : The routine above is used to put a "Hide" (localized) in the menu.
-	end
+        TitanPanelRightClickMenu_AddSpacer();
+        TitanPanelRightClickMenu_AddCommand(L["TITAN_MENU_HIDE"], Addon.id, TITAN_PANEL_MENU_FUNC_HIDE);
+        -- SDK : The routine above is used to put a "Hide" (localized) in the menu.
+    end
 end
 
 -- Vendor Extension for callback when rules change.

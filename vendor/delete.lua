@@ -39,7 +39,7 @@ function Addon:AutoDeleteItems()
 
                 -- If the cursor is holding anything then we can't pick it up to delete. Yield and check again next cycle.
                 while GetCursorInfo() do
-                    self:Debug("Cursor is holding something; waiting to delete..")
+                    self:Debug("delete", "Cursor is holding something; waiting to delete..")
                     coroutine.yield()
                 end
 
@@ -52,8 +52,13 @@ function Addon:AutoDeleteItems()
                 if result == 2 then
                     currentDeletedItem = item.Link
                     self:Print(L["DELETE_DELETING_ITEM"], tostring(currentDeletedItem))
-                    PickupContainerItem(bag, slot)
-                    DeleteCursorItem()
+                    if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
+                        PickupContainerItem(bag, slot)
+                        DeleteCursorItem()
+                    else
+                        self:Print("Simulating deletion of: %s", tostring(item.Link))
+                    end
+
                     currentDeletedItem = nil
                     numDeleted = numDeleted + 1
                     
@@ -71,20 +76,6 @@ function Addon:AutoDeleteItems()
     -- Add thread to the thread queue and start it.
     self:AddThread(thread, threadName)
 end
-
--- Confirms the popup if an item will be delted, but only when we are auto-deleting it.
-function Addon.AutoConfirmDelete(link)
-    if self:IsDeleting() then
-        self:Print(L["MERCHANT_AUTO_CONFIRM_DELETE"], link)
-        if link ~= currentDeletedItem then
-            self:Debug("Confirmation does not match item currently being deleted, aborting auto-confirm")
-            return
-        end
-        -- TODO: Implement the auto-confirm.
-        --SellCursorItem()
-    end
-end
-
 
 -- Add Thread Callback, when Itemseller is done running, we will run the deleter.
 -- This avoids both of them running simultaneously.

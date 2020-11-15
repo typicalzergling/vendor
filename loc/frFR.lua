@@ -6,7 +6,7 @@ local _, Addon = ...
 Addon:AddLocale("frFR",
 {
 -- Core
-["ADDON_NAME"] = "Vendeur",
+ADDON_NAME = "Vendeur",
 
 -- Add translations as learned. Anything not listed here in will inherit default language as a fallback.
 

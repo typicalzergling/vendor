@@ -5,30 +5,83 @@
 	<!-- -->
    	<ScrollFrame name="Vendor_Item_List" virtual="true" inherits="FauxScrollFrameTemplate">
         <KeyValues>
-            <KeyValue key="itemHeight" value="24" type="number"/>
+            <KeyValue key="ItemHeight" value="24" type="number"/>
+			<KeyValue key="ItemClass" value="ItemListItem" type="string"/>
         </KeyValues>
 		<Layers>
-			<Layer level="BORDER" textureSubLevel="-2">
+			<Layer level="BACKGROUND" textureSubLevel="-2">
 				<Texture parentKey="scrollbarBackground">
-					<Color r="0" g="0" b="0" a="0.65"/>
+					<Color r="0.0" g="0.0" b="0.0" a="0.50"/>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-                <FontString justifyH="CENTER" justifyV="TOP" inherits="GameFontNormalGraySmall" parentKey="emptyText" hidden="true">
+                <FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontDisable" parentKey="EmptyText" hidden="false">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="4" y="-16"/>
-						<Anchor point="BOTTOMRIGHT" x="-20" y="16"/>
+						<Anchor point="TOPLEFT" x="12" y="-16"/>
+						<Anchor point="BOTTOMRIGHT" x="-12" y="16" relativeKey="$parent.ScrollBar" relativePoint="BOTTOMLEFT"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>Vendor.ItemList.OnLoad(self);</OnLoad>
-			<OnShow>self:OnShow(self);</OnShow>
-			<OnVerticalScroll>self:OnVerticalScroll(offset)</OnVerticalScroll>
-			<OnMouseUp>self:OnDropItem(button)</OnMouseUp>
+			<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
+			<OnMouseUp>self:GetParent():OnDrop(button)</OnMouseUp>
 		</Scripts>
 	</ScrollFrame>
+
+	<Frame name="Vendor_ItemList" virtual="true" inherits="TooltipBackdropTemplate">
+        <KeyValues>
+            <KeyValue key="Implementation" value="ItemList" type="string"/>
+			<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
+			<KeyValue key="backdropColor" value="DARKGRAY_COLOR" type="global"/>
+			<KeyValue key="backdropColorAlpha" value="0.20" type="number"/>
+        </KeyValues>
+		<Frames>
+			<ScrollFrame parentKey="List" inherits="Vendor_Item_List">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-5"/>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+				</Anchors>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.List.isReadOnly = self.isReadOnly;
+				Vendor.LoadImplementation(self);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<!-- Base item template -->
+	<Button name="Vendor_ItemList_ItemBase" virtual="true">
+        <KeyValues>
+            <KeyValue key="Implementation" value="ItemListItem" type="string"/>
+        </KeyValues>
+		<Size x="300" y="24"/>
+		<Layers>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="Hover" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Selected" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="LEFT" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self)</OnLoad>
+		</Scripts>
+	</Button>
 
 	<!-- -->
 	<Button name="Vendor_Item_Template" virtual="true">
@@ -64,5 +117,37 @@
             <OnEnter>self:OnMouseEnter()</OnEnter>
             <OnLeave>self:OnMouseLeave()</OnLeave>
 		</Scripts>
+	</Button>
+
+	<Button name="Vendor_ListItem_Item_ReadOnly" virtual="true" inherits="Vendor_ItemList_ItemBase"/>
+
+	<Button name="Vendor_ListItem_Item" virtual="true" inherits="Vendor_ItemList_ItemBase">
+		<Frames>
+			<Button parentKey="Delete" hidden="true">
+				<Size x="14" y="14"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-5"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\Buttons\UI-GroupLoot-Pass-Up" alpha="0.5" parentKey="Texture"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						self.Texture:SetAlpha(1.0);
+						GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
+						GameTooltip:SetText(REMOVE);
+					</OnEnter>
+					<OnLeave>
+						self.Texture:SetAlpha(0.5);
+						GameTooltip_Hide();
+					</OnLeave>
+					<OnMouseDown>self.Texture:SetPoint("TOPLEFT", 1, -1);</OnMouseDown>
+					<OnMouseUp>self.Texture:SetPoint("TOPLEFT", 0, 0);</OnMouseUp>
+					<OnClick>self:GetParent():HandleDelete()</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
 	</Button>
 </Ui>
