@@ -22,6 +22,11 @@ end
 Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
 Rules.OnFunctionsChanged = Addon.CreateEvent("Rules.OnFunctionsChanged");
 
+local function DefaultItemLevel()
+    local avg, equip = GetAverageItemLevel();
+    return math.max(0, math.floor(math.min(avg, equip) * 0.8));
+end
+
 -- Param definition for our rules which use ITEMLEVEL
 local ITEM_LEVEL_PARAMS =
 {
@@ -29,10 +34,6 @@ local ITEM_LEVEL_PARAMS =
         Type="numeric",
         Name=L["RULEUI_LABEL_ITEMLEVEL"],
         Key="ITEMLEVEL",
-        Default = function()
-            local avg, equip = GetAverageItemLevel();
-            return math.max(0, math.floor(math.min(avg, equip) * 0.8));
-        end,
     },
 };
 
@@ -99,9 +100,15 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = table.merge(ITEM_LEVEL_PARAMS, {
-            Description = "Uncommon gear item description"
-        }),
+        Params = 
+        {
+            {
+                Key = "ITEMLEVEL",
+                Type = "numeric",
+                Name = L.RULEUI_SELL_UNCOMMON_INFO,
+                Default = DefaultItemLevel,
+            }
+        },
         Order = 1400,
     },
 
@@ -114,7 +121,15 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = ITEM_LEVEL_PARAMS,
+        Params = 
+        {
+            {
+                Type = "numeric",
+                Name = L.RULEUI_SELL_RARE_INFO,
+                Key = "ITEMLEVEL",
+                Default = DefaultItemLevel,
+            }
+        },
         Order = 1500,
     },
 
@@ -127,10 +142,14 @@ Rules.SystemRules =
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
-        Params = {
-            table.merge(ITEM_LEVEL_PARAMS[1], {
-                Name = "Any " ..ITEM_QUALITY_COLORS[4].hex .. "Epic|r gear below the this item level will be sold",
-            })
+        Params = 
+        {
+            {
+                Type = "numeric",
+                Key = "ITEMLEVEL",
+                Name = L.RULEUI_SELL_EPIC_INFO,
+                Default = DefaultItemLevel,
+            }
         },
         Order = 1600,
     },

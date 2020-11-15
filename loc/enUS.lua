@@ -189,6 +189,10 @@ API_GETPRICESTRING_DOCS = "Converts passed in integer to a color coded and icon 
 
 -- Rules
 RULEUI_LABEL_ITEMLEVEL = "Item Level:",
+RULEUI_SELL_EPIC_INFO = "Any " ..ITEM_QUALITY_COLORS[4].hex .. "Epic|r gear below the this item level will be sold",
+RULEUI_SELL_RARE_INFO = "Any " ..ITEM_QUALITY_COLORS[3].hex .. "Rare|r gear below the this item level will be sold",
+RULEUI_SELL_UNCOMMON_INFO = "Any " ..ITEM_QUALITY_COLORS[2].hex .. "Uncommon|r gear below the this item level will be sold",
+
 CONFIG_DIALOG_CAPTION = "Vendor Rules",
 CONFIG_DIALOG_KEEPRULES_TAB = "Keep Rules",
 CONFIG_DIALOG_RULES_TAB = "Rules",
