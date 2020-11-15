@@ -54,10 +54,11 @@ DELETE_DELETING_ITEM = "Deleting %s",
 
 -- Tooltip
 TOOLTIP_ADDITEM_ERROR_NOITEM = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
-TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST = "Vendor: Always Sell",
-TOOLTIP_ITEM_IN_NEVER_SELL_LIST = "Vendor: Never Sell",
+TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST = "Vendor: Sell",
+TOOLTIP_ITEM_IN_NEVER_SELL_LIST = "Vendor: Keep",
+TOOLTIP_ITEM_IN_DESTROY_LIST = "Vendor: Destroy",
 TOOLTIP_ITEM_WILL_BE_SOLD = "Will be sold by Vendor",
-TOOLTIP_ITEM_WILL_BE_DELETED = "Will be DELETED by Vendor",
+TOOLTIP_ITEM_WILL_BE_DELETED = "Will be DESTROYED by Vendor",
 TOOLTIP_RULEMATCH_SELL = "Sell: %s",
 TOOLTIP_RULEMATCH_KEEP = "Keep: %s",
 TOOLTIP_RULEMATCH_DESTROY = "Destroy: %s",
@@ -231,7 +232,7 @@ RULES_TAB_HELPTEXT = "Rules are processed in the following order: Keep -> Sell -
     "Items in Keep/Sell/Destroy lists supercede rules.",
 
 -- Sell Rules
-SYSRULE_SELL_ALWAYSSELL = "Items in Always Sell List",
+SYSRULE_SELL_ALWAYSSELL = "Items in Sell list",
 SYSRULE_SELL_ALWAYSSELL_DESC = "Items that are in the Always Sell list are always sold. You can view the full list with '/vendor list always'",
 SYSRULE_SELL_POORITEMS = "Poor Items",
 SYSRULE_SELL_POORITEMS_DESC = "Matches all "..ITEM_QUALITY_COLORS[0].hex.."Poor"..FONT_COLOR_CODE_CLOSE.." quality items which are the majority of the junk you will pick up.",
@@ -247,7 +248,7 @@ SYSRULE_SELL_OLDFOOD = "Low-Level Food",
 SYSRULE_SELL_OLDFOOD_DESC = "Matches Food and Drink that is 10 or more levels below you. This will cover food from previous expansions and old food while leveling.",
 
 -- Keep Rules
-SYSRULE_KEEP_NEVERSELL = "Items in Never Sell List",
+SYSRULE_KEEP_NEVERSELL = "Items in Keep list",
 SYSRULE_KEEP_NEVERSELL_DESC = "Items that are in the Never Sell list are never sold. You can view the full list with '/vendor list never'",
 SYSRULE_KEEP_UNSELLABLE = "Unsellable Items",
 SYSRULE_KEEP_UNSELLABLE_DESC = "These items have no value and cannot be sold to a merchant. If you don't like it, take it up with Blizzard.",
@@ -270,6 +271,9 @@ SYSRULE_KEEP_EPICGEAR_DESC = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic".
 SYSRULE_KEEP_EQUIPMENTSET_NAME = "Equipment Sets",
 SYSRULE_KEEP_EQUIPMENTSET_DESC = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
 
+-- Destroy Rules
+SYSRULE_DESTROYLIST = "Items in Destroy list",
+
 -- Tooltip Scan Overrides - Note for folks of non-English languages. If these scans don't work properly, create a new locale and override them. They have been confirmed to be correct in several languages, so probably dont need to be changed.
 TOOLTIP_SCAN_UNKNOWNAPPEARANCE = _G["TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN"],
 TOOLTIP_SCAN_ARTIFACTPOWER = _G["ARTIFACT_POWER"],
@@ -282,7 +286,7 @@ DATA_MIGRATION_SL_NOTICE = YELLOW_FONT_COLOR_CODE.. "Detected migration to Shado
 DATA_MIGRATION_ERROR = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration was detected, but no action taken. Please notify the addon authors here: https://www.curseforge.com/wow/addons/vendor/issues" ..FONT_COLOR_CODE_CLOSE,
 
 -- Edit Rule Dialog
-EDITRULE_CAPTION = "Edit Rule",
+EDITRULE_CAPTION = "Rule Editor",
 VIEWRULE_CAPTION = "View Rule",
 CREATE_BUTTON = "Create",
 EDITRULE_NAME_LABEL = "Name:",
@@ -392,6 +396,8 @@ HELP_EXPANSIONPACKID_NOTES = "Use caution when using this to identify items of p
     "intending to match Vanilla will not do what you want, as it will include non-Vanilla things. Likewise, " ..
     "ExpansionPackId() < 7 will match a great many items. If you want to be safe, use this in conjunction with " ..
     "IsEquipment(), and have some items from Vanilla and several expansion packs to verify.",
+
+HELP_ISAZERITEITEM_TEXT = [[True if the item is Azerite gear.]],
 HELP_ISEQUIPMENT_TEXT = [[True if the item is wearable equipment. This is equivalent to EquipLoc() ~= nil]],
 HELP_ISEQUIPMENT_NOTES = [[This does NOT tell you if your character can equip the item. This tells you whether the item is equippable gear.]],
 HELP_ISSOULBOUND_TEXT = [[True if this specific item is currently "Soulbound" to you.]],
@@ -416,6 +422,8 @@ HELP_ISCRAFTINGREAGENT_TEXT = "True if this specific item is a crafting reagent.
 HELP_ISCRAFTINGREAGENT_NOTES = [[This is determined by the tooltip text. Note that if you drag a crafting reagent to the item box in a custom rule definition to read its properties, that item may incorrectly report as "false" but it will evaluate correctly with this property.]],
 HELP_ISALREADYKNOWN_TEXT = [[True if the item is "Already known", such as a Toy or Recipe you have already learned.]],
 HELP_ISUSABLE_TEXT = [[True if the item can be used, such as if it has a "Use:" effect described in its tooltip."]],
+HELP_ISUNSELLABLE_TEXT = [[True if the item has 0 value.]],
+HELP_ISUNSELLABLE_NOTES = [[There are a few very rare exceptions where items may have value but are unsellable and so you may get an occasional false negative here. This appears to be an item data error on Blizzard's end.]],
 
 -- FUNCTION HELP
 

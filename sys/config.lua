@@ -94,7 +94,7 @@ Addon.DefaultConfig.Rules =
         "sell.knowntoys",
     },
 
-    delete = {
+    destroy = {
         -- Empty
     }
 }
@@ -105,6 +105,7 @@ local NEVER_SELL = Addon.c_Config_SellNever
 local ALWAYS_SELL = Addon.c_Config_SellAlways
 local KEEP_RULES = "keep";
 local SELL_RULES = "sell";
+local DESTROY_RULES = "destroy";
 
 --*****************************************************************************
 -- Create a new config object which provides access to our configuration

@@ -92,7 +92,7 @@ function Addon:AddItemTooltipLines(tooltip, link)
 
         -- Mark it as the current cached item.
         itemLink = link
-        self:Debug("tooltip", "Cached item for tooltip: %s", link)
+        self:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
     end
 
     -- Check for recipe item, which means this will be called twice

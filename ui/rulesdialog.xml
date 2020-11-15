@@ -71,7 +71,7 @@
 					<OnClick>self:GetParent():Hide();</OnClick>
 				</Scripts>
 			</Button>
-			<Button parentKey="createNewRule" inherits="MagicButtonTemplate" text="CREATE">
+			<Button parentKey="createNewRule" inherits="MagicButtonTemplate" text="New Rule">
 				<Size>
 					<AbsDimension x="132" y="22"/>
 				</Size>

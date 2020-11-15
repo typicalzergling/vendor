@@ -200,11 +200,11 @@ function RuleManager:Update()
     --         engine as those are always added independent of the config.
     for _, ruleDef in ipairs(Addon.Rules.GetLockedRules()) do
         Addon:Debug("rules", "Adding LOCKED rule '%s' [%s]", ruleDef.Id, ruleDef.Type);
-        if (ruleDef.Type == Addon.c_RuleType_Sell) then
+        if (ruleDef.Type == RuleType.SELL) then
             rulesEngine:AddRule(RULE_TYPE_LOCKED_SELL, ruleDef);
-        elseif (ruleDef.Type == Addon.c_RuleType_Keep) then
+        elseif (ruleDef.Type == RuleType.KEEP) then
             rulesEngine:AddRule(RULE_TYPE_LOCKED_KEEP, ruleDef);
-        elseif (ruleDef.Type == Addon.c_RuleType_Destroy) then
+        elseif (ruleDef.Type == RuleType.DESTROY) then
             rulesEngine:AddRule(RULE_TYPE_LOCKED_DESTROY, ruleDef);
         else
             assert(false, "An unknown rule type was encountered: " .. ruleDef.Type);

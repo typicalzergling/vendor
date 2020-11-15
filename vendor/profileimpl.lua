@@ -6,15 +6,15 @@ local SELL_LIST = Addon.c_Config_SellAlways;
 local KEEP_LIST = Addon.c_Config_SellNever;
 local KEEP_RULES = "keep";
 local SELL_RULES = "sell";
-local DESTROY_RULES ="delete";
+local DESTROY_RULES ="destroy";
 
 -- Profile Constants
-local PROFILE_KEEP_LIST = "list:never";
-local PROFILE_SELL_LIST = "list:always";
-local PROFILE_DESTROY_LIST = "list:delete";
+local PROFILE_KEEP_LIST = "list:keep";
+local PROFILE_SELL_LIST = "list:sell";
+local PROFILE_DESTROY_LIST = "list:destroy";
 local PROFILE_SELL_RULES = "rules:sell";
 local PROFILE_KEEP_RULES = "rules:keep";
-local PROFILE_DESTROY_RULES = "rules:delete";
+local PROFILE_DESTROY_RULES = "rules:destroy";
 local PROFILE_HIDDEN_RULES = "rules:hidden"
 local PROFILE_VERSION = "profile:version";
 local CURRENT_VERSION = 1;

@@ -18,6 +18,7 @@ end
 
 -- Hook for tooltip SetBagItem
 -- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
+-- TODO: Move this into skeleton, since this should be what you do for every insecure hook
 function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
     local status, err = xpcall(
         function(b, s)
@@ -120,7 +121,9 @@ function Addon:GetItemProperties(arg1, arg2)
     end
 
     -- No link means no item.
-    if not link or not location then return nil end
+    if not link or not location then
+        return nil
+    end
 
     -- Guid is how we uniquely identify items.
     local guid = C_Item.GetItemGUID(location)

@@ -110,7 +110,7 @@ function Addon:ToggleItemInBlocklist(list, item)
 end
 
 -- Generic list accessor
-function Addon.IsItemInList(id, listType)
+function Addon:IsItemInList(id, listType)
     local list = Addon:GetList(listType)
     if not list then return false end
     return list:Contains(id)
@@ -136,7 +136,7 @@ function Addon:GetBlocklistForItem(item)
     local id = self:GetItemIdFromString(item)
     if id then
         for _, list in pairs(ListType) do
-            if self:IsItemInList(id, list) then
+            if Addon:IsItemInList(id, list) then
                 return list
             end
         end

@@ -21,7 +21,8 @@ function CustomRule:Init(ruleDef)
             self.author:SetText(ruleDef.EditedBy);
         end
 
-        if (ruleDef.Type == Addon.c_RuleType_Keep) then
+        -- Need to update this for Destroy rules
+        if (ruleDef.Type == Addon.RuleType.KEEP) then
             self.sellRule:Hide();
             self.keepRule:Show();
         else

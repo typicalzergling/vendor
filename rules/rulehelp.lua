@@ -66,6 +66,12 @@ Addon.ScriptReference.ItemProperties =
     IsToy = L["HELP_ISTOY_TEXT"],
     IsAlreadyKnown = L["HELP_ISALREADYKNOWN_TEXT"],
     IsUsable = L["HELP_ISUSABLE_TEXT"],
+    IsAzeriteItem = L["HELP_ISAZERITEITEM_TEXT"],
+    IsUnsellable = {
+        Text = L["HELP_ISUNSELLABLE_TEXT"],
+        Notes = L["HELP_ISUNSELLABLE_NOTES"] 
+    },
+
 }
 
 Addon.ScriptReference.Functions =

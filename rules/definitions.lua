@@ -4,9 +4,9 @@ local L = Addon:GetLocale()
 local Package = select(2, ...);
 Addon.Rules = Addon.Rules or {}
 local Rules = Addon.Rules;
-local SELL_RULE = Addon.c_RuleType_Sell;
-local KEEP_RULE = Addon.c_RuleType_Keep;
-local DESTROY_RULE = Addon.c_RuleType_Destroy;
+local SELL_RULE = Addon.RuleType.SELL;
+local KEEP_RULE = Addon.RuleType.KEEP;
+local DESTROY_RULE = Addon.RuleType.DESTROY;
 local INTERFACE_VERSION = tonumber(select(4, GetBuildInfo()));
 local SHADOWLANDS_VERSION = 90000;
 

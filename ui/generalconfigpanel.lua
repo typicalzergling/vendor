@@ -48,9 +48,9 @@ function GeneralPanel.ResetRules()
     local defaults = Addon.DefaultConfig.Rules;
     local profile = Addon:GetProfile();
 
-    profile:SetRules(Addon.c_RuleType_Sell, defaults.sell or {});
-    profile:SetRules(Addon.c_RuleType_Keep, defaults.keep or {});
-    profile:SetRules(Addon.c_RuleType_Scrap, defaults.scrap or {});
+    profile:SetRules(Addon.RuleType.SELL, defaults.sell or {});
+    profile:SetRules(Addon.RuleType.KEEP, defaults.keep or {});
+    profile:SetRules(Addon.RuleType.DESTROY, defaults.destroy or {});
     Addon:Print("The rules have been reset to the defaults");
 end
 
