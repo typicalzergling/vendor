@@ -327,6 +327,12 @@ EDITRULE_EXTENSION_RULE_TEXT = "This rules comes from '%s' extension and cannot 
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
 
+RULEHELP_NO_MATCHES = "There are no items which match the specified filter",
+RULEHELP_SOURCE = "Source: %s",
+RULEHELP_NOTES = "Notes:",
+RULEHELP_MAP = "Possible Values:",
+RULEHELP_EXAMPLES = "Examples:",
+
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
@@ -366,7 +372,7 @@ HELP_SUBTYPEID_TEXT = [[The numeric ID of the item's SubType.]],
 HELP_SUBTYPEID_NOTES  = "This is not localized so it will be portable to players using other locales. It's also faster than a string compare, so you should use this over SubType() if possible.",
 HELP_EQUIPLOC_TEXT = [[The equip location of this item. This will be nil if the item is not equipment.]],
 HELP_BINDTYPE_TEXT = [[The binding behavior for the item.
->
+
 0 = None
 1 = On Pickup
 2 = On Equip
