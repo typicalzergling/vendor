@@ -148,20 +148,14 @@ CMD_KEYS_HELP = "Open keybindings. Working with blocklists is much easier with k
 CMD_WITHDRAW_HELP = "Withdraws any items from you bank which vendor would sell, requires your bank to be open",
 CMD_API_HELP = "Prints the public API for Vendor",
 
-CMD_SELLITEM_HELP = "Adds or removes items from the sell list: sell {always||never} [itemid]",
-CMD_SELLITEM_INVALIDARG = "Must specify which list to which you want to query or edit an item: {always||never} [item]",
-CMD_SELLITEM_ADDED = "Item: %s added to the %s-sell list.",
-CMD_SELLITEM_REMOVED = "Item: %s removed from the %s-sell list.",
+CMD_LISTTOGGLE_HELP = "Adds or removes items from a list: list {sell||keep||destroy} [itemid]",
+CMD_LISTTOGGLE_INVALIDARG = "Must specify which list to which you want to query or edit an item: {sell||keep||destroy} [item]",
+CMD_LISTTOGGLE_ADDED = "Item: %s added to the %s list.",
+CMD_LISTTOGGLE_REMOVED = "Item: %s removed from the %s list.",
 
-CMD_CLEARDATA_HELP = "Clears data for all lists, or the list if specified. Usage: clear [always||never]",
-CMD_CLEARDATA_INVALIDARG = "Invalid option: %s  Usage: clear [always||never]",
-CMD_CLEARDATA_ALWAYS = "The always-sell list has been cleared.",
-CMD_CLEARDATA_NEVER = "The never-sell list has been cleared.",
-
-CMD_LISTDATA_HELP = "Prints the items for all lists, or the list if specified. Usage: list [always||never]",
-CMD_LISTDATA_INVALIDARG = "Invalid option: %s  Usage: clear [always||never]",
-CMD_LISTDATA_EMPTY = "The %s-sell list is empty.",
-CMD_LISTDATA_LISTHEADER = "Items in the %s-sell list:",
+CMD_LISTDATA_INVALIDARG = "Invalid option: %s  Valid lists: [sell||keep||destroy]",
+CMD_LISTDATA_EMPTY = "The %s list is empty.",
+CMD_LISTDATA_LISTHEADER = "Items in the %s list:",
 CMD_LISTDATA_LISTITEM = "  %s - %s",
 CMD_LISTDATA_NOTINCACHE = "[Item not seen yet, re-run to see it]",
 

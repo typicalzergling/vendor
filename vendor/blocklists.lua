@@ -104,8 +104,10 @@ function Addon:ToggleItemInBlocklist(list, item)
     -- If it already existed, remove it from that list.
     if list == existinglist then
         Addon:GetList(list):Remove(id)
+        return 2
     else
         Addon:GetList(list):Add(id)
+        return 1
     end
 end
 

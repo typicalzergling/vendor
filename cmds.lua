@@ -6,9 +6,7 @@ function Addon:SetupConsoleCommands()
     self:RegisterConsoleCommandName(AddonName, "/vendor", "/ven")
     self:AddConsoleCommand(nil, nil, "OpenConfigDialog_Cmd")                        -- Override the default
     self:AddConsoleCommand("rules", L["CMD_RULES_HELP"], "OpenConfigDialog_Cmd")
-    self:AddConsoleCommand("sell", L["CMD_SELLITEM_HELP"], "SellItem_Cmd")
-    self:AddConsoleCommand("clear", L["CMD_CLEARDATA_HELP"], "ClearData_Cmd")
-    self:AddConsoleCommand("list", L["CMD_LISTDATA_HELP"], "ListData_Cmd")
+    self:AddConsoleCommand("list", L["CMD_LISTTOGGLE_HELP"], "ListToggle_Cmd")
     self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
     self:AddConsoleCommand("settings", L["CMD_SETTINGS_HELP"], "OpenSettings_Cmd")
     self:AddConsoleCommand("withdraw", L["CMD_WITHDRAW_HELP"], "Withdraw_Cmd")
@@ -16,11 +14,20 @@ function Addon:SetupConsoleCommands()
 end
 
 -- Add or remove items from the blacklist or whitelist.
-function Addon:SellItem_Cmd(list, item)
+function Addon:ListToggle_Cmd(list, item)
+
+    -- Get the key in the ListType to which this value belongs.
+    local function inListType(list)
+        for k, v in pairs(Addon.ListType) do
+            if list == v then
+                return k
+            end
+        end
+    end
 
     -- need at least one command, should print usage
-    if not list or (list ~= self.c_AlwaysSellList and list ~= self.c_NeverSellList) then
-        self:Print(L["CMD_SELLITEM_INVALIDARG"])
+    if not list or not inListType(list) then
+        self:Print(L["CMD_LISTTOGGLE_INVALIDARG"])
         return
     end
 
@@ -31,47 +38,14 @@ function Addon:SellItem_Cmd(list, item)
     if id then
         local retval = self:ToggleItemInBlocklist(list, id)
         if retval == 1 then
-            self:Print(string.format(L["CMD_SELLITEM_ADDED"], tostring(id), list))
+            self:Print(string.format(L["CMD_LISTTOGGLE_ADDED"], tostring(id), list))
         else
-            self:Print(string.format(L["CMD_SELLITEM_REMOVED"], tostring(id), list))
+            self:Print(string.format(L["CMD_LISTTOGGLE_REMOVED"], tostring(id), list))
         end
 
     -- otherwise dump the list
     else
         self:PrintAddonList(list)
-    end
-end
-
--- Clear the blacklist and or whitelist.
-function Addon:ClearData_Cmd(arg)
-    if arg and arg ~= self.c_NeverSellList and arg ~= self.c_AlwaysSellList then
-        self:Print(string.format(L["CMD_CLEARDATA_INVALIDARG"], arg))
-        return
-    end
-
-    if not arg or arg == self.c_AlwaysSellList then
-        self:ClearBlocklist(self.c_AlwaysSellList)
-        self:Print(L["CMD_CLEARDATA_ALWAYS"])
-    end
-
-    if not arg or arg == self.c_NeverSellList then
-        self:ClearBlocklist(self.c_NeverSellList)
-        self:Print(L["CMD_CLEARDATA_NEVER"])
-    end
-end
-
--- List items in the blacklist and or whitelist.
-function Addon:ListData_Cmd(arg)
-    if arg and arg ~= self.c_NeverSellList and arg ~= self.c_AlwaysSellList then
-        self:Print(string.format(L["CMD_LISTDATA_INVALIDARG"], arg))
-        return
-    end
-
-    if not arg then
-        self:PrintAddonList(self.c_NeverSellList)
-        self:PrintAddonList(self.c_AlwaysSellList)
-    else
-        self:PrintAddonList(arg)
     end
 end
 
