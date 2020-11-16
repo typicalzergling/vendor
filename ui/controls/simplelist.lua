@@ -2,21 +2,38 @@
     |
     ========================================================================--]]
 
-	local AddonName, Addon = ...
-	local ListItem = Addon.Controls.ListItem
-	local SimpleList = table.copy(Addon.Controls.List);
-	
-	--[[===========================================================================
-		| OnLoad handler for the list base, sets some defaults and hooks up
-		| some scripts.
-		========================================================================--]]
-	function SimpleList:OnLoad()
-		rawset(self, "@@list@@", true)
-		self:SetClipsChildren(true);
-		self:AdjustScrollbar();
-		self:SetScript("OnShow", self.Update);
-		self:SetScript("OnUpdate", self.OnUpdate);
+local AddonName, Addon = ...
+local ListItem = Addon.Controls.ListItem
+local SimpleList = table.copy(Addon.Controls.List);
+
+--[[===========================================================================
+	| OnLoad handler for the list base, sets some defaults and hooks up
+	| some scripts.
+	========================================================================--]]
+function SimpleList:OnLoad()
+	rawset(self, "@@list@@", true)
+	self:SetClipsChildren(true);
+	self:AdjustScrollbar();
+	self:SetScript("OnShow", self.Update);
+	self:SetScript("OnUpdate", self.OnUpdate);
+end
+
+function SimpleList:OnUpdate()
+	if (self.needsLayout) then
+		self.needsLayout = false
+		self:Layout()
 	end
+	Addon.Controls.List.OnUpdate(self)
+end
+
+function SimpleList:HideAllFrames()
+	if (self.frames) then
+		for _, frame in ipairs(self.frames) do
+			frame:ClearAllPoints()
+			frame:Hide()
+		end
+	end
+end
 	
 --[[===========================================================================
 	| SimpleList:Update:
@@ -25,38 +42,48 @@
 	========================================================================--]]
 function SimpleList:Update()
 	local items = Addon.invoke(self, "GetItems")
+	local managesFrames = (type(self.GetItemForModel) == "function")
 	self.frames = self.frames or {}
 
 	if (not items or (table.getn(items) == 0)) then
-		for _, frame in ipairs(self.frames) do
-			frame:ResetAll()
-		end	
+		self:HideAllFrames()
 		self:ShowEmptyText(true)
 		self:GetScrollChild():SetHeight(10)
 		self:SetVerticalScroll(0)
 	else
 		local container = self:GetScrollChild();
+
+		if (managesFrames) then
+			self:HideAllFrames()
+			self.frames = {}
+		end
 	
 		local function layoutHandler()
-			self:Layout()
+			self.needsLayout = true
 		end
 
 		self:ShowEmptyText(false)	
 		for index, model in ipairs(items) do
-			local item = self.frames[index]
+			local item = Addon.invoke(self, "GetItemForModel", model)
 			if (not item) then
-				item = self:CreateItem()
+				item = self.frames[index]
+				if (not item) then
+					item = self:CreateItem()
+					self.frames[index] = item
+				end
+				item:SetModel(model)
+			else
 				self.frames[index] = item
 			end
 
-			item:SetModel(model)
 			item:SetModelIndex(index)
 			item:Show()
 			item:SetScript("OnSizeChanged", layoutHandler)
 		end
 
 		for index = table.getn(items) + 1, table.getn(self.frames) do
-			self.frames[index]:ResetAll()
+			self.frames[index]:ClearAllPoints()
+			self.frames[index]:Hide()
 			self.frames[index]:SetScript("OnSizeChanged", nil)
 		end
 
@@ -72,6 +99,7 @@ function SimpleList:Layout()
 
 		for _, item in ipairs(self.frames) do
 			if (item:IsShown()) then
+				item:ClearAllPoints()
 				item:SetWidth(width)
 				item:SetPoint("TOPLEFT", container, "TOPLEFT", 0, -top)
 				item:SetPoint("TOPRIGHT", container, "TOPLEFT", width, -top)

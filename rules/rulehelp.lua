@@ -117,7 +117,7 @@ Addon.ScriptReference.Functions =
         IsFunction = true,
         Args = L["HELP_ITEMTYPE_ARGS"],
         Text = L["HELP_ITEMTYPE_TEXT"],
-        Map = Addon.Maps.Quality,
+        Map = Addon.Maps.ItemType,
     },
 
     IsInEquipmentSet =

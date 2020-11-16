@@ -20,6 +20,8 @@
     <Include file="panels/rules.xml"/>
     <Include file="panels/about.xml"/>
     <Include file="panels/lists.xml"/>
+    <Include file="panels/iteminfo.xml"/>
+    <Include file="panels/rulehelp.xml"/>
 
     <Include file="rulesdialog.xml"/>
     <Include file="editruledialog.xml"/>
