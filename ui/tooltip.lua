@@ -13,9 +13,9 @@ function Addon:AddTooltipItemToSellList(list)
     -- Add the link to the specified blocklist.
     local retval = self:ToggleItemInBlocklist(list, link)
     if retval == 1 then
-        self:Print(string.format(L["CMD_SELLITEM_ADDED"], tostring(link), list))
+        self:Print(string.format(L["CMD_LISTTOGGLE_ADDED"], tostring(link), list))
     elseif retval == 2 then
-        self:Print(string.format(L["CMD_SELLITEM_REMOVED"], tostring(link), list))
+        self:Print(string.format(L["CMD_LISTTOGGLE_REMOVED"], tostring(link), list))
     end
 end
 

@@ -182,6 +182,7 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
         info.value = "Profiles"
         info.notCheckable = true
         info.hasArrow = 1;
+        info.func = function() VendorRulesDialog:Open("profiles") end
         L_UIDropDownMenu_AddButton(info);
 
         -- Default Titan options

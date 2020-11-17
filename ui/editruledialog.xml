@@ -173,14 +173,14 @@
 				Info Panels
 			-->
 
-           	<Frame inherits="Vendor_EditPanel_Help" parentkey="helpInfoPanel" id="3" parentArray="infoPanels">
+           	<Frame inherits="Vendor_EditPanel_Help" parentkey="Help" id="3" parentArray="infoPanels">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="6" y="-6"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-6" y="6"/>
 				</Anchors>
            	</Frame>
 
-           	<Frame inherits="Vendor_EditPanel_ItemInfo" parentkey="itemInfoPanel" id="2" parentArray="infoPanels">
+           	<Frame inherits="Vendor_EditPanel_ItemInfo" parentkey="ItemInfo" id="2" parentArray="infoPanels">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="6" y="-6"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-6" y="6"/>

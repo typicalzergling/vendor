@@ -97,6 +97,10 @@ function EditHost:SetText(text)
 	self.Edit:SetText(text);
 end
 
+function EditHost:Insert(text)
+	self.Edit:Insert(text)
+end
+
 function EditHost:SetNumber(number)
 	assert(type(number) == "number");
 	assert(self.Edit:IsNumeric());

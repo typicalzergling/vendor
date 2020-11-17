@@ -79,15 +79,33 @@ StaticPopupDialogs["VENDOR_CONFIRM_DELETE_RULE"] = {
 };
 
 function EditRuleDialog:OnLoad()
-    Mixin(self, Addon.TabFrameMixin);
+    Mixin(self, Addon.Controls.TabFrameMixin);
     self:InitializeTabs(self.Tabs, self.infoPanels);
     self:SetClampedToScreen(true)
 
+    self.tabgroup = CreateTabGroup(
+        self.Name:GetControl(), 
+        self.Description:GetControl(),
+        self.Script:GetControl())
+
     self.Script:RegisterCallback("OnChange", self.OnScriptChanged, self);
+    self.Script:RegisterCallback("OnTab", function() self.tabgroup:OnTabPressed() end, self)
     self.Name:RegisterCallback("OnChange", self.UpdateButtonState, self);
+    self.Name:RegisterCallback("OnTab", function() self.tabgroup:OnTabPressed() end, self)
     self.Description:RegisterCallback("OnChange", self.UpdateButtonState, self);        
+    self.Description:RegisterCallback("OnTab", function() self.tabgroup:OnTabPressed() end, self)
+
     table.insert(UISpecialFrames, self:GetName());
     self:RegisterForDrag("LeftButton");
+
+    self.ItemInfo.OnItemClicked = function(_, name)
+        self.Script:Insert(name)
+    end
+
+    self.ItemInfo.OnItemContext = function(_, name)
+        self.Help:DisplayHelp(name)
+        self:SetActiveTab(self.Help:GetID())
+    end
 end
 
 function EditRuleDialog:IsReadOnly()
@@ -436,19 +454,15 @@ function EditRuleDialog:OnShow()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
     self:EnsureRulesEngine();
     Addon:LoadAllBagItemLinks();
-    self.helpInfoPanel:CreateCaches();
 end
 
 function EditRuleDialog:OnHide()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
     self.rulesEngine = nil;
-    self.helpInfoPanel:ClearCaches();
 end
 
 
 --[[    -- Create our tab-group so we can handle tabbing
-    self.tabgroup = CreateTabGroup(self.name, self.description.content,
-        self.script.content, self.sellRule, self.keepRule);
 end
 
 -- Called when tab is pressed in one of our sub-controls. Does not work on Classic

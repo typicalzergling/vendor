@@ -1,47 +1,36 @@
 local AddonName, Addon = ...
-local L = Addon:GetLocale()
+local RulesDialog = {}
 
-local Package = select(2, ...);
-local KEEP_TABID = 1;
-local SELL_TABID = 2;
-local CUSTOM_TABID = 3;
-local LISTS_TABID = 4;
-local RulesDialog = {};
+function RulesDialog:OnLoad()
+    Mixin(self, Addon.Controls.TabFrameMixin)
+    self:SetClampedToScreen(true)    
+    self:RegisterForDrag("LeftButton")
 
-function RulesDialog.OnLoad(self)
-    Mixin(self, Package.TabbedFrame, RulesDialog);
-    self:SetClampedToScreen(true)
-
-    -- Setup the panels
-    --self:SetupTab(KEEP_TABID, "CONFIG_DIALOG_KEEPRULES_TEXT")
-    --self:SetupTab(SELL_TABID, "CONFIG_DIALOG_SELLRULES_TEXT")
-    --self:SetupTab(CUSTOM_TABID, "CONFIG_DIALOG_CUSTOMRULES_TEXT")
-    --self:SetupTab(LISTS_TABID, "CONFIG_DIALOG_LISTS_TEXT")
-    --self.createNewRule:SetText(L.CREATE_BUTTON);
-
-    -- Initialize the tabs
-    self:InitTabs(1);
-
-    table.insert(UISpecialFrames, self:GetName());
-    self:RegisterForDrag("LeftButton");
-
-    table.forEach(self.Tabs, PanelTemplates_TabResize, 0);
+    table.insert(UISpecialFrames, self:GetName())
+    self:InitializeTabs(self.Tabs, self.Panels, 1)
 end
 
-function RulesDialog:SetupTab(tabId, helpText)
-    self:InitTab(tabId, L[tabName]);
-    local panel = assert(self:FindPanel(tabId), string.format("Unable to locate PANEL(%d)", tabId));
+function RulesDialog:Open(tab)
+    local tabIndex = 1
+    local quiet = false;
+    if (type(tab) == "number") then
+        assert((tab >= 1) and (tab <= table.getn(self.Tabs)), "Tab index is out of range")
+        tabIndex = tab;
+    elseif (type(tab) == "string") then
+        tab = string.lower(tab)
+        local frame = assert(table.find(self.Tabs, function(t) 
+            return (t.TabName == tab)
+        end), string.format("The tab name '%s' is not valid", tab))
+        tabIndex = frame:GetID()
+    elseif (tab ~= nil) then
+        assert("Invalid argument to RulesDialog:Open()")
+    end
+
+    if (not self:IsShown()) then
+        self:Show()
+        quiet = true
+    end
+    self:SetActiveTab(tabIndex, quiet)
 end
 
-function RulesDialog:OnShow()
-end
-
-function RulesDialog:OnOk()
-    Addon:Debug("rulesdialog", "Applying new rule configuration")
-    self.SellPanel.list:UpdateConfig();
-    self.KeepPanel.list:UpdateConfig();
-end
-
--- Export to Public
-Addon.Public.RulesDialog = RulesDialog
 Addon.RulesDialog = RulesDialog;

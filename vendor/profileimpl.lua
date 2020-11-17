@@ -191,7 +191,10 @@ function Addon:OnCreateDefaultProfile(profile)
             -- These were global and are now per-profile.
 			defaultProfile:SetValue(PROFILE_KEEP_LIST, Vendor_Settings[KEEP_LIST] or {});
 			defaultProfile:SetValue(PROFILE_SELL_LIST, Vendor_Settings[SELL_LIST] or {});
-			defaultProfile:SetValue(PROFILE_DESTROY_LIST, {});
+            defaultProfile:SetValue(PROFILE_DESTROY_LIST, {});
+            
+            -- Remove the old now-migrated settings.
+            Vendor_Settings = nil
         end
         Addon:Debug("profile", "Created new default profile.");
     end
@@ -212,6 +215,9 @@ function Addon:OnCreateDefaultProfile(profile)
 
     -- Give new name to signify this player's profile is specific.
     defaultProfileCopy:SetName(string.format("%s - %s", UnitFullName("player")))
+
+    -- Remove old data now that we've migrated it to a profile.
+    Vendor_RulesConfig = nil
 
     Addon:Debug("profile", "Used default profile settings with per-user rules config");
     return defaultProfileCopy

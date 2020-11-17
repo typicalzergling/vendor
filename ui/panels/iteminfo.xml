@@ -1,0 +1,101 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="panels/iteminfo.lua"/>
+
+	<Frame name="ItemInfo_Template" virtual="true" hidden="true" enableMouse="true">
+		<Size x="1" y="18"/>
+		<Layers>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture parentKey="Hover" file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar-Blue" alpha="0.3" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString  parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" justifyV="MIDDLE">
+					<Size x="120"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-2"/>
+						<Anchor point="BOTTOMLEFT" x="4" y="2"/>
+					</Anchors>
+				</FontString>		
+				<FontString  parentKey="Equals" inherits="GameFontDisable" justifyH="CENTER" text="=" justifyV="MIDDLE">
+					<Size x="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>a
+				</FontString>		
+				<FontString  parentKey="Value" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Equals" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOM" relativeKey="$parent.Equals"/>
+						<Anchor point="RIGHT" x="-4"/>
+					</Anchors>
+				</FontString>		
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="Vendor_EditPanel_ItemInfo" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="HelpText" inherits="GameFontHighlightSmall" justifyV="TOP" justifyH="LEFT">
+					<Size x="1" y="32"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="EDITRULE_ITEMINFO_TAB_TEXT" type="string"/>
+ 					</KeyValues>
+					 /
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-12"/>
+						<Anchor point="TOPRIGHT" x="-10" y="-12"/>>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame inherits="Vendor_BorderFrame" parentKey="Container">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
+				</Anchors>
+			</Frame>
+			<ScrollFrame parentKey="View" inherits="FauxScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="ItemTemplate" value="ItemInfo_Template" type="string"/>
+					<KeyValue key="ItemHeight" value="18" type="number"/>
+				</KeyValues>
+				<Size x="200" y="48"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container" x="5" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" x="-5" y="6"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="EmptyText" inherits="GameFontDisable" justifyV="TOP" justifyH="CENTER" text="empty text">
+							<KeyValues>
+								<KeyValue key="LocKey" value="EDITRULE_ITEM_PROPERTIES_EMPTY" type="string"/>
+							</KeyValues>
+							<Size x="22" y="48"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="16" y="-16"/>
+								<Anchor point="BOTTOMRIGHT" x="-32" y="8"/>
+							</Anchors>
+						</FontString>		
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self, "Panels", "ItemInfo")</OnLoad>
+			<OnMouseUp>self:Drop()</OnMouseUp>
+			<OnMouseDown>self:Drop()</OnMouseDown>
+		</Scripts>
+	</Frame>	
+
+</Ui>

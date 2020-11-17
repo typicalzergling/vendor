@@ -31,10 +31,16 @@ Addon.RuleType = {
     KEEP = "Keep",
     DESTROY  = "Destroy",
     HIDDEN = "-Hidden-",
-};
+}
 
 Addon.ListType = {
     SELL = "sell",
     KEEP = "keep",
     DESTROY = "destroy",
-};
+}
+
+Addon.SystemListId = {
+    NEVER = "system:never-sell",
+    ALWAYS = "system:always-sell",
+    DESTROY = "system:always-destroy",
+}

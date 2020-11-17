@@ -8,7 +8,7 @@
 
 	<Button name="Vendor_RulesDialog_Tab" inherits="OptionsFrameTabButtonTemplate" virtual="true" visible="false" parentArray="Tabs">
 		<Scripts>
-			<OnClick>self:GetParent():ShowTab(self)</OnClick>
+			<OnClick>self:GetParent():SetActiveTab(self:GetID())</OnClick>
 		</Scripts>
 	</Button>
 
@@ -45,8 +45,6 @@
 			<OnLoad>self.TopText.LocKey = self.HelpTextKey;</OnLoad>
 		</Scripts>
 	</Frame>
-
-	<Include file="rulespanels.xml"/>
 
 	<!-- Rules dialog Frame -->
 	<Frame name="VendorRulesDialog" parent="UIParent" hidden="true" inherits="Vendor_Dialog_Template">
@@ -106,103 +104,12 @@
 					<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
 				</KeyValues>
 			</Frame>
-
-			<!-- Keep Panel 
-			<Frame name="$parentKeepPanel" parentKey="KeepPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="1">
-				<KeyValues>
-					<KeyValue key="ruleType" value="Keep" type="string"/>
-					<KeyValue key="EmptyTextKey" value="RULES_DIALOG_EMPTY_KEEP_LIST" type="string"/>
-					<KeyValue key="HelpTextKey" value="CONFIG_DIALOG_KEEPRULES_TEXT" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
-				</Anchors>
-			</Frame>
-
-			<Frame name="$parentSellPanel" parentKey="SellPanel" hidden="true" inherits="Vendor_ListPanel_Template" id="2">
-				<KeyValues>
-					<KeyValue key="ruleType" value="Sell" type="string"/>
-					<KeyValue key="EmptyTextKey" value="RULES_DIALOG_EMPTY_SELL_LIST" type="string"/>
-					<KeyValue key="HelpTextKey" value="CONFIG_DIALOG_SELLRULES_TEXT" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
-				</Anchors>
-			</Frame>
-
-			<Frame name="$parentDeletePanel" parentKey="DeletePanel" hidden="true" inherits="Vendor_ListPanel_Template" id="3">
-				<KeyValues>
-					<KeyValue key="ruleType" value="Delete" type="string"/>
-					<KeyValue key="EmptyTextKey" value="RULES_DIALOG_EMPTY_DELETE_LIST" type="string"/>
-					<KeyValue key="HelpTextKey" value="CONFIG_DIALOG_DELETERULES_TEXT" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
-				</Anchors>
-			</Frame>-->
 				
-			<!-- Lists Panel -->
-			<Frame name="$parentListsPanel" parentKey="ListsPanel" hidden="true" inherits="Vendor_TabPanel_Base" id="2">
+			<Frame inherits="Vendor_ListsPanel,Vendor_TabPanel_Base" hidden="true" id="2" parentKey="Lists">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
 				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="TopText">
-							<KeyValues>
-								<KeyValue key="LocKey" value="CONFIG_DIALOG_LISTS_TEXT" type="string"/>
-							</KeyValues>
-							<Anchors>
-								<Anchor point="TOPLEFT" x="16" y="-16"/>
-								<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
-							</Anchors>
-						</FontString>
-						<FontString parentKey="ItemCount" justifyH="RIGHT" justifyV="MIDDLE" inherits="GameFontHighlight" text="Number of Items: %d">
-							<Size x="1" y="18"/>
-							<Anchors>
-								<Anchor point="LEFT" relativeKey="$parent.TopText" relativePoint="LEFT" x="208"/>
-								<Anchor point="BOTTOM" y="16"/>
-								<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Frame inherits="Vendor_BorderFrame" parentKey="listsBorder">
-						<Size x="200" y="20"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.TopText" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
-							<Anchor point="BOTTOM" x="0" y="16"/>
-						</Anchors>
-					</Frame>
-
-					<ScrollFrame parentKey="Lists" inherits="FauxScrollFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.listsBorder" x="6" y="-6"/>
-							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.listsBorder" x="-6" y="6"/>
-						</Anchors>
-						<Scripts>
-							<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
-						</Scripts>
-					</ScrollFrame>
-
-					<Frame parentKey="Items" inherits="Vendor_ItemList">
-						<Anchors>
-							<Anchor point="TOP" relativeKey="$parent.listsBorder" relativePoint="TOPRIGHT" x="16" />
-							<Anchor point="LEFT" relativeKey="$parent.ItemCount"/>
-							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ItemCount" relativePoint="TOPRIGHT"/>
-						</Anchors>
-					</Frame>
-				</Frames>
-				<Scripts>
-					<OnLoad>Vendor.LoadImplementation(self, "RulesPanels", "ListsPanel")</OnLoad>
-					<OnShow>self:OnShow()</OnShow>
-					<OnHide>self:OnHide()</OnHide>
-				</Scripts>
 			</Frame>
 
 			<Frame inherits="Vendor_AboutPanel,Vendor_TabPanel_Base" parentKey="helpPanel" id="3" hidden="true">
@@ -230,6 +137,7 @@
 			<Button name="$parentRulesTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="RulesTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="RULES_DIALOG_RULES_TAB" type="string"/>
+					<KeyValue key="TabName" value="rules" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeKey="$parent.Container" relativePoint="TOPLEFT" x="6" y="-2"/>
@@ -240,6 +148,7 @@
 			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="ListsTab" enabled="false">
 				<KeyValues>
 					<KeyValue key="LocKey" value="CONFIG_DIALOG_LISTS_TAB" type="string"/>
+					<KeyValue key="TabName" value="lists" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeKey="$parent.RulesTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
@@ -250,6 +159,7 @@
 			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="HelpTab" enabled="false">
 				<KeyValues>
 					<KeyValue key="LocKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
+					<KeyValue key="TabName" value="help" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container" relativePoint="TOPRIGHT" x="-6" y="-2"/>
@@ -260,6 +170,7 @@
 			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ProfileTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
+					<KeyValue key="TabName" value="profiles" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.HelpTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
@@ -268,8 +179,6 @@
 
 		</Frames>
 		<Scripts>
-			<OnShow>self:OnShow()</OnShow>
-			<OnHide>self:OnOk()</OnHide>
 			<OnDragStart>self:StartMoving()</OnDragStart>
 			<OnDragStop>self:StopMovingOrSizing();</OnDragStop>
 		</Scripts>

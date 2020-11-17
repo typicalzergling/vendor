@@ -148,20 +148,14 @@ CMD_KEYS_HELP = "Open keybindings. Working with blocklists is much easier with k
 CMD_WITHDRAW_HELP = "Withdraws any items from you bank which vendor would sell, requires your bank to be open",
 CMD_API_HELP = "Prints the public API for Vendor",
 
-CMD_SELLITEM_HELP = "Adds or removes items from the sell list: sell {always||never} [itemid]",
-CMD_SELLITEM_INVALIDARG = "Must specify which list to which you want to query or edit an item: {always||never} [item]",
-CMD_SELLITEM_ADDED = "Item: %s added to the %s-sell list.",
-CMD_SELLITEM_REMOVED = "Item: %s removed from the %s-sell list.",
+CMD_LISTTOGGLE_HELP = "Adds or removes items from a list: list {sell||keep||destroy} [itemid]",
+CMD_LISTTOGGLE_INVALIDARG = "Must specify which list to which you want to query or edit an item: {sell||keep||destroy} [item]",
+CMD_LISTTOGGLE_ADDED = "Item: %s added to the %s list.",
+CMD_LISTTOGGLE_REMOVED = "Item: %s removed from the %s list.",
 
-CMD_CLEARDATA_HELP = "Clears data for all lists, or the list if specified. Usage: clear [always||never]",
-CMD_CLEARDATA_INVALIDARG = "Invalid option: %s  Usage: clear [always||never]",
-CMD_CLEARDATA_ALWAYS = "The always-sell list has been cleared.",
-CMD_CLEARDATA_NEVER = "The never-sell list has been cleared.",
-
-CMD_LISTDATA_HELP = "Prints the items for all lists, or the list if specified. Usage: list [always||never]",
-CMD_LISTDATA_INVALIDARG = "Invalid option: %s  Usage: clear [always||never]",
-CMD_LISTDATA_EMPTY = "The %s-sell list is empty.",
-CMD_LISTDATA_LISTHEADER = "Items in the %s-sell list:",
+CMD_LISTDATA_INVALIDARG = "Invalid option: %s  Valid lists: [sell||keep||destroy]",
+CMD_LISTDATA_EMPTY = "The %s list is empty.",
+CMD_LISTDATA_LISTHEADER = "Items in the %s list:",
 CMD_LISTDATA_LISTITEM = "  %s - %s",
 CMD_LISTDATA_NOTINCACHE = "[Item not seen yet, re-run to see it]",
 
@@ -200,13 +194,6 @@ RULEUI_SELL_UNCOMMON_INFO = "Any " ..ITEM_QUALITY_COLORS[2].hex .. "Uncommon|r g
 CONFIG_DIALOG_CAPTION = "Vendor",
 CONFIG_DIALOG_KEEPRULES_TAB = "Keep Rules",
 CONFIG_DIALOG_RULES_TAB = "Rules",
-CONFIG_DIALOG_KEEPRULES_TEXT = "These rules are safeguards to prevent selling things you don't want sold. All Keep Rules are checked before Sell Rules; However, anything you mark as 'Always Sell' will ignore Keep Rules.",
-CONFIG_DIALOG_SELLRULES_TAB = "Sell Rules",
-CONFIG_DIALOG_SELLRULES_TEXT = "Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
-CONFIG_DIALOG_DELETERULES_TAB = "Destroy Rules",
-CONFIG_DIALOG_DELETERULES_TEXT = "Anything you mark as 'Never Sell' will ignore Destroy Rules and always be kept.  Keep Rules are always processed before Destroy Rules, so if the Destroy Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
-CONFIG_DIALOG_CUSTOMRULES_TAB = "Custom Definitions",
-CONFIG_DIALOG_CUSTOMRULES_TEXT = "The custom rules you have defined (account wide) are shown below.  You can create a new one by using the button on the bottom or edit your rule by double clicking it.  Rules defined here can be enabled/disabled from the appropriate Sell/Keep rule list tab.",
 CONFIG_DIALOG_CONFIRM_DELETE_FMT1 = "Deleting '%s' will make it unavailable to all of your characters you sure you want to delete this rule?",
 CONFIG_DIALOG_SHARE_TOOLTIP = "Share",
 CONFIG_DIALOG_MOVEUP_TOOLTIP = "Click to move the rule sooner in evaluation order",
@@ -215,15 +202,12 @@ CONFIG_DIALOG_LISTS_TAB = "Lists",
 CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, Sold, or Destroyed.|n"..
     "Drag items onto the list area to add it to that list.|n"..
     "You can drag an item from one list to another.",
-CONFIG_DIALOG_LISTS_ALWAYS_LABEL = "Sell",
-CONFIG_DIALOG_LISTS_NEVER_LABEL = "Keep",
 ALWAYS_SELL_LIST_NAME = "Sell",
 ALWAYS_SELL_LIST_TOOLTIP = "",
 NEVER_SELL_LIST_NAME = "Keep",
 NEVER_SELL_LIST_TOOLTIP = "",
 ALWAYS_DESTROY_LIST_NAME = "Destroy",
 ALWAYS_DESTROY_LIST_TOOLTIP = "",
-RULES_DIALOG_HELP_HEADING = "You can find the latest release notes as well as links to the project and it's tutorials on this page.",
 RULES_DIALOG_HELP_TAB = "Help",
 RULES_DIALOG_EMPTY_LIST = "There are no items in this list. Drag an item onto this area to add it to this list.",
 
@@ -251,8 +235,6 @@ SYSRULE_SELL_OLDFOOD_DESC = "Matches Food and Drink that is 10 or more levels be
 -- Keep Rules
 SYSRULE_KEEP_NEVERSELL = "Items in Keep list",
 SYSRULE_KEEP_NEVERSELL_DESC = "Items that are in the Never Sell list are never sold. You can view the full list with '/vendor list never'",
-SYSRULE_KEEP_UNSELLABLE = "Unsellable Items",
-SYSRULE_KEEP_UNSELLABLE_DESC = "These items have no value and cannot be sold to a merchant. If you don't like it, take it up with Blizzard.",
 SYSRULE_KEEP_SOULBOUNDGEAR = "Soulbound Gear",
 SYSRULE_KEEP_SOULBOUNDGEAR_DESC = "Keeps any equipment item that is "..ITEM_QUALITY_COLORS[1].hex.."Soulbound"..FONT_COLOR_CODE_CLOSE.." to you even items your class cannot wear. A good safeguard if you are unsure about some rules.",
 SYSRULE_KEEP_BINDONEQUIPGEAR = "Bind-on-Equip Gear",
@@ -327,6 +309,12 @@ EDITRULE_EXTENSION_RULE_TEXT = "This rules comes from '%s' extension and cannot 
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
 
+RULEHELP_NO_MATCHES = "There are no items which match the specified filter",
+RULEHELP_SOURCE = "Source: %s",
+RULEHELP_NOTES = "Notes:",
+RULEHELP_MAP = "Possible Values:",
+RULEHELP_EXAMPLES = "Examples:",
+
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
@@ -366,7 +354,7 @@ HELP_SUBTYPEID_TEXT = [[The numeric ID of the item's SubType.]],
 HELP_SUBTYPEID_NOTES  = "This is not localized so it will be portable to players using other locales. It's also faster than a string compare, so you should use this over SubType() if possible.",
 HELP_EQUIPLOC_TEXT = [[The equip location of this item. This will be nil if the item is not equipment.]],
 HELP_BINDTYPE_TEXT = [[The binding behavior for the item.
->
+
 0 = None
 1 = On Pickup
 2 = On Equip
