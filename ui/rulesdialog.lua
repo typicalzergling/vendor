@@ -2,7 +2,6 @@ local AddonName, Addon = ...
 local RulesDialog = {}
 
 function RulesDialog:OnLoad()
-    print("Addon.Controls.TabFrameMixin", Addon.Controls.TabFrameMixin, self)
     Mixin(self, Addon.Controls.TabFrameMixin)
     self:SetClampedToScreen(true)    
     self:RegisterForDrag("LeftButton")

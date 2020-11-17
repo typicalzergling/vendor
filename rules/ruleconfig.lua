@@ -70,7 +70,6 @@ end
 
 -- Loads / Populates this object with the contentes of the saved variable.
 function RuleConfigObject:Load(saved)
-	print("rule config---> load")
 	debug("Loading rule configuration");
 	self.rules = table.copy(saved or {});
 end
@@ -129,7 +128,6 @@ end
 -- Returns the config for the specified rule, or nil if there is not rule 
 -- in the config with the specified name.
 function RuleConfigObject:Get(ruleId)
-	print("--> get", ruleId)
 	local index = GetIndexOf(self.rules, ruleId);
 	if (index and (index >= 1)) then
 		return CreateConfig(self.rules[index]);
