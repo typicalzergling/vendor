@@ -70,6 +70,7 @@ end
 
 -- Loads / Populates this object with the contentes of the saved variable.
 function RuleConfigObject:Load(saved)
+	print("rule config---> load")
 	debug("Loading rule configuration");
 	self.rules = table.copy(saved or {});
 end
@@ -128,6 +129,7 @@ end
 -- Returns the config for the specified rule, or nil if there is not rule 
 -- in the config with the specified name.
 function RuleConfigObject:Get(ruleId)
+	print("--> get", ruleId)
 	local index = GetIndexOf(self.rules, ruleId);
 	if (index and (index >= 1)) then
 		return CreateConfig(self.rules[index]);
@@ -149,22 +151,19 @@ function RuleConfigObject:Commit()
 	debug("Commited rules '%s' to the profile", self.type)
 end
 
-local RuleConfigAPI = Mixin(CallbackRegistryMixin, RuleConfigObject);
+local RuleConfigAPI = Mixin({}, CallbackRegistryMixin, RuleConfigObject);
 RuleConfigAPI.__index = RuleConfigAPI;
 
 Addon.RuleConfig = {
 	-- Create a new empty instance of the rules config object.
 	Create = function(self)
 		local instance = {
-			rules = {}
+			type = "",
+			rules = {},
+			profile = falsae,
 		};
 
-		CallbackRegistryMixin.OnLoad(instance)
-		CallbackRegistryMixin.GenerateCallbackEvents(instance, { "OnChanged" })
-
-		setmetatable(instance, RuleConfigAPI);
-		instance.__index = RulesConfigAPI;
-		return instance		
+		return Addon.object("RuleConfig", instance, RuleConfigObject, { "OnChanged" })		
 	end,
 
 	-- Create instance of the rules config object from the sepcified 
