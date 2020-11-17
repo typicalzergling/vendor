@@ -134,23 +134,6 @@ function ProfileManager:CopyProfile(profile, newProfileName)
 end
 
 --[[===========================================================================
-   | Copies all profile data from one profile onto another.
-   ==========================================================================]]
-function ProfileManager:OverrideProfile(profileFrom, profileTo)
-    local profileIdFrom = getProfileId(profileFrom)
-    local data = profilesVariable:Get(profileIdFrom)
-    if (not data) then
-        error("Unable to locate profile to copy data from.")
-        return nil;
-    end
-
-    data.id = profileTo:GetId()
-    profilesVariable:Set(profileTo:GetId(), data)
-    ddon:Debug("profile", "Overrode profile '%s' with '%s'", profileTo:GetId(), profileIdFrom);
-end
-
-
---[[===========================================================================
    | Deletes the specified profile.	
    ==========================================================================]]
 function ProfileManager:DeleteProfile(profile)
