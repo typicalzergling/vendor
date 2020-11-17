@@ -158,7 +158,7 @@ Addon.RuleConfig = {
 			profile = falsae,
 		};
 
-		return Addon.object("RuleConfig", instance, RuleConfigObject, { "OnChanged" })		
+		return Addon.object("RuleConfig", instance, RuleConfigObject, { "OnChanged" })
 	end,
 
 	-- Create instance of the rules config object from the sepcified 
