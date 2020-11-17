@@ -151,9 +151,6 @@ function RuleConfigObject:Commit()
 	debug("Commited rules '%s' to the profile", self.type)
 end
 
-local RuleConfigAPI = Mixin({}, CallbackRegistryMixin, RuleConfigObject);
-RuleConfigAPI.__index = RuleConfigAPI;
-
 Addon.RuleConfig = {
 	-- Create a new empty instance of the rules config object.
 	Create = function(self)
