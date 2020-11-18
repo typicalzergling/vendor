@@ -114,7 +114,7 @@ function Addon:GetEvaluationStatus()
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, GetContainerNumSlots(bag) do
             local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
-            result = Addon:EvaluateItem(item)
+            local result = Addon:EvaluateItem(item)
             
             if result > 0 then
                 count = count + 1
@@ -131,6 +131,27 @@ function Addon:GetEvaluationStatus()
         end
     end
     return count, value, tosell, todestroy, sellitems, destroyitems
+end
+
+function Addon:GetEvaluationDetails()
+    local results = {}
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1, GetContainerNumSlots(bag) do
+            local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
+            if item then
+                local result, ruleid, rule, ruletype = Addon:EvaluateItem(item)
+                local entry = {}
+                entry.Link = item.Link
+                entry.Count = itemCount
+                entry.Result = result
+                entry.RuleId = ruleid
+                entry.Rule = rule
+                entry.RuleType = ruletype
+                table.insert(results, entry)
+            end
+        end
+    end
+    return results
 end
 
 -- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
