@@ -96,9 +96,9 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == UNCOMMON and Level < {itemlevel}",
+        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == UNCOMMON and (not IsUnsellable) and Level < {itemlevel}",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
         Params = 
         {
@@ -117,9 +117,9 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_RAREGEAR"],
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == RARE and Level < {itemlevel}",
+        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == RARE and (not IsUnsellable) and Level < {itemlevel}",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
         Params = 
         {
@@ -138,9 +138,9 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_EPICGEAR"],
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and Quality == EPIC and Level < {itemlevel}",
+        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and Quality == EPIC and (not IsUnsellable) and Level < {itemlevel}",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (Level < RULE_PARAMS.ITEMLEVEL);
             end,
         Params = 
         {

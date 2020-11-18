@@ -34,12 +34,12 @@ function Addon:DestroyItems()
             -- So we only try to sell if Result is exactly 1.
             if result == 2 then
                 currentDestroyedItem = item.Link
-                self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDeletedItem))
+                self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem))
                 if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                     PickupContainerItem(bag, slot)
                     DeleteCursorItem()
                 else
-                    self:Print("Simulating deletion of: %s", tostring(item.Link))
+                    self:Print("Simulating deletion of: %s", tostring(currentDestroyedItem))
                 end
                 currentDestroyedItem = nil
                 numDestroyed = numDestroyed + 1

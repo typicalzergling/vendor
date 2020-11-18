@@ -2,7 +2,7 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
-function Addon:AddTooltipItemToSellList(list)
+function Addon:AddTooltipItemToList(list)
     -- Get the item from
     name, link = GameTooltip:GetItem();
     if not link then
@@ -20,12 +20,16 @@ function Addon:AddTooltipItemToSellList(list)
 end
 
 -- Called by keybinds to direct-add items to the blocklists
-function Addon:AddTooltipItemToAlwaysSellList()
-    self:AddTooltipItemToSellList(self.ListType.SELL)
+function Addon:AddTooltipItemToSellList()
+    self:AddTooltipItemToList(self.ListType.SELL)
 end
 
-function Addon:AddTooltipItemToNeverSellList()
-    self:AddTooltipItemToSellList(self.ListType.KEEP)
+function Addon:AddTooltipItemToKeepList()
+    self:AddTooltipItemToList(self.ListType.KEEP)
+end
+
+function Addon:AddTooltipItemToDestroyList()
+    self:AddTooltipItemToList(self.ListType.DESTROY)
 end
 
 -- Hooks for item tooltips

@@ -2,12 +2,17 @@
     <Binding
         name="VENDORALWAYSSELL"
         description="BINDING_DESC_VENDORALWAYSSELL" header="VENDORQUICKLIST" category="BINDING_CATEGORY_VENDOR">
-        Vendor.AddTooltipItemToAlwaysSellList()
+        Vendor.AddTooltipItemToSellList()
     </Binding>
     <Binding
         name="VENDORNEVERSELL"
         description="BINDING_DESC_VENDORNEVERSELL" category="BINDING_CATEGORY_VENDOR">
-        Vendor.AddTooltipItemToNeverSellList()
+        Vendor.AddTooltipItemToKeepList()
+    </Binding>
+    <Binding
+        name="VENDORTOGGLEDESTROY"
+        description="BINDING_DESC_VENDORTOGGLEDESTROY" category="BINDING_CATEGORY_VENDOR">
+        Vendor.AddTooltipItemToDestroyList()
     </Binding>
     <Binding
         name="VENDORRUNDESTROY"
