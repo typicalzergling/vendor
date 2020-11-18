@@ -18,11 +18,11 @@ DEFAULT_PROFILE_NAME = "Default",
 
 -- Rule types
 RULE_TYPE_KEEP_NAME = "Keep",
-RULE_TYPE_KEEP_DESCR = "These rules are safeguards to prevent selling things you don't want sold. All Keep Rules are checked before Sell Rules; However, anything you mark as 'Always Sell' will ignore Keep Rules.",
+RULE_TYPE_KEEP_DESCR = "These rules are safeguards to prevent selling things you don't want sold.|n|nAll Keep Rules are checked before Sell Rules. However, anything you add to the 'Sell' list will ignore Keep Rules.",
 RULE_TYPE_SELL_NAME = "Sell",
-RULE_TYPE_SELL_DESCR = "Anything you add to the 'Keep' list will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
+RULE_TYPE_SELL_DESCR = "Anything you add to the 'Keep' list will ignore Sell Rules and always be kept.|n|nKeep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.",
 RULE_TYPE_DELETE_NAME = "Destroy",
-RULE_TYPE_DELETE_DESCR = "Anything you add to the 'Keep' list or rules or 'Sell' list or rules will supercede Destroy rules. Destroy can only happen on a hardware event, so you must"..
+RULE_TYPE_DELETE_DESCR = "Anything you add to the 'Keep' list or rules or 'Sell' list or rules will supercede Destroy rules.|n|nDestroy can only happen on a hardware event, so you must"..
     " use a keybinding, macro, or Titan plugin button press to trigger it.",
 
 -- Bindings
