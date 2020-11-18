@@ -99,19 +99,41 @@ function EditRuleDialog:OnLoad()
     self:RegisterForDrag("LeftButton");
 
     self.ItemInfo.OnItemClicked = function(_, name, value)
+        local valueText = value
         if (type(value )== "string") then
-            value = string.format("\"%s\"", value)
+            valueText = string.format("\"%s\"", value)
         else
-            value = tostring(value)
+            valueText = tostring(value)
+        end
+        
+        local current = self.Script:GetText();
+        local empty = not current or (string.len(string.trim(current)) == 0)
+        local insertText = nil
+
+        if (IsControlKeyDown()) then
+            insertText = name
+        elseif (IsAltKeyDown()) then
+            insertText = valueText
+        elseif (IsShiftKeyDown()) then
+            if (type(value) == "boolean") then
+                insertText = string.format("not %s", name)
+            else
+                insertText = string.format("%s ~= %s", name, valueText)
+            end
+        else
+            if (type(value) == "boolean") then
+                insertText = valueText
+            else
+                insertText = string.format("%s == %s", name, valueText)
+            end
         end
 
-        if (IsAltKeyDown()) then
-            self.Script:Insert(value)
-        elseif (IsShiftKeyDown()) then
-            self.Script:Insert(string.format("%s == %s", name, value))
+        if (not empty) then
+            self.Script:Insert(string.format(" (%s)", insertText))
         else
-            self.Script:Insert(name)
+            self.Script:Insert(insertText)
         end
+
         self.Script:GetControl():SetFocus()
     end
 
