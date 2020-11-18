@@ -122,7 +122,7 @@ function EditRuleDialog:OnLoad()
             end
         else
             if (type(value) == "boolean") then
-                insertText = valueText
+                insertText = name
             else
                 insertText = string.format("%s == %s", name, valueText)
             end
