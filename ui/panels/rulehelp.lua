@@ -180,9 +180,12 @@ end
    |  Filters our list of models, creating a new item list
    ===========================================================================]]
 function RuleHelp:Filter()	
-    local text = string.trim(self.FilterText:GetText() or  "");
-    self:CreateItems(text);
-    self.View:Update()
+    if (not self.ignoreUpdate) then
+        self.ignoreUpdate = false
+        local text = string.trim(self.FilterText:GetText() or  "");
+        self:CreateItems(text);
+        self.View:Update()
+    end
 end
 
 --[[===========================================================================
@@ -240,6 +243,27 @@ function RuleHelp:DisplayHelp(filter)
 
     self.FilterText:SetText(filter)
     self:Filter()
+end
+
+--[[===========================================================================
+   | Display a partical help topic (must match)
+   ===========================================================================]]
+function RuleHelp:DisplayKeyword(keyword)
+    if (not self.models) then
+        self:CreateModels()
+    end 
+
+    local items = {}
+    local model = self.models[string.lower(keyword)]
+    if (model) then
+        table.insert(items, model)
+    end
+
+    self.ignoreUpdate = true
+    self.FilterText:SetText(keyword)
+    self.items = items
+    self.View:Update()
+    
 end
 
 Addon.Panels = Addon.Panels or {}

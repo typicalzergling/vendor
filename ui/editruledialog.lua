@@ -98,12 +98,25 @@ function EditRuleDialog:OnLoad()
     table.insert(UISpecialFrames, self:GetName());
     self:RegisterForDrag("LeftButton");
 
-    self.ItemInfo.OnItemClicked = function(_, name)
-        self.Script:Insert(name)
+    self.ItemInfo.OnItemClicked = function(_, name, value)
+        if (type(value )== "string") then
+            value = string.format("\"%s\"", value)
+        else
+            value = tostring(value)
+        end
+
+        if (IsAltKeyDown()) then
+            self.Script:Insert(value)
+        elseif (IsShiftKeyDown()) then
+            self.Script:Insert(string.format("%s == %s", name, value))
+        else
+            self.Script:Insert(name)
+        end
+        self.Script:GetControl():SetFocus()
     end
 
     self.ItemInfo.OnItemContext = function(_, name)
-        self.Help:DisplayHelp(name)
+        self.Help:DisplayKeyword(name)
         self:SetActiveTab(self.Help:GetID())
     end
 end
