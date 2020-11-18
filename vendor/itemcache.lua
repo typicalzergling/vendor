@@ -82,7 +82,7 @@ function Addon:OnItemLockChanged(arg1, arg2)
     else
         location = ItemLocation:CreateFromBagAndSlot(arg1, arg2)
     end
-    if not location then return end
+    if not location or not C_Item.DoesItemExist(location) then return end
     local guid = C_Item.GetItemGUID(location)
     Addon:ClearItemCache(guid)
     Addon:ClearResultCache(guid)

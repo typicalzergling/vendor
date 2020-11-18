@@ -266,8 +266,10 @@ SYSRULE_KEEP_RAREGEAR = "Rare Gear",
 SYSRULE_KEEP_RAREGEAR_DESC = "Matches any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Rare quality.",
 SYSRULE_KEEP_EPICGEAR = "Epic Gear",
 SYSRULE_KEEP_EPICGEAR_DESC = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Epic quality.",
-SYSRULE_KEEP_EQUIPMENTSET_NAME = "Equipment Sets",
+SYSRULE_KEEP_EQUIPMENTSET = "Equipment Sets",
 SYSRULE_KEEP_EQUIPMENTSET_DESC = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
+SYSRULE_KEEP_POTENTIALUPGRADES = "Potential Upgrades",
+SYSRULE_KEEP_POTENTIALUPGRADES_DESC = "Matches any gear that is within 5 item levels or 95% of your average item level (whichever is lower). This safeguards potential upgrades, side-grades, or gear for other specs.",
 
 -- Destroy Rules
 SYSRULE_DESTROYLIST = "Items in Destroy list",
@@ -445,7 +447,7 @@ HELP_ITEMISFROMEXPANSION_TEXT = "For items which are marked with and expansion t
 
 HELP_ITEMTYPE_ARGS = "type0 [, type2...typeN]",
 HELP_ITEMTYPE_TEXT = "Checks the item type against the string/number passed in which represents the item type",
-
+HELP_ISEQUIPPED_TEXT = "True if the item is currently equipped. Will never be true for items in inventory.",
 
 HELP_ISINEQUIPMENTSET_ARGS = "[setName0 .. setNameN]",
 HELP_ISINEQUIPMENTSET_TEXT = 

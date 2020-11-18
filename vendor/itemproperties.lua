@@ -121,7 +121,7 @@ function Addon:GetItemProperties(arg1, arg2)
     end
 
     -- No link means no item.
-    if not link or not location then
+    if not link or not location or not C_Item.DoesItemExist(location) then
         return nil
     end
 
@@ -187,6 +187,7 @@ function Addon:GetItemProperties(arg1, arg2)
 
     -- Save string compares later.
     item.IsEquipment = item.EquipLoc ~= "" and item.EquipLoc ~= "INVTYPE_BAG"
+    item.IsEquipped = item.Location:IsEquipmentSlot()
 
     -- Get soulbound information
     if C_Item.IsBound(location) then
