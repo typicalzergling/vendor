@@ -141,6 +141,8 @@ function Addon:GetEvaluationDetails()
             if item then
                 local result, ruleid, rule, ruletype = Addon:EvaluateItem(item)
                 local entry = {}
+                entry.GUID = item.GUID
+                entry.Id = item.Id
                 entry.Link = item.Link
                 entry.Count = itemCount
                 entry.Result = result
