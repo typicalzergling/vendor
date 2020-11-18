@@ -7,6 +7,6 @@
     <Script file="itemcache.lua"/>	
     <Script file="evaluation.lua"/>	
     <Script file="merchant.lua"/>
-    <Script file="delete.lua"/>
+    <Script file="destroy.lua"/>
     <Script file="releasenotes.lua"/>
 </Ui>

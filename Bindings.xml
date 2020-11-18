@@ -10,6 +10,11 @@
         Vendor.AddTooltipItemToNeverSellList()
     </Binding>
     <Binding
+        name="VENDORRUNDESTROY"
+        description="BINDING_DESC_VENDORRUNDESTROY" category="BINDING_CATEGORY_VENDOR">
+        Vendor.DestroyItems()
+    </Binding>
+    <Binding
         name="VENDORRUNAUTOSELL"
         description="BINDING_DESC_VENDORRUNAUTOSELL" category="BINDING_CATEGORY_VENDOR">
         Vendor.AutoSell()

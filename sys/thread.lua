@@ -68,6 +68,7 @@ local function doSomeWork()
             end
         else
             -- if not, resume it
+            Addon:Debug("threads", "Resuming thread %s", threads[1].name)
             coroutine.resume(threads[1].thread)
             return
         end

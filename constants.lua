@@ -12,7 +12,6 @@ Addon.c_ThrottleTime = .15
 Addon.c_BuybackLimit = 12
 Addon.c_DeleteThottle = 3
 Addon.c_ItemSellerThreadName = "ItemSeller"
-Addon.c_ItemDeleterThreadName = "ItemDeleter"
 
 -- Config Constants
 Addon.c_Config_AutoSell = "autosell"

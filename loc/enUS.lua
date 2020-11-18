@@ -20,18 +20,21 @@ DEFAULT_PROFILE_NAME = "Default",
 RULE_TYPE_KEEP_NAME = "Keep",
 RULE_TYPE_KEEP_DESCR = "These rules are safeguards to prevent selling things you don't want sold. All Keep Rules are checked before Sell Rules; However, anything you mark as 'Always Sell' will ignore Keep Rules.",
 RULE_TYPE_SELL_NAME = "Sell",
-RULE_TYPE_SELL_DESCR = "Anything you mark as 'Never Sell' will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
+RULE_TYPE_SELL_DESCR = "Anything you add to the 'Keep' list will ignore Sell Rules and always be kept.  Keep Rules are always processed before Sell Rules, so if the Sell Rule you enable doesn't seem to work check the Keep Rules to see if something is preventing it.  Right-click to view a rule. Left-click to toggle it.",
 RULE_TYPE_DELETE_NAME = "Destroy",
-RULE_TYPE_DELETE_DESCR = "Delete rules description",
+RULE_TYPE_DELETE_DESCR = "Anything you add to the 'Keep' list or rules or 'Sell' list or rules will supercede Destroy rules. Destroy can only happen on a hardware event, so you must"..
+    " use a keybinding, macro, or Titan plugin button press to trigger it.",
 
 -- Bindings
 BINDING_HEADER_VENDORQUICKLIST = "Quick Add/Remove items from the sell lists when mousing over the item",
-BINDING_NAME_VENDORALWAYSSELL = "Toggle Always-Sell Item",
-BINDING_DESC_VENDORALWAYSSELL = "Adds the item currently in the game tooltip to the Always-sell list. Removes it if it is already in the list.",
-BINDING_NAME_VENDORNEVERSELL = "Toggle Never-Sell Item",
-BINDING_DESC_VENDORNEVERSELL = "Adds the item currently in the game tooltip to the Never-sell list. Removes it if it is already in the list.",
+BINDING_NAME_VENDORALWAYSSELL = "Toggle Sell Item",
+BINDING_DESC_VENDORALWAYSSELL = "Adds the item currently in the game tooltip to the Sell list. Removes it if it is already in the list.",
+BINDING_NAME_VENDORNEVERSELL = "Toggle Keep Item",
+BINDING_DESC_VENDORNEVERSELL = "Adds the item currently in the game tooltip to the Keep list. Removes it if it is already in the list.",
 BINDING_NAME_VENDORRUNAUTOSELL = "Autosell at Merchant",
 BINDING_DESC_VENDORRUNAUTOSELL = "Manually trigger an autoselling run while at a merchant.",
+BINDING_NAME_VENDORRUNDESTROY = "Run Destroy Items",
+BINDING_DESC_VENDORRUNDESTROY = "Destroy items vendor has identified for destruction. This must be done via hardware event due to a Blizzard restriction.",
 BINDING_NAME_VENDORRULES = "Toggle the Vendor Rules menu",
 BINDING_DESC_VENDORRULES = "Toggles the visibility of the main Vendor Rules menu.",
 
@@ -49,9 +52,11 @@ MERCHANT_NO_SCRAP = "There are no items to scrap.",
 MERCHANT_POPULATING_SCRAP = "Auto-populating scrapper:",
 MERCHANT_MORE_SCRAP = "There are more items in your inventory which could be scrapped after scrapping these close and re-open the scrapper to continue",
 
--- Delete
-DELETE_DELETED_ITEMS = "Deleted %s items.",
-DELETE_DELETING_ITEM = "Deleting %s",
+-- Destroy
+ITEM_DESTROY_SUMMARY = "Destroyed %s items.",
+ITEM_DESTROY_CURRENT = "Destroying %s",
+ITEM_DESTROY_CANCELLED_CURSORITEM = "Cancelling item destroy due to an item being held.",
+ITEM_DESTROY_STARTED = "Starting destruction of items matching Destroy rules or list...",
 
 -- Tooltip
 TOOLTIP_ADDITEM_ERROR_NOITEM = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
@@ -184,6 +189,12 @@ API_GETEVALUATIONSTATUS_TITLE = "Get Evaluation Status",
 API_GETEVALUATIONSTATUS_DOCS = "Returns current number of slots Vendor will take action, sell, delete, and their value.",
 API_GETPRICESTRING_TITLE = "Get Price String",
 API_GETPRICESTRING_DOCS = "Converts passed in integer to a color coded and icon embedded price string.",
+API_SETPROFILE_TITLE = "Set Profile",
+API_SETPROFILE_DOCS = "Sets the currently selected profile to the specified profile.",
+API_GETPROFILES_TITLE = "Get Profiles",
+API_GETPROFILES_DOCS = "Gets the available list of profiles which can be set.",
+API_DESTROYITEMS_TITLE = "Destroy Items",
+API_DESTROYITEMS_DOCS = "Runs the item destroyer, which will destroy all items matching Destroy rules or the Destroy list.",
 
 -- Rules
 RULEUI_LABEL_ITEMLEVEL = "Item Level:",
@@ -203,11 +214,11 @@ CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, S
     "Drag items onto the list area to add it to that list.|n"..
     "You can drag an item from one list to another.",
 ALWAYS_SELL_LIST_NAME = "Sell",
-ALWAYS_SELL_LIST_TOOLTIP = "",
+ALWAYS_SELL_LIST_TOOLTIP = "Items that will always be sold whenever you visit a merchant.",
 NEVER_SELL_LIST_NAME = "Keep",
-NEVER_SELL_LIST_TOOLTIP = "",
+NEVER_SELL_LIST_TOOLTIP = "Items that will always be kept and never sold or destroyed.",
 ALWAYS_DESTROY_LIST_NAME = "Destroy",
-ALWAYS_DESTROY_LIST_TOOLTIP = "",
+ALWAYS_DESTROY_LIST_TOOLTIP = "Items that will be destroyed whenever the Destroy is run, provided they are not also matching a Sell or Keep rule.",
 RULES_DIALOG_HELP_TAB = "Help",
 RULES_DIALOG_EMPTY_LIST = "There are no items in this list. Drag an item onto this area to add it to this list.",
 

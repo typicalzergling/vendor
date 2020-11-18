@@ -3,7 +3,7 @@ local AddonName, Addon = ...
 Addon.ReleaseNotes = {
     {
         release="5.0",
-        on="November 15, 2020",
+        on="November 17, 2020",
         html=
 [[<html>
 <body>
@@ -18,10 +18,16 @@ of Destroy rules and list, as well as this help panel and profiles panels, we wa
 with a selection menu on the left and the list of rules or items on the right. The "Create" button to create new rule has been renamed to "New Rule" and is now in the "Rules" tab.</p>
 <br/>
 <h1>Destroy Rules and List</h1>
-<p>By popular request, we now support Destroy rules and a Destroy list. These are items that will not be sold, but rather will be deleted from your inventory. Currently the destroy code
-is executed whenever you visit a vendor after selling. We will expand and add new ways to trigger destroy rules, but for now since they are irreversible except for item restoration, we
-wanted the trigger point to be very predictable. We will attempt to sell items marked for "destroy" if you are at a merchant prior to destroying them. However we do not yet have any
-notice or correction if you place an unsellable item into the Sell list - the item will simply not be sold, nor deleted.
+<p>By popular request, we now support Destroy rules and a Destroy list. These are items that will not be sold, but rather will be deleted from your inventory.
+<br/><br/>
+We had automatic-destroy
+working great whenever you visited a vendor, but with the 9.0.2 patch, Blizzard protected 'DeleteCursorItem()', which means it can only be executed from a hardware event. This means
+you MUST press a key in order to destroy items. Fortunately you can still destroy multiple items and there is no confirmation required, so this still saves you a lot of hassle. To facilitate
+making the item destruction as easy as possible, we have added a new hotkey to trigger item destruction, added it to our API, and also added it to the Vendor Titan Plugin's Right-Click
+menu option under 'Run Destroy'.
+<br/><br/>
+We will still attempt to sell items marked for "destroy" if you are at a merchant prior to destroying them. However we do not yet have any
+notice or correction if you place an unsellable item into the Sell list - the item will simply not be sold, nor destroyed.
 </p>
 <br/>
 <h1>Updated Vendor Titan Plugin</h1>

@@ -175,6 +175,12 @@ function TitanPanelRightClickMenu_PrepareVendorTitanMenu()
         L_UIDropDownMenu_AddButton(info);
         
         TitanPanelRightClickMenu_AddSpacer()
+        info = {};
+        info.text = L["TITAN_MENU_RUNDESTROY"]
+        info.notCheckable = true
+        info.func = function () Vendor.DestroyItems() end
+        L_UIDropDownMenu_AddButton(info);
+        TitanPanelRightClickMenu_AddSpacer()
 
         -- Profiles
         info = {};

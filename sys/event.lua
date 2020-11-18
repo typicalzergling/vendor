@@ -24,6 +24,7 @@ end
 
 -- We support multiple handlers for the same event.
 local function eventDispatcher(frame, event, ...)
+    Addon:Debug("events", "Dispatching for Event: %s", tostring(event))
     handler = events[event]
 
     if not handler then

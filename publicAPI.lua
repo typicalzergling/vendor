@@ -77,3 +77,9 @@ Addon:MakePublic(
     L["API_SETPROFILE_TITLE"],
     L["API_SETPROFILE_DOCS"])
 
+Addon:MakePublic(
+    "DestroyItems",
+    function () Addon:DestroyItems() end,
+    L["API_SETPROFILE_TITLE"],
+    L["API_SETPROFILE_DOCS"])
+
