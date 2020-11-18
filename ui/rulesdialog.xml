@@ -69,17 +69,6 @@
 					<OnClick>self:GetParent():Hide();</OnClick>
 				</Scripts>
 			</Button>
-			<Button parentKey="createNewRule" inherits="MagicButtonTemplate" text="New Rule">
-				<Size>
-					<AbsDimension x="132" y="22"/>
-				</Size>
-				<Anchors>
-					<Anchor point="RIGHT" relativeKey="$parent.closeButton" relativePoint="LEFT"/>
-				</Anchors>
-				<Scripts>
-					<OnClick>VendorEditRuleDialog:CreateRule()</OnClick>
-				</Scripts>
-			</Button>
 			<Button inherits="MagicButtonTemplate" text="SETTINGS" parentKey="settings">
 				<Size x="132" y="22"/>
 				<Anchors>
