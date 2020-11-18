@@ -143,7 +143,6 @@ function Addon.ConfigPanel:AddPanel(panel, name)
     end
 
     invokePanelMethod("Init", panel);
-    --Addon.LocalizeFrame(panel);
     Addon.ConfigPanel.SetVersionInfo(panel);
 
     panel.parent = L["ADDON_NAME"];
