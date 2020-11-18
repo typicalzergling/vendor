@@ -43,26 +43,25 @@
 						<KeyValue key="LocKey" value="CONFIG_DIALOG_LISTS_TEXT" type="string"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="16" y="-16"/>
-						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
+						<Anchor point="TOPLEFT" x="12" y="-12"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-12" y="-52"/>
 					</Anchors>
 				</FontString>
 				<FontString parentKey="ItemCount" justifyH="RIGHT" justifyV="MIDDLE" inherits="GameFontHighlight" text="Number of Items: %d">
-					<Size x="1" y="18"/>
+					<Size x="1" y="14"/>
 					<Anchors>
 						<Anchor point="LEFT" relativeKey="$parent.TopText" relativePoint="LEFT" x="208"/>
-						<Anchor point="BOTTOM" y="16"/>
-						<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+						<Anchor point="BOTTOMRIGHT" x="-12" y="12"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
 			<Frame inherits="Vendor_BorderFrame" parentKey="listsBorder">
-				<Size x="200" y="20"/>
+				<Size x="176" y="20"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.TopText" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
-					<Anchor point="BOTTOM" x="0" y="16"/>
+					<Anchor point="BOTTOM" y="12"/>
 				</Anchors>
 			</Frame>
 
@@ -78,9 +77,8 @@
 
 			<Frame parentKey="Items" inherits="Vendor_ItemList">
 				<Anchors>
-					<Anchor point="TOP" relativeKey="$parent.listsBorder" relativePoint="TOPRIGHT" x="16" />
-					<Anchor point="LEFT" relativeKey="$parent.ItemCount"/>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ItemCount" relativePoint="TOPRIGHT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.listsBorder" relativePoint="TOPRIGHT" x="12" />
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ItemCount" relativePoint="TOPRIGHT" y="4"/>
 				</Anchors>
 			</Frame>
 		</Frames>

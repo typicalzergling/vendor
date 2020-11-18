@@ -47,26 +47,37 @@
 						<KeyValue key="LocKey" value="RULES_TAB_HELPTEXT" type="string"/>					
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="16" y="-16"/>
-						<Anchor point="TOPRIGHT" x="-16" y="-16"/>
+						<Anchor point="TOPLEFT" x="12" y="-12"/>
+						<Anchor point="TOPRIGHT" x="-12" y="-12"/>
 					</Anchors>
 				</FontString>
 				<FontString inherits="GameFontHighlightSmall" parentKey="Counts" justifyH="RIGHT" justifyV="MIDDLE">
 					<Size x="80" y="14"/>
 					<Anchors>
-						<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+						<Anchor point="BOTTOMRIGHT" x="-12" y="12"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
         <Frames>
+			<Button parentKey="NewRule" inherits="UIPanelButtonTemplate" text="New Rule">
+				<Size>
+					<AbsDimension x="176" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="12" y="12"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>VendorEditRuleDialog:CreateRule()</OnClick>
+				</Scripts>
+			</Button>		
 			<Frame inherits="Vendor_BorderFrame" parentKey="TypesBorder">
 				<Size x="176" y="20"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
-					<Anchor point="BOTTOM" x="0" y="16"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.NewRule" relativePoint="TOPRIGHT" y="2"/>
 				</Anchors>
-			</Frame>
+			</Frame>		
 			<ScrollFrame parentKey="Types" inherits="FauxScrollFrameTemplate">
 				<KeyValues>
 					<KeyValue key="ItemHeight" value="24" type="number"/>
@@ -81,38 +92,12 @@
 				</Scripts>
 			</ScrollFrame>
 
-            <CheckButton parentKey="ShowHidden" inherits="OptionsBaseCheckButtonTemplate">
-                <Size x="16" y="16"/>
-				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeKey="$parent.TypesBorder" relativePoint="BOTTOMRIGHT" x="12"/>
-					<Anchor point="BOTTOM" x="0" y="16"/>
-				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<FontString inherits="GameFontHighlightSmall" text="Show Hidden Rules" justifyH="LEFT" justifyV="MIDDLE" parentKey="label">
-							<KeyValues>
-								<KeyValue key="LocKey" value="OPTIONS_RULES_SHOW_HIDDEN" type="string"/>
-							</KeyValues>
-							<Size x="200" y="16"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="2"/>
-								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="2"/>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnEnable>self.label:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())</OnEnable>
-					<OnDisable>self.label:SetTextColor(DISABLED_FONT_COLOR:GetRGB())</OnDisable>
-				</Scripts>
-			</CheckButton>
-
 			<Frame inherits="Vendor_BorderFrame" parentKey="RulesBorder">
 				<Size x="200" y="20"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.TypesBorder" relativePoint="TOPRIGHT" x="12"/>
 					<Anchor point="RIGHT" relativeKey="$parent.HelpText"/>
-					<Anchor point="BOTTOM" relativeKey="$parent.ShowHidden" relativePoint="TOP" y="4"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.Counts" relativePoint="TOP" y="4"/>
 				</Anchors>
 			</Frame>
 			<ScrollFrame parentKey="Rules" inherits="UIPanelScrollFrameTemplate">
@@ -140,6 +125,31 @@
 					<OnLoad>Vendor.LoadImplementation(self, "Controls", "SimpleList")</OnLoad>
 				</Scripts>
 			</ScrollFrame>
+
+            <CheckButton parentKey="ShowHidden" inherits="OptionsBaseCheckButtonTemplate">
+                <Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Counts"/>
+					<Anchor point="LEFT" relativeKey="$parent.RulesBorder"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString inherits="GameFontHighlightSmall" text="Show Hidden Rules" justifyH="LEFT" justifyV="MIDDLE" parentKey="label">
+							<KeyValues>
+								<KeyValue key="LocKey" value="OPTIONS_RULES_SHOW_HIDDEN" type="string"/>
+							</KeyValues>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="2"/>
+								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnable>self.label:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())</OnEnable>
+					<OnDisable>self.label:SetTextColor(DISABLED_FONT_COLOR:GetRGB())</OnDisable>
+				</Scripts>
+			</CheckButton>
 
 		</Frames>
         <Scripts>

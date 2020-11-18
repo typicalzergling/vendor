@@ -84,9 +84,9 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_KNOWNTOYS"],
         Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
-        ScriptText = "IsSoulbound and IsToy and IsAlreadyKnown",
+        ScriptText = "IsSoulbound and IsToy and IsAlreadyKnown and not IsUnsellable",
         Script = function()
-                return IsSoulbound and IsToy and IsAlreadyKnown;
+                return IsSoulbound and IsToy and IsAlreadyKnown and not IsUnsellable;
             end,
         Order = 1300,
     },
@@ -339,6 +339,18 @@ Rules.SystemRules =
         Script = function() return IsDestroyItem() end,
         Locked = true,
         Order = -1000,
+    },
+
+    {
+        Id = "destroy.knowntoys",
+        Type = DESTROY_RULE,
+        Name = L["SYSRULE_DESTROY_KNOWNTOYS"],
+        Description = L["SYSRULE_DESTROY_KNOWNTOYS_DESC"],
+        ScriptText = "IsSoulbound and IsToy and IsAlreadyKnown and IsUnsellable",
+        Script = function()
+                return IsSoulbound and IsToy and IsAlreadyKnown and IsUnsellable;
+            end,
+        Order = 1200,
     },
 };
 

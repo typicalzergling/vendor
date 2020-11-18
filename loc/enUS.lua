@@ -240,6 +240,8 @@ SYSRULE_SELL_EPICGEAR = "Epic Gear",
 SYSRULE_SELL_EPICGEAR_DESC = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than the specified item level. We assume you will want to sell BoE Epics on the auction house so BoEs are excluded.",
 SYSRULE_SELL_KNOWNTOYS = "Known Toys",
 SYSRULE_SELL_KNOWNTOYS_DESC = "Matches any already-known toys that are Soulbound.",
+SYSRULE_DESTROY_KNOWNTOYS = "Known Toys (Unsellable)",
+SYSRULE_DESTROY_KNOWNTOYS_DESC = "Matches any already-known toys that are Soulbound which have no value",
 SYSRULE_SELL_OLDFOOD = "Low-Level Food",
 SYSRULE_SELL_OLDFOOD_DESC = "Matches Food and Drink that is 10 or more levels below you. This will cover food from previous expansions and old food while leveling.",
 
