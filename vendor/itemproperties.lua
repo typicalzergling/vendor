@@ -102,12 +102,17 @@ function Addon:GetItemProperties(arg1, arg2)
     local location = nil
 
     -- Tooltip passed in. Use item location of known tooltip.
-    if type(arg1) == "table" then
+    if type(arg1) == "table" and not arg2 then
         tooltip = arg1
         _, link = tooltip:GetItem()
         if tooltipLocation then
             location = tooltipLocation
         end
+
+    -- Location passed in only
+    elseif type(arg1) == "table" and type(arg2) == "boolean" and arg2 then
+        location = arg1
+        link = C_Item.GetItemLink(location)
 
     -- Bag and Slot passed in
     elseif type(arg1) == "number" and type(arg2) == "number" then
@@ -247,11 +252,12 @@ function Addon:GetItemPropertiesFromBag(bag, slot)
     return self:GetItemProperties(bag, slot)
 end
 
--- Link is optional, will be gotten from the tooltip if not provided.
-function Addon:GetItemPropertiesFromTooltip(tooltip, link)
-    return self:GetItemProperties(tooltip, link)
+function Addon:GetItemPropertiesFromTooltip(tooltip)
+    return self:GetItemProperties(tooltip)
 end
 
-function Addon:GetItemPropertiesFromLink(link)
-    return self:GetItemProperties(GameTooltip, link);
+-- Link is optional, will be gotten from the tooltip if not provided.
+function Addon:GetItemPropertiesFromLocation(location)
+    return self:GetItemProperties(location, true)
 end
+

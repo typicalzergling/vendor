@@ -267,8 +267,8 @@ Rules.SystemRules =
         Type = KEEP_RULE,
         Name = L["SYSRULE_KEEP_POTENTIALUPGRADES"],
         Description = L["SYSRULE_KEEP_POTENTIALUPGRADES_DESC"],
-        ScriptText = "Level >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5)",
-        Script = function() return Level >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5) end,
+        ScriptText = "IsEquipment and (Level >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5))",
+        Script = function() return IsEquipment and (Level >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5)) end,
         Order = 1275,
     },
 

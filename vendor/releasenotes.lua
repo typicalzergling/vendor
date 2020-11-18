@@ -2,6 +2,28 @@ local AddonName, Addon = ...
 
 Addon.ReleaseNotes = {
     {
+        release="5.1",
+        on="November TBD, 2020",
+        html=
+[[<html>
+<body>
+<h1>New Built-in Keep Rule - Potential Upgrades</h1>
+<p>This is a new rule that matches gear that is within 5 levels of the player's average itemlevel or 95% of it, whichever is greater. This is a great new keep rule and now enabled by default for new profiles.
+This will ensure things like the pawn "not upgrade" sell rule won't match off-spec gear, or side-grades and other items which you probably don't want to sell and haven't added to an equipment set.
+</p>
+<br/>
+<h1>New Item Property - IsEquipped</h1>
+<p>This property matches true only if the item is currently equipped.
+</p>
+<br/>
+<h1>Notable Bug Fixes:</h1>
+<p>Random Item GUID lua error fixed (thank you fuba82!).</p>
+<p>Pawn extension will no longer scare you by flagging the gear you are wearing as will be sold if it isn't an 'upgrade' per Pawn (It couldn't actually sell the items you are wearing, just to be clear).
+Pawn extension will also no longer match unsellable gear for its sell rule.</p>
+</body>
+</html>]]
+    },
+    {
         release="5.0",
         on="November 17, 2020",
         html=

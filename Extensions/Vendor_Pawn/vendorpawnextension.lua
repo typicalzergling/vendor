@@ -61,7 +61,7 @@ local function registerPawnExtension()
                 Type = "Sell",
                 Name = "Not Pawn Upgrades",
                 Description = "Any equipment items that are not considered upgrades by the Pawn addon.",
-                Script = "IsEquipment and not Pawn_IsUpgrade() and not IsEquipped",
+                Script = "IsEquipment and not Pawn_IsUpgrade() and not IsEquipped and not IsUnsellable",
                 Order = 1000,
             },
         },
