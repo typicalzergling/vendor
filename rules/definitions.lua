@@ -261,6 +261,17 @@ Rules.SystemRules =
     },
     --@end-retail@
 
+    -- Safeguard Rule
+    {
+        Id = "keep.potentialupgrades",
+        Type = KEEP_RULE,
+        Name = L["SYSRULE_KEEP_POTENTIALUPGRADES"],
+        Description = L["SYSRULE_KEEP_POTENTIALUPGRADES_DESC"],
+        ScriptText = "Level >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5)",
+        Script = function() return Level >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5) end,
+        Order = 1275,
+    },
+
     -- Safeguard rule - Common items are usually important and useful.
     {
         Id = "keep.common",
@@ -317,7 +328,7 @@ Rules.SystemRules =
     {
         Id = "keep.equipmentset",
         Type = KEEP_RULE,
-        Name = L["SYSRULE_KEEP_EQUIPMENTSET_NAME"],
+        Name = L["SYSRULE_KEEP_EQUIPMENTSET"],
         Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
         ScriptText = "IsInEquipmentSet()",
         Script = function() return IsInEquipmentSet() end,

@@ -266,8 +266,10 @@ SYSRULE_KEEP_RAREGEAR = "Rare Gear",
 SYSRULE_KEEP_RAREGEAR_DESC = "Matches any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Rare quality.",
 SYSRULE_KEEP_EPICGEAR = "Epic Gear",
 SYSRULE_KEEP_EPICGEAR_DESC = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Epic quality.",
-SYSRULE_KEEP_EQUIPMENTSET_NAME = "Equipment Sets",
+SYSRULE_KEEP_EQUIPMENTSET = "Equipment Sets",
 SYSRULE_KEEP_EQUIPMENTSET_DESC = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
+SYSRULE_KEEP_POTENTIALUPGRADES = "Potential Upgrades",
+SYSRULE_KEEP_POTENTIALUPGRADES_DESC = "Matches any gear that is within 5 item levels or 95% of your average item level (whichever is lower). This safeguards potential upgrades, side-grades, or gear for other specs.",
 
 -- Destroy Rules
 SYSRULE_DESTROYLIST = "Items in Destroy list",
