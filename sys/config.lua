@@ -84,6 +84,7 @@ Addon.DefaultConfig.Rules =
         "keep.legendaryandup",
         "keep.equipmentset",
         "keep.unknownappearance",
+        "keep.potentialupgrades",
     },
 
     -- The default rules to enable which cause items to be sold.

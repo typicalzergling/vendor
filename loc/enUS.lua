@@ -447,7 +447,7 @@ HELP_ITEMISFROMEXPANSION_TEXT = "For items which are marked with and expansion t
 
 HELP_ITEMTYPE_ARGS = "type0 [, type2...typeN]",
 HELP_ITEMTYPE_TEXT = "Checks the item type against the string/number passed in which represents the item type",
-
+HELP_ISEQUIPPED_TEXT = "True if the item is currently equipped. Will never be true for items in inventory.",
 
 HELP_ISINEQUIPMENTSET_ARGS = "[setName0 .. setNameN]",
 HELP_ISINEQUIPMENTSET_TEXT = 

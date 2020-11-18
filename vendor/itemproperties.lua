@@ -187,6 +187,7 @@ function Addon:GetItemProperties(arg1, arg2)
 
     -- Save string compares later.
     item.IsEquipment = item.EquipLoc ~= "" and item.EquipLoc ~= "INVTYPE_BAG"
+    item.IsEquipped = item.Location:IsEquipmentSlot()
 
     -- Get soulbound information
     if C_Item.IsBound(location) then
