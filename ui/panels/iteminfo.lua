@@ -94,17 +94,51 @@ function ItemInfo:OnLoad()
 
 	self.View.OnDrop = function(_, item)
 		self:Drop(item)
-	end
+    end
+
+    self.ItemLink:SetScript("OnEnter", function(link)
+        if (not link:IsItemEmpty()) then
+            local item = link:GetItemLocation()
+            if (item) then
+                GameTooltip:SetOwner(link, "ANCHOR_BOTTOM")
+                if (item:IsBagAndSlot()) then
+                    local bag, slot = item:GetBagAndSlot()
+                    GameTooltip:SetBagItem(bag, slot)
+                elseif (item:IsEquipmentSlot()) then
+                    GameTooltip:SetInventoryItem("player", item:GetEquipmentSlot())
+                end
+
+                GameTooltip:ClearAllPoints()
+                GameTooltip:SetPoint("TOPLEFT", link, "BOTTOMLEFT", 0, -2)
+                GameTooltip:Show()
+            end
+        end
+    end)
+
+    self.ItemLink:SetScript("OnLeave", function(link)
+        if (GameTooltip:GetOwner() == link) then
+            GameTooltip:Hide()
+        end
+    end)
 end
 
 function ItemInfo:Drop(item)
     item = item or Addon.ItemList.GetCursorItem();
-    if (not item or (type(item) ~= "table") or not item:IsBagAndSlot()) then
+    if (not item or (type(item) ~= "table") or (type(item.HasAnyLocation) ~= "function") or not item:HasAnyLocation()) then
         return;
     end
 
     ClearCursor();
-    local itemProps = Addon:GetItemProperties(item:GetBagAndSlot());
+    self.ItemLink:SetItemLocation(item)
+    self.ItemLink:ContinueOnItemLoad(function()
+        local link = self.ItemLink
+        if (not link:IsItemEmpty()) then
+            link.Link:SetText(link:GetItemLink())
+        else
+        end
+    end)
+
+    local itemProps = Addon:GetItemPropertiesFromLocation(item, true);
     local model = {}
     for name, value in pairs(itemProps) do 
         if (type(value) ~= "table") then

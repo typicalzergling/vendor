@@ -337,6 +337,9 @@ EDITRULE_EXTENSION_RULE_TEXT = "This rules comes from '%s' extension and cannot 
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
 
+EDITRULE_ITEM_LABEL = "Item:",
+EDITRULE_NO_ITEM = "<none>",
+
 RULEHELP_NO_MATCHES = "There are no items which match the specified filter",
 RULEHELP_SOURCE = "Source: %s",
 RULEHELP_NOTES = "Notes:",
