@@ -86,7 +86,7 @@ function Addon:PruneHistory(hours, character)
         history.Entries[v] = nil
         count = count + 1
     end
-    Addon:Debug("historystats", "Pruned %s history items from %s", tostring(count), character)
+    Addon:Debug("historystats", "Pruned %s history entries from %s", tostring(count), character)
     return count
 end
 
@@ -133,14 +133,38 @@ function Addon:History_Cmd(arg1, arg2, arg3)
         end
     end
 
-    -- Print the current history
-    Addon:Print(L.CMD_PRINT_HISTORY_HEADER, Addon:GetCharacterFullName())
-    local count = 0
-    local total = 0
-    for _, entry in pairs(Addon:GetCharacterHistory()) do
-        count = count + 1
-        total = total + entry.Value
-        Addon:Print("  [%s] (%s) %s - %s", date('%c',tonumber(entry.TimeStamp)), tostring(entry.Action), tostring(entry.Link), Addon:GetPriceString(entry.Value))
+    local charsToPrint = {}
+    local history = historyVariable:GetOrCreate()
+    local totalsummary = false
+    if arg1 == "all" then
+        -- Add all characters to print list.
+        for char, _ in pairs(history.Characters) do
+            table.insert(charsToPrint, char)
+        end
+        totalsummary = true
+    else
+        -- Just current character only.
+        table.insert(charsToPrint, Addon:GetCharacterFullName())
     end
-    Addon:Print(L.CMD_PRINT_HISTORY_SUMMARY, count, Addon:GetPriceString(total))
+
+    -- Print the current history for each character listed.
+    local allcount = 0
+    local allvalue = 0
+    for _, char in pairs(charsToPrint) do
+        Addon:Print(L.CMD_PRINT_HISTORY_HEADER, char)
+        local count = 0
+        local total = 0
+        for _, entry in pairs(history.Characters[char].Entries) do
+            count = count + 1
+            total = total + entry.Value
+            Addon:Print("  [%s] (%s) %s - %s", date('%c',tonumber(entry.TimeStamp)), tostring(entry.Action), tostring(entry.Link), Addon:GetPriceString(entry.Value))
+        end
+        allcount = allcount + count
+        allvalue = allvalue + total
+        Addon:Print(L.CMD_PRINT_HISTORY_SUMMARY, char, count, Addon:GetPriceString(total))
+    end
+
+    if totalsummary then
+        Addon:Print(L.CMD_PRINT_HISTORY_SUMMARY_ALL, tostring(allcount), Addon:GetPriceString(allvalue))
+    end
 end
