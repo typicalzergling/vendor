@@ -11,7 +11,7 @@ local scanningtip = CreateFrame('GameTooltip', 'VendorScanningTip', nil, 'GameTo
 scanningtip:SetOwner(WorldFrame, 'ANCHOR_NONE')
 
 
-local function importTooltipTextToTable(tooltip, text, bag, slot)
+local function importTooltipTextToTable(tooltip, text, location)
     -- We assume the tooltip is the GameTooltip
     local tooltipText = "GameTooltipText"..text
 
@@ -20,8 +20,14 @@ local function importTooltipTextToTable(tooltip, text, bag, slot)
         tooltip = scanningtip
         tooltip:ClearLines()
         tooltipText = "VendorScanningTipText"..text
-        if bag and slot then
-            tooltip:SetBagItem(bag, slot)
+        if location and C_Item.DoesItemExist(location) then
+            if location:IsEquipmentSlot() then
+                tooltip:SetInventoryItem("player", location:GetEquipmentSlot())
+            elseif location:IsBagAndSlot() then
+                tooltip:SetBagItem(location:GetBagAndSlot())
+            else
+                error("Invalid location")
+            end
         else
             error("Invalid arguments to Tooltip Import")
         end
@@ -37,16 +43,16 @@ local function importTooltipTextToTable(tooltip, text, bag, slot)
     return tooltipTable
 end
 
-function Addon:ImportTooltipTextLeft(tooltip, bag, slot)
-    return importTooltipTextToTable(tooltip, "Left", bag, slot)
+function Addon:ImportTooltipTextLeft(tooltip, location)
+    return importTooltipTextToTable(tooltip, "Left", location)
 end
 
-function Addon:ImportTooltipTextRight(tooltip, bag, slot)
-    return importTooltipTextToTable(tooltip, "Right", bag, slot)
+function Addon:ImportTooltipTextRight(tooltip, location)
+    return importTooltipTextToTable(tooltip, "Right", location)
 end
 
 
-local function isStringInTooltipText(tooltip, text, bag, slot, str)
+local function isStringInTooltipText(tooltip, text, location, str)
     -- We assume the tooltip is the GameTooltip
     local tooltipText = "GameTooltipText"..text
 
@@ -55,8 +61,14 @@ local function isStringInTooltipText(tooltip, text, bag, slot, str)
         tooltip = scanningtip
         tooltip:ClearLines()
         tooltipText = "VendorScanningTipText"..text
-        if bag and slot then
-            tooltip:SetBagItem(bag, slot)
+        if location and C_Item.DoesItemExist(location) then
+            if location:IsEquipmentSlot() then
+                tooltip:SetInventoryItem("player", location:GetEquipmentSlot())
+            elseif location:IsBagAndSlot() then
+                tooltip:SetBagItem(location:GetBagAndSlot())
+            else
+                error("Invalid location")
+            end
         else
             error("Invalid arguments to Tooltip Scanner")
         end
@@ -77,46 +89,46 @@ local function isStringInTooltipText(tooltip, text, bag, slot, str)
 end
 
 -- Text scan for left text.
-function Addon:IsStringInTooltipLeftText(tooltip, bag, slot, str)
-    return isStringInTooltipText(tooltip, "Left", bag, slot, str)
+function Addon:IsStringInTooltipLeftText(tooltip, location, str)
+    return isStringInTooltipText(tooltip, "Left", location, str)
 end
 
 -- Text scan for right text.
-function Addon:IsStringInTooltipRightText(tooltip, bag, slot, str)
-    return isStringInTooltipText(tooltip, "Right", bag, slot, str)
+function Addon:IsStringInTooltipRightText(tooltip, location, str)
+    return isStringInTooltipText(tooltip, "Right", location, str)
 end
 
 -- Text scan for entire tooltip.
-function Addon:IsStringInTooltip(tooltip, bag, slot, str)
-    local left = Addon:IsStringInTooltipLeftText(tooltip, bag, slot, str)
+function Addon:IsStringInTooltip(tooltip, location, str)
+    local left = Addon:IsStringInTooltipLeftText(tooltip, location, str)
     if left then return left end
-    return Addon:IsStringInTooltipRightText(tooltip, bag, slot, str)
+    return Addon:IsStringInTooltipRightText(tooltip, location, str)
 end
 
 -- You haven't collected this appearance
-function Addon:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_UNKNOWNAPPEARANCE"])
+function Addon:IsItemUnknownAppearanceInTooltip(tooltip, location)
+    return self:IsStringInTooltipLeftText(tooltip, location, L["TOOLTIP_SCAN_UNKNOWNAPPEARANCE"])
 end
 
 -- Artifact Power
-function Addon:IsItemArtifactPowerInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_ARTIFACTPOWER"])
+function Addon:IsItemArtifactPowerInTooltip(tooltip, location)
+    return self:IsStringInTooltipLeftText(tooltip, location, L["TOOLTIP_SCAN_ARTIFACTPOWER"])
 end
 
 -- Toy
-function Addon:IsItemToyInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_TOY"])
+function Addon:IsItemToyInTooltip(tooltip, location)
+    return self:IsStringInTooltipLeftText(tooltip, location, L["TOOLTIP_SCAN_TOY"])
 end
 
 -- Already known
-function Addon:IsItemAlreadyKnownInTooltip(tooltip, bag, slot)
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_ALREADYKNOWN"])
+function Addon:IsItemAlreadyKnownInTooltip(tooltip, location)
+    return self:IsStringInTooltipLeftText(tooltip, location, L["TOOLTIP_SCAN_ALREADYKNOWN"])
 end
 
 -- Crafting Reagent
-function Addon:IsItemCraftingReagentInTooltip(tooltip, bag, slot)
+function Addon:IsItemCraftingReagentInTooltip(tooltip, location)
     -- Look, I don't know why it's called that, but it is. Blizzard has...reasons.
-    return self:IsStringInTooltipLeftText(tooltip, bag, slot, L["TOOLTIP_SCAN_CRAFTINGREAGENT"])
+    return self:IsStringInTooltipLeftText(tooltip, location, L["TOOLTIP_SCAN_CRAFTINGREAGENT"])
 end
 
 

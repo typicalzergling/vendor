@@ -208,7 +208,7 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Determine if this item is an uncollected transmog appearance
     -- We can save the scan by skipping if it is Soulbound (would already have it) or not equippable
     if not item.IsSoulbound and item.IsEquipment then
-        if self:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot) then
+        if self:IsItemUnknownAppearanceInTooltip(tooltip, item.Location) then
             item.IsUnknownAppearance = true
         end
     end
@@ -216,7 +216,7 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Determine if crafting reagent
     -- These are typically itemtype 7, which is 'tradeskill' but sometimes item type 15, which is miscellaneous.
     if item.TypeId == 7 or item.TypeId == 15 then
-        if self:IsItemCraftingReagentInTooltip(tooltip, bag, slot) then
+        if self:IsItemCraftingReagentInTooltip(tooltip, item.Location) then
             item.IsCraftingReagent = true
         end
     end
@@ -227,21 +227,21 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
     -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
     if item.TypeId == 15 or item.TypeId == 0 then
-        if self:IsItemToyInTooltip(tooltip, bag, slot) then
+        if self:IsItemToyInTooltip(tooltip, item.Location) then
             item.IsToy = true
         end
     end
 
     -- Determine if this is an already-collected item, which should only be usable items.
     if item.IsUsable then
-        if self:IsItemAlreadyKnownInTooltip(tooltip, bag, slot) then
+        if self:IsItemAlreadyKnownInTooltip(tooltip, item.Location) then
             item.IsAlreadyKnown = true
         end
     end
 
     -- Import the tooltip text as item properties for custom rules.
-    item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
-    item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
+    item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, item.Location)
+    item.TooltipRight = self:ImportTooltipTextRight(tooltip, item.Location)
 
     Addon:AddItemToCache(item, guid)
     return item, count
