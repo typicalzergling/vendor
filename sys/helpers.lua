@@ -124,3 +124,12 @@ if (type(table.merge) ~= "function") then
         return r;
     end
 end
+
+-- Gets character name with spaces for pretty-printing.
+local characterName = nil
+function Addon:GetCharacterFullName()
+    if not characterName then
+        characterName = string.format("%s - %s", UnitFullName("player"))
+    end
+    return characterName
+end

@@ -18,7 +18,7 @@ Addon.SavedVariable = {
 	end,
 
 	GetOrCreate = function(self, defaultValue)
-		assert(self.loaded, string.format("Attempt to access saved variable '%s' before the variables are loaded", self.savedVar));
+		assert(self.loaded, string.format("Attempt to access saved variable '%s' before the variables are loaded", tostring(self.savedVar)));
 		local var = _G[self.savedVar];
 		if (not var) then
 			if (defaultValue ~= nil) then

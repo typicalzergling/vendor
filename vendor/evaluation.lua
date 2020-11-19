@@ -143,7 +143,6 @@ function Addon:GetEvaluationDetails()
                 local entry = {}
                 entry.GUID = item.GUID
                 entry.Id = item.Id
-                entry.Link = item.Link
                 entry.Count = itemCount
                 entry.Result = result
                 entry.RuleId = ruleid

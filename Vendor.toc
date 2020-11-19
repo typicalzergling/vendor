@@ -7,7 +7,7 @@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists
+## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History
 ## SavedVariablesPerCharacter: Vendor_RulesConfig Vendor_ActiveProfile
 ## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511

@@ -206,7 +206,7 @@ function Addon:OnCreateDefaultProfile(profile)
     end
 
     -- Copy the Default Profile, and then override with per-user settings.
-    local defaultProfileCopy = Addon:GetProfileManager():CopyProfile(defaultProfile, string.format("%s - %s", UnitFullName("player")))
+    local defaultProfileCopy = Addon:GetProfileManager():CopyProfile(defaultProfile, Addon:GetCharacterFullName())
 
     -- Now overwrite the rules with this character's old rules:
     defaultProfileCopy:SetValue(PROFILE_KEEP_RULES, Vendor_RulesConfig.keep or {});
@@ -214,7 +214,7 @@ function Addon:OnCreateDefaultProfile(profile)
     defaultProfileCopy:SetValue(PROFILE_DESTROY_RULES, {});
 
     -- Give new name to signify this player's profile is specific.
-    defaultProfileCopy:SetName(string.format("%s - %s", UnitFullName("player")))
+    defaultProfileCopy:SetName(Addon:GetCharacterFullName())
 
     -- Remove old data now that we've migrated it to a profile.
     Vendor_RulesConfig = nil

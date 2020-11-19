@@ -7,6 +7,8 @@ Addon.c_DefaultLocale = "enUS"
 Addon.c_PrintColorCode = ORANGE_FONT_COLOR_CODE
 Addon.c_APIMethodColorCode = YELLOW_FONT_COLOR_CODE
 Addon.c_ThrottleTime = .15
+Addon.c_PruneHistoryDelay = 30  -- Time in seconds after intializing addon before prune history is run
+Addon.c_PruneHistoryLimit = 6 -- 30*24 = max blizzard item restoration window
 
 -- Addon Constants
 Addon.c_BuybackLimit = 12

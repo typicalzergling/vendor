@@ -170,6 +170,16 @@ CMD_AUTOSELL_MERCHANTNOTOPEN = "Merchant window is not open. You must be at a me
 CMD_AUTOSELL_INPROGRESS = "Already auto-selling. Please wait for completion before re-running.",
 CMD_AUTOSELL_EXECUTING = "Running auto-sell.",
 
+CMD_CLEAR_ALL_HISTORY = "Clearing all history.",
+CMD_CLEAR_CHAR_HISTORY = "Clearing history for %s",
+CMD_PRINT_HISTORY_HEADER = "History for %s",
+CMD_PRINT_HISTORY_SUMMARY = "History contains %s items totalling %s",
+CMD_PRUNE_CHAR_HISTORY = "Pruning %s history of entries over %s hours.",
+CMD_PRUNE_ALL_HISTORY = "Pruning all character histories of entries over %s hours.",
+CMD_PRUNE_HISTORY_ARG = "Invalid argument to history pruning, please specify number of hours to prune.",
+CMD_PRUNE_SUMMARY = "Removed %s entries from the history.",
+CMD_HISTORY_HELP = "View, clear, or prune history. Usage: history [clear||prune hours] [all]",
+
 -- API
 API_REGISTEREXTENSION_TITLE = "Register Extension",
 API_REGISTEREXTENSION_DOCS = "Registers a Vendor extension with Vendor. See CurseForge documentation for details.",

@@ -166,7 +166,7 @@ function ProfileConfig:OnShow()
     profileManager:RegisterCallback("OnProfileDeleted", self.RefreshAndUpdateState, self);
 
     -- Default name to 'Player - Realm'
-    self.Name:SetText(string.format("%s - %s", UnitFullName("player")))
+    self.Name:SetText(Addon:GetCharacterFullName())
     self:RefreshAndUpdateState();
 end
 
@@ -196,7 +196,7 @@ function ProfileConfig:OnCreateProfile(copy)
 
     -- Create button no copy defaults to "Playername - Realm"
     if (not copy and (not text or (string.len(text) == 0))) then
-        text = string.format("%s - %s", UnitFullName("player"))
+        text = Addon:GetCharacterFullName()
     end
 
     -- Check for duplicate names.

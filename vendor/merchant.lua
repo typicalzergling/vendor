@@ -111,7 +111,7 @@ function Addon:AutoSell()
 
                 -- Get Item properties and evaluate
                 local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)                
-                local result = Addon:EvaluateItem(item)
+                local result, rule, ruleid = Addon:EvaluateItem(item)
 
                 -- Determine if it is to be sold
                 -- Result of 0 is no action, 1 is sell, 2 is delete.
@@ -124,16 +124,20 @@ function Addon:AutoSell()
                         return
                     end
 
+                    local netValue = item.UnitValue * itemCount
+                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue))
+                    numSold = numSold + 1
+                    totalValue = totalValue + netValue
+
                     -- Still open, so OK to sell it.
                     if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                         UseContainerItem(bag, slot)
                     else
                         self:Print("Simulating selling of: %s", tostring(item.Link))
                     end
-                    local netValue = item.UnitValue * itemCount
-                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue))
-                    numSold = numSold + 1
-                    totalValue = totalValue + netValue
+
+                    -- Add to history
+                    Addon:AddEntryToHistory(item.Link, "Sell", rule, ruleid, itemCount, netValue)
 
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
