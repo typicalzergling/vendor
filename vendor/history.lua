@@ -7,12 +7,17 @@ local debugp = function (...) Addon:Debug("history", ...) end
 local VERSION = 1
 local historyVariable = Addon.SavedVariable:new("History")
 
+-- Root history variable tracks Version, Rules, and Profiles
+-- Rules and Profiles are lookup tables to save space for each entry.
+
 function Addon:ClearAllHistory()
     debugp("Clearing Entire History")
     historyVariable:Replace({})
     local history = historyVariable:GetOrCreate()
     history.Characters = {}
     history.Version = VERSION
+    history.Rules = {}
+    history.Profiles = {}
 end
 
 function Addon:ClearCharacterHistory()
@@ -44,16 +49,75 @@ function Addon:GetHistoryVersion()
     return history.Version
 end
 
+
+-- We're optimizing for space here and performance on lookup, not on insert
+-- So we will take a little more computation to input the data, but the storage
+-- size will be small and the lookup will be fast
+local function getOrCreateRuleId(ruleid, rule)
+    -- Create the table and data if doesn't exist.
+    local history = historyVariable:GetOrCreate()
+    if not history.Rules then history.Rules = {} end
+
+    -- find our ruleid in the list - these should be unique (with close enough certainty for us to not care)
+    for k, v in pairs(history.Rules) do
+        if v.Id == ruleid then
+            return k
+        end
+    end
+
+    -- No match, do insert.
+    local entry = {}
+    entry.Id = ruleid
+    entry.Name = rule or L.UNKNOWN
+    table.insert(history.Rules, entry)
+
+    -- Now need to find what index insert used since list isn't ordered.
+    for k, v in pairs(history.Rules) do
+        if v.Id == ruleid then
+            return k
+        end
+    end
+    error("Failed creating history entry rule id")
+end
+
+-- As above, optimized for storage and lookup, not insert.
+local function getOrCreateProfileId()
+    -- Create the table and data if doesn't exist.
+    local history = historyVariable:GetOrCreate()
+    if not history.Profiles then history.Profiles = {} end
+
+    -- find our ruleid in the list - these should be unique (with close enough certainty for us to not care)
+    for k, v in pairs(history.Profiles) do
+        if v.Id == Addon:GetProfile():GetId() then
+            return k
+        end
+    end
+
+    -- No match, do insert.
+    local entry = {}
+    entry.Id = Addon:GetProfile():GetId()
+    entry.Name = Addon:GetProfile():GetName()
+    table.insert(history.Profiles, entry)
+
+    -- Now need to find what index insert used since list isn't ordered.
+    for k, v in pairs(history.Profiles) do
+        if v.Id == Addon:GetProfile():GetId() then
+            return k
+        end
+    end
+    error("Failed creating history entry profile id")
+end
+
 function Addon:AddEntryToHistory(link, action, rule, ruleid, count, value)
     local entry = {}
-    entry.Profile = Addon:GetProfile():GetName()
     entry.TimeStamp = time()
     entry.Action = action
-    entry.Link = link
-    entry.Rule = rule
-    entry.RuleId = ruleid
+    entry.Id = Addon:GetItemIdFromString(link)
     entry.Count = count
     entry.Value = value
+    entry.Profile = getOrCreateProfileId()
+    entry.Rule = getOrCreateRuleId(ruleid, rule)
+
     debugp("Adding entry: [%s] %s (%s)", tostring(action), tostring(link), tostring(rule))
     local charHistory = getOrCreateCharacterHistory()
     table.insert(charHistory.Entries, entry)
@@ -82,7 +146,7 @@ function Addon:PruneHistory(hours, character)
     -- Remove the old entries
     local count = 0
     for _, v in pairs(toremove) do
-        debugp("Pruning %s history: removing entry %s: [%s] %s", character, tostring(v), history.Entries[v].TimeStamp, history.Entries[v].Link)
+        debugp("Pruning %s history: removing entry %s: [%s] %s", character, tostring(v), history.Entries[v].TimeStamp, tostring(history.Entries[v].Id))
         history.Entries[v] = nil
         count = count + 1
     end
@@ -93,12 +157,85 @@ end
 function Addon:PruneAllHistory(hours)
     local history = historyVariable:GetOrCreate()
     local total = 0
-    for char, _ in pairs(history.Characters) do
-        local count = Addon:PruneHistory(hours, char)
-        total = total + count
+    if history.Characters then
+        for char, _ in pairs(history.Characters) do
+            local count = Addon:PruneHistory(hours, char)
+            total = total + count
+        end
     end
+
+    -- Prune the lookup tables when we are done.
+    Addon:PruneHistoryLookupTables()
+
     Addon:Debug("historystats", "Pruned %s history entries across all characters.", tostring(total))
     return total
+end
+
+local function isLookupIdInUse(index, name)
+    local history = historyVariable:GetOrCreate()
+    local total = 0
+    for char, _ in pairs(history.Characters) do
+        for _, entry in pairs(history.Characters[char].Entries) do
+            if entry[name] == index then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+-- Loops through all lookup tables and sees if any are in use
+-- anywhere in the history
+function Addon:PruneHistoryLookupTables()
+    local history = historyVariable:GetOrCreate()
+    local toremove = {}
+    for k, _ in pairs(history.Rules) do
+        -- See if this rule id appears anywhere in the history
+        if not isLookupIdInUse(k, "Rule") then
+            table.insert(toremove, k)
+        end
+    end
+    for _, v in pairs(toremove) do
+        debugp("Removing unused Rule lookup %s - %s", tostring(v), history.Rules[v].Id)
+        history.Rules[v] = nil
+    end
+
+    toremove = {}
+    for k, _ in pairs(history.Profiles) do
+        -- See if this rule id appears anywhere in the history
+        if not isLookupIdInUse(k, "Profile") then
+            table.insert(toremove, k)
+        end
+    end
+    for _, v in pairs(toremove) do
+        debugp("Removing unused Profile lookup %s - %s", tostring(v), history.Profiles[v].Id)
+        history.Profiles[v] = nil
+    end
+end
+
+function Addon:GetActionTypeFromId(id)
+    for k, v in pairs(Addon.ActionType) do
+        if v == id then
+            return k
+        end
+    end
+    return L.UNKNOWN
+end
+
+function Addon:GetRuleInfoFromHistoryId(id)
+    local history = historyVariable:GetOrCreate()
+    if history.Rules and history.Rules[id] then
+        return history.Rules[id].Id, history.Rules[id].Name
+    end
+    return tostring(id), L.UNKNOWN
+end
+
+function Addon:GetProfileInfoFromHistoryId(id)
+    local history = historyVariable:GetOrCreate()
+    if history.Profiles and history.Profiles[id] then
+        return history.Profiles[id].Id, history.Profiles[id].Name
+    end
+    return tostring(id), L.UNKNOWN
 end
 
 function Addon:History_Cmd(arg1, arg2, arg3)
@@ -157,7 +294,20 @@ function Addon:History_Cmd(arg1, arg2, arg3)
         for _, entry in pairs(history.Characters[char].Entries) do
             count = count + 1
             total = total + entry.Value
-            Addon:Print("  [%s] (%s) %s - %s", date('%c',tonumber(entry.TimeStamp)), tostring(entry.Action), tostring(entry.Link), Addon:GetPriceString(entry.Value))
+            local _, display = GetItemInfo(entry.Id)
+            if not display then display = entry.Id end
+            local ruleid, rule = Addon:GetRuleInfoFromHistoryId(entry.Rule)
+            local profileid, profile = Addon:GetProfileInfoFromHistoryId(entry.Profile)
+            local debugextra = ""
+            if Addon.IsDebug then
+                debugextra = string.format(" {%s | %s}", ruleid, profile)
+            end
+            Addon:Print("  [%s] (%s) %s - %s %s",
+                date('%c',tonumber(entry.TimeStamp)),
+                Addon:GetActionTypeFromId(entry.Action),
+                display,
+                Addon:GetPriceString(entry.Value),
+                debugextra)
         end
         allcount = allcount + count
         allvalue = allvalue + total

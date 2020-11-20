@@ -111,7 +111,7 @@ function Addon:AutoSell()
 
                 -- Get Item properties and evaluate
                 local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)                
-                local result, rule, ruleid = Addon:EvaluateItem(item)
+                local result, ruleid, rule = Addon:EvaluateItem(item)
 
                 -- Determine if it is to be sold
                 -- Result of 0 is no action, 1 is sell, 2 is delete.
@@ -137,7 +137,7 @@ function Addon:AutoSell()
                     end
 
                     -- Add to history
-                    Addon:AddEntryToHistory(item.Link, "Sell", rule, ruleid, itemCount, netValue)
+                    Addon:AddEntryToHistory(item.Link, Addon.ActionType.SELL, rule, ruleid, itemCount, netValue)
 
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
