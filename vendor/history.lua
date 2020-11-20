@@ -174,10 +174,14 @@ end
 local function isLookupIdInUse(index, name)
     local history = historyVariable:GetOrCreate()
     local total = 0
-    for char, _ in pairs(history.Characters) do
-        for _, entry in pairs(history.Characters[char].Entries) do
-            if entry[name] == index then
-                return true
+    if history.Characters then
+        for char, _ in pairs(history.Characters) do
+            if history.Characters[char] and history.Characters[char].Entries then
+                for _, entry in pairs(history.Characters[char].Entries) do
+                    if entry[name] == index then
+                        return true
+                    end
+                end
             end
         end
     end
@@ -188,28 +192,32 @@ end
 -- anywhere in the history
 function Addon:PruneHistoryLookupTables()
     local history = historyVariable:GetOrCreate()
-    local toremove = {}
-    for k, _ in pairs(history.Rules) do
-        -- See if this rule id appears anywhere in the history
-        if not isLookupIdInUse(k, "Rule") then
-            table.insert(toremove, k)
+    if history.Rules then
+        local toremove = {}
+        for k, _ in pairs(history.Rules) do
+            -- See if this rule id appears anywhere in the history
+            if not isLookupIdInUse(k, "Rule") then
+                table.insert(toremove, k)
+            end
         end
-    end
-    for _, v in pairs(toremove) do
-        debugp("Removing unused Rule lookup %s - %s", tostring(v), history.Rules[v].Id)
-        history.Rules[v] = nil
+        for _, v in pairs(toremove) do
+            debugp("Removing unused Rule lookup %s - %s", tostring(v), history.Rules[v].Id)
+            history.Rules[v] = nil
+        end
     end
 
-    toremove = {}
-    for k, _ in pairs(history.Profiles) do
-        -- See if this rule id appears anywhere in the history
-        if not isLookupIdInUse(k, "Profile") then
-            table.insert(toremove, k)
+    if history.Profiles then
+        local toremove = {}
+        for k, _ in pairs(history.Profiles) do
+            -- See if this rule id appears anywhere in the history
+            if not isLookupIdInUse(k, "Profile") then
+                table.insert(toremove, k)
+            end
         end
-    end
-    for _, v in pairs(toremove) do
-        debugp("Removing unused Profile lookup %s - %s", tostring(v), history.Profiles[v].Id)
-        history.Profiles[v] = nil
+        for _, v in pairs(toremove) do
+            debugp("Removing unused Profile lookup %s - %s", tostring(v), history.Profiles[v].Id)
+            history.Profiles[v] = nil
+        end
     end
 end
 
@@ -275,8 +283,10 @@ function Addon:History_Cmd(arg1, arg2, arg3)
     local totalsummary = false
     if arg1 == "all" then
         -- Add all characters to print list.
-        for char, _ in pairs(history.Characters) do
-            table.insert(charsToPrint, char)
+        if history.Characters then
+            for char, _ in pairs(history.Characters) do
+                table.insert(charsToPrint, char)
+            end
         end
         totalsummary = true
     else
@@ -291,7 +301,7 @@ function Addon:History_Cmd(arg1, arg2, arg3)
         Addon:Print(L.CMD_PRINT_HISTORY_HEADER, char)
         local count = 0
         local total = 0
-        if history.Characters[char] and history.Characters[char].Entries then
+        if history.Characters and history.Characters[char] and history.Characters[char].Entries then
             for _, entry in pairs(history.Characters[char].Entries) do
                 count = count + 1
                 total = total + entry.Value
