@@ -291,27 +291,29 @@ function Addon:History_Cmd(arg1, arg2, arg3)
         Addon:Print(L.CMD_PRINT_HISTORY_HEADER, char)
         local count = 0
         local total = 0
-        for _, entry in pairs(history.Characters[char].Entries) do
-            count = count + 1
-            total = total + entry.Value
-            local _, display = GetItemInfo(entry.Id)
-            if not display then display = entry.Id end
-            local ruleid, rule = Addon:GetRuleInfoFromHistoryId(entry.Rule)
-            local profileid, profile = Addon:GetProfileInfoFromHistoryId(entry.Profile)
-            local debugextra = ""
-            if Addon.IsDebug then
-                debugextra = string.format(" {%s | %s}", ruleid, profile)
+        if history.Characters[char] and history.Characters[char].Entries then
+            for _, entry in pairs(history.Characters[char].Entries) do
+                count = count + 1
+                total = total + entry.Value
+                local _, display = GetItemInfo(entry.Id)
+                if not display then display = entry.Id end
+                local ruleid, rule = Addon:GetRuleInfoFromHistoryId(entry.Rule)
+                local profileid, profile = Addon:GetProfileInfoFromHistoryId(entry.Profile)
+                local debugextra = ""
+                if Addon.IsDebug then
+                    debugextra = string.format(" {%s | %s}", ruleid, profile)
+                end
+                Addon:Print("  [%s] (%s) %s - %s %s",
+                    date('%c',tonumber(entry.TimeStamp)),
+                    Addon:GetActionTypeFromId(entry.Action),
+                    display,
+                    Addon:GetPriceString(entry.Value),
+                    debugextra)
             end
-            Addon:Print("  [%s] (%s) %s - %s %s",
-                date('%c',tonumber(entry.TimeStamp)),
-                Addon:GetActionTypeFromId(entry.Action),
-                display,
-                Addon:GetPriceString(entry.Value),
-                debugextra)
+            allcount = allcount + count
+            allvalue = allvalue + total
+            Addon:Print(L.CMD_PRINT_HISTORY_SUMMARY, char, count, Addon:GetPriceString(total))
         end
-        allcount = allcount + count
-        allvalue = allvalue + total
-        Addon:Print(L.CMD_PRINT_HISTORY_SUMMARY, char, count, Addon:GetPriceString(total))
     end
 
     if totalsummary then
