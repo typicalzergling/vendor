@@ -140,10 +140,12 @@ function ItemInfo:Drop(item)
 
     local itemProps = Addon:GetItemPropertiesFromLocation(item, true);
     local model = {}
-    for name, value in pairs(itemProps) do 
-        if (type(value) ~= "table") then
-            if ((name ~= "GUID") and (name ~= "Link")) then
-                table.insert(model, { Name=name, Value=value });
+    if itemProps then
+        for name, value in pairs(itemProps) do
+            if (type(value) ~= "table") then
+                if ((name ~= "GUID") and (name ~= "Link")) then
+                    table.insert(model, { Name=name, Value=value });
+                end
             end
         end
     end
