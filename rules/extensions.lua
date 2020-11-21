@@ -471,7 +471,7 @@ function Extensions:Register(extension)
     end
 
     self.OnChanged("ADDED", ext);
-    Addon:Debug("extensions", "Completed registration of %s (%s) with %s function(s), %s rule(s) and %s OnRuleUpdate functions.", ext.Source, ext.Name, ext.Functions, ext.Rules, ext.OnRuleUpdate);
+    Addon:Debug("extensions", "Completed registration of %s (%s) with %s function(s), %s rule(s) and %s OnRuleUpdate functions.", ext.Source, ext.Name, ext.Functions or 0, ext.Rules or 0, ext.OnRuleUpdate or 0);
     return true;
 end
 
