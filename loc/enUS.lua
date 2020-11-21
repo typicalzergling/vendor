@@ -72,14 +72,11 @@ OPTIONS_TITLE_ADDON = "These settings are for configuring Vendor behavior.\n\n",
 OPTIONS_SHOW_BINDINGS = "Key Bindings",
 OPTIONS_OPEN_RULES = "Open Rules",
 
-OPTIONS_AUDIT_INTRO_TEXT = "This is a record of all actions Vendor has taken recently.",
+OPTIONS_AUDIT_INTRO_TEXT = "This is a record of all actions Vendor has taken for this character.",
 OPTIONS_AUDIT_SEARCH_LABEL = "Search",
 OPTIONS_AUDIT_FILTER_LABEL = "Filter",
 OPTIONS_AUDIT_EMPTY = "There are no records yet, which means you either just cleared the history or haven't used Vendor yet. Go use it!",
 OPTIONS_AUDIT_SEARCH_PLACEHOLDER = "Enter terms to search",
-
-OPTIONS_AUDIT_INTRO_TEXT = "This is a record of all actions Vendor has taken recently.",
-CONFIG_DIALOG_AUDIT_TAB = "Audit",
 
 OPTIONS_HEADER_REPAIR = "Repair",
 OPTIONS_DESC_REPAIR = "Whether to auto-repair, and how to pay for it.\n",
@@ -227,6 +224,7 @@ CONFIG_DIALOG_SHARE_TOOLTIP = "Share",
 CONFIG_DIALOG_MOVEUP_TOOLTIP = "Click to move the rule sooner in evaluation order",
 CONFIG_DIALOG_MOVEDOWN_TOOLTIP = "Click to move the rule later in the evaluation order",
 CONFIG_DIALOG_LISTS_TAB = "Lists",
+CONFIG_DIALOG_AUDIT_TAB = "Audit",
 CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, Sold, or Destroyed.|n"..
     "Drag items onto the list area to add it to that list.|n"..
     "You can drag an item from one list to another.",
