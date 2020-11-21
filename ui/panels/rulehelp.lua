@@ -127,23 +127,41 @@ local function CreateModel(name, help)
     return model
 end
 
+-- Helper to ensure we've got a model
+local function EnsureModel(current, models, name, help)
+    local key = string.lower(name)
+    local existing = current[key];
+    if (not existing) then
+        models[key] = CreateModel(name, help)
+    else
+        models[key] = existing
+    end
+end
+
 --[[===========================================================================
    | Creates all the models for our rule documentatino and addons
    ===========================================================================]]
 function RuleHelp:CreateModels()
+    local current = self.models or {}
+    local models = {}
+
     self.models = self.models or {}
     if (Addon.Extensions) then
         for name, help in pairs(Addon.Extensions:GetFunctionDocs()) do
-            self.models[string.lower(name)] = CreateModel(name, help)
+            EnsureModel(current, models, name, help)
         end
     end
 
     for cat, section in pairs(Addon.ScriptReference) do
         for name, help in pairs(section) do
-            self.models[string.lower(name)] = CreateModel(name, help)
+            EnsureModel(current, models, name, help)
         end
     end
+
+    self.models = models
+    self.items = nil
 end
+
 
 --[[===========================================================================
    |  Crates a fitlered list of models
@@ -156,10 +174,6 @@ function RuleHelp:CreateItems(filter)
         else
             filter = string.lower(filter)
         end
-    end
-
-    if (not self.models) then
-        self:CreateModels()
     end
 
     local items = {}
@@ -196,8 +210,18 @@ function RuleHelp:OnLoad()
     self.View.ItemClass = RuleDocumentation
     self.View.FrameType = "Frame"
     self.View:SetEmptyText(L.RULEHELP_NO_MATCHES)
+    Addon:GetExtensionManger():RegisterCallback("OnFunctionsChanged", 
+        function()
+            self:CreateModels()
+            if (self:IsVisible()) then
+                self.View:Update()
+            end
+        end, self)
 
     self.View.GetItems = function()
+        if (not self.models) then
+            self:CreateModels()
+        end
         if (not self.items) then
             self:CreateItems()
         end
@@ -224,6 +248,7 @@ end
    ===========================================================================]]
 function RuleHelp:OnShow()
     self.FilterText:RegisterCallback("OnChange", self.Filter, self);
+    self:CreateModels()
 end
 
 --[[===========================================================================

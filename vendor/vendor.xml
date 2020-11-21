@@ -10,4 +10,5 @@
     <Script file="merchant.lua"/>
     <Script file="destroy.lua"/>
     <Script file="releasenotes.lua"/>
+    <Script file="extensionmanager.lua"/>
 </Ui>

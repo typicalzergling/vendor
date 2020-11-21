@@ -129,7 +129,8 @@ end
 local characterName = nil
 function Addon:GetCharacterFullName()
     if not characterName then
-        characterName = string.format("%s - %s", UnitFullName("player"))
+        local name, server = UnitFullName("player")
+        characterName = string.format("%s - %s", name, server)
     end
     return characterName
 end
