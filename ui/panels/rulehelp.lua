@@ -142,7 +142,7 @@ function RuleHelp:CreateModels()
         for name, help in pairs(section) do
             self.models[string.lower(name)] = CreateModel(name, help)
         end
-    end	
+    end
 end
 
 --[[===========================================================================

@@ -512,6 +512,7 @@ function Addon:RegisterExtension(extension)
                     Extensions:ChangeCallback();
                 end);
         end
+        Addon.Panels.RuleHelp:CreateModels()
     end
     return result;
 end
