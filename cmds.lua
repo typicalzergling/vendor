@@ -12,6 +12,7 @@ function Addon:SetupConsoleCommands()
     self:AddConsoleCommand("withdraw", L.CMD_WITHDRAW_HELP, "Withdraw_Cmd")
     self:AddConsoleCommand("api", L.CMD_API_HELP, "PrintAPI_Cmd")
     self:AddConsoleCommand("history", L.CMD_HISTORY_HELP, "History_Cmd")
+    self:AddConsoleCommand("destroy", L.CMD_DESTROY_HELP, "Destroy_Cmd")
 end
 
 -- Add or remove items from the blacklist or whitelist.
@@ -164,6 +165,11 @@ function Addon:Withdraw_Cmd()
         end
     end
     Addon:Print(L["MERCHANT_WITHDRAWN_ITEMS"], count);
+end
+
+function Addon:Destroy_Cmd()
+    Addon:Print(L.CMD_RUNDESTROY)
+    Addon:DestroyItems()
 end
 
 -- Prints the public API

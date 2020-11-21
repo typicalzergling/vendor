@@ -182,6 +182,9 @@ CMD_PRUNE_HISTORY_ARG = "Invalid argument to history pruning, please specify num
 CMD_PRUNE_SUMMARY = "Removed %s entries from the history.",
 CMD_HISTORY_HELP = "View, clear, or prune history. Usage: history [clear||prune hours] [all]",
 
+CMD_RUNDESTROY = "Destroying all items matching Destroy rules or in the Destory list.",
+CMD_DESTROY_HELP = "Destroys all items matching Destroy rules or in the Destroy list.",
+
 -- API
 API_REGISTEREXTENSION_TITLE = "Register Extension",
 API_REGISTEREXTENSION_DOCS = "Registers a Vendor extension with Vendor. See CurseForge documentation for details.",
