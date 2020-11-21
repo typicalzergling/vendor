@@ -37,8 +37,14 @@ end
 function Addon.DeepTableCopy(obj, seen)
     if type(obj) ~= 'table' then return obj end
     if seen and seen[obj] then return seen[obj] end
+
     local s = seen or {}
-    local res = setmetatable({}, getmetatable(obj))
+    local meta = getmetatable(obj)
+    if (type(meta) ~= "table") then
+        meta = nil
+    end
+
+    local res = setmetatable({}, meta)
     s[obj] = res
     for k, v in pairs(obj) do res[Addon.DeepTableCopy(k, s)] = Addon.DeepTableCopy(v, s) end
     return res

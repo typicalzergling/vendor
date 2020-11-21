@@ -1,0 +1,97 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="panels/audit.lua"/>
+
+	<!-- Lists Panel -->
+	<Frame name="Vendor_AuditPanel" hidden="true" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" parentKey="Help">
+					<Size x="1" y="48"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="OPTIONS_AUDIT_INTRO_TEXT" type="string"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-10"/>
+						<Anchor point="TOPRIGHT" x="-10" y="-10"/>
+					</Anchors>
+				</FontString>
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="SearchLabel">
+					<Size x="64" y="28"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="OPTIONS_AUDIT_SEARCH_LABEL" type="string"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor relativeKey="$parent.Help" relativePoint="BOTTOMLEFT" point="TOPLEFT" x="0" y="-8"/>
+					</Anchors>
+				</FontString>
+
+				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="FilterLabel">
+					<Size x="48" y="28"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="OPTIONS_AUDIT_FILTER_LABEL" type="string"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor relativeKey="$parent.Help" relativePoint="CENTER" point="LEFT" x="8" y="-8"/>
+						<Anchor relativeKey="$parent.SearchLabel" relativePoint="TOP" point="TOP"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame inherits="Vendor_BorderFrame" parentKey="listsBorder">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.FilterLabel" relativePoint="TOPRIGHT" x="4"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.FilterLabel"/>
+					<Anchor point="RIGHT" x="-10"/>
+				</Anchors>
+			</Frame>
+
+			<Frame inherits="Vendor_Edit" parentKey="Search">
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="OPTIONS_AUDIT_SEARCH_PLACEHOLDER" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.SearchLabel" relativePoint="TOPRIGHT" x="4"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.SearchLabel"/>
+					<Anchor point="RIGHT" relativeKey="$parent.FilterLabel" relativePoint="LEFT" x="-8"/>
+				</Anchors>
+			</Frame>
+
+			<Frame inherits="Vendor_BorderFrame" parentKey="HistoryBorder">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.SearchLabel" relativePoint="BOTTOMLEFT" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+				</Anchors>
+			</Frame>
+
+			<ScrollFrame parentKey="Lists" inherits="FauxScrollFrameTemplate">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString justifyH="CENTER" justifyV="TOP" parentKey="EmptyText" inherits="GameFontDisable">
+							<KeyValues>
+								<KeyValue key="PlaceholderKey" value="OPTIONS_AUDIT_EMPTY" type="string"/>
+							</KeyValues>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="16" y="-16"/>
+								<Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.HistoryBorder" x="6" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.HistoryBorder" x="-6" y="6"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>Vendor.LoadImplementation(self, "Controls", "List")</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+
+		</Frames>
+
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self, "Panels", "Audit")</OnLoad>
+		</Scripts>
+	</Frame>
+
+</Ui>
