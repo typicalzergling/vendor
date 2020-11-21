@@ -22,6 +22,7 @@
     <Include file="panels/lists.xml"/>
     <Include file="panels/iteminfo.xml"/>
     <Include file="panels/rulehelp.xml"/>
+    <Include file="panels/audit.xml"/>
 
     <Include file="rulesdialog.xml"/>
     <Include file="editruledialog.xml"/>
