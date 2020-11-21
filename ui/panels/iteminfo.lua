@@ -61,9 +61,9 @@ function ItemInfoItem:OnClick(button)
     local item = Addon.ItemList.GetCursorItem();
 	if (not item) then
 		local model = assert(self:GetModel(), "The item should have a valid model")
-		Addon.invoke(self:GetList(), "OnItemClicked", button, model)
+		Addon.Invoke(self:GetList(), "OnItemClicked", button, model)
 	else
-		Addon.invoke(self:GetList(), "OnDrop", item)
+		Addon.Invoke(self:GetList(), "OnDrop", item)
 	end
 end
 
@@ -86,9 +86,9 @@ function ItemInfo:OnLoad()
     self.View.ItemClass = ItemInfoItem	
 	self.View.OnItemClicked = function(_, button, item)
 		if (button == "LeftButton") then
-			Addon.invoke(self, "OnItemClicked", item.Name, item.Value)
+			Addon.Invoke(self, "OnItemClicked", item.Name, item.Value)
 		elseif (button == "RightButton") then
-			Addon.invoke(self, "OnItemContext", item.Name, item.Value)
+			Addon.Invoke(self, "OnItemContext", item.Name, item.Value)
 		end
 	end
 

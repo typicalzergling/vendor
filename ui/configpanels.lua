@@ -96,10 +96,10 @@ local function applySubclass(panel, name)
 end
 
 function Addon.ConfigPanel:Save()
-    Addon:Debug("config", "Apply panel settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Apply panel settings (%s panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Apply", panel);
-        Addon.invoke(panel, "OnSave");
+        Addon.Invoke(panel, "OnSave");
     end
 end
 
@@ -108,28 +108,28 @@ function Addon.ConfigPanel.OnShow(self)
 end
 
 function Addon.ConfigPanel:SetDefaults()
-    Addon:Debug("config", "Apply default settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Apply default settings (%s panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Default", panel);
-        Addon.invoke(panel, "OnSetDefault");
+        Addon.Invoke(panel, "OnSetDefault");
     end
 
     self:Refresh();
 end
 
 function Addon.ConfigPanel:Cancel()
-    Addon:Debug("config", "Cancel panel settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Cancel panel settings (%s panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Cancel", panel);
-        Addon.invoke(panel, "OnCancel");
+        Addon.Invoke(panel, "OnCancel");
     end
 end
 
 function Addon.ConfigPanel:Refresh()
-    Addon:Debug("config", "Refresh panel settings (%d panels)", table.getn(configPanels));
+    Addon:Debug("config", "Refresh panel settings (%s panels)", table.getn(configPanels));
     for _, panel in ipairs(configPanels) do
         invokePanelMethod("Set", panel);
-        Addon.invoke(panel, "OnSet");
+        Addon.Invoke(panel, "OnSet");
     end
 end
 
@@ -151,7 +151,7 @@ function Addon.ConfigPanel:AddPanel(panel, name)
     InterfaceOptions_AddCategory(panel);    
     table.insert(configPanels, panel);
 
-    Addon:Debug("config", "Add panel '%s' [%s] (%d panels)", title, name, table.getn(configPanels));
+    Addon:Debug("config", "Add panel '%s' [%s] (%s panels)", title, name, table.getn(configPanels));
 end
 
 --*****************************************************************************

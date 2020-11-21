@@ -149,7 +149,7 @@ function RuleItem:SetActive(active)
             model.Params = params
         end
 
-        Addon.invoke(self:GetList(), "OnModelChanged", model)
+        Addon.Invoke(self:GetList(), "OnModelChanged", model)
     end
 end
 
@@ -205,7 +205,7 @@ function RuleItem:OnParameterChanged()
         end
 
         model.Params = params;
-        Addon.invoke(self:GetList(), "OnModelChanged", model)
+        Addon.Invoke(self:GetList(), "OnModelChanged", model)
     end
 end
 
@@ -401,7 +401,7 @@ function RuleItem:OnContextMenu()
             notCheckable = true,
             text = L.RULE_CMENU_HIDE,
             func = function()
-                Addon.invoke(self:GetList(), "ChangeHiddenState", self:GetModel().Rule.Id, true)
+                Addon.Invoke(self:GetList(), "ChangeHiddenState", self:GetModel().Rule.Id, true)
             end
         })
     else
@@ -410,7 +410,7 @@ function RuleItem:OnContextMenu()
             notCheckable = true,
             text = L.RULE_CMENU_SHOW,
             func = function()
-                Addon.invoke(self:GetList(), "ChangeHiddenState", self:GetModel().Rule.Id, false)
+                Addon.Invoke(self:GetList(), "ChangeHiddenState", self:GetModel().Rule.Id, false)
             end
         })		
     end
@@ -438,7 +438,7 @@ function RuleItem:OnContextMenu()
         func = function() end
     })		
 
-    Addon.invoke(self:GetList(), "ShowContextMenu", self, menu)
+    Addon.Invoke(self:GetList(), "ShowContextMenu", self, menu)
 end
         
 Addon.Panels = Addon.Panels or {}

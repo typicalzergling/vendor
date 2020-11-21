@@ -218,7 +218,7 @@ function EditRuleDialog:UpdateMatches()
         if (not matches) then
             matches = {};
         end
-        Addon:Debug("editrule", "Found %d matches for rule '%s'", table.getn(matches), ruleDef.Id);
+        Addon:Debug("editrule", "Found %s matches for rule '%s'", table.getn(matches), ruleDef.Id);
     end
 
     self.matchesPanel:SetMatches(matches);
@@ -451,7 +451,7 @@ function EditRuleDialog:SetRuleStatus(ruleStatus, statusMsg)
         return;
     end;
 
-    Addon:Debug("editrule", "Setting dialog status '%d' with message '%s'", status, statusMessage or "");
+    Addon:Debug("editrule", "Setting dialog status '%s' with message '%s'", status, statusMessage or "");
 
     local statusInfo = RULE_STATUS_INFO[status];
     assert(statusInfo, string.format("Expected there to be information for status: %d", status));

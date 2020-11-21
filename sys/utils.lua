@@ -44,25 +44,6 @@ function Addon.DeepTableCopy(obj, seen)
     return res
 end
 
--- Helper function for invoking a method on the specified object,
--- if the function doesn't exist this does nothing, otherwise it
--- invokes the function and wraps it.
-function Addon.invoke(object, method, ...)
-    if (type(object) == "table") then
-        local fn = object[method];
-        if (type(fn) == "function") then
-            local results = { xpcall(fn, CallErrorHandler, object, ...) };
-            if (results[1]) then
-                table.remove(results, 1);
-                return unpack(results);
-            elseif (not results[1] and results[2]) then
-                Addon:Debug("errors", "Failed to invoke '%s': %s", method, results[2]);            
-            end
-        end 
-    end
-	return nil;
-end
-
 local TypeInformation = {};
 
 --[[===========================================================================

@@ -146,7 +146,7 @@ function ListBase:Select(item)
 			if (newSel) then
 				model = newSel:GetModel();
 			end
-			Addon.invoke(self, "OnSelection", model);
+			Addon.Invoke(self, "OnSelection", model);
 		end
 	end
 end
@@ -175,7 +175,7 @@ function ListBase:OnUpdate()
 	if (self.frames) then
 		for _, frame in ipairs(self.frames) do
 			if (frame:IsVisible()) then
-				Addon.invoke(frame, "OnUpdate");
+				Addon.Invoke(frame, "OnUpdate");
 			end
 		end
 	end
@@ -220,8 +220,8 @@ function ListBase:CreateItem()
 	local frame = CreateFrame(self.FrameType or "Button", nil, self, self.ItemTemplate);
 	frame = Mixin(frame, (subclass or {}));
 	frame = ListItem:Attach(frame);
-	Addon.invoke(frame, "OnCreated");
-	Addon.invoke(self, "OnItemCreated", frame);
+	Addon.Invoke(frame, "OnCreated");
+	Addon.Invoke(self, "OnItemCreated", frame);
 	return frame;
 end
 
@@ -231,7 +231,7 @@ end
 	|   layout to synchronize the view state.
 	========================================================================--]]
 function ListBase:Update()
-	local items = Addon.invoke(self, "GetItems");
+	local items = Addon.Invoke(self, "GetItems");
 	self.frames = self.frames or {};
 	local itemHeight = (self.ItemHeight or 1);
 	local visible = math.ceil(self:GetHeight() / itemHeight);

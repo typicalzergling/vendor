@@ -302,7 +302,7 @@ function RulesConfig:OnModelChanged(model)
 			end
 		end
 
-		Addon:Debug("config", "Enabling rule '%s' in '%s' list with %d parameter(s)", model.Rule.Name, typeModel.Name, count)
+		Addon:Debug("config", "Enabling rule '%s' in '%s' list with %s parameter(s)", model.Rule.Name, typeModel.Name, count)
 		rules:Set(model.Rule.Id, model.Params)
 		rules:Commit()
 		if (hidden:Remove(model.Rule.Id)) then

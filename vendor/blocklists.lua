@@ -17,14 +17,14 @@ end
 function BlockList:Add(itemId)
     -- Validate ItemId
     if not Addon:IsItemIdValid(itemId) then
-        Addon:Debug("blocklists", "Invalid Item ID: %s", tostring(itemId))
+        Addon:Debug("blocklists", "Invalid Item ID: %s", itemId)
         return false
     end
 
     local list = self.profile:GetList(self.listType);
     if (not list[itemId]) then
         list[itemId] = true;
-        Addon:Debug("blocklists", "Added %d to '%s' list", itemId, self.listType);
+        Addon:Debug("blocklists", "Added %s to '%s' list", itemId, self.listType);
         self.profile:SetList(self.listType, list);
     end
 
@@ -48,7 +48,7 @@ function BlockList:Remove(itemId)
     local list = self.profile:GetList(self.listType);
     if (list[itemId]) then
         list[itemId] = nil;
-        Addon:Debug("blocklists", "Removed %d from '%s' list", itemId, self.listType);
+        Addon:Debug("blocklists", "Removed %s from '%s' list", itemId, self.listType);
         self.profile:SetList(self.listType, list);
         return true;
     end
@@ -191,7 +191,7 @@ function Addon:RemoveInvalidEntriesFromBlocklist(listType)
 
     -- Remove said bad entries.
     for _, id in pairs (invalid) do
-        Addon:Debug("blocklists", "Removing invalid ItemID: %s from %s list.", tostring(id), tostring(listType))
+        Addon:Debug("blocklists", "Removing invalid ItemID: %s from %s list.", id, listType)
         list:Remove(id)
     end
 end

@@ -41,7 +41,7 @@ end
 	|   layout to synchronize the view state.
 	========================================================================--]]
 function SimpleList:Update()
-	local items = Addon.invoke(self, "GetItems")
+	local items = Addon.Invoke(self, "GetItems")
 	local managesFrames = (type(self.GetItemForModel) == "function")
 	self.frames = self.frames or {}
 
@@ -64,7 +64,7 @@ function SimpleList:Update()
 
 		self:ShowEmptyText(false)	
 		for index, model in ipairs(items) do
-			local item = Addon.invoke(self, "GetItemForModel", model)
+			local item = Addon.Invoke(self, "GetItemForModel", model)
 			if (not item) then
 				item = self.frames[index]
 				if (not item) then

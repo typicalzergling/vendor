@@ -30,7 +30,7 @@ function Addon:EvaluateItem(item)
     -- See if this item is already in the cache.
     local retval, ruleid, rule, ruletype = Addon:GetCachedResult(item.GUID)
     if retval and type(retval) == "number" then
-        self:Debug("items", "Retrieved %s from cache with result: %d - [%s] %s", item.Link, retval, tostring(ruletype), tostring(rule))
+        self:Debug("items", "Retrieved %s from cache with result: %s - [%s] %s", item.Link, retval, ruletype, rule)
         return retval, ruleid, rule, ruletype
     end
 
@@ -62,7 +62,7 @@ function Addon:EvaluateItem(item)
     end
 
     -- Add item to cache
-    self:Debug("items", "Adding %s to cache with result: %d - [%s] %s", item.Link, retval, tostring(ruletype), tostring(rule))
+    self:Debug("items", "Adding %s to cache with result: %s - [%s] %s", item.Link, retval, ruletype, rule)
     Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype)
     
     return retval, ruleid, rule, ruletype
@@ -100,7 +100,7 @@ function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype)
     cacheEntry.RuleType = ruletype
 
     assert(guid ~= "")
-    self:Debug("items", "Cached result: %s = %s", guid, tostring(result))
+    self:Debug("items", "Cached result: %s = %s", guid, result)
     resultCache[guid] = cacheEntry
 end
 

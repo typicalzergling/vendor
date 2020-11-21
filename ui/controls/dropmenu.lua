@@ -39,7 +39,7 @@ function DropMenu:OnItemSelected(value)
     if (self.selected ~= value and self.items) then
         local text = self.items[value]
         self.Current:SetText(text)
-        Addon.invoke(self, "OnSelection", value)
+        Addon.Invoke(self, "OnSelection", value)
     end
 
     if (self.expanded) then

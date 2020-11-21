@@ -423,7 +423,7 @@ function Extensions:Register(extension)
         for i,fdef in ipairs(extension.Functions) do
             local valid, message = validateFunction(fdef);
             if (not valid) then
-                Addon:Debug("extensions", "Failed to validate function definition %d: %s (%s): %s", i, extension.Source, name, message);
+                Addon:Debug("extensions", "Failed to validate function definition %s: %s (%s): %s", i, extension.Source, name, message);
                 return false;
             end
         end
@@ -435,7 +435,7 @@ function Extensions:Register(extension)
         for i,rdef in ipairs(extension.Rules) do
             local valid, message = validateRule(rdef);
             if (not valid) then
-                Addon:Debug("extensions", "Failed to validate rule definition %d: %s (%s): %s", i, extension.Source, name, message);
+                Addon:Debug("extensions", "Failed to validate rule definition %s: %s (%s): %s", i, extension.Source, name, message);
                 return false;
             end
         end
@@ -471,7 +471,7 @@ function Extensions:Register(extension)
     end
 
     self.OnChanged("ADDED", ext);
-    Addon:Debug("extensions", "Completed registration of %s (%s) with %d function(s), %d rule(s) and %d OnRuleUpdate functions.", ext.Source, ext.Name, ext.Functions, ext.Rules, ext.OnRuleUpdate);
+    Addon:Debug("extensions", "Completed registration of %s (%s) with %s function(s), %s rule(s) and %s OnRuleUpdate functions.", ext.Source, ext.Name, ext.Functions, ext.Rules, ext.OnRuleUpdate);
     return true;
 end
 

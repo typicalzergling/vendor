@@ -56,6 +56,6 @@ function Addon:OnInitialize()
     -- TODO: Make this a setting
     -- Consider dynamic history pruning when it gets to a certain size, auto-prune it.
     -- Setting this on a timer so it doesn't cause lag during resource intensive addon loading.
-    C_Timer.After(Addon.c_PruneHistoryDelay, function() Addon:PruneAllHistory(Addon.c_PruneHistoryLimit) end)
+    C_Timer.After(Addon.c_PruneHistoryDelay, function() Addon:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
 end
 
