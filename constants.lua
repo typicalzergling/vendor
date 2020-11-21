@@ -44,6 +44,8 @@ Addon.ListType = {
     SELL = "sell",
     KEEP = "keep",
     DESTROY = "destroy",
+    CUSTOM = "custom",
+    EXTENSION = "extension"
 }
 
 Addon.SystemListId = {
