@@ -1,12 +1,53 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 	<Script file="panels/audit.lua"/>
 
+	<Button name="Vendor_AuditItem" virtual="true" mixin="ItemMixin">
+		<Size x="200" y="18"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\Buttons\UI-GroupLoot-Pass-Up" alpha="0.5" parentKey="ActionDestroy" hidden="true">
+					<Size x="18" y="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-1"/>
+					</Anchors>
+				</Texture>
+				<Texture file="Interface\Buttons\UI-GroupLoot-Coin-Up" alpha="0.5" parentKey="ActionSell" hidden="true">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.ActionDestroy"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Value" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="RIGHT">
+					<Size x="90" y="1"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-16"/>
+						<Anchor point="BOTTOMRIGHT" x="-16"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Date" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="LEFT">
+					<Size x="100" y="1"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Value" relativePoint="TOPLEFT" x="-4"/>
+						<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.Value" relativePoint="BOTTOMLEFT" x="-4"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Item" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="LEFT">
+					<Size x="84" y="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.ActionDestroy" relativePoint="TOPRIGHT" x="4" y="1"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Value" relativePoint="BOTTOMLEFT" x="-4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
 	<!-- Lists Panel -->
 	<Frame name="Vendor_AuditPanel" hidden="true" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" parentKey="Help">
-					<Size x="1" y="48"/>
+					<Size x="1" y="24"/>
 					<KeyValues>
 						<KeyValue key="LocKey" value="OPTIONS_AUDIT_INTRO_TEXT" type="string"/>
 					</KeyValues>
@@ -38,7 +79,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame inherits="Vendor_BorderFrame" parentKey="listsBorder">
+			<Frame inherits="Vendor_DropMenu" parentKey="Filters">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.FilterLabel" relativePoint="TOPRIGHT" x="4"/>
 					<Anchor point="BOTTOM" relativeKey="$parent.FilterLabel"/>
@@ -64,12 +105,16 @@
 				</Anchors>
 			</Frame>
 
-			<ScrollFrame parentKey="Lists" inherits="FauxScrollFrameTemplate">
+			<ScrollFrame parentKey="History" inherits="FauxScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="ItemTemplate" value="Vendor_AuditItem" style="string"/>
+					<KeyValue key="ItemHeight" value="18" type="number"/>
+				</KeyValues>
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString justifyH="CENTER" justifyV="TOP" parentKey="EmptyText" inherits="GameFontDisable">
 							<KeyValues>
-								<KeyValue key="PlaceholderKey" value="OPTIONS_AUDIT_EMPTY" type="string"/>
+								<KeyValue key="LocKey" value="OPTIONS_AUDIT_EMPTY" type="string"/>
 							</KeyValues>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="16" y="-16"/>

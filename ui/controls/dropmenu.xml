@@ -5,7 +5,7 @@
 		<Size x="100" y="26"/>
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString parentKey="Current" inherits="GameFontHighlight" text ="./.././" justifyV="MIDDLE" justifyH="LEFT">
+				<FontString parentKey="Current" inherits="GameFontHighlight" justifyV="MIDDLE" justifyH="LEFT">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="16" y="-5"/>
 						<Anchor point="BOTTOMRIGHT" x="-37" y="5"/>

@@ -174,7 +174,7 @@ end
 -- Gold:    FFFFFF00
 -- Silver:  FFFFFFFF
 -- Copper:  FFAE6938
-function Addon:GetPriceString(price)
+function Addon:GetPriceString(price, all)
     if not price then
         return "<missing>"
     end
@@ -186,7 +186,7 @@ function Addon:GetPriceString(price)
     gold = math.floor(price / 100)
 
     str = {}
-    if gold > 0 then
+    if gold > 0 or all then
         table.insert(str, "|cFFFFD100")
         table.insert(str, gold)
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-GoldIcon:12:12:4:0|t  ")
@@ -194,6 +194,12 @@ function Addon:GetPriceString(price)
         table.insert(str, "|cFFE6E6E6")
         table.insert(str, string.format("%02d", silver))
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
+
+        if (all) then
+            table.insert(str, "|cFFC8602C")
+            table.insert(str, copper)
+            table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
+        end
 
     elseif silver > 0 then
         table.insert(str, "|cFFE6E6E6")

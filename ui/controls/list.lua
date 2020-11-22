@@ -234,7 +234,7 @@ function ListBase:Update()
 	local items = Addon.Invoke(self, "GetItems");
 	self.frames = self.frames or {};
 	local itemHeight = (self.ItemHeight or 1);
-	local visible = math.ceil(self:GetHeight() / itemHeight);
+	local visible = math.floor(self:GetHeight() / itemHeight);
 
 	if (not items or (table.getn(items) == 0)) then
 		for _, frame in ipairs(self.frames) do
@@ -253,7 +253,7 @@ function ListBase:Update()
 		local top = 0;
 		
 		FauxScrollFrame_Update(self, table.getn(items), visible, itemHeight, nil, nil, nil, nil, nil, nil, true);
-		for i = 1, visible do 
+		for i = 1, visible + 1 do 
 			local item = self.frames[i];
 			if (not item) then
 				item = self:CreateItem();
