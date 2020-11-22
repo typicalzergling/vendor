@@ -72,10 +72,10 @@ OPTIONS_TITLE_ADDON = "These settings are for configuring Vendor behavior.\n\n",
 OPTIONS_SHOW_BINDINGS = "Key Bindings",
 OPTIONS_OPEN_RULES = "Open Rules",
 
-OPTIONS_AUDIT_INTRO_TEXT = "This is a record of all actions Vendor has taken for this character.",
+OPTIONS_AUDIT_INTRO_TEXT = "This is a record of all recent actions Vendor has taken for this character up to the last 30 days.",
 OPTIONS_AUDIT_SEARCH_LABEL = "Search",
 OPTIONS_AUDIT_FILTER_LABEL = "Filter",
-OPTIONS_AUDIT_EMPTY = "There are no records yet, which means you either just cleared the history or haven't used Vendor yet. Go use it!",
+OPTIONS_AUDIT_EMPTY = "No records match the filters and/or search terms specified.",
 OPTIONS_AUDIT_SEARCH_PLACEHOLDER = "Enter terms to search",
 
 OPTIONS_HEADER_REPAIR = "Repair",

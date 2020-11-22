@@ -76,7 +76,8 @@ function Addon:AddItemTooltipLines(tooltip)
 
     local location = Addon:GetTooltipItemLocation()
     if not location or not C_Item.DoesItemExist(location) then
-        error("Problem in AddItemTooltipLines")
+        -- This is expected for anything that isn't in our inventory.
+        return
     end
 
     local guid = C_Item.GetItemGUID(location)
@@ -87,7 +88,7 @@ function Addon:AddItemTooltipLines(tooltip)
 
         -- Check if the item is in the Always or Never sell lists
         -- TODO: Change this to return a table of lists to which this item belongs.
-        blocklist = self:GetBlocklistForItem(link)
+        blocklist = self:GetBlocklistForItem(item.Link)
 
         -- This is for suppressing every other call due to recipe items calling this for the embedded tooltip item also.
         callCount = 0
@@ -97,9 +98,9 @@ function Addon:AddItemTooltipLines(tooltip)
             recipe = false
         end
 
+        itemGUID = guid
         -- Mark it as the current cached item.
-        itemLink = link
-        self:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
+        self:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
     end
 
     -- Check for recipe item, which means this will be called twice
