@@ -166,6 +166,7 @@ CMD_LISTDATA_EMPTY = "The %s list is empty.",
 CMD_LISTDATA_LISTHEADER = "Items in the %s list:",
 CMD_LISTDATA_LISTITEM = "  %s - %s",
 CMD_LISTDATA_NOTINCACHE = "[Item not seen yet, re-run to see it]",
+CMD_LISTTOGGLE_UNSELLABLE = "%s is unsellable, therefore changing toggle to Destroy list instead.",
 
 CMD_AUTOSELL_MERCHANTNOTOPEN = "Merchant window is not open. You must be at a merchant to auto-sell.",
 CMD_AUTOSELL_INPROGRESS = "Already auto-selling. Please wait for completion before re-running.",
