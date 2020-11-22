@@ -14,7 +14,8 @@ function Addon:AddTooltipItemToList(list)
     -- If so, change the list type to Destroy
     if list == Addon.ListType.SELL then
         local item = Addon:GetItemPropertiesFromTooltip()
-        if item.IsUnsellable then
+        -- If this is attempted on an item not in inventory we cant know if it is unsellable.
+        if item and item.IsUnsellable then
             self:Print(L.CMD_LISTTOGGLE_UNSELLABLE, link)
             list = Addon.ListType.DESTROY
         end
