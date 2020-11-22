@@ -355,6 +355,15 @@ RULEHELP_EXAMPLES = "Examples:",
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
+-- ItemLists
+ITEMLIST_LOADING = "Loading...",
+ITEMLIST_INVALID_ITEM = "Invalid Item",
+ITEMLIST_INVALID_ITEM_TOOLTIP = "Blizzard has removed this item and it is no longer valid. Click to remove it from the list.",
+ITEMLIST_LOADING_TOOLTIP = "The item information is currently being retrieved from the server",
+ITEMLIST_EMPTY_SELL_LIST = "Your always sell list is current empty you can drag and drop items into this list to add them.",
+ITEMLIST_EMPTY_KEEP_LIST = "Your never sell list is current empty you can drag and drop items into this list to add them.",
+ITEMLIST_REMOVE_TOOLTIP = "Remove from list",
+ITEMLIST_UNSELLABLE = "%s is unsellable, adding to Destroy list instead.",
 
 -- ITEM PROPERTIES HELP
 
@@ -486,34 +495,6 @@ HELP_TOOLTIPCONTAINS_EXAMPLES =
                "Anywhere: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Rogue\")" .. FONT_COLOR_CODE_CLOSE ..
                "|nCheck left side line 1: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Vanq\", \"left\", 1)" .. FONT_COLOR_CODE_CLOSE,
 
-
-ITEMLIST_REMOVE_FROM_SELL_FMT = 
-    "%s has been removed from the " .. ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_REMOVE_FROM_KEEP_FMT = 
-    "%s has been removed from the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_ADD_TO_SELL_FMT1 = 
-    "%s has been added to then " .. ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_ADD_TO_KEEP_FMT1 = 
-    "%s has been added to the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_MOVE_FROM_KEEP_TO_SELL_FMT = 
-    "%s has been moved from the " .. 
-    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list to the " ..
-    ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list",
-ITEMLIST_REMOVE_FROM_SELL_TO_KEEP_FMT = 
-    "%s has been moved from the " .. 
-    ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list to the " ..
-    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list",
-ITEMLIST_LOADING = "Loading...",
-ITEMLIST_INVALID_ITEM = "Invalid Item",
-ITEMLIST_INVALID_ITEM_TOOLTIP = "Blizzard has removed this item and it is no longer valid. Click to remove it from the list.",
-ITEMLIST_LOADING_TOOLTIP = "The item information is currently being retrieved from the server",
-ITEMLIST_EMPTY_SELL_LIST = "Your always sell list is current empty you can drag and drop items into this list to add them.",
-ITEMLIST_EMPTY_KEEP_LIST = "Your never sell list is current empty you can drag and drop items into this list to add them.",
-ITEMLIST_REMOVE_TOOLTIP = "Remove from list",
 }) -- END OF LOCALIZATION TABLE
 
 -- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.
