@@ -254,3 +254,25 @@ function Addon.RuleFunctions.HasStat(...)
 
     return false;
 end
+
+--[[
+--*****************************************************************************
+-- Checks the number of times this item id has evaluated to 'Keep'
+--*****************************************************************************
+function Addon.RuleFunctions.NumKeep()
+    -- Get Evaluation stats so far for this item id.
+    local numKeep = Addon:GetResultCountsForItemId(Id)
+    Addon:Debug("items", "NumKeep = %s", numKeep)
+    return numKeep
+end
+
+--*****************************************************************************
+-- Checks the number of times this item id has evaluated to 'Keep'
+--*****************************************************************************
+function Addon.RuleFunctions.NumSellOrDestroy()
+    -- Get Evaluation stats so far for this item id.
+    local _, numSell, numDestroy = Addon:GetResultCountsForItemId(Id)
+    Addon:Debug("items", "NumSellOrDestroy = %s", numSell + numDestroy)
+    return (numSell + numDestroy)
+end
+]]

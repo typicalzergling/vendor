@@ -138,7 +138,7 @@ function ItemInfo:Drop(item)
         end
     end)
 
-    local itemProps = Addon:GetItemPropertiesFromLocation(item, true);
+    local itemProps = Addon:GetItemPropertiesFromLocation(item);
     local model = {}
     if itemProps then
         for name, value in pairs(itemProps) do

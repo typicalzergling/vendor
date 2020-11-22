@@ -152,7 +152,7 @@ end
 
 -- Beyond this point are debug related functions that are not packaged.
 function Addon:DumpTooltipItemProperties()
-    local props = self:GetItemProperties(GameTooltip)
+    local props = self:GetItemPropertiesFromTooltip()
     self:Print("Properties for "..props["Link"])
 
     -- Print non-derived properties first.
