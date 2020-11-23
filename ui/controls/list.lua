@@ -37,6 +37,7 @@
 local AddonName, Addon = ...
 local ListItem = Addon.Controls.ListItem
 local ListBase = table.copy(Addon.Controls.EmptyListMixin)
+local NEED_UPDATE_KEY = {}
 
 --[[===========================================================================
 	| OnLoad handler for the list base, sets some defaults and hooks up
@@ -172,6 +173,11 @@ end
 	| Update handler, delegates to each of the frames (if they are visible)
 	========================================================================--]]
 function ListBase:OnUpdate()
+	if (rawget(self, NEED_UPDATE_KEY)) then
+		rawset(self, NEED_UPDATE_KEY, nil)
+		print("-->update list")
+		self:Update()
+	end
 	if (self.frames) then
 		for _, frame in ipairs(self.frames) do
 			if (frame:IsVisible()) then
@@ -179,6 +185,13 @@ function ListBase:OnUpdate()
 			end
 		end
 	end
+end
+
+--[[===========================================================================
+	| Marks the list as needing update
+	========================================================================--]]
+function ListBase:FlagForUpdate()
+	rawset(self, NEED_UPDATE_KEY, true)
 end
 
 --[[===========================================================================

@@ -26,9 +26,9 @@ sys\config.lua
 
 # Main addon
 addon.xml
-vendor\vendor.xml
 RulesEngine\rules.xml
 rules\rules.xml
+vendor\vendor.xml
 
 # User Interface
 ui\ui.xml
