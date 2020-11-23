@@ -37,6 +37,6 @@ end
 
 -- Sets up all LDB plugins
 function Addon:SetupLDBPlugins()
-    Addon:GetOrCreateLDBPlugin()
-    Addon:GetOrCreateMinimapButton()
+    --Addon:GetOrCreateLDBPlugin()
+    --Addon:GetOrCreateMinimapButton()
 end

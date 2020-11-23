@@ -21,8 +21,13 @@ end
 
 local function initializeLDB()
     if LibStub then
-        ldb = LibStub:GetLibrary("LibDataBroker-1.1", true)
-        ldbi = LibStub:GetLibrary("LibDBIcon-1.0", true)
+        -- To avoid the badness of ACE, we will always XP call everything from these libraries.
+        xpcall(
+            function()
+                ldb = LibStub:GetLibrary("LibDataBroker-1.1", true)
+                ldbi = LibStub:GetLibrary("LibDBIcon-1.0", true)
+            end,
+            CallErrorHandler)
     end
 end
 Addon:AddInitializeAction(initializeLDB)
@@ -32,8 +37,12 @@ function Addon:CreateLDBDataObject(name, definition)
     if not Addon:IsLDBAvailable() then return end
     assert(type(name) == "string" and type(definition) == "table", "Invalid arguments to CreateLDBObject")
     assert(not ldb_dataobjects[name], "Data object by that name already exists.")
-    ldbobject = ldb:NewDataObject(name, definition)
-    if not ldbobject then return error("Failure creating LDB Data Object") end
+    xpcall(
+        function()
+            ldbobject = ldb:NewDataObject(name, definition)
+            if not ldbobject then return error("Failure creating LDB Data Object") end
+        end,
+        CallErrorHandler)
     ldb_dataobjects[name] = ldbobject
     return ldbobject
 end
@@ -51,7 +60,11 @@ function Addon:CreateLDBIcon(name, minimaptable)
     if not Addon:IsLDBIconAvailable() then return end
     assert(type(name) == "string" and type(minimaptable) == "table", "Invalid arguments to CreateLDBIcon.")
     if not ldb_dataobjects[name] then error("Data object not defined") end
-    ldbi:Register(name, ldb_dataobjects[name], minimaptable)
+    xpcall(
+        function()
+            ldbi:Register(name, ldb_dataobjects[name], minimaptable)
+        end,
+        CallErrorHandler)
 end
 
 -- Once you have the minimap object you can call methods like:
@@ -62,5 +75,11 @@ end
 function Addon:GetLDBIconMinimapButton(name)
     if not Addon:IsLDBIconAvailable() then return end
     assert(type(name) == "string", "Invalid arguments to GetLDBIconMinimapButton.")
-    return ldbi:GetMinimapButton(name)
+    local button = nil
+    xpcall(
+        function()
+            button = ldbi:GetMinimapButton(name)
+        end,
+        CallErrorHandler)
+    return button
 end
