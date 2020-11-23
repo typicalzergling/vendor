@@ -45,6 +45,11 @@ list. If this proves confusing to users we will improve this experience. Existin
 Pawn extension will also no longer match unsellable gear for its sell rule.</p>
 <p>Rules Help once again shows functions from extensions like TSM and Pawn.</p>
 <p>Battle pets dragged into the rule editor's Item Info tab will no longer throw lua errors. We do not yet support Battle Pet properties, but will in the future. For now it won't cause errors.</p>
+<br/>
+<h1>Known Issues</h1>
+<p>Audit Tab tooltip with audit info is briefly shown, but then removed by ArkInventory. We are investigating this issue further, but it appears to only affect those using ArkInventory.
+</p>
+<br/>
 </body>
 </html>]]
     },

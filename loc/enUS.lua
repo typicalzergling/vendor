@@ -17,8 +17,8 @@ ABOUT_VERSION_LABEL = "Version:",
 DEFAULT_PROFILE_NAME = "Default",
 
 -- Date Formats - For cultures who may wish to change these.
-CMD_HISTORY_DATEFORMAT = "%A, %B %d, %I:%M::%S %p",
-OPTIONS_AUDIT_TT_DATESTR = "%A, %B %d, %I:%M::%S %p",
+CMD_HISTORY_DATEFORMAT = "%c",
+OPTIONS_AUDIT_TT_DATESTR = "%A, %B %d, %I:%M:%S %p",
 
 -- Rule types
 RULE_TYPE_KEEP_NAME = "Keep",
@@ -94,7 +94,6 @@ OPTIONS_VENDOR_AUDIT = "Vendor Audit:",
 OPTIONS_AUDIT_TT_PROFILE = "Profile:",
 OPTIONS_AUDIT_TT_RULE = "Rule:",
 OPTIONS_AUDIT_TT_SOLD = "Sold:",
-OPTIONS_AUDIT_TT_DATESTR = "%A, %B %d, %I:%M::%S %p",
 
 OPTIONS_HEADER_REPAIR = "Repair",
 OPTIONS_DESC_REPAIR = "Whether to auto-repair, and how to pay for it.\n",
