@@ -94,6 +94,7 @@ OPTIONS_VENDOR_AUDIT = "Vendor Audit:",
 OPTIONS_AUDIT_TT_PROFILE = "Profile:",
 OPTIONS_AUDIT_TT_RULE = "Rule:",
 OPTIONS_AUDIT_TT_SOLD = "Sold:",
+OPTIONS_AUDIT_TT_DESTROYED = "Destroyed:",
 
 OPTIONS_HEADER_REPAIR = "Repair",
 OPTIONS_DESC_REPAIR = "Whether to auto-repair, and how to pay for it.\n",
