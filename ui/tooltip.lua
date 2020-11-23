@@ -10,17 +10,6 @@ function Addon:AddTooltipItemToList(list)
         return
     end
 
-    -- Check if the list is Sell and the item is Unsellable
-    -- If so, change the list type to Destroy
-    if list == Addon.ListType.SELL then
-        local item = Addon:GetItemPropertiesFromTooltip()
-        -- If this is attempted on an item not in inventory we cant know if it is unsellable.
-        if item and item.IsUnsellable then
-            self:Print(L.CMD_LISTTOGGLE_UNSELLABLE, link)
-            list = Addon.ListType.DESTROY
-        end
-    end
-
     -- Add the link to the specified blocklist.
     local retval = self:ToggleItemInBlocklist(list, link)
     if retval == 1 then
@@ -95,6 +84,10 @@ function Addon:AddItemTooltipLines(tooltip)
     if not (itemGUID == guid) then
         -- Evaluate the item
         local item = self:GetItemPropertiesFromTooltip()
+        if not item then
+            Addon:Debug("tooltip", "Valid location but invalid item properties.")
+            return
+        end
         result, ruleId, ruleName, ruleType  = self:EvaluateItem(item)
 
         -- Check if the item is in the Always or Never sell lists

@@ -43,9 +43,9 @@ function Addon:Print(msg, ...)
     -- to not worry about using "tostring()" in your code that will add unnecessary overhead.
     local args = {...}
     for i, arg in ipairs(args) do
-       if type(arg) ~= "string" then
-           args[i] = tostring(arg)
-       end
+        if type(arg) ~= "string" then
+            args[i] = tostring(arg)
+        end
     end
     if type(msg) ~= "string" then
         msg = tostring(msg)

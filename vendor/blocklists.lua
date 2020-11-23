@@ -26,8 +26,6 @@ local function getListFromProfile(listType)
 end
 
 local function commitListToProfile(listType, list)
-    print("--> commit to profile", listType, list)
-    table.forEach(list, print, "------> commitListToProfile")
     assert(isSystemListType(listType), "Only system lists are kept in the profile")
     local profile = Addon:GetProfileManager():GetProfile()
     profile:SetList(listType, list or EMPTY)
@@ -216,7 +214,6 @@ end
         listType = listType,
         listId = listId,
         commit = function(list) 
-            table.forEach(list, print, ":commit")
             commitListToProfile(listType, list) 
         end,
         get = function()
@@ -240,6 +237,16 @@ function Addon:ToggleItemInBlocklist(list, item)
 
     -- Get existing blocklist id
     local existinglist = Addon:GetBlocklistForItem(id)
+
+    -- Check if the list is Sell and the item is Unsellable
+    -- If so, change the list type to Destroy
+    if list == Addon.ListType.SELL then
+        local isUnsellable = select(11, GetItemInfo(id)) == 0
+        if isUnsellable then
+            self:Print(L.CMD_LISTTOGGLE_UNSELLABLE, link)
+            list = Addon.ListType.DESTROY
+        end
+    end
 
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.

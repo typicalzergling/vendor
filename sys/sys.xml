@@ -11,6 +11,7 @@
     <Script file="savedvariable.lua"/>
     <Script file="profile.lua"/>
     <Script file="profilemanager.lua"/>
+    <Script file="libdatabroker.lua"/>
 
     <!--@do-not-package@-->
     <Script file="debug.lua"/>
