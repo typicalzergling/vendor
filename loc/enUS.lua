@@ -16,6 +16,10 @@ ABOUT_RELEASES_LABEL = "Releases:",
 ABOUT_VERSION_LABEL = "Version:",
 DEFAULT_PROFILE_NAME = "Default",
 
+-- Date Formats - For cultures who may wish to change these.
+CMD_HISTORY_DATEFORMAT = "%A, %B %d, %I:%M::%S %p",
+OPTIONS_AUDIT_TT_DATESTR = "%A, %B %d, %I:%M::%S %p",
+
 -- Rule types
 RULE_TYPE_KEEP_NAME = "Keep",
 RULE_TYPE_KEEP_DESCR = "These rules are safeguards to prevent selling things you don't want sold.|n|nAll Keep Rules are checked before Sell Rules. However, anything you add to the 'Sell' list will ignore Keep Rules.",

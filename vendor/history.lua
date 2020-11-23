@@ -339,7 +339,7 @@ function Addon:History_Cmd(arg1, arg2, arg3)
                     debugextra = string.format(" {%s | %s}", ruleid, profile)
                 end
                 Addon:Print("  [%s] (%s) %s - %s %s",
-                    date('%c',tonumber(entry.TimeStamp)),
+                    date(L.CMD_HISTORY_DATEFORMAT,tonumber(entry.TimeStamp)),
                     Addon:GetActionTypeFromId(entry.Action),
                     display,
                     Addon:GetPriceString(entry.Value),
