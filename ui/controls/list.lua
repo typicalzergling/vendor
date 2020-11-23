@@ -175,7 +175,6 @@ end
 function ListBase:OnUpdate()
 	if (rawget(self, NEED_UPDATE_KEY)) then
 		rawset(self, NEED_UPDATE_KEY, nil)
-		print("-->update list")
 		self:Update()
 	end
 	if (self.frames) then

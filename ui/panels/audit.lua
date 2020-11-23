@@ -103,8 +103,15 @@ function AuditItem:OnEnter()
 		GameTooltip:SetHyperlink(self:GetItemLink())
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine(L.OPTIONS_VENDOR_AUDIT)
-		GameTooltip:AddDoubleLine("  " .. L.OPTIONS_AUDIT_TT_SOLD, date(L.OPTIONS_AUDIT_TT_DATESTR, model.TimeStamp), 
-			labelColor.r, labelColor.g, labelColor.b)
+		if (model.Action == ActionType.SELL) then
+			GameTooltip:AddDoubleLine("  " .. L.OPTIONS_AUDIT_TT_SOLD, date(L.OPTIONS_AUDIT_TT_DATESTR, model.TimeStamp), 			
+			BLUE_FONT_COLOR.r, BLUE_FONT_COLOR.g, BLUE_FONT_COLOR.b,
+			HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+		elseif (model.Action == ActionType.DESTROY) then
+			GameTooltip:AddDoubleLine("  " .. L.OPTIONS_AUDIT_TT_DESTROYED, date(L.OPTIONS_AUDIT_TT_DATESTR, model.TimeStamp),
+			ORANGE_FONT_COLOR.r, ORANGE_FONT_COLOR.g, ORANGE_FONT_COLOR.b,
+			HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+		end
 		GameTooltip:AddDoubleLine("  " .. L.OPTIONS_AUDIT_TT_PROFILE, profile, 
 			labelColor.r, labelColor.g, labelColor.b,
 			HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
