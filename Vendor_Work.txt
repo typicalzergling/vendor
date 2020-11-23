@@ -4,7 +4,6 @@ Bugs:
 Work Items:
 ===============================================================================
 - Reset in options, deletes all profiles with a a confirmation
-- Move create to below list on rule page.
 
 
 Future:

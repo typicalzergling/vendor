@@ -42,7 +42,7 @@ function ProfileManager:GetProfile()
     -- override.
     if (not profile) then
         profile = CreateProfile();
-        local override = Addon.invoke(Addon, "OnCreateDefaultProfile", profile);
+        local override = Addon.Invoke(Addon, "OnCreateDefaultProfile", profile);
         if (override and (override:GetId() ~= profile:GetId())) then
             profilesVariable:Set(profile:GetId(), nil);
             profile = override;
@@ -50,7 +50,7 @@ function ProfileManager:GetProfile()
         activeProfileVariable:Replace(profile:GetId());
         Addon:Debug("profile", "Created new default profile '%s'", profile:GetId());
     else
-        Addon.invoke(Addon, "OnCheckProfileMigration", profile);
+        Addon.Invoke(Addon, "OnCheckProfileMigration", profile);
     end
 
     profile:SetActive(true);
@@ -105,7 +105,7 @@ function ProfileManager:CreateProfile(profileName)
         profile:SetName(profile:GetId());
     end
 
-    Addon.invoke(Addon, "OnInitializeProfile", profile);
+    Addon.Invoke(Addon, "OnInitializeProfile", profile);
     Addon:Debug("profile", "Created new profile '%s'", profile:GetId());
     self:TriggerEvent("OnProfileCreated", profile);
     return profile;
@@ -127,7 +127,7 @@ function ProfileManager:CopyProfile(profile, newProfileName)
     data.id = profile:GetId();
     profilesVariable:Set(profile:GetId(), data);
     profile:SetName(newProfileName);
-    Addon.invoke(Addon, "OnCopyProfile", profile)
+    Addon.Invoke(Addon, "OnCopyProfile", profile)
     Addon:Debug("profile", "Copied profile '%s' to '%s'", profileId, data.id);
     self:TriggerEvent("OnProfileCreated", profile);
     return profile;

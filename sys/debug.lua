@@ -102,6 +102,6 @@ end
 function Addon:Debug(channel, msg, ...)
     local name = string.upper(channel);
     if (Addon:IsDebugChannelEnabled(name)) then
-        self:Print(" %s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
+        self:Print("%s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
     end
 end

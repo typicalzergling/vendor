@@ -111,7 +111,7 @@ function Addon:AutoSell()
 
                 -- Get Item properties and evaluate
                 local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)                
-                local result = Addon:EvaluateItem(item)
+                local result, ruleid, rule = Addon:EvaluateItem(item)
 
                 -- Determine if it is to be sold
                 -- Result of 0 is no action, 1 is sell, 2 is delete.
@@ -124,16 +124,20 @@ function Addon:AutoSell()
                         return
                     end
 
+                    local netValue = item.UnitValue * itemCount
+                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue))
+                    numSold = numSold + 1
+                    totalValue = totalValue + netValue
+
                     -- Still open, so OK to sell it.
                     if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                         UseContainerItem(bag, slot)
                     else
                         self:Print("Simulating selling of: %s", tostring(item.Link))
                     end
-                    local netValue = item.UnitValue * itemCount
-                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue))
-                    numSold = numSold + 1
-                    totalValue = totalValue + netValue
+
+                    -- Add to history
+                    Addon:AddEntryToHistory(item.Link, Addon.ActionType.SELL, rule, ruleid, itemCount, netValue)
 
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
@@ -170,7 +174,7 @@ end
 -- Gold:    FFFFFF00
 -- Silver:  FFFFFFFF
 -- Copper:  FFAE6938
-function Addon:GetPriceString(price)
+function Addon:GetPriceString(price, all)
     if not price then
         return "<missing>"
     end
@@ -182,7 +186,7 @@ function Addon:GetPriceString(price)
     gold = math.floor(price / 100)
 
     str = {}
-    if gold > 0 then
+    if gold > 0 or all then
         table.insert(str, "|cFFFFD100")
         table.insert(str, gold)
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-GoldIcon:12:12:4:0|t  ")
@@ -190,6 +194,12 @@ function Addon:GetPriceString(price)
         table.insert(str, "|cFFE6E6E6")
         table.insert(str, string.format("%02d", silver))
         table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
+
+        if (all) then
+            table.insert(str, "|cFFC8602C")
+            table.insert(str, copper)
+            table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
+        end
 
     elseif silver > 0 then
         table.insert(str, "|cFFE6E6E6")

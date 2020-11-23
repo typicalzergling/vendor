@@ -9,6 +9,7 @@ ignore:
  - .release/*
  - *.sh
  - Extensions/Vendor_RulePack/*
+ - Extensions/Vendor_AdiBags/*
 
 move-folders:
  Vendor/Extensions/Vendor_Ark: Vendor_Ark

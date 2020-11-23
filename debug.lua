@@ -23,9 +23,12 @@ function Addon:SetupDebugConsoleCommands()
     Addon:RegisterDebugChannel("autosell")
     Addon:RegisterDebugChannel("blocklists")
     Addon:RegisterDebugChannel("config")
+    Addon:RegisterDebugChannel("databroker")
     Addon:RegisterDebugChannel("destroy")
     Addon:RegisterDebugChannel("events")
     Addon:RegisterDebugChannel("extensions")
+    Addon:RegisterDebugChannel("history")
+    Addon:RegisterDebugChannel("historystats")
     Addon:RegisterDebugChannel("itemerrors")
     Addon:RegisterDebugChannel("items")
     Addon:RegisterDebugChannel("itemproperties")
@@ -150,7 +153,7 @@ end
 
 -- Beyond this point are debug related functions that are not packaged.
 function Addon:DumpTooltipItemProperties()
-    local props = self:GetItemProperties(GameTooltip)
+    local props = self:GetItemPropertiesFromTooltip()
     self:Print("Properties for "..props["Link"])
 
     -- Print non-derived properties first.

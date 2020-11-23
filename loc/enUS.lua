@@ -16,6 +16,10 @@ ABOUT_RELEASES_LABEL = "Releases:",
 ABOUT_VERSION_LABEL = "Version:",
 DEFAULT_PROFILE_NAME = "Default",
 
+-- Date Formats - For cultures who may wish to change these.
+CMD_HISTORY_DATEFORMAT = "%c",
+OPTIONS_AUDIT_TT_DATESTR = "%A, %B %d, %I:%M:%S %p",
+
 -- Rule types
 RULE_TYPE_KEEP_NAME = "Keep",
 RULE_TYPE_KEEP_DESCR = "These rules are safeguards to prevent selling things you don't want sold.|n|nAll Keep Rules are checked before Sell Rules. However, anything you add to the 'Sell' list will ignore Keep Rules.",
@@ -49,10 +53,6 @@ MERCHANT_SOLD_ITEMS = "Sold %s items for %s",
 MERCHANT_WITHDRAWN_ITEMS = "Withdrew %s items.",
 MERCHANT_SELL_LIMIT_REACHED = "Reached the sell limit (%s), stopping auto-sell.",
 MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL = "Auto-accepted confirmation of making %s non-tradeable.",
-MERCHANT_SCRAP_ITEM = "Scrapping %s (%d/%d)",
-MERCHANT_NO_SCRAP = "There are no items to scrap.",
-MERCHANT_POPULATING_SCRAP = "Auto-populating scrapper:",
-MERCHANT_MORE_SCRAP = "There are more items in your inventory which could be scrapped after scrapping these close and re-open the scrapper to continue",
 
 -- Destroy
 ITEM_DESTROY_SUMMARY = "Destroyed %s items.",
@@ -76,6 +76,25 @@ OPTIONS_TITLE_ADDON = "These settings are for configuring Vendor behavior.\n\n",
 OPTIONS_SHOW_BINDINGS = "Key Bindings",
 OPTIONS_OPEN_RULES = "Open Rules",
 
+OPTIONS_AUDIT_INTRO_TEXT = "Records of all recent actions Vendor has taken for this character up to the last 30 days.",
+OPTIONS_AUDIT_SEARCH_LABEL = "Search:",
+OPTIONS_AUDIT_FILTER_LABEL = "Filter:",
+OPTIONS_AUDIT_EMPTY = "No records match the filters and/or search terms specified.",
+OPTIONS_AUDIT_SEARCH_PLACEHOLDER = "Enter terms to search",
+OPTIONS_AUDIT_FILTER_SOLD = "Sold",
+OPTIONS_AUDIT_FILTER_DESTROYED = "Destroyed",
+OPTIONS_AUDIT_FILTER_EPIC = "Epic Items",
+OPTIONS_AUDIT_FILTER_RARE = "Rare Items",
+OPTIONS_AUDIT_FILTER_UNCOMMON = "Uncommon Items",
+OPTIONS_AUDIT_FILTER_LEGENDARY = "Legendary or Better",
+OPTIONS_AUDIT_FILTER_COMMON = "Common or Less",
+OPTIONS_AUDIT_FILTER_EXTENSION = "Extension Rule",
+OPTIONS_AUDIT_FILTER_ALL = "All",
+OPTIONS_VENDOR_AUDIT = "Vendor Audit:",
+OPTIONS_AUDIT_TT_PROFILE = "Profile:",
+OPTIONS_AUDIT_TT_RULE = "Rule:",
+OPTIONS_AUDIT_TT_SOLD = "Sold:",
+OPTIONS_AUDIT_TT_DESTROYED = "Destroyed:",
 
 OPTIONS_HEADER_REPAIR = "Repair",
 OPTIONS_DESC_REPAIR = "Whether to auto-repair, and how to pay for it.\n",
@@ -128,7 +147,7 @@ OPTIONS_PROFILE_DEFAULT_COPY_NAME = "%s (Copy)",
 
 OPTIONS_RULES_SHOW_HIDDEN = "Show Hidden",
 OPTIONS_RULES_ONE_HIDDEN = " (1 rule)",
-OPTIONS_RULES_N_HIDDEN = " (%d rules)",
+OPTIONS_RULES_N_HIDDEN = " (%s rules)",
 
 RULE_TOOLTIP_SOURCE = "Source: %s",
 RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",
@@ -165,10 +184,25 @@ CMD_LISTDATA_EMPTY = "The %s list is empty.",
 CMD_LISTDATA_LISTHEADER = "Items in the %s list:",
 CMD_LISTDATA_LISTITEM = "  %s - %s",
 CMD_LISTDATA_NOTINCACHE = "[Item not seen yet, re-run to see it]",
+CMD_LISTTOGGLE_UNSELLABLE = "%s is unsellable, therefore changing toggle to Destroy list instead.",
 
 CMD_AUTOSELL_MERCHANTNOTOPEN = "Merchant window is not open. You must be at a merchant to auto-sell.",
 CMD_AUTOSELL_INPROGRESS = "Already auto-selling. Please wait for completion before re-running.",
 CMD_AUTOSELL_EXECUTING = "Running auto-sell.",
+
+CMD_CLEAR_ALL_HISTORY = "Clearing all history.",
+CMD_CLEAR_CHAR_HISTORY = "Clearing history for %s",
+CMD_PRINT_HISTORY_HEADER = "History for %s",
+CMD_PRINT_HISTORY_SUMMARY = "History for %s contains %s entries totalling %s",
+CMD_PRINT_HISTORY_SUMMARY_ALL = "Entire history contains %s entries worth a total %s",
+CMD_PRUNE_CHAR_HISTORY = "Pruning %s history of entries over %s hours.",
+CMD_PRUNE_ALL_HISTORY = "Pruning all character histories of entries over %s hours.",
+CMD_PRUNE_HISTORY_ARG = "Invalid argument to history pruning, please specify number of hours to prune.",
+CMD_PRUNE_SUMMARY = "Removed %s entries from the history.",
+CMD_HISTORY_HELP = "View, clear, or prune history. Usage: history [clear||prune hours] [all]",
+
+CMD_RUNDESTROY = "Destroying all items matching Destroy rules or in the Destory list.",
+CMD_DESTROY_HELP = "Destroys all items matching Destroy rules or in the Destroy list.",
 
 -- API
 API_REGISTEREXTENSION_TITLE = "Register Extension",
@@ -212,6 +246,7 @@ CONFIG_DIALOG_SHARE_TOOLTIP = "Share",
 CONFIG_DIALOG_MOVEUP_TOOLTIP = "Click to move the rule sooner in evaluation order",
 CONFIG_DIALOG_MOVEDOWN_TOOLTIP = "Click to move the rule later in the evaluation order",
 CONFIG_DIALOG_LISTS_TAB = "Lists",
+CONFIG_DIALOG_AUDIT_TAB = "Audit",
 CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, Sold, or Destroyed.|n"..
     "Drag items onto the list area to add it to that list.|n"..
     "You can drag an item from one list to another.",
@@ -266,8 +301,10 @@ SYSRULE_KEEP_RAREGEAR = "Rare Gear",
 SYSRULE_KEEP_RAREGEAR_DESC = "Matches any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Rare quality.",
 SYSRULE_KEEP_EPICGEAR = "Epic Gear",
 SYSRULE_KEEP_EPICGEAR_DESC = "Matches any "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." quality equipment. Does not include non-equipment of Epic quality.",
-SYSRULE_KEEP_EQUIPMENTSET_NAME = "Equipment Sets",
+SYSRULE_KEEP_EQUIPMENTSET = "Equipment Sets",
 SYSRULE_KEEP_EQUIPMENTSET_DESC = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
+SYSRULE_KEEP_POTENTIALUPGRADES = "Potential Upgrades",
+SYSRULE_KEEP_POTENTIALUPGRADES_DESC = "Matches any gear that is within 5 item levels or 95% of your average item level (whichever is lower). This safeguards potential upgrades, side-grades, or gear for other specs.",
 
 -- Destroy Rules
 SYSRULE_DESTROYLIST = "Items in Destroy list",
@@ -300,7 +337,7 @@ EDITRULE_MATCHES_TAB_NAME = "Matches",
 EDITRULE_MATCHES_TAB_TEXT = "Below you can see all of the items currently in your inventory which would be matched by this rule.",
 EDITRULE_ITEMINFO_TAB_NAME = "Item Info",
 EDITRULE_ITEMINFO_TAB_TEXT = "<Place Itemlink Here>",
-EDITRULE_ITEM_PROPERTIES_EMPTY = "Drag an item into this panel o view the properties of that item. Properties with quotes (\") around them are strings, and the quotes are required for matching.",
+EDITRULE_ITEM_PROPERTIES_EMPTY = "Drag an item into this panel to view the properties of that item. Properties with quotes (\") around them are strings, and the quotes are required for matching.",
 EDITRULE_SELLRULE_LABEL = "Sell Rule",
 EDITRULE_SELLRULE_TEXT = "A sell rule determines if Vendor will sell the item when the rule evaluates to true.",
 EDITRULE_KEEPRULE_LABEL = "Keep Rule",
@@ -314,7 +351,7 @@ EDITRULE_OK_TEXT = "Rule Ok",
 EDITRULE_RULEOK_TEXT = "Your rule passed validation; check the matches tab to be sure it does what you expect.",
 EDITRULE_SCRIPT_ERROR = "The following error was found validating your rule:|n%s",
 EDITRULE_NO_MATCHES = "This rule does not match anything in your inventory.",
-EDITRULE_MATCHES_HEADER_FMT = "<h1>This rule matched %d items in your inventory</h1>",
+EDITRULE_MATCHES_HEADER_FMT = "<h1>This rule matched %s items in your inventory</h1>",
 EDITRULE_RULE_SOURCE_FMT = "Source: %s",
 EDITRULE_MIGRATE_RULE_TITLE ="Verify Rule",
 EDITRULE_MIGRATE_RULE_TEXT ="Rule requires review before it can be used. Please verify that it matches what you expect and save.",
@@ -323,6 +360,9 @@ EDITRULE_EXTENSION_RULE = "Extension Rule",
 EDITRULE_EXTENSION_RULE_TEXT = "This rules comes from '%s' extension and cannot be edited or deleted. ",
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
+
+EDITRULE_ITEM_LABEL = "Item:",
+EDITRULE_NO_ITEM = "<none>",
 
 RULEHELP_NO_MATCHES = "There are no items which match the specified filter",
 RULEHELP_SOURCE = "Source: %s",
@@ -333,6 +373,15 @@ RULEHELP_EXAMPLES = "Examples:",
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
+-- ItemLists
+ITEMLIST_LOADING = "Loading...",
+ITEMLIST_INVALID_ITEM = "Invalid Item",
+ITEMLIST_INVALID_ITEM_TOOLTIP = "Blizzard has removed this item and it is no longer valid. Click to remove it from the list.",
+ITEMLIST_LOADING_TOOLTIP = "The item information is currently being retrieved from the server",
+ITEMLIST_EMPTY_SELL_LIST = "Your always sell list is current empty you can drag and drop items into this list to add them.",
+ITEMLIST_EMPTY_KEEP_LIST = "Your never sell list is current empty you can drag and drop items into this list to add them.",
+ITEMLIST_REMOVE_TOOLTIP = "Remove from list",
+ITEMLIST_UNSELLABLE = "%s is unsellable, adding to Destroy list instead.",
 
 -- ITEM PROPERTIES HELP
 
@@ -445,7 +494,7 @@ HELP_ITEMISFROMEXPANSION_TEXT = "For items which are marked with and expansion t
 
 HELP_ITEMTYPE_ARGS = "type0 [, type2...typeN]",
 HELP_ITEMTYPE_TEXT = "Checks the item type against the string/number passed in which represents the item type",
-
+HELP_ISEQUIPPED_TEXT = "True if the item is currently equipped. Will never be true for items in inventory.",
 
 HELP_ISINEQUIPMENTSET_ARGS = "[setName0 .. setNameN]",
 HELP_ISINEQUIPMENTSET_TEXT = 
@@ -464,34 +513,6 @@ HELP_TOOLTIPCONTAINS_EXAMPLES =
                "Anywhere: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Rogue\")" .. FONT_COLOR_CODE_CLOSE ..
                "|nCheck left side line 1: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Vanq\", \"left\", 1)" .. FONT_COLOR_CODE_CLOSE,
 
-
-ITEMLIST_REMOVE_FROM_SELL_FMT = 
-    "%s has been removed from the " .. ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_REMOVE_FROM_KEEP_FMT = 
-    "%s has been removed from the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_ADD_TO_SELL_FMT1 = 
-    "%s has been added to then " .. ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_ADD_TO_KEEP_FMT1 = 
-    "%s has been added to the " .. GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE .. " sell list",
-ITEMLIST_MOVE_FROM_KEEP_TO_SELL_FMT = 
-    "%s has been moved from the " .. 
-    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list to the " ..
-    ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list",
-ITEMLIST_REMOVE_FROM_SELL_TO_KEEP_FMT = 
-    "%s has been moved from the " .. 
-    ORANGE_FONT_COLOR_CODE .. "ALWAYS" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list to the " ..
-    GREEN_FONT_COLOR_CODE .. "NEVER" .. FONT_COLOR_CODE_CLOSE ..
-    " sell list",
-ITEMLIST_LOADING = "Loading...",
-ITEMLIST_INVALID_ITEM = "Invalid Item",
-ITEMLIST_INVALID_ITEM_TOOLTIP = "Blizzard has removed this item and it is no longer valid. Click to remove it from the list.",
-ITEMLIST_LOADING_TOOLTIP = "The item information is currently being retrieved from the server",
-ITEMLIST_EMPTY_SELL_LIST = "Your always sell list is current empty you can drag and drop items into this list to add them.",
-ITEMLIST_EMPTY_KEEP_LIST = "Your never sell list is current empty you can drag and drop items into this list to add them.",
-ITEMLIST_REMOVE_TOOLTIP = "Remove from list",
 }) -- END OF LOCALIZATION TABLE
 
 -- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.

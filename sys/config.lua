@@ -84,6 +84,7 @@ Addon.DefaultConfig.Rules =
         "keep.legendaryandup",
         "keep.equipmentset",
         "keep.unknownappearance",
+        "keep.potentialupgrades",
     },
 
     -- The default rules to enable which cause items to be sold.
@@ -343,15 +344,15 @@ end
 -- another, both of the tables will be non-nil so you can access them directly.
 --*****************************************************************************
 function Addon.Config:migrateSettings(oldSettings, newSettings)
-    Addon:Debug("config", "[Config]: +Begin migrating settings from v=%d to v=%d", oldSettings.version, newSettings.version)
+    Addon:Debug("config", "[Config]: +Begin migrating settings from v=%s to v=%s", oldSettings.version, newSettings.version)
     -- Migrate the sell_never to the new version
     if (rawget(oldSettings, NEVER_SELL)) then
-        Addon:Debug("config", "[Config]: |         Copying never sell list with %d items", #rawget(oldSettings, NEVER_SELL))
+        Addon:Debug("config", "[Config]: |         Copying never sell list with %s items", #rawget(oldSettings, NEVER_SELL))
         rawset(newSettings, NEVER_SELL, rawget(oldSettings, NEVER_SELL))
     end
 
     if (rawget(oldSettings, ALWAYS_SELL)) then
-        Addon:Debug("config", "[Config]: |         Copying the always sell list %d items", #rawget(oldSettings, ALWAYS_SELL))
+        Addon:Debug("config", "[Config]: |         Copying the always sell list %s items", #rawget(oldSettings, ALWAYS_SELL))
         rawset(newSettings, ALWAYS_SELL, rawget(oldSettings, ALWAYS_SELL))
     end
     Addon:Debug("config", "[Config] +Setting migration complete")
@@ -362,18 +363,18 @@ end
 -- set value then we don't mark it has having changed.
 --*****************************************************************************
 function Addon.Config:migrateRulesConfig(oldSettings, newSettings)
-    Addon:Debug("config", "[Config]: +Begin migrating rules from v=%d to v=%d", oldSettings.version, newSettings.version)
+    Addon:Debug("config", "[Config]: +Begin migrating rules from v=%s to v=%s", oldSettings.version, newSettings.version)
 
     if (oldSettings.version == 3) and (newSettings.version == 4) then
         if (rawget(oldSettings, KEEP_RULES)) then
-            Addon:Debug("config", "[Config]: |         Copying keep rules with with %d items", #rawget(oldSettings, KEEP_RULES))
+            Addon:Debug("config", "[Config]: |         Copying keep rules with with %s items", #rawget(oldSettings, KEEP_RULES))
             rawset(newSettings, KEEP_RULES, rawget(oldSettings, KEEP_RULES))
             Addon:Debug("config", "[Config]: |         adding equipmentset keep rule");
             table.insert(rawget(newSettings, KEEP_RULES), "equipmentset");
         end
 
         if (rawget(oldSettings, SELL_RULES)) then
-            Addon:Debug("config", "[Config]: |         Copying sell rules with with %d items", #rawget(oldSettings, SELL_RULES))
+            Addon:Debug("config", "[Config]: |         Copying sell rules with with %s items", #rawget(oldSettings, SELL_RULES))
             rawset(newSettings, SELL_RULES, rawget(oldSettings, SELL_RULES))
         end
     end

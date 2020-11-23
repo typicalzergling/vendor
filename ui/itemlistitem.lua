@@ -91,7 +91,7 @@ end
 	==========================================================================]]
 function ItemListItem:HandleDelete()
 	if (self.item) then
-		Addon.invoke(self:GetParent():GetParent(), "OnDeleteItem", self.item);
+		Addon.Invoke(self:GetParent():GetParent(), "OnDeleteItem", self.item);
 	end
 end
 		

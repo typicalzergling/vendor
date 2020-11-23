@@ -66,7 +66,7 @@ function ItemList:OnDrop(button)
 	local cursorItem = ItemList.GetCursorItem();
 	if (not self:IsReadOnly() and (button == "LeftButton") and cursorItem) then
 		ClearCursor();
-		Addon.invoke(self, "OnAddItem", cursorItem);
+		Addon.Invoke(self, "OnAddItem", cursorItem);
 	end
 end
 

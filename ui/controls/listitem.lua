@@ -140,9 +140,17 @@ function ListItem:GetList()
 	return nil
 end
 
+local HANDLERS = { "OnShow", "OnHide", "OnEnter", "OnLeave", "OnClick" }
+
 Addon.Controls = Addon.Controls or {};
 Addon.Controls.ListItem = {
 	Attach = function(self, control)
-		return Mixin(control, ListItem);
+		local item = Mixin(control, ListItem);
+		for _, name in ipairs(HANDLERS) do
+			if (item:HasScript(name) and (type(item[name]) == "function")) then
+				item:SetScript(name, item[name])
+			end
+		end
+		return item
 	end
 };

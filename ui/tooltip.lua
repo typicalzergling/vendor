@@ -37,9 +37,9 @@ function Addon:OnTooltipSetItem(tooltip, ...)
     -- Insecure hook, so wrap what we call in xpcall to prevent taint.
     local status, err = xpcall(
         function(t, ...)
-            local name, link = t:GetItem()
+            local name = t:GetItem()
             if name then
-                Addon:AddItemTooltipLines(t, link)
+                Addon:AddItemTooltipLines(t)
             end
         end,
         CallErrorHandler, tooltip)
@@ -49,7 +49,7 @@ function Addon:OnTooltipSetItem(tooltip, ...)
 end
 
 -- Result cache
-local itemLink = nil
+local itemGUID = nil
 local result = 0
 local blocklist = nil
 local ruleId = nil
@@ -60,7 +60,7 @@ local recipe = false
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Addon:ClearTooltipResultCache()
-    itemLink = nil
+    itemGUID = nil
     result = 0
     blocklist = nil
     ruleId = nil
@@ -71,20 +71,28 @@ function Addon:ClearTooltipResultCache()
     Addon:Debug("tooltip", "TooltipResultCache cleared.")
 end
 
-function Addon:AddItemTooltipLines(tooltip, link)
+function Addon:AddItemTooltipLines(tooltip)
     local profile = self:GetProfile();
-    -- Check Cache if we already have data for this item from a previous update.
-    -- If it isn't in the cache, we need to evaluate this item/link.
-    -- If it is in the cache, then we already have our answer, so don't waste perf re-evaluating.
-    -- TODO: We could keep a larger cache so we don't re-evaluate an item unless inventory changed, the rules changed, or the blocklist changed.
-    if not (itemLink == link) then
+
+    local location = Addon:GetTooltipItemLocation()
+    if not location or not C_Item.DoesItemExist(location) then
+        -- This is expected for anything that isn't in our inventory.
+        return
+    end
+
+    local guid = C_Item.GetItemGUID(location)
+    if not (itemGUID == guid) then
         -- Evaluate the item
-        local item = self:GetItemPropertiesFromTooltip(tooltip, link)
+        local item = self:GetItemPropertiesFromTooltip()
+        if not item then
+            Addon:Debug("tooltip", "Valid location but invalid item properties.")
+            return
+        end
         result, ruleId, ruleName, ruleType  = self:EvaluateItem(item)
 
         -- Check if the item is in the Always or Never sell lists
         -- TODO: Change this to return a table of lists to which this item belongs.
-        blocklist = self:GetBlocklistForItem(link)
+        blocklist = self:GetBlocklistForItem(item.Link)
 
         -- This is for suppressing every other call due to recipe items calling this for the embedded tooltip item also.
         callCount = 0
@@ -94,9 +102,9 @@ function Addon:AddItemTooltipLines(tooltip, link)
             recipe = false
         end
 
+        itemGUID = guid
         -- Mark it as the current cached item.
-        itemLink = link
-        self:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
+        self:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
     end
 
     -- Check for recipe item, which means this will be called twice

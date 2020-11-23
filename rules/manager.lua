@@ -232,7 +232,7 @@ end
 --*****************************************************************************
 function RuleManager:Run(object, ...)
     local result, ran, categoryId, ruleId, name = self.rulesEngine:Evaluate(object, ...);
-    Addon:Debug("rules", "Evaluated \"%s\" [ran=%d, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, tostring(result), (ruleId or "<none>"));
+    Addon:Debug("rules", "Evaluated \"%s\" [ran=%s, result=%s, ruleId=%s]", (object.Name or "<unknown>"), ran, result, (ruleId or "<none>"));
     if (result) then
         if ((categoryId == RULE_TYPE_KEEP) or (categoryId == RULE_TYPE_LOCKED_KEEP)) then
             return false, ruleId, name, RuleType.KEEP;

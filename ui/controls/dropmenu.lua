@@ -17,8 +17,22 @@ function DropMenu:OnLoad()
         end
     end)
     self:SetScript("OnShow", function()
-        if (self.items) then
+        if (self.items and not self.noAutoSelect) then            
             self:OnItemSelected(1)
+        end
+    end)
+
+    self:SetScript("OnEnter", function()
+        if (self.Current:IsTruncated()) then
+            GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+            GameTooltip:AddLine(self.Current:GetText(), self.Current:GetTextColor())
+            GameTooltip:Show()
+        end
+    end)
+
+    self:SetScript("OnLeave", function()
+        if (GameTooltip:GetOwner() == self) then
+            GameTooltip:Hide()
         end
     end)
 end
@@ -27,25 +41,37 @@ end
     | Calld the set the list of items in the list
     ==========================================================================]]
 function DropMenu:SetItems(items)
-    assert(table.getn(items) >= 1, "There are no items in the drop-list")
     self.items = items or {}
-    self:OnItemSelected(1)
+    if (self.items[1] and not self.noAutoSelect) then
+        self:OnItemSelected(1)
+    end
+end
+
+--[[============================================================================
+    | sets the text for the menu
+    ==========================================================================]]
+function DropMenu:SetText(text)
+    self.Current:SetText(text or "")
 end
 
 --[[============================================================================
     | Called when an item is choosen from the menu
     ==========================================================================]]
-function DropMenu:OnItemSelected(value)
+function DropMenu:OnItemSelected(value, checked)
     if (self.selected ~= value and self.items) then
         local text = self.items[value]
-        self.Current:SetText(text)
-        Addon.invoke(self, "OnSelection", value)
+        if (type(text) == "string") then
+            self.Current:SetText(text)
+        end
+        Addon.Invoke(self, "OnSelection", value, checked)
     end
 
-    if (self.expanded) then
-        self.Expand:Show()
-        self.Collapse:Hide()
-        self.expanded = false
+    if (not self.noCloseOnSelect) then
+        if (self.expanded) then
+            self.Expand:Show()
+            self.Collapse:Hide()
+            self.expanded = false
+        end
     end
 end
 
@@ -58,16 +84,29 @@ local function initalizeMenu(owner, width, frame, level, items)
         return
     end
     
-    for value, text in pairs(items) do
-        UIDropDownMenu_AddButton({
-            isNotRadio = true,
-            notCheckable = true,
-            text = text,
-            minWidth = width,
-            func = function()
-                owner:OnItemSelected(value)
-            end
-        }, level)
+    for value, item in pairs(items) do
+        if (type(item) ~= "table") then
+            UIDropDownMenu_AddButton({
+                isNotRadio = true,
+                notCheckable = true,
+                text = item,
+                minWidth = width,
+                func = function()
+                    owner:OnItemSelected(value)
+                end
+            }, level)
+        else
+            UIDropDownMenu_AddButton({
+                isNotRadio = true,
+                minWidth = width,
+                text = item.Text,
+                checked = item.Checked or false,
+                keepShownOnClick = true,
+                func = function(_, _, _, checked)
+                    owner:OnItemSelected(value, checked)
+                end
+            }, level)
+        end
     end
 end
 

@@ -1,6 +1,66 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local ListType = Addon.ListType;
+local ListType = Addon.ListType
+local SystemListId = Addon.SystemListId
+local customListDefintions = Addon.SavedVariable:new("CustomLists")
+local EMPTY = {}
+
+local function isValidListType(listType)
+    return (listType == ListType.CUSTOM) or
+        (listType == ListType.EXTENSION) or
+        (listType == ListType.SELL) or
+        (listType == ListType.KEEP) or
+        (listType == listType.DESTORY)
+end
+
+local function isSystemListType(listType)
+    return (listType == ListType.SELL) or
+        (listType == ListType.KEEP) or
+        (listType == ListType.DESTROY)
+end
+
+local function getListFromProfile(listType)
+    assert(isSystemListType(listType), "Only system lists are kept in the profile")
+    local profile = Addon:GetProfileManager():GetProfile()
+    return profile:GetList(listType)
+end
+
+local function commitListToProfile(listType, list)
+    assert(isSystemListType(listType), "Only system lists are kept in the profile")
+    local profile = Addon:GetProfileManager():GetProfile()
+    profile:SetList(listType, list or EMPTY)
+end
+
+local function getExtensionList(listId)
+end
+
+local function getCustomList(listName)
+end
+
+local function commitCustomList(listName, list)
+end
+
+local function removeFromList(list, itemId)
+    if (not list or (type(list) ~= "table")) then
+        return false
+    end
+
+    if (list[itemId]) then
+        list[itemId] = nil
+        return true
+    end
+
+    return false
+end
+
+local function addToList(list, itemId)
+    assert(type(list) == "table", "the list should already be defined")
+    if (not list[itemId]) then
+        list[itemId] = true
+        return true
+    end    
+    return false
+end
 
 local BlockList = {}
 function BlockList:Create(_listType, _profile)
@@ -17,62 +77,46 @@ end
 function BlockList:Add(itemId)
     -- Validate ItemId
     if not Addon:IsItemIdValid(itemId) then
-        Addon:Debug("blocklists", "Invalid Item ID: %s", tostring(itemId))
+        Addon:Debug("blocklists", "Invalid Item ID: %s", itemId)
         return false
     end
 
-    local list = self.profile:GetList(self.listType);
-    if (not list[itemId]) then
-        list[itemId] = true;
-        Addon:Debug("blocklists", "Added %d to '%s' list", itemId, self.listType);
-        self.profile:SetList(self.listType, list);
-    end
-
-    -- If this is a built in list type, remove the item from the other list types.
-    if self.listType == ListType.SELL or self.listType == ListType.KEEP or self.listType == ListType.DESTROY then
-        if self.listType ~= ListType.SELL then
-            Addon:GetList(ListType.SELL):Remove(itemId)
-        end
-        if self.listType ~= ListType.KEEP then
-            Addon:GetList(ListType.KEEP):Remove(itemId)
-        end
-        if self.listType ~= ListType.DESTROY then
-            Addon:GetList(ListType.DESTROY):Remove(itemId)
-        end
+    table.forEach(self, print, "BlockList:Add")
+    local list = self.get()
+    if (addToList(list, itemId)) then
+        Addon:Debug("blocklists", "Added %s to '%s' list [%s]", itemId, self.listType. self.listId);
+        self:commit(list)
     end
 
     return false;
 end
 
 function BlockList:Remove(itemId)
-    local list = self.profile:GetList(self.listType);
-    if (list[itemId]) then
-        list[itemId] = nil;
-        Addon:Debug("blocklists", "Removed %d from '%s' list", itemId, self.listType);
-        self.profile:SetList(self.listType, list);
-        return true;
+    local list = self.get()
+    if (removeFromList(list, itemId)) then
+        Addon:Debug("blocklists", "Removed %s from '%s' list [%s]", itemId, self.listType, self.listId)
+        self.commit(list)
+        return true
     end
     return false;
 end
 
 function BlockList:Contains(itemId)
-    local list = self.profile:GetList(self.listType);
+    local list = self.get() or EMPTY
     return list[itemId] == true;
 end
 
 function BlockList:GetContents()
-    --todo: this should be a clone of the table
-    return self.profile:GetList(self.listType);
+    local list = self.get();
+    return list or EMPTY
 end
 
 function BlockList:GetItems()
     local items = {};
-    local ids = self.profile:GetList(self.listType);
-    if (ids) then
-        for id in pairs(ids) do
-            if (C_Item.DoesItemExistByID(id)) then
-                table.insert(items, id);
-            end
+    local ids = self.get() or EMPTY
+    for id, _ in pairs(ids) do
+        if (C_Item.DoesItemExistByID(id)) then
+            table.insert(items, id);
         end
     end
     return items;
@@ -83,7 +127,101 @@ function BlockList:GetType()
 end
 
 function BlockList:IsType(listType)
-    return (self.listType == listType);
+    return (self.listType == listType)
+end
+
+function BlockList:GetId()
+    return self.listId
+end
+
+function BlockList:Clear()
+    Addon:Debug("blocklists", "Cleared list '%s' [%s]", self.listType, self.listId)
+    self:commit(EMPTY)
+end
+
+function BlockList:RemoveInvalid()
+    local ids = self.get() or EMPTY
+    local prune = {}
+    for id, state in pairs(ids) do
+        if ((type(id) ~= "number") or not state or not C_Item.DoesItemExistByID(id)) then
+            table.insert(prune, id)
+        end        
+    end
+    
+    if (table.getn(prune)) then
+        Addon:Debug("blocklists", "Pruining %d invalid items from the list '%s' [%s]", table.getn(prune), self.listType, self.listId)
+        for _, id in ipairs(prune) do
+            list[id] = nil
+        end
+        self:commit(list)
+    end
+end
+
+local SystemBlockList = {}
+
+function SystemBlockList:GetOthers()
+    local lists = {}
+    if (self.listType == ListType.SELL) then
+        lists[ListType.KEEP] = getListFromProfile(ListType.KEEP)
+        lists[ListType.DESTROY] = getListFromProfile(ListType.DESTROY)
+    elseif (self.listType == ListType.KEEP) then
+        lists[ListType.SELL] = getListFromProfile(ListType.SELL)
+        lists[ListType.DESTROY] = getListFromProfile(ListType.DESTROY)
+    else
+        lists[ListType.SELL] = getListFromProfile(ListType.SELL)
+        lists[ListType.KEEP] = getListFromProfile(ListType.KEEP)
+    end
+
+    return lists
+end
+
+function SystemBlockList:Add(itemId)
+    table.forEach(self, print, "SystemBlockList:Add")
+    -- Validate ItemId
+    if not Addon:IsItemIdValid(itemId) then
+        Addon:Debug("blocklists", "Invalid Item ID: %s", tostring(itemId))
+        return false
+    end
+
+    local list = self.get()
+    if (addToList(list, itemId)) then
+        Addon:Debug("blocklists", "Added %d to '%s' list [%s]", itemId, self.listType, self.listId);
+        self.commit(list)
+    end
+
+    for ty, list in pairs(self:GetOthers()) do 
+        if (removeFromList(list, itemId)) then
+            commitListToProfile(ty, list)
+        end
+    end
+end
+
+--[[static]] function SystemBlockList:New(listType)
+    assert(isSystemListType(listType), "The list type must be a system list")
+
+    -- Determine the list id
+    if (listType == ListType.SELL) then
+        listId = SystemListId.SELL or SystemListId.ALWAYS
+    elseif (listType == ListType.KEEP) then
+        listId = SystemListId.KEEP or SystemListId.NEVER
+    else
+        listId = SystemListId.DESTROY
+    end
+
+    -- Create our instance.
+    local instance = 
+    {
+        listType = listType,
+        listId = listId,
+        commit = function(list) 
+            commitListToProfile(listType, list) 
+        end,
+        get = function()
+            return getListFromProfile(listType)
+        end,
+    }
+
+    return Addon.object("SystemBlockList", instance, table.merge(BlockList, SystemBlockList))
 end
 
 
@@ -99,6 +237,16 @@ function Addon:ToggleItemInBlocklist(list, item)
 
     -- Get existing blocklist id
     local existinglist = Addon:GetBlocklistForItem(id)
+
+    -- Check if the list is Sell and the item is Unsellable
+    -- If so, change the list type to Destroy
+    if list == Addon.ListType.SELL then
+        local isUnsellable = select(11, GetItemInfo(id)) == 0
+        if isUnsellable then
+            self:Print(L.CMD_LISTTOGGLE_UNSELLABLE, link)
+            list = Addon.ListType.DESTROY
+        end
+    end
 
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
@@ -138,8 +286,10 @@ function Addon:GetBlocklistForItem(item)
     local id = self:GetItemIdFromString(item)
     if id then
         for _, list in pairs(ListType) do
-            if Addon:IsItemInList(id, list) then
-                return list
+            if (isSystemListType(list)) then
+                if Addon:IsItemInList(id, list) then
+                    return list
+                end
             end
         end
     end
@@ -154,23 +304,19 @@ end
 
 -- Permanently deletes the associated blocklist.
 function Addon:ClearBlocklist(list)
-    if ((list == ListType.SELL) or
-        (list == ListType.KEEP) or
-        (list == ListType.DESTROY)) then
-        Addon:GetProfile():SetList(list, {});
-        -- Blocklist changed, so clear the Tooltip cache.
+    if (isSystemListType(list)) then
+        SystemBlockList:New(listType):Clear()
         self:ClearTooltipResultCache()
-        return;
+        return
     end
+
     error(string.format("There is not '%s' list", list));
 end
 
 -- Retrieve the specified list
 function Addon:GetList(listType)
-    if ((listType == ListType.SELL) or
-        (listType == ListType.KEEP) or
-        (listType == ListType.DESTROY)) then
-        return BlockList:Create(listType, self:GetProfile());
+    if (isSystemListType(listType)) then
+        return SystemBlockList:New(listType)        
     end
 
     error(string.format("There is no '%s' list", listType or ""));    
@@ -178,22 +324,7 @@ end
 
 function Addon:RemoveInvalidEntriesFromBlocklist(listType)
     local list = self:GetList(listType)
-    if not list then return end
-    local contents = list:GetContents()
-    if not contents then return end
-    -- Find all bad entries.
-    local invalid = {}
-    for id, _ in pairs(contents) do
-        if type(id) == "number" and not self:IsItemIdValid(id) then
-            table.insert(invalid, id)
-        end
-    end
-
-    -- Remove said bad entries.
-    for _, id in pairs (invalid) do
-        Addon:Debug("blocklists", "Removing invalid ItemID: %s from %s list.", tostring(id), tostring(listType))
-        list:Remove(id)
-    end
+    list:RemoveInvalid()
 end
 
 function Addon:RemoveInvalidEntriesFromAllBlocklists()

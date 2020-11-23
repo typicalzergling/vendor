@@ -89,44 +89,43 @@ end
 -- If we pass in a link, use the link. If link is nil, use bag and slot.
 -- We do this so we can evaluate based purely on a link, or on item container if we have it.
 -- Argument combinations
---      tooltip, nil - we will get the item link from the tooltip and use the tooltip for scanning
---      bag, slot       - we will get link from the containerinfo and use the scanning tip for scanning
+--      location
+--      bag, slot             - we will use the location.
 
 function Addon:GetItemProperties(arg1, arg2)
 
-    local link = nil
-    local count = 1
     local tooltip = nil
-    local bag = nil
-    local slot = nil
     local location = nil
 
-    -- Tooltip passed in. Use item location of known tooltip.
+    -- Location directly passed in
     if type(arg1) == "table" then
-        tooltip = arg1
-        _, link = tooltip:GetItem()
-        if tooltipLocation then
-            location = tooltipLocation
-        end
+        location = arg1
 
     -- Bag and Slot passed in
     elseif type(arg1) == "number" and type(arg2) == "number" then
-        bag = arg1
-        slot = arg2
-        _, count, _, _, _, _, link = GetContainerItemInfo(bag, slot)
-        location = ItemLocation:CreateFromBagAndSlot(bag, slot)
+        location = ItemLocation:CreateFromBagAndSlot(arg1, arg2)
     else
         assert("Invalid arguments to GetItemProperties")
         return nil
     end
 
-    -- No link means no item.
-    if not link or not location or not C_Item.DoesItemExist(location) then
+    -- No loc means no item.
+    if not location or not C_Item.DoesItemExist(location) then
         return nil
     end
 
+    -- Get link from location
+    local link = C_Item.GetItemLink(location)
+
     -- Guid is how we uniquely identify items.
     local guid = C_Item.GetItemGUID(location)
+
+    -- If it's bag and slot then the count can be retrieved, if it isn't
+    -- then it must be an inventory slot, which means 1.
+    local count = 1
+    if location:IsBagAndSlot() then
+        count = select(2, GetContainerItemInfo(location:GetBagAndSlot()))
+    end
 
     -- Item properties may already be cached
     local item = Addon:GetItemFromCache(guid)
@@ -187,6 +186,7 @@ function Addon:GetItemProperties(arg1, arg2)
 
     -- Save string compares later.
     item.IsEquipment = item.EquipLoc ~= "" and item.EquipLoc ~= "INVTYPE_BAG"
+    item.IsEquipped = item.Location:IsEquipmentSlot()
 
     -- Get soulbound information
     if C_Item.IsBound(location) then
@@ -202,7 +202,7 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Determine if this item is an uncollected transmog appearance
     -- We can save the scan by skipping if it is Soulbound (would already have it) or not equippable
     if not item.IsSoulbound and item.IsEquipment then
-        if self:IsItemUnknownAppearanceInTooltip(tooltip, bag, slot) then
+        if self:IsItemUnknownAppearanceInTooltip(item.Location) then
             item.IsUnknownAppearance = true
         end
     end
@@ -210,7 +210,7 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Determine if crafting reagent
     -- These are typically itemtype 7, which is 'tradeskill' but sometimes item type 15, which is miscellaneous.
     if item.TypeId == 7 or item.TypeId == 15 then
-        if self:IsItemCraftingReagentInTooltip(tooltip, bag, slot) then
+        if self:IsItemCraftingReagentInTooltip(item.Location) then
             item.IsCraftingReagent = true
         end
     end
@@ -221,21 +221,21 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
     -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
     if item.TypeId == 15 or item.TypeId == 0 then
-        if self:IsItemToyInTooltip(tooltip, bag, slot) then
+        if self:IsItemToyInTooltip(item.Location) then
             item.IsToy = true
         end
     end
 
     -- Determine if this is an already-collected item, which should only be usable items.
     if item.IsUsable then
-        if self:IsItemAlreadyKnownInTooltip(tooltip, bag, slot) then
+        if self:IsItemAlreadyKnownInTooltip(item.Location) then
             item.IsAlreadyKnown = true
         end
     end
 
     -- Import the tooltip text as item properties for custom rules.
-    item.TooltipLeft = self:ImportTooltipTextLeft(tooltip, bag, slot)
-    item.TooltipRight = self:ImportTooltipTextRight(tooltip, bag, slot)
+    item.TooltipLeft = self:ImportTooltipTextLeft(item.Location)
+    item.TooltipRight = self:ImportTooltipTextRight(item.Location)
 
     Addon:AddItemToCache(item, guid)
     return item, count
@@ -246,11 +246,14 @@ function Addon:GetItemPropertiesFromBag(bag, slot)
     return self:GetItemProperties(bag, slot)
 end
 
--- Link is optional, will be gotten from the tooltip if not provided.
-function Addon:GetItemPropertiesFromTooltip(tooltip, link)
-    return self:GetItemProperties(tooltip, link)
+-- If we have a tooltip we will use it for scanning.
+-- Tooltip is optional
+function Addon:GetItemPropertiesFromTooltip()
+    return self:GetItemProperties(tooltipLocation)
 end
 
-function Addon:GetItemPropertiesFromLink(link)
-    return self:GetItemProperties(GameTooltip, link);
+-- Pure location item
+function Addon:GetItemPropertiesFromLocation(location)
+    return self:GetItemProperties(location)
 end
+

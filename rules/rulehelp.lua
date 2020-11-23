@@ -71,6 +71,7 @@ Addon.ScriptReference.ItemProperties =
         Text = L["HELP_ISUNSELLABLE_TEXT"],
         Notes = L["HELP_ISUNSELLABLE_NOTES"] 
     },
+    IsEquipped = L["HELP_ISEQUIPPED_TEXT"],
 
 }
 

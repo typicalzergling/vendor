@@ -163,7 +163,18 @@ end
 function ListsPanel:OnAddItem(item)
     local list = assert(self:GetSelectedList());
     if (list) then
-        list:Add(Addon.ItemList.GetItemId(item));
+        local itemid = Addon.ItemList.GetItemId(item)
+
+        -- Check for condition that this item is unsellable and we are attempting
+        -- to add it to the system Sell list.
+        if itemid and list.listType == Addon.ListType.SELL then
+            if select(11, GetItemInfo(itemid)) == 0 then   -- itemprice is 0 means unsellable
+                Addon:Print(L.ITEMLIST_UNSELLABLE, select(2, GetItemInfo(itemid)) or itemid)
+                list = Addon:GetList(ListType.DESTROY)
+            end
+        end
+
+        list:Add(itemid);
     end
 end
 

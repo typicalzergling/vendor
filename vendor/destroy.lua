@@ -28,7 +28,7 @@ function Addon:DestroyItems()
 
             -- Get Item properties and run sell rules.
             local item, itemCount = self:GetItemPropertiesFromBag(bag, slot)
-            local result = self:EvaluateItem(item)
+            local result, ruleid, rule = self:EvaluateItem(item)
 
             -- Result of 0 is no action, 1 is sell, 2 is must be deleted.
             -- So we only try to sell if Result is exactly 1.
@@ -41,6 +41,10 @@ function Addon:DestroyItems()
                 else
                     self:Print("Simulating deletion of: %s", tostring(currentDestroyedItem))
                 end
+
+                -- Add to history
+                Addon:AddEntryToHistory(currentDestroyedItem, Addon.ActionType.DESTROY, rule, ruleid, itemCount, 0)
+
                 currentDestroyedItem = nil
                 numDestroyed = numDestroyed + 1
             end

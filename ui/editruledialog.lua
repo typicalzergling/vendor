@@ -98,12 +98,47 @@ function EditRuleDialog:OnLoad()
     table.insert(UISpecialFrames, self:GetName());
     self:RegisterForDrag("LeftButton");
 
-    self.ItemInfo.OnItemClicked = function(_, name)
-        self.Script:Insert(name)
+    self.ItemInfo.OnItemClicked = function(_, name, value)
+        local valueText = value
+        if (type(value )== "string") then
+            valueText = string.format("\"%s\"", value)
+        else
+            valueText = tostring(value)
+        end
+        
+        local current = self.Script:GetText();
+        local empty = not current or (string.len(string.trim(current)) == 0)
+        local insertText = nil
+
+        if (IsControlKeyDown()) then
+            insertText = name
+        elseif (IsAltKeyDown()) then
+            insertText = valueText
+        elseif (IsShiftKeyDown()) then
+            if (type(value) == "boolean") then
+                insertText = string.format("not %s", name)
+            else
+                insertText = string.format("%s ~= %s", name, valueText)
+            end
+        else
+            if (type(value) == "boolean") then
+                insertText = name
+            else
+                insertText = string.format("%s == %s", name, valueText)
+            end
+        end
+
+        if (not empty) then
+            self.Script:Insert(string.format(" (%s)", insertText))
+        else
+            self.Script:Insert(insertText)
+        end
+
+        self.Script:GetControl():SetFocus()
     end
 
     self.ItemInfo.OnItemContext = function(_, name)
-        self.Help:DisplayHelp(name)
+        self.Help:DisplayKeyword(name)
         self:SetActiveTab(self.Help:GetID())
     end
 end
@@ -183,7 +218,7 @@ function EditRuleDialog:UpdateMatches()
         if (not matches) then
             matches = {};
         end
-        Addon:Debug("editrule", "Found %d matches for rule '%s'", table.getn(matches), ruleDef.Id);
+        Addon:Debug("editrule", "Found %s matches for rule '%s'", table.getn(matches), ruleDef.Id);
     end
 
     self.matchesPanel:SetMatches(matches);
@@ -416,7 +451,7 @@ function EditRuleDialog:SetRuleStatus(ruleStatus, statusMsg)
         return;
     end;
 
-    Addon:Debug("editrule", "Setting dialog status '%d' with message '%s'", status, statusMessage or "");
+    Addon:Debug("editrule", "Setting dialog status '%s' with message '%s'", status, statusMessage or "");
 
     local statusInfo = RULE_STATUS_INFO[status];
     assert(statusInfo, string.format("Expected there to be information for status: %d", status));

@@ -37,6 +37,7 @@
 local AddonName, Addon = ...
 local ListItem = Addon.Controls.ListItem
 local ListBase = table.copy(Addon.Controls.EmptyListMixin)
+local NEED_UPDATE_KEY = {}
 
 --[[===========================================================================
 	| OnLoad handler for the list base, sets some defaults and hooks up
@@ -146,7 +147,7 @@ function ListBase:Select(item)
 			if (newSel) then
 				model = newSel:GetModel();
 			end
-			Addon.invoke(self, "OnSelection", model);
+			Addon.Invoke(self, "OnSelection", model);
 		end
 	end
 end
@@ -172,13 +173,24 @@ end
 	| Update handler, delegates to each of the frames (if they are visible)
 	========================================================================--]]
 function ListBase:OnUpdate()
+	if (rawget(self, NEED_UPDATE_KEY)) then
+		rawset(self, NEED_UPDATE_KEY, nil)
+		self:Update()
+	end
 	if (self.frames) then
 		for _, frame in ipairs(self.frames) do
 			if (frame:IsVisible()) then
-				Addon.invoke(frame, "OnUpdate");
+				Addon.Invoke(frame, "OnUpdate");
 			end
 		end
 	end
+end
+
+--[[===========================================================================
+	| Marks the list as needing update
+	========================================================================--]]
+function ListBase:FlagForUpdate()
+	rawset(self, NEED_UPDATE_KEY, true)
 end
 
 --[[===========================================================================
@@ -220,8 +232,8 @@ function ListBase:CreateItem()
 	local frame = CreateFrame(self.FrameType or "Button", nil, self, self.ItemTemplate);
 	frame = Mixin(frame, (subclass or {}));
 	frame = ListItem:Attach(frame);
-	Addon.invoke(frame, "OnCreated");
-	Addon.invoke(self, "OnItemCreated", frame);
+	Addon.Invoke(frame, "OnCreated");
+	Addon.Invoke(self, "OnItemCreated", frame);
 	return frame;
 end
 
@@ -231,10 +243,10 @@ end
 	|   layout to synchronize the view state.
 	========================================================================--]]
 function ListBase:Update()
-	local items = Addon.invoke(self, "GetItems");
+	local items = Addon.Invoke(self, "GetItems");
 	self.frames = self.frames or {};
 	local itemHeight = (self.ItemHeight or 1);
-	local visible = math.ceil(self:GetHeight() / itemHeight);
+	local visible = math.floor(self:GetHeight() / itemHeight);
 
 	if (not items or (table.getn(items) == 0)) then
 		for _, frame in ipairs(self.frames) do
@@ -253,7 +265,7 @@ function ListBase:Update()
 		local top = 0;
 		
 		FauxScrollFrame_Update(self, table.getn(items), visible, itemHeight, nil, nil, nil, nil, nil, nil, true);
-		for i = 1, visible do 
+		for i = 1, visible + 1 do 
 			local item = self.frames[i];
 			if (not item) then
 				item = self:CreateItem();

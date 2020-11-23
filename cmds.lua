@@ -5,12 +5,14 @@ local L = Addon:GetLocale()
 function Addon:SetupConsoleCommands()
     self:RegisterConsoleCommandName(AddonName, "/vendor", "/ven")
     self:AddConsoleCommand(nil, nil, "OpenConfigDialog_Cmd")                        -- Override the default
-    self:AddConsoleCommand("rules", L["CMD_RULES_HELP"], "OpenConfigDialog_Cmd")
-    self:AddConsoleCommand("list", L["CMD_LISTTOGGLE_HELP"], "ListToggle_Cmd")
-    self:AddConsoleCommand("keys", L["CMD_KEYS_HELP"], "OpenKeybindings_Cmd")
-    self:AddConsoleCommand("settings", L["CMD_SETTINGS_HELP"], "OpenSettings_Cmd")
-    self:AddConsoleCommand("withdraw", L["CMD_WITHDRAW_HELP"], "Withdraw_Cmd")
-    self:AddConsoleCommand("api", L["CMD_API_HELP"], "PrintAPI_Cmd")
+    self:AddConsoleCommand("rules", L.CMD_RULES_HELP, "OpenConfigDialog_Cmd")
+    self:AddConsoleCommand("list", L.CMD_LISTTOGGLE_HELP, "ListToggle_Cmd")
+    self:AddConsoleCommand("keys", L.CMD_KEYS_HELP, "OpenKeybindings_Cmd")
+    self:AddConsoleCommand("settings", L.CMD_SETTINGS_HELP, "OpenSettings_Cmd")
+    self:AddConsoleCommand("withdraw", L.CMD_WITHDRAW_HELP, "Withdraw_Cmd")
+    self:AddConsoleCommand("api", L.CMD_API_HELP, "PrintAPI_Cmd")
+    self:AddConsoleCommand("history", L.CMD_HISTORY_HELP, "History_Cmd")
+    self:AddConsoleCommand("destroy", L.CMD_DESTROY_HELP, "Destroy_Cmd")
 end
 
 -- Add or remove items from the blacklist or whitelist.
@@ -163,6 +165,11 @@ function Addon:Withdraw_Cmd()
         end
     end
     Addon:Print(L["MERCHANT_WITHDRAWN_ITEMS"], count);
+end
+
+function Addon:Destroy_Cmd()
+    Addon:Print(L.CMD_RUNDESTROY)
+    Addon:DestroyItems()
 end
 
 -- Prints the public API

@@ -49,7 +49,7 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
         Addon:Debug("rules", "The rule '%s' failed to parse: %s", ruleId, message);
     end
 
-    Addon:Debug("rules", "Complete evaluation of rule '%s' with %d matches", ruleId, #results);
+    Addon:Debug("rules", "Complete evaluation of rule '%s' with %s matches", ruleId, #results);
     return results;
 end
 

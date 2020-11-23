@@ -42,15 +42,13 @@
 	<Frame name="Vendor_EditPanel_ItemInfo" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString parentKey="HelpText" inherits="GameFontHighlightSmall" justifyV="TOP" justifyH="LEFT">
-					<Size x="1" y="32"/>
+				<FontString parentKey="Label" inherits="GameFontNormal" justifyV="MIDDLE" justifyH="LEFT">
+					<Size x="40" y="30"/>
 					<KeyValues>
-						<KeyValue key="LocKey" value="EDITRULE_ITEMINFO_TAB_TEXT" type="string"/>
+						<KeyValue key="LocKey" value="EDITRULE_ITEM_LABEL" type="string"/>
  					</KeyValues>
-					 /
 					<Anchors>
-						<Anchor point="TOPLEFT" x="10" y="-12"/>
-						<Anchor point="TOPRIGHT" x="-10" y="-12"/>>
+						<Anchor point="TOPLEFT" x="10" y="-6"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -58,10 +56,30 @@
 		<Frames>
 			<Frame inherits="Vendor_BorderFrame" parentKey="Container">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
-					<Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Label" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" x="-10" y="6"/>
 				</Anchors>
 			</Frame>
+			<Frame inherits="Vendor_BorderFrame" parentKey="ItemLink" mixin="ItemMixin">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Label" relativePoint="TOPRIGHT"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.Label" relativePoint="BOTTOMRIGHT"/>
+					<Anchor point="RIGHT" relativeKey="$parent.Container"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Link" inherits="GameFontDisable" justifyV="MIDDLE" justifyH="LEFT" wordwrap="false">
+							<KeyValues>
+								<KeyValue key="LocKey" value="EDITRULE_NO_ITEM" type="string"/>
+							</KeyValues>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="10" y="-6"/>
+								<Anchor point="BOTTOMRIGHT" x="-10" y="6"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>				
+			</Frame>			
 			<ScrollFrame parentKey="View" inherits="FauxScrollFrameTemplate">
 				<KeyValues>
 					<KeyValue key="ItemTemplate" value="ItemInfo_Template" type="string"/>

@@ -51,8 +51,13 @@ function Addon:OnInitialize()
     self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
     self:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
 
-    -- Print version and load confirmation to console.
-    -- Suppressing for now to reduce spam.
-    --self:Print("%s %sv%s%s %s", L["ADDON_NAME"], GREEN_FONT_COLOR_CODE, self:GetVersion(), FONT_COLOR_CODE_CLOSE, L["ADDON_LOADED"])
+    -- Publish our LDB Data Objects
+    self:SetupLDBPlugins()
+
+    -- Do Pruning of History across all characters.
+    -- TODO: Make this a setting
+    -- Consider dynamic history pruning when it gets to a certain size, auto-prune it.
+    -- Setting this on a timer so it doesn't cause lag during resource intensive addon loading.
+    C_Timer.After(Addon.c_PruneHistoryDelay, function() Addon:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
 end
 

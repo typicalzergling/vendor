@@ -37,30 +37,17 @@ end
 function Addon.DeepTableCopy(obj, seen)
     if type(obj) ~= 'table' then return obj end
     if seen and seen[obj] then return seen[obj] end
+
     local s = seen or {}
-    local res = setmetatable({}, getmetatable(obj))
+    local meta = getmetatable(obj)
+    if (type(meta) ~= "table") then
+        meta = nil
+    end
+
+    local res = setmetatable({}, meta)
     s[obj] = res
     for k, v in pairs(obj) do res[Addon.DeepTableCopy(k, s)] = Addon.DeepTableCopy(v, s) end
     return res
-end
-
--- Helper function for invoking a method on the specified object,
--- if the function doesn't exist this does nothing, otherwise it
--- invokes the function and wraps it.
-function Addon.invoke(object, method, ...)
-    if (type(object) == "table") then
-        local fn = object[method];
-        if (type(fn) == "function") then
-            local results = { xpcall(fn, CallErrorHandler, object, ...) };
-            if (results[1]) then
-                table.remove(results, 1);
-                return unpack(results);
-            elseif (not results[1] and results[2]) then
-                Addon:Debug("errors", "Failed to invoke '%s': %s", method, results[2]);            
-            end
-        end 
-    end
-	return nil;
 end
 
 local TypeInformation = {};

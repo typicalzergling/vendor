@@ -28,9 +28,9 @@ function Addon:EvaluateItem(item)
     end
 
     -- See if this item is already in the cache.
-    local retval, ruleid, rule, ruletype = Addon:GetCachedResult(item.GUID)
+    local retval, ruleid, rule, ruletype, id = Addon:GetCachedResult(item.GUID)
     if retval and type(retval) == "number" then
-        self:Debug("items", "Retrieved %s from cache with result: %d - [%s] %s", item.Link, retval, tostring(ruletype), tostring(rule))
+        self:Debug("items", "Retrieved %s from cache with result: %s - [%s] %s", item.Link, retval, ruletype, rule)
         return retval, ruleid, rule, ruletype
     end
 
@@ -62,8 +62,8 @@ function Addon:EvaluateItem(item)
     end
 
     -- Add item to cache
-    self:Debug("items", "Adding %s to cache with result: %d - [%s] %s", item.Link, retval, tostring(ruletype), tostring(rule))
-    Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype)
+    self:Debug("items", "Adding %s to cache with result: %s - [%s] %s", item.Link, retval, ruletype, rule)
+    Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype, item.Id)
     
     return retval, ruleid, rule, ruletype
 end
@@ -80,6 +80,27 @@ function Addon:GetCachedResult(guid)
     end
 end
 
+-- Returns num kept, num sold, and num destroyed for a given item id.
+-- Note that if this is called while evaluations are still occurring, it will
+-- give you a running count, thus far, of items that have been kept/sold/destroyed
+-- for this particular item id. This is the basis for the "keep at least N" type
+-- rule behavior.
+function Addon:GetResultCountsForItemId(id)
+    local resultCount = {}
+    resultCount[0] = 0
+    resultCount[1] = 0
+    resultCount[2] = 0
+
+    for guid, entry in pairs(resultCache) do
+        -- Find entries with the specified item ID
+        if entry.Id == id then
+            resultCount[entry.Result] = resultCount[entry.Result] + 1
+        end
+    end
+    -- Num Kept, Num Sold, Num Destroyed
+    return resultCount[0], resultCount[1], resultCount[2]
+end
+
 function Addon:ClearResultCache(arg)
     if not arg then
         resultCache = {}
@@ -90,7 +111,7 @@ function Addon:ClearResultCache(arg)
     self:ClearTooltipResultCache()
 end
 
-function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype)
+function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
     assert(type(guid) == "string" and type(result) == "number")
 
     local cacheEntry = {}
@@ -98,9 +119,10 @@ function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype)
     cacheEntry.RuleId = ruleid
     cacheEntry.Rule = rule
     cacheEntry.RuleType = ruletype
+    cacheEntry.Id = id
 
     assert(guid ~= "")
-    self:Debug("items", "Cached result: %s = %s", guid, tostring(result))
+    self:Debug("items", "Cached result: %s = %s", guid, result)
     resultCache[guid] = cacheEntry
 end
 
@@ -114,7 +136,7 @@ function Addon:GetEvaluationStatus()
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, GetContainerNumSlots(bag) do
             local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
-            result = Addon:EvaluateItem(item)
+            local result = Addon:EvaluateItem(item)
             
             if result > 0 then
                 count = count + 1
@@ -131,6 +153,28 @@ function Addon:GetEvaluationStatus()
         end
     end
     return count, value, tosell, todestroy, sellitems, destroyitems
+end
+
+function Addon:GetEvaluationDetails()
+    local results = {}
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1, GetContainerNumSlots(bag) do
+            local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
+            if item then
+                local result, ruleid, rule, ruletype = Addon:EvaluateItem(item)
+                local entry = {}
+                entry.GUID = item.GUID
+                entry.Id = item.Id
+                entry.Count = itemCount
+                entry.Result = result
+                entry.RuleId = ruleid
+                entry.Rule = rule
+                entry.RuleType = ruletype
+                table.insert(results, entry)
+            end
+        end
+    end
+    return results
 end
 
 -- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
