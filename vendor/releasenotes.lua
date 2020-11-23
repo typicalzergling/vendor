@@ -28,6 +28,13 @@ reset the history for a character or all characters using "/vendor history clear
 This will ensure things like the pawn "not upgrade" sell rule won't match off-spec gear, or side-grades and other items which you probably don't want to sell and haven't added to an equipment set.
 </p>
 <br/>
+<h1>Unsellable Items added to the Sell list</h1>
+<p>If you use the hotkey to mouseover and add toggle items on the Sell-list, or drag an unsellable item onto the Sell list, it will instead be placed into the
+Destroy list. Such items can never be sold so we will try to do the right thing here and put it into the Destroy list. A console message will print when this
+happens so you know. We thought this better than giving you annoying pop-ups, but it may seem like the add 'didn't work' - it did, it just went into a different
+list. If this proves confusing to users we will improve this experience. Existing unsellable items in the sell list are unchanged - you may have to move these manually.
+</p>
+<br/>
 <h1>New Item Property - IsEquipped</h1>
 <p>This property matches true only if the item is currently equipped.
 </p>

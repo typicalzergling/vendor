@@ -51,6 +51,8 @@ function Addon:OnInitialize()
     self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
     self:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
 
+    -- Publish our LDB Data Objects
+    self:SetupLDBPlugins()
 
     -- Do Pruning of History across all characters.
     -- TODO: Make this a setting

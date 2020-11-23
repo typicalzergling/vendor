@@ -84,6 +84,10 @@ function Addon:AddItemTooltipLines(tooltip)
     if not (itemGUID == guid) then
         -- Evaluate the item
         local item = self:GetItemPropertiesFromTooltip()
+        if not item then
+            Addon:Debug("tooltip", "Valid location but invalid item properties.")
+            return
+        end
         result, ruleId, ruleName, ruleType  = self:EvaluateItem(item)
 
         -- Check if the item is in the Always or Never sell lists
