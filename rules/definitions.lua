@@ -546,12 +546,12 @@ end
     |
     |   Note: ruleType is optional and is not required.
     ========================================================================--]]
-function Rules.GetDefinition(ruleId, ruleType)
+function Rules.GetDefinition(ruleId, ruleType, includeLocked)
     local id = string.lower(ruleId);
 
     -- Check the system rules.
     for _, ruleDef in ipairs(Rules.SystemRules) do
-        if (not ruleDef.Locked) then
+        if (not ruleDef.Locked or includeLocked) then
             if (string.lower(ruleDef.Id) == id) then
                 if ((not ruleType) or (ruleType == ruleDef.Type)) then
                     return ruleDef;

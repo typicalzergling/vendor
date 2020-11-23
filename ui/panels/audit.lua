@@ -1,5 +1,6 @@
 local _, Addon = ...
 local ActionType = Addon.ActionType
+local L = Addon:GetLocale()
 local Audit = {}
 local AuditItem = {}
 local MATCH_CATEGORY = 1
@@ -8,39 +9,44 @@ local FILTER_RULES =
 {
 	{
 		Id ="sold",
-		Name = "Sold",
+		Name = L.OPTIONS_AUDIT_FILTER_SOLD,
 		Script = function() return Action == ACTION_SELL end
 	},
 	{
 		Id = "destroy",
-		Name = "Destroyed",
+		Name = L.OPTIONS_AUDIT_FILTER_DESTROYED,
 		Script = function() return Action == ACTION_DESTROY end
 	},
 	{
 		Id = "lessthencommon",
-		Name = "Common-",
+		Name = L.OPTIONS_AUDIT_FILTER_COMMON,
 		Script = function() return Quality <= COMMON end
 	},
 	{
 		Id = "epic",
-		Name = "Epic",
+		Name = L.OPTIONS_AUDIT_FILTER_EPIC,
 		Script = function() return Quality == EPIC end
 	},
 	{
 		Id = "uncommon",
-		Name = "Uncommon",
+		Name = L.OPTIONS_AUDIT_FILTER_UNCOMMON,
 		Script = function() return Quality == UNCOMMON end
 	},
 	{
 		Id = "rare",
-		Name = "Rare",
+		Name = L.OPTIONS_AUDIT_FILTER_RARE,
 		Script = function() return Quality == RARE end
 	},
 	{
 		Id = "legandandbetter",
-		Name = "Legendary+",
+		Name = L.OPTIONS_AUDIT_FILTER_LEGENDARY,
 		Script = function() return Quality >= LEGANDARY end
 	},	
+	{
+		Id = "extension",
+		Name = L.OPTIONS_AUDIT_FILTER_EXTENSION,
+		Script = function() return (RuleDefinition and RuleDefinition.Extension) end
+	}
 }
 
 function AuditItem:OnCreated()
@@ -70,6 +76,71 @@ function AuditItem:OnModelChanged(model)
 	end
 end
 
+function AuditItem:GetRuleColor(model)
+	if (model.RuleDefinition) then
+		if (model.RuleDefinition.Extension) then
+			return HEIRLOOM_BLUE_COLOR
+		elseif (model.RuleDefinition.Custom) then
+			return RARE_BLUE_COLOR
+		end
+
+		return ARTIFACT_GOLD_COLOR
+	end
+
+	-- No longer exists
+	return RED_FONT_COLOR
+end
+
+function AuditItem:OnEnter()
+	if (not self:IsItemEmpty()) then
+		local model = self:GetModel()
+		local profileId, profile = Addon:GetProfileInfoFromHistoryId(model.Profile)
+		local ruleColor = self:GetRuleColor(model)
+		local labelColor = NORMAL_FONT_COLOR
+
+		GameTooltip:SetOwner(self, "ANCHOR_NONE")
+		GameTooltip:ClearAllPoints()
+		GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+		GameTooltip:SetHyperlink(self:GetItemLink())
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(L.OPTIONS_VENDOR_AUDIT)
+		GameTooltip:AddDoubleLine("  " .. L.OPTIONS_AUDIT_TT_SOLD, date(L.OPTIONS_AUDIT_TT_DATESTR, model.TimeStamp), 
+			labelColor.r, labelColor.g, labelColor.b)
+		GameTooltip:AddDoubleLine("  " .. L.OPTIONS_AUDIT_TT_PROFILE, profile, 
+			labelColor.r, labelColor.g, labelColor.b,
+			HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+		--@debug@
+		GameTooltip:AddDoubleLine("  ProfileId:", profileId, 
+			labelColor.r, labelColor.g, labelColor.b,
+			HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+		--@end-debug@
+		GameTooltip:AddDoubleLine("  " .. L.OPTIONS_AUDIT_TT_RULE, model.RuleName, 
+			labelColor.r, labelColor.g, labelColor.b,
+			ruleColor.r, ruleColor.g, ruleColor.b)
+		--@debug@
+		GameTooltip:AddDoubleLine("  RuleId:", model.RuleId, 
+			labelColor.r, labelColor.g, labelColor.b,
+			ruleColor.r, ruleColor.g, ruleColor.b)
+
+		--@end-debug@
+		GameTooltip:Show()
+	end	
+end
+
+function AuditItem:OnLeave()
+	if (GameTooltip:GetOwner() == self) then
+		GameTooltip:Hide()
+	end
+end
+
+function AuditItem:OnUpdate()
+	if (self:IsMouseOver()) then
+		self.Hover:Show()
+	else
+		self.Hover:Hide()
+	end
+end
+
 function Audit:GetItems()
 	if (self.items) then
 		return self.items
@@ -85,14 +156,22 @@ function Audit:GetItems()
 	end
 
 	for _, item in ipairs(Addon:GetCharacterHistory()) do
+		local ruleId, ruleName = Addon:GetRuleInfoFromHistoryId(item.Rule)
 		item.Quality = C_Item.GetItemQualityByID(item.Id) or 0
 		item.SearchKey = string.lower(C_Item.GetItemNameByID(item.Id) or "")
-		if (self.filterEngine:Evaluate(item)) then
+		item.RuleDefinition = Addon.Rules.GetDefinition(ruleId, nil, true)
+		item.RuleId = ruleId
+		item.RuleName = ruleName
+		if ((self.enabledFilters == 0) or self.filterEngine:Evaluate(item)) then
 			if (not search or item.SearchKey:find(search)) then
 				table.insert(items, item)
 			end
 		end
 	end
+
+	table.sort(items, function(a, b)
+		return a.TimeStamp > b.TimeStamp
+	end)
 
 	self.items = items;
 	return items;	
@@ -118,11 +197,13 @@ function Audit:OnLoad()
 	for _, rule in ipairs(FILTER_RULES) do
 		table.insert(filters, {
 			Text = rule.Name,
-			Checked = (rule.Id == "sold"),
+			Checked = false,
 			Rule = rule
 		})
 	end
 
+	filters[1].Checked = true
+	filters[2].Checked = true
 	self.filterItems = filters;
 	self.Filters:SetItems(filters);
 	self:SetFilterText()
@@ -153,7 +234,7 @@ end
 function Audit:SetFilterText()
 	local names = {}
 	for _, filter in pairs(self.filterItems) do
-		if (filter.Checked) then
+		if (filter.Checked) then 
 			table.insert(names, filter.Text)
 		end
 	end
@@ -161,20 +242,23 @@ function Audit:SetFilterText()
 	if (table.getn(names) ~= 0) then
 		self.Filters:SetText(table.concat(names, ", "))
 	else
-		self.Filters:SetText("<none>")
+		self.Filters:SetText(L.OPTIONS_AUDIT_FILTER_ALL)
 	end
 end
 
 function Audit:SetFilters()
 	local engine = self.filterEngine
+	local enabled = 0
 	engine:ClearRules()
 	for _, filter in pairs(self.filterItems) do
 		if (filter.Checked) then 
 			engine:AddRule(MATCH_CATEGORY, filter.Rule)
+			enabled = enabled + 1
 		end
 	end
 
 	self.items = nil
+	self.enabledFilters = enabled
 	self.History:Update()
 end
 
