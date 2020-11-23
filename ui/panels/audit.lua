@@ -83,7 +83,6 @@ function AuditItem:GetRuleColor(model)
 		elseif (model.RuleDefinition.Custom) then
 			return RARE_BLUE_COLOR
 		end
-
 		return ARTIFACT_GOLD_COLOR
 	end
 
@@ -217,6 +216,9 @@ function Audit:OnLoad()
 	end
 
 	self:SetScript("OnShow", function()
+			Addon.OnHistoryChanged:Add(function()
+				self:OnHistoryChanged()
+			end)
 			self:SetFilterText()
 			self:SetFilters()
 
@@ -259,7 +261,12 @@ function Audit:SetFilters()
 
 	self.items = nil
 	self.enabledFilters = enabled
-	self.History:Update()
+	self.History:FlagForUpdate()
+end
+
+function Audit:OnHistoryChanged()
+	self.items = nil
+	self.History:FlagForUpdate()
 end
 
 Addon.Panels = Addon.Panels or {}
