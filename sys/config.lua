@@ -64,7 +64,7 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_SellThrottle] = 1,
     [Addon.c_Config_Tooltip] = true,
     [Addon.c_Config_SellLimit] = true,
-    [Addon.c_Config_Tooltip_Rule] = false,
+    [Addon.c_Config_Tooltip_Rule] = true,
     [Addon.c_Config_MaxSellItems] = false,
 }
 

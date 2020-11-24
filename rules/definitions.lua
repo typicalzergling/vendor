@@ -289,10 +289,19 @@ Rules.SystemRules =
         Type = KEEP_RULE,
         Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
         Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
-        ScriptText = "IsEquipment and Quality == 2",
+        ScriptText = "IsEquipment and Quality == 2 and (Level >= {itemlevel})",
         Script = function()
-                return IsEquipment and (Quality == 2);
+                return IsEquipment and (Quality == 2) and (Level >= RULE_PARAMS.ITEMLEVEL);
             end,
+        Params = 
+            {
+                {
+                    Type = "numeric",
+                    Key = "ITEMLEVEL",
+                    Name = L.RULEUI_KEEP_UNCOMMON_INFO,
+                    Default = 0,
+                }
+            },
         Order = 1400,
     },
 
@@ -302,10 +311,19 @@ Rules.SystemRules =
         Type = KEEP_RULE,
         Name = L["SYSRULE_KEEP_RAREGEAR"],
         Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
-        ScriptText = "IsEquipment and Quality == 3",
+        ScriptText = "IsEquipment and Quality == 3 and (Level >= {itemlevel})",
         Script = function()
-                return IsEquipment and (Quality == 3);
+                return IsEquipment and (Quality == 3) and (Level >= RULE_PARAMS.ITEMLEVEL);
             end,
+        Params = 
+            {
+                {
+                    Type = "numeric",
+                    Key = "ITEMLEVEL",
+                    Name = L.RULEUI_KEEP_RARE_INFO,
+                    Default = 0,
+                }
+            },
         Order = 1500,
     },
 
@@ -315,10 +333,19 @@ Rules.SystemRules =
         Type = KEEP_RULE,
         Name = L["SYSRULE_KEEP_EPICGEAR"],
         Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
-        ScriptText = "IsEquipment and Quality == 4",
+        ScriptText = "IsEquipment and Quality == 4 and (Level >= {itemlevel})",
         Script = function()
-                return IsEquipment and (Quality == 4);
+                return IsEquipment and (Quality == 4) and (Level >= RULE_PARAMS.ITEMLEVEL);
             end,
+        Params = 
+            {
+                {
+                    Type = "numeric",
+                    Key = "ITEMLEVEL",
+                    Name = L.RULEUI_KEEP_EPIC_INFO,
+                    Default = 0,
+                }
+            },
         Order = 1600,
     },
 
