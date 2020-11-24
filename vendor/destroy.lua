@@ -34,7 +34,7 @@ function Addon:DestroyItems()
             -- So we only try to sell if Result is exactly 1.
             if result == 2 then
                 currentDestroyedItem = item.Link
-                self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem))
+                self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem), tostring(rule))
                 if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                     PickupContainerItem(bag, slot)
                     DeleteCursorItem()

@@ -47,7 +47,7 @@ BINDING_DESC_VENDORRULES = "Toggles the visibility of the main Vendor Rules menu
 -- Merchant
 MERCHANT_REPAIR_FROM_GUILD_BANK = "Repaired all equipment from the guild bank for %s",
 MERCHANT_REPAIR_FROM_SELF = "Repaired all equipment for %s",
-MERCHANT_SELLING_ITEM = "Sold %s for %s",
+MERCHANT_SELLING_ITEM = "Sold %s for %s (%s)",
 MERCHANT_WITHDRAW_ITEM = "Withdrawing %s to sell.",
 MERCHANT_SOLD_ITEMS = "Sold %s items for %s",
 MERCHANT_WITHDRAWN_ITEMS = "Withdrew %s items.",
@@ -56,7 +56,7 @@ MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL = "Auto-accepted confirmation of making
 
 -- Destroy
 ITEM_DESTROY_SUMMARY = "Destroyed %s items.",
-ITEM_DESTROY_CURRENT = "Destroying %s",
+ITEM_DESTROY_CURRENT = "Destroying %s (%s)",
 ITEM_DESTROY_CANCELLED_CURSORITEM = "Cancelling item destroy due to an item being held.",
 ITEM_DESTROY_STARTED = "Starting destruction of items matching Destroy rules or list...",
 
