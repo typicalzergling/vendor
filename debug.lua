@@ -154,6 +154,7 @@ end
 -- Beyond this point are debug related functions that are not packaged.
 function Addon:DumpTooltipItemProperties()
     local props = self:GetItemPropertiesFromTooltip()
+    if not props then return end
     self:Print("Properties for "..props["Link"])
 
     -- Print non-derived properties first.
