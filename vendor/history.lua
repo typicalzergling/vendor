@@ -5,7 +5,6 @@ local debugp = function (...) Addon:Debug("history", ...) end
 local VERSION = 1
 local historyVariable = Addon.SavedVariable:new("History")
 
-print("Addon.CreateEvent", Addon.CreateEvent)
 Addon.OnHistoryChanged = Addon.CreateEvent("History.OnChanged")
 
 -- Called whenever a history entry is added, or history is pruned / cleared.
