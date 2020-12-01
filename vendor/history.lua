@@ -4,7 +4,6 @@ local debugp = function (...) Addon:Debug("history", ...) end
 
 local VERSION = 1
 local historyVariable = Addon.SavedVariable:new("History")
-
 Addon.OnHistoryChanged = Addon.CreateEvent("History.OnChanged")
 
 -- Called whenever a history entry is added, or history is pruned / cleared.
@@ -38,6 +37,7 @@ local function getOrCreateCharacterHistory()
     local history = historyVariable:GetOrCreate()
     if not history.Characters then history.Characters = {} end
     local chars = history.Characters
+    if not Addon:GetCharacterFullName() then return nil end
     if not chars[Addon:GetCharacterFullName()] then
         chars[Addon:GetCharacterFullName()] = {}
         chars[Addon:GetCharacterFullName()].Entries = {}
@@ -49,6 +49,7 @@ end
 -- Returns the table of entries and the time window covering those entries.
 function Addon:GetCharacterHistory()
     local charHistory = getOrCreateCharacterHistory()
+    if not charHistory then return nil end
     return charHistory.Entries, charHistory.Window
 end
 
@@ -133,14 +134,26 @@ function Addon:AddEntryToHistory(link, action, rule, ruleid, count, value)
     Addon.Invoke(Addon, "HistoryUpdated")
 end
 
+local currentChar = nil
 function Addon:PruneHistory(hours, character)
     local seconds = hours * 3600
 
     local history = nil
-    if character and character ~= Addon:GetCharacterFullName() then
+    if not currentChar then
+        local status, err = xpcall(
+            function()
+                currentChar = Addon:GetCharacterFullName()
+            end,
+            CallErrorHandler)
+        if status then
+            debugp("Error getting Character Full Name, skipping pruning of this character.")
+            return 0
+        end
+    end
+    if character and currentChar ~= character then
         history = historyVariable:GetOrCreate().Characters[character]
     else
-        character = Addon:GetCharacterFullName()
+        character = currentChar
         history = getOrCreateCharacterHistory()
     end
     assert(history, "Error loading history for character "..tostring(character))
@@ -278,7 +291,7 @@ function Addon:History_Cmd(arg1, arg2, arg3)
             Addon:ClearAllHistory()
             return
         else
-            Addon:Print(L.CMD_CLEAR_CHAR_HISTORY, Addon:GetCharacterFullName())
+            Addon:Print(L.CMD_CLEAR_CHAR_HISTORY, Addon:GetCharacterFullName() or "")
             Addon:ClearCharacterHistory()
             return
         end
@@ -296,7 +309,7 @@ function Addon:History_Cmd(arg1, arg2, arg3)
             Addon:Print(L.CMD_PRUNE_SUMMARY, tostring(count))
             return
         else
-            Addon:Print(L.CMD_PRUNE_CHAR_HISTORY, Addon:GetCharacterFullName(), arg2)
+            Addon:Print(L.CMD_PRUNE_CHAR_HISTORY, Addon:GetCharacterFullName() or "", arg2)
             local count = Addon:PruneHistory(tonumber(arg2))
             Addon:Print(L.CMD_PRUNE_SUMMARY, tostring(count))
             return
