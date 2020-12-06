@@ -3,7 +3,7 @@
 ## Dependencies: Vendor, ArkInventoryRules
 #@end-retail@
 #@non-retail@
-# ## Interface: 11305
+# ## Interface: 11306
 # ## Dependencies: Vendor, ArkInventoryRules
 #@end-non-retail@
 ## Title: Vendor_ArkInventory
