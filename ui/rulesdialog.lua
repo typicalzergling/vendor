@@ -26,7 +26,6 @@ function RulesDialog.OnLoad(self)
 	-- For classic disable the scrap tab
 	if (Addon.IsClassic) then
 		local scrapTab = self.ScrapTab;
-		Addon:Print("Disabling ScrapTab: " .. scrapTab:GetName());
 		if (scrapTab) then
 			scrapTab:Disable();
 			scrapTab:Hide();
