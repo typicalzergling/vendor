@@ -103,7 +103,7 @@ function Addon:GetItemProperties(arg1, arg2)
     end
 
     -- No link means no item.
-    if not link or not location then return nil end
+    if not link or not location or not C_Item.DoesItemExist(location) then return nil end
 
     -- Guid is how we uniquely identify items.
     local guid = C_Item.GetItemGUID(location)

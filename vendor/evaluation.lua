@@ -59,7 +59,7 @@ function Addon:EvaluateItem(item)
     end
 
     -- Add item to cache
-    Addon:AddResultToCache(item.Link, retval, ruleid, rule)
+    Addon:AddResultToCache(item.GUID, retval, ruleid, rule)
     
     return retval, ruleid, rule
 end
