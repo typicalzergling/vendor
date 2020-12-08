@@ -8,7 +8,9 @@ Addon.IsDebug = true
 -- Ensure the debugging variable.
 local function debugEnsureVariable()
     _G[DEBUG_VARIABLE] = _G[DEBUG_VARIABLE] or {
-        channel={}, 
+        channel={
+            default = true,
+        }, 
         settings={},
     };
 end
@@ -93,15 +95,47 @@ end
 
 -- Checks if a channel enabled
 function Addon:IsDebugChannelEnabled(channel)
-    debugEnsureVariable()
-    local name = string.lower(channel);
-    return (_G[DEBUG_VARIABLE].channel[name]) == true;
+    if (Addon.IsDebug) then
+        debugEnsureVariable()
+        local name = string.lower(channel);
+        return (_G[DEBUG_VARIABLE].channel[name]) == true;
+    end
+    return false
 end
 
 -- Writes a debug message for a specific channmel to the defualt chat frame
 function Addon:Debug(channel, msg, ...)
-    local name = string.upper(channel);
+    local name = string.upper(channel or "default");
     if (Addon:IsDebugChannelEnabled(name)) then
         self:Print("%s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
+    end
+end
+
+-- Outputs the contents of a table in debug
+function Addon:DebugForEach(channel, t, ...)
+    if Addon.IsDebug then
+        local c = channel or "default"
+        local msg = ""
+        local args = { ... }
+
+        Addon:Debug(c, "+ Start ForEach: %s", tostring(t))
+        if (table.getn(args) ~= 0) then
+            for _, o in ipairs({...}) do
+                if (string.len(msg) ~= 0) then
+                    msg = msg .. " "
+                end
+                msg = msg .. tostring(o)
+            end
+        end
+
+        if (t and (type(t) == "table")) then
+            for k, v in pairs(t) do
+                Addon:Debug(c, "|    %s = %s %s", tostring(k), tostring(v), msg)
+            end
+        else
+            Addon:Debug(c, "|    " .. DISABLED_FONT_COLOR:WrapTextInColorCode("nil or !table") .. " %s", msg)
+        end
+        Addon:Debug(c, "+ End ForEach: %s", tostring(t))
+
     end
 end

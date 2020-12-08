@@ -5,7 +5,6 @@ function RulesDialog:OnLoad()
     Mixin(self, Addon.Controls.TabFrameMixin)
     self:SetClampedToScreen(true)    
     self:RegisterForDrag("LeftButton")
-
     table.insert(UISpecialFrames, self:GetName())
     self:InitializeTabs(self.Tabs, self.Panels, 1)
 end

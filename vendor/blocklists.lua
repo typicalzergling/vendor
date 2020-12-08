@@ -81,7 +81,6 @@ function BlockList:Add(itemId)
         return false
     end
 
-    table.forEach(self, print, "BlockList:Add")
     local list = self.get()
     if (addToList(list, itemId)) then
         Addon:Debug("blocklists", "Added %s to '%s' list [%s]", itemId, self.listType. self.listId);
@@ -176,7 +175,6 @@ function SystemBlockList:GetOthers()
 end
 
 function SystemBlockList:Add(itemId)
-    table.forEach(self, print, "SystemBlockList:Add")
     -- Validate ItemId
     if not Addon:IsItemIdValid(itemId) then
         Addon:Debug("blocklists", "Invalid Item ID: %s", tostring(itemId))
