@@ -38,17 +38,7 @@ function ItemList:SetContents(itemList)
 	if (self:IsReadOnly()) then
 		self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";
 	end
-
-	--if (table.getn(self.contents) ~= 0) then
-		--table.sort(self.contents, 
-		--	function(a, b) 
-		--		print("a, b", a, b)
-		--		if (not a or not b) then
-		--			return nil;
-		--		end				
-		--		return a < b; 
-		--	end);
-	--end
+	
 	self.List:ResetOffset();
 	self.List:Update();
 end
