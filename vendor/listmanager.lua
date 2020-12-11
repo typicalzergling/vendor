@@ -39,7 +39,6 @@ end
 function CustomListManager:UpdateListContents(listId, items)
 	Addon:Debug("test", "updaing list contents %s", listId)
 	listId = GetListId(listId)	
-	print("--> listId", listId)
 	local list = savedLists:Get(listId)
 	if (not list) then
 		return false

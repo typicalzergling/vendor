@@ -127,7 +127,6 @@ function ListsPanel:OnLoad()
             local lists = table.copy(SYSTEM_LISTS)
             
             for _, customList in ipairs(Addon:GetListManager():GetLists()) do
-                print("-=-> custom list")
                 table.insert(lists, {
                     id = customList.Id,
                     tooltip = customList.Description,
@@ -137,7 +136,6 @@ function ListsPanel:OnLoad()
             end            
 
             for _, extList in ipairs(Addon:GetExtensionManger():GetLists()) do
-                print("-->ext list")
                 table.insert(lists, {
                     id = extList.Id,
                     tooltip = extList.Description,
