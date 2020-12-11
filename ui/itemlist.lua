@@ -21,6 +21,15 @@ function ItemList:IsReadOnly()
 	return (readOnly == true);
 end
 
+-- Toggles the read-only state
+function ItemList:SetReadOnly(readonly)
+	local isReadOnly = (readonly == true)
+	if (self.isReadOnly ~= isReadOnly)	then
+		self.isReadOnly = (readonly == true)
+		self.List:Update()
+	end
+end
+
 -- Sets the list of items to display, this is either an array of ItemLocations,
 -- a list of item links, or numeric list of item ids.
 function ItemList:SetContents(itemList)

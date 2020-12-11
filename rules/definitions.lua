@@ -49,7 +49,9 @@ Rules.SystemRules =
         Name = L["SYSRULE_SELL_ALWAYSSELL"],
         Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
         ScriptText = "IsAlwaysSellItem()",
-        Script = function() return IsAlwaysSellItem() end,
+        Script = function() 
+            return IsInList(SELL_LIST)
+        end,
         Locked = true,
         Order = -2000,
     },
@@ -206,7 +208,9 @@ Rules.SystemRules =
         Name = L["SYSRULE_KEEP_NEVERSELL"],
         Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
         ScriptText = "IsNeverSellItem()",
-        Script = function() return IsNeverSellItem() end,
+        Script = function() 
+            return IsInList(KEEP_LIST)
+        end,
         Locked = true,
         Order = -3000,
     },
@@ -374,7 +378,9 @@ Rules.SystemRules =
         Name = L["SYSRULE_DESTROYLIST"],
         Description = L["SYSRULE_DESTROYLIST_DESC"],
         ScriptText = "IsInList(\"Destroy\")",
-        Script = function() return IsDestroyItem() end,
+        Script = function() 
+            return IsInList(DESTROY_LIST) 
+        end,
         Locked = true,
         Order = -1000,
     },
