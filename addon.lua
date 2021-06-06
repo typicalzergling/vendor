@@ -14,7 +14,8 @@ BINDING_DESC_VENDORRUNAUTOSELL = L["BINDING_DESC_VENDORRUNAUTOSELL"]
 BINDING_NAME_VENDORRULES = L["BINDING_NAME_VENDORRULES"]
 BINDING_DESC_VENDORRULES = L["BINDING_DESC_VENDORRULES"]
 
-Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC);
+-- Thanks to Joshua Shearer for identify the fix here!
+Addon.IsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) or (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 
 -- This is the first event fired after Addon is completely ready to be loaded.
 -- This is one-time initialization and setup.
