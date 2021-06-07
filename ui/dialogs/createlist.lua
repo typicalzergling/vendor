@@ -3,7 +3,11 @@ local locale = Addon:GetLocale()
 local CreateListDialog = {}
 
 function CreateListDialog:OnLoad()
-	Addon:Debug("default", "CreateListDialog:OnLoad")
+	Addon:Debug("listdialog", "CreateListDialog:OnLoad")
+	
+    self:SetClampedToScreen(true)    
+    self:RegisterForDrag("LeftButton")
+    table.insert(UISpecialFrames, self:GetName())	
 end
 
 function CreateListDialog:Create()

@@ -121,6 +121,7 @@ function ListsPanel:OnLoad()
     self.Lists.ItemTemplate = "Vendor_ItemLists_ListItem";
     self.Lists.ItemClass = ListsItem;
     self.Items.isReadOnly = false;
+	self.EditList:Disable();
 
     self.Lists.GetItems = function()
         if (not self.lists) then

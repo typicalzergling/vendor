@@ -376,6 +376,12 @@ RULEHELP_EXAMPLES = "Examples:",
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
+-- List Pane / Dialog
+EDIT_LIST = "Edit",
+NEW_LIST = "New",
+LISTDIALOG_CREATE_CAPTION = "New List",
+LISTDIALOG_EDIT_CAPTION = "Edit List",
+
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",
 ITEMLIST_INVALID_ITEM = "Invalid Item",

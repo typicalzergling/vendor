@@ -1,15 +1,111 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="dialogs/createlist.lua"/>
 	
-	<Frame name="VendorListDialog" inherits="Vendor_Dialog_Template" hidden="true">
-		<Size x="400" y="250"/>
+	<Frame name="VendorListDialog" inherits="Vendor_Dialog_Template" hidden="true" parent="UIParent">
+		<Size x="556" y="400"/>
 		<KeyValues>
+			<KeyValue key="CaptionKey" value="LISTDIALOG_CREATE_CAPTION" type="string"/>
 			<KeyValue key="Implementation" value="CreateList" type="string"/>
 			<KeyValue key="Namespace" value="Dialogs" type="string"/>
 		</KeyValues>
 		<Anchors>
 			<Anchor point="CENTER"/>
-		</Anchors>
-	</Frame>
+		</Anchors>		
+        <Scripts>
+            <OnDragStart>self:StartMoving()</OnDragStart>
+            <OnDragStop>self:StopMovingOrSizing()</OnDragStop>
+        </Scripts>
+		<Frames>
+            <!-- Buttons -->
+            <Button inherits="UIPanelButtonTemplate" text="CANCEL" parentKey="CancelBtn">
+                <Size x="124" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-24" y="16"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>self:GetParent():Hide()</OnClick>
+                </Scripts>
+            </Button>
 
+            <Button inherits="UIPanelButtonTemplate" text="SAVE" parentKey="SaveBtn" hidden="true">
+                <Size x="124" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CanelBtn" relativePoint="BOTTOMLEFT" x="-8"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick></OnClick>
+                </Scripts>
+            </Button>	
+
+            <Button inherits="UIPanelButtonTemplate" text="CREATE" parentKey="CreateBtn">
+                <Size x="124" y="22"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CancelBtn" relativePoint="BOTTOMLEFT" x="-8"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick></OnClick>
+                </Scripts>
+            </Button>
+
+			<!-- List Properties name, description, etc. -->
+			<Frame parentKey="Name" inherits="Vendor_Edit">
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="EDITLIST_NAME_HELPTEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITLIST_NAME_LABEL" type="string"/>
+				</KeyValues>
+				<Size x="1" y="30"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="24" y="-48" />
+					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="250"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="Description"  inherits="Vendor_TextArea">
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="EDITLIST_DESCR_HELPTEXT" type="string"/>
+					<KeyValue key="LabelKey" value="EDITLIST_DESCR_LABEL" type="string"/>
+				</KeyValues>
+				<Size x="1" y="100"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Name" x="0" y="-24"/>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.Name" x="0" y="-24"/>
+				</Anchors>
+			</Frame>
+
+			<!-- list and count -->
+
+			<Frame parentKey="Items" inherits="Vendor_ItemList">
+				<Size x="176" y="20"/>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString  parentKey="Label" inherits="GameFontNormal" justifyH="LEFT" justifyV="BOTTOM">
+							<KeyValues>
+								<KeyValue key="LocKey" value="ITEMS" type="string"/>
+							</KeyValues>
+							<Size x="20" y="14"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT"  relativePoint="TOPLEFT" x="2" y="4"/>
+								<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-2" y="4"/>
+							</Anchors>
+						</FontString>
+						<FontString  parentKey="Count" inherits="GameFontHighlight" justifyH="RIGHT" justifyV="BOTTOM">
+							<KeyValues>
+								<KeyValue key="LocKey" value="ZERO" type="string"/>
+							</KeyValues>
+							<Size x="20" y="14"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.Label"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Label"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>				
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="TOPRIGHT" x="12" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.CancelBtn" relativePoint="TOPRIGHT" y="8" x="0"/>
+				</Anchors>
+			</Frame>
+
+		</Frames>
+	</Frame>
 </Ui>

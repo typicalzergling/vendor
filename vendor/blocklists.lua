@@ -404,7 +404,7 @@ function Addon:GetList(listType)
     end
 
     if (type(listType) == "string") then        
-                -- Check for system list
+        -- Check for system list
         for name, value in pairs(ListType) do
             if (isSystemListType(value) and (listType == string.lower(value))) then
                 return SystemBlockList:New(value)
@@ -424,7 +424,7 @@ function Addon:GetList(listType)
         end
     end
 
-    Addon:Debug("lists", "There is no '%s' list", listType or "");    
+    Addon:Debug("lists", "There is no '%s' list", listType or "");
     return nil
 end
 

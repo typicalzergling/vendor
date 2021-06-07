@@ -112,7 +112,7 @@ function Addon:GetExtensionManger()
 	}, {
 		Name = "Ext. Test",
 		Description = "Tooltip - Text",
-		Items = function() return { 50349, 33470 } end,
+		Items = function() return { 50349, 33470, 152494 } end,
 		Id = "test.list",
 	})
 	end
