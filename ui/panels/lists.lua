@@ -259,15 +259,15 @@ function ListsPanel:OnSelectionChanged()
 
     if (not list) then
         -- List is empty
+        self.Items:SetReadOnly(true)
         self.Items:SetContents();
         self.ItemCount:SetFormattedText("(%d)", 0);
-        self.Items:SetReadOnly(true)
     else
         local contents = list:GetItems();
         local count = table.getn(contents);
         
-        self.Items:SetContents(contents);
         self.Items:SetReadOnly(list:IsReadOnly())
+        self.Items:SetContents(contents);
         self.ItemCount:SetFormattedText("(%d)", count)
     end
 end

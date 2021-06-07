@@ -23,7 +23,8 @@
     <Include file="panels/iteminfo.xml"/>
     <Include file="panels/rulehelp.xml"/>
     <Include file="panels/audit.xml"/>
-
+    
+    <Include file="dialogs/createlist.xml"/>
     <Include file="rulesdialog.xml"/>
     <Include file="editruledialog.xml"/>
     <Script file="tooltip.lua"/>
