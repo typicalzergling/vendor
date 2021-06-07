@@ -1,0 +1,15 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="dialogs/createlist.lua"/>
+	
+	<Frame name="VendorListDialog" inherits="Vendor_Dialog_Template" hidden="true">
+		<Size x="400" y="250"/>
+		<KeyValues>
+			<KeyValue key="Implementation" value="CreateList" type="string"/>
+			<KeyValue key="Namespace" value="Dialogs" type="string"/>
+		</KeyValues>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+	</Frame>
+
+</Ui>

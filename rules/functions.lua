@@ -1,5 +1,6 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
+local ListType = Addon.ListType
 
 Addon.RuleFunctions = {}
 Addon.RuleFunctions.CURRENT_EXPANSION = LE_EXPANSION_SHADOWLANDS;
@@ -14,6 +15,9 @@ Addon.RuleFunctions.LEGENDARY = 5;
 Addon.RuleFunctions.ARTIFACT = 6;
 Addon.RuleFunctions.HEIRLOOM = 7;
 Addon.RuleFunctions.TOKEN = 8;
+Addon.RuleFunctions.KEEP_LIST = ListType.KEEP
+Addon.RuleFunctions.SELL_LIST = ListType.SELL
+Addon.RuleFunctions.DESTROY_LIST = ListType.DESTROY
 
 --*****************************************************************************
 -- Helper function which given a value, will search the map for the value
@@ -114,14 +118,16 @@ end
 
 --*****************************************************************************
 -- Rule function which checks if the item is in a particular list.
---[[ No worky just yet
+--*****************************************************************************
 function Addon.RuleFunctions.IsInList(list)
-    if not type(list) == "string" then return false end
-    if Addon.IsItemInList(Id, list) then
-        return true
+    local list = Addon:GetList(list)
+    if (not list) then
+        Addon:Debug("rules", "Unable to locate list '%s' for IsInList check")
+        return false
     end
+
+    return list:Contains(Id)
 end
-]]
 
 --*****************************************************************************
 -- Rule function which returns the level of the player.

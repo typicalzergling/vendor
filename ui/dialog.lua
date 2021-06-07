@@ -2,13 +2,6 @@ local _, Addon = ...;
 local Dialog = {};
 local locale = Addon:GetLocale();
 
-local function invoke(object, method, ...)
-	local fn = object[method];
-	if (fn and (type(fn) == "function")) then
-		xpcall(fn, CallErrorHandler, ...);
-	end
-end
-
 -- Locate and object/mixin from the addon.
 local function findObject(name, context)
 	local container = Addon;
@@ -21,11 +14,14 @@ end
 -- Simple helper function for laoding an implementation into the frame
 Addon.LoadImplementation = function(frame, context, impl)
 	implementation = impl or frame.Implementation;
+	if (type(context) ~= "string") then
+		context = frame.Namespace
+	end
 	if (implementation and (type(implementation) == "string")) then
 		local mixin = findObject(implementation, context);
-		assert(mixin and (type(mixin) == "table"), "Expected implementation to be a valid table");
+		assert(mixin and (type(mixin) == "table"), string.format("Expected implementation to be a valid table: '%s/%s'", context or "", impl or "<unknown>"))
 		Mixin(frame, mixin);
-		invoke(mixin, "OnLoad", frame);
+		Addon.Invoke(frame, "OnLoad", frame);
 	end
 end;
 
@@ -35,27 +31,45 @@ function Dialog:OnLoad()
 
 	-- Set our caption if we have one
 	local caption = self.CaptionKey;
-	if (caption and (type(caption) == "string")) then
+	if (type(caption) == "string") then
 		self.header:Setup(locale[caption]);
 	end
 
-	Addon.LocalizeFrame(self);
 	Addon.LoadImplementation(self);
+	Addon.LocalizeFrame(self);
 
 	self:SetScript("OnShow", function() 
 		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN); 
-		invoke(self, "OnShow", self);
+		Addon.Invoke(self, "OnShow", self);
 	end);
 
 	self:SetScript("OnHide", function() 
 		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE); 
-		invoke(self, "OnHide", self);
+		Addon.Invoke(self, "OnHide", self);
 	end);
+
+	if (type(self.OnUpdate) == "function") then
+		self:SetScript("OnUpdate", self.OnUpdate)
+	end
+
+	if (type(self.OnEvent) == "function") then
+		self:SetScript("OnEvent", self.OnEvent)
+	end
+
+	if (type(self.Events) == "table") then
+		for _, evt in ipairs(self.Events) do
+			self:RegisterEvent(evt)
+		end
+	end
 end
 
 -- Changes the caption of the dialog.
 function Dialog:SetCaption(caption)
-	self.header:Setup(caption);
+	if (type(locale[caption]) == "string") then
+		self.header:Setup(locale[caption])
+	else
+		self.header:Setup(caption or "");
+	end
 end
 
 -- Toggle the visibility of this dialog

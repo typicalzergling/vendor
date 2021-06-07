@@ -35,15 +35,19 @@ end
 
 local function getOrCreateCharacterHistory()
     local history = historyVariable:GetOrCreate()
+    local key = Addon:GetCharacterFullName()
+    if (not key) then
+        return {}
+    end
     if not history.Characters then history.Characters = {} end
     local chars = history.Characters
     if not Addon:GetCharacterFullName() then return nil end
-    if not chars[Addon:GetCharacterFullName()] then
-        chars[Addon:GetCharacterFullName()] = {}
-        chars[Addon:GetCharacterFullName()].Entries = {}
-        chars[Addon:GetCharacterFullName()].Window = time()
+    if not chars[key] then
+        chars[key] = {}
+        chars[key].Entries = {}
+        chars[key].Window = time()
     end
-    return chars[Addon:GetCharacterFullName()]
+    return chars[key]
 end
 
 -- Returns the table of entries and the time window covering those entries.
