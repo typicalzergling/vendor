@@ -13,7 +13,7 @@ Addon.button_label = L["TITAN_BUTTON_LABEL"]
 Addon.version = GetAddOnMetadata("Vendor", "Version")
 Addon.author = GetAddOnMetadata(AddonName, "Author")
 
-Addon.IsClassic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC)
+Addon.IsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) or (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 
 function Addon:Load()
     self.registry =

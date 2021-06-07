@@ -152,6 +152,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsUsable = false
     item.IsEquipment = false
     item.IsSoulbound = false
+    item.IsBound = false
     item.IsBindOnEquip = false
     item.IsBindOnUse = false
     item.IsUnknownAppearance = false
@@ -190,7 +191,8 @@ function Addon:GetItemProperties(arg1, arg2)
 
     -- Get soulbound information
     if C_Item.IsBound(location) then
-        item.IsSoulbound = true
+        item.IsSoulbound = true         -- This actually also covers account bound.
+        item.IsBound = true             -- IsBound also captures AccountBound status but is equivalent to Soulbound for now.
     else
         if item.BindType == 2 then
             item.IsBindOnEquip = true
