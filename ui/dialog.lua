@@ -4,7 +4,6 @@ local locale = Addon:GetLocale();
 
 -- Locate and object/mixin from the addon.
 local function findObject(name, context)
-	print("findObject()", name, context)
 	local container = Addon;
 	if (type(context) == "string") then
 		container = Addon[context] or {};
