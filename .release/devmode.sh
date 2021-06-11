@@ -7,56 +7,39 @@
 
 # Load paths. We assume paths are in the .env file and that this is being executed from the addon's .release folder.
 . ".env"
-addons_folder="$WOW_PATH\_retail_\Interface\Addons\\"
-addon_repo=".\..\\"
-addon_ext="$addon_repo""Extensions\\"
-addon_path="$addons_folder$ADDON_NAME"
 
-# Rulepack
-addon_rulepack="$ADDON_NAME""_RulePack"
-addon_path_rulepack="$addons_folder$addon_rulepack"
-addon_repo_rulepack="$addon_ext$addon_rulepack"
+all_flavors="_retail_ _ptr_ _classic_"
+all_extensions="_RulePack _Ark _AdiBags _TSM _Pawn _Titan"
 
-# Ark
-addon_ark="$ADDON_NAME""_Ark"
-addon_path_ark="$addons_folder$addon_ark"
-addon_repo_ark="$addon_ext$addon_ark"
+flavors=$all_flavors
 
-# AdiBags
-addon_adi="$ADDON_NAME""_AdiBags"
-addon_path_adi="$addons_folder$addon_adi"
-addon_repo_adi="$addon_ext$addon_adi"
+for root in $flavors
+do
+    echo ""
+    echo "======================"
+    echo "Linking for $root"
+    echo "======================"
+    addons_folder="$WOW_PATH""\\$root\Interface\Addons\\"    
+    echo "Addon Path: "$addons_folder
 
-# TSM
-addon_tsm="$ADDON_NAME""_TSM"
-addon_path_tsm="$addons_folder$addon_tsm"
-addon_repo_tsm="$addon_ext$addon_tsm"
+    addon_repo=".\..\\"
+    addon_path="$addons_folder$ADDON_NAME"
 
-# Pawn
-addon_pawn="$ADDON_NAME""_Pawn"
-addon_path_pawn="$addons_folder$addon_pawn"
-addon_repo_pawn="$addon_ext$addon_pawn"
+    # Remove and replace existing junction for main addon
+    $JUNCTION_TOOL -d -nobanner "$addon_path"
+    $JUNCTION_TOOL -nobanner "$addon_path" "$addon_repo"
 
-addon_titan="$ADDON_NAME""_Titan"
-addon_path_titan="$addons_folder$addon_titan"
-addon_repo_titan="$addon_ext$addon_titan"
+    # Do the junctions for all extension addons
+    addon_ext="$addon_repo""Extensions\\"
+    for extension in $all_extensions
+    do
+        addon_extension="$ADDON_NAME$extension"
+        addon_extensiondest="$addons_folder$addon_extension"
+        addon_extensionrepo="$addon_ext$addon_extension"
 
-
-# Remove existing junctions
-$JUNCTION_TOOL -d "$addon_path"
-$JUNCTION_TOOL -d "$addon_path_rulepack"
-$JUNCTION_TOOL -d "$addon_path_ark"
-$JUNCTION_TOOL -d "$addon_path_adi"
-$JUNCTION_TOOL -d "$addon_path_tsm"
-$JUNCTION_TOOL -d "$addon_path_pawn"
-$JUNCTION_TOOL -d "$addon_path_titan"
-
-# Set new retail junctions.
-$JUNCTION_TOOL "$addon_path" "$addon_repo"
-$JUNCTION_TOOL "$addon_path_rulepack" "$addon_repo_rulepack"
-$JUNCTION_TOOL "$addon_path_ark" "$addon_repo_ark"
-$JUNCTION_TOOL "$addon_path_adi" "$addon_repo_adi"
-$JUNCTION_TOOL "$addon_path_tsm" "$addon_repo_tsm"
-$JUNCTION_TOOL "$addon_path_pawn" "$addon_repo_pawn"
-$JUNCTION_TOOL "$addon_path_titan" "$addon_repo_titan"
+        # Remove and replace junction
+        $JUNCTION_TOOL -d -nobanner "$addon_extensiondest"
+        $JUNCTION_TOOL -nobanner "$addon_extensiondest" "$addon_extensionrepo"
+    done
+done
 
