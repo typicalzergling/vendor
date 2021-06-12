@@ -50,13 +50,13 @@ local RULE_STATUS_INFO = {
     [ScriptStatus.EXTENSION] = {
         Title = L.EDITRULE_EXTENSION_RULE,
         Text = L.EDITRULE_EXTENSION_RULE_TEXT,
-        TitleColor = HEIRLOOM_BLUE_COLOR,
+        TitleColor = Addon.HEIRLOOM_BLUE_COLOR,
         TextColor = HIGHLIGHT_FONT_COLOR,
     },
     [ScriptStatus.SYSTEM] = {
         Title = L.EDITRULE_SYSTEM_RULE,
         Text = L.EDITRULE_SYSTEM_RULE_TEXT,
-        TitleColor = ARTIFACT_GOLD_COLOR,
+        TitleColor = Addon.ARTIFACT_GOLD_COLOR,
         TextColor = HIGHLIGHT_FONT_COLOR,
     } 
 };

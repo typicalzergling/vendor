@@ -7,10 +7,6 @@ Addon.ScriptReference.ItemProperties =
     Name = L["HELP_NAME_TEXT"],
     Link = L["HELP_LINK_TEXT"],
     Id = L["HELP_ID_TEXT"],
-    Count = { 
-        Text = L["HELP_COUNT_TEXT"],
-        Notes = L["HELP_COUNT_NOTES"] 
-    },
     Quality = L["HELP_QUALITY_TEXT"],
     Level = L["HELP_LEVEL_TEXT"],
     MinLevel = L["HELP_MINLEVEL_TEXT"],
@@ -92,11 +88,13 @@ Addon.ScriptReference.Functions =
     IsNeverSellItem = {
         Text = L["HELP_ISNEVERSELLITEM"],
         IsFunction = true,
-    },    
+    },
+    --@retail@
     PlayerItemLevel = {
         IsFunction = true,
         Text = L["HELP_PLAYERITEMLEVEL"]
     },
+    --@end-retail@
     ItemQuality =
     {
         Arguments = L["HELP_ITEMQUALITY_ARGS"],

@@ -53,3 +53,13 @@ Addon.SystemListId = {
     ALWAYS = "system:always-sell",
     DESTROY = "system:always-destroy",
 }
+
+-- Blizzard Color Codes that are not in all versions
+-- We create local versions so we can still use these colors regardless of game version.
+Addon.COMMON_GRAY_COLOR		    = CreateColor(0.65882,	0.65882,	0.65882);
+Addon.UNCOMMON_GREEN_COLOR	    = CreateColor(0.08235,	0.70196,	0.0);
+Addon.RARE_BLUE_COLOR			= CreateColor(0.0,		0.56863,	0.94902);
+Addon.EPIC_PURPLE_COLOR		    = CreateColor(0.78431,	0.27059,	0.98039);
+Addon.LEGENDARY_ORANGE_COLOR	= CreateColor(1.0,		0.50196,	0.0);
+Addon.ARTIFACT_GOLD_COLOR		= CreateColor(0.90196,	0.8,		0.50196);
+Addon.HEIRLOOM_BLUE_COLOR		= CreateColor(0.0,		0.8,		1);

@@ -60,7 +60,7 @@ function Addon.object(typeName, instance, API, events)
     local fullApi = rawget(TypeInformation, fullName);
 
     if (not fullApi) then
-        fullApi = {};
+        fullApi = CreateFromMixins(CallbackRegistryMixin)
 
         -- Copy the functions over the API
         for name, value in pairs(API) do
@@ -73,12 +73,20 @@ function Addon.object(typeName, instance, API, events)
             end
         end
 
+        --[[
         -- If the object has events then mixin the callback registry
         if (type(events) == "table") then
-            fullApi.RegisterCallback = CallbackRegistryMixin.RegisterCallback;
-            fullApi.TriggerEvent = CallbackRegistryMixin.TriggerEvent;
-            fullApi.UnregisterCallback = CallbackRegistryMixin.UnregisterCallback;
+            table.forEach(CallbackRegistryMixin, 
+                function(name, value) 
+                    if (type(value) == "function") then 
+                        fullApi[name] = value
+                    end
+                end)
+            --fullApi.RegisterCallback = CallbackRegistryMixin.RegisterCallback;
+            --fullApi.TriggerEvent = CallbackRegistryMixin.TriggerEvent;
+            --fullApi.UnregisterCallback = CallbackRegistryMixin.UnregisterCallback;
         end
+        ]]--
 
         rawset(TypeInformation, fullName, fullApi);
     end
@@ -108,7 +116,7 @@ function Addon.object(typeName, instance, API, events)
                         return member;
                     end
 
-                    error(string.format("Type '%s' has no member '%s'", typeName, key));
+                    --error(string.format("Type '%s' has no member '%s'", typeName, key));
                 end
             end,
             __newindex = function(self, key, value)

@@ -79,11 +79,11 @@ end
 function AuditItem:GetRuleColor(model)
 	if (model.RuleDefinition) then
 		if (model.RuleDefinition.Extension) then
-			return HEIRLOOM_BLUE_COLOR
+			return Addon.HEIRLOOM_BLUE_COLOR
 		elseif (model.RuleDefinition.Custom) then
-			return RARE_BLUE_COLOR
+			return Addon.RARE_BLUE_COLOR
 		end
-		return ARTIFACT_GOLD_COLOR
+		return Addon.ARTIFACT_GOLD_COLOR
 	end
 
 	-- No longer exists

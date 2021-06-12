@@ -23,7 +23,11 @@ Rules.OnDefinitionsChanged = Addon.CreateEvent("Rules.OnDefinitionChanged");
 Rules.OnFunctionsChanged = Addon.CreateEvent("Rules.OnFunctionsChanged");
 
 local function DefaultItemLevel()
-    local avg, equip = GetAverageItemLevel();
+    local avg = UnitLevel("player")
+    local equip = avg
+    if (_G["GetAverageItemLevel"]) then
+        avg, equip = GetAverageItemLevel()
+    end
     return math.max(0, math.floor(math.min(avg, equip) * 0.8));
 end
 

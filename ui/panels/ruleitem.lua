@@ -316,15 +316,15 @@ function RuleItem:OnEnter()
 
     GameTooltip:AddLine(" ");
     if (rule.Extension) then
-        GameTooltip:AddLine(string.format(L.RULE_TOOLTIP_SOURCE, HEIRLOOM_BLUE_COLOR:WrapTextInColorCode(rule.Extension.Name)));
+        GameTooltip:AddLine(string.format(L.RULE_TOOLTIP_SOURCE, Addon.HEIRLOOM_BLUE_COLOR:WrapTextInColorCode(rule.Extension.Name)));
     elseif (not rule.Custom) then
-        GameTooltip:AddLine(string.format(L.RULE_TOOLTIP_SOURCE, ARTIFACT_GOLD_COLOR:WrapTextInColorCode(L.RULE_TOOLTIP_SYSTEM_RULE)));
+        GameTooltip:AddLine(string.format(L.RULE_TOOLTIP_SOURCE, Addon.ARTIFACT_GOLD_COLOR:WrapTextInColorCode(L.RULE_TOOLTIP_SYSTEM_RULE)));
     else
-        GameTooltip:AddLine(string.format(L.RULE_TOOLTIP_SOURCE, RARE_BLUE_COLOR:WrapTextInColorCode(L.RULE_TOOLTIP_CUSTOM_RULE)));
+        GameTooltip:AddLine(string.format(L.RULE_TOOLTIP_SOURCE, Addon.RARE_BLUE_COLOR:WrapTextInColorCode(L.RULE_TOOLTIP_CUSTOM_RULE)));
     end
 
     --@debug@--
-    GameTooltip:AddLine("Id: " .. EPIC_PURPLE_COLOR:WrapTextInColorCode(rule.Id));
+    GameTooltip:AddLine("Id: " .. Addon.EPIC_PURPLE_COLOR:WrapTextInColorCode(rule.Id));
     --@end-debug@
 
     GameTooltip:Show();

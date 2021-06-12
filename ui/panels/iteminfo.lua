@@ -20,9 +20,12 @@ function ItemInfoItem:OnModelChanged(model)
     elseif (t == "string") then
         value:SetFormattedText("\"%s\"", model.Value);
         value:SetTextColor(GREEN_FONT_COLOR:GetRGB());
-    elseif (t == "boolean") then
+    elseif (t == "boolean" and not model.Value) then
         value:SetText(tostring(model.Value));
-        value:SetTextColor(EPIC_PURPLE_COLOR:GetRGB());
+        value:SetTextColor(Addon.EPIC_PURPLE_COLOR:GetRGB());
+    elseif (t == "boolean" and model.Value) then
+        value:SetText(tostring(model.Value));
+        value:SetTextColor(Addon.HEIRLOOM_BLUE_COLOR:GetRGB());
     elseif (t == "number") then
         value:SetText(tostring(model.Value));
         value:SetTextColor(ORANGE_FONT_COLOR:GetRGB());

@@ -283,9 +283,32 @@ end
 -- Total items sold or destroyed
 -- Total gold from vendoring
 -- Time window for this information
-function Addon:GetHistoryStats(showAllCharacters)
+function Addon:GetCharacterHistoryStats()
     local stats = {}
-    return stats
+    stats.sold = 0
+    stats.destroyed = 0
+    stats.value = 0
+    stats.oldestTimestamp = time()
+
+    local entries, timeWindow = Addon:GetCharacterHistory()
+    for _, entry in pairs(entries) do
+
+        -- Action type
+        if entry.Action == Addon.ActionType.SELL then
+            stats.sold = stats.sold + 1
+            stats.value = stats.value + entry.Value
+        elseif entry.Action == Addon.ActionType.DESTROY then
+            stats.destroyed = stats.destroyed + 1
+        end
+
+        -- Find oldest entry
+        if entry.TimeStamp < stats.oldestTimestamp then
+            stats.oldestTimestamp = entry.TimeStamp
+        end
+    end
+
+    stats.count = stats.sold + stats.destroyed
+    return stats.count, stats.value, stats.sold, stats.destroyed, stats.oldestTimestamp
 end
 
 function Addon:History_Cmd(arg1, arg2, arg3)

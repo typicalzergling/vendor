@@ -42,9 +42,9 @@ function ListsItem:GetTextColor(model)
     model = model or self:GetModel()
     if (model) then
         if (model.custom) then
-            return RARE_BLUE_COLOR
+            return Addon.RARE_BLUE_COLOR
         elseif (model.extension) then
-            return HEIRLOOM_BLUE_COLOR
+            return Addon.HEIRLOOM_BLUE_COLOR
         end
     end
 

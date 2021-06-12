@@ -152,7 +152,6 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsUsable = false
     item.IsEquipment = false
     item.IsSoulbound = false
-    item.IsBound = false
     item.IsBindOnEquip = false
     item.IsBindOnUse = false
     item.IsUnknownAppearance = false
@@ -178,6 +177,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
     item.UnitValue = getItemInfo[11]
+    item.IsCraftingReagent = getItemInfo[17]
     item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
@@ -192,7 +192,6 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Get soulbound information
     if C_Item.IsBound(location) then
         item.IsSoulbound = true         -- This actually also covers account bound.
-        item.IsBound = true             -- IsBound also captures AccountBound status but is equivalent to Soulbound for now.
     else
         if item.BindType == 2 then
             item.IsBindOnEquip = true
@@ -209,6 +208,7 @@ function Addon:GetItemProperties(arg1, arg2)
         end
     end
 
+    --[[
     -- Determine if crafting reagent
     -- These are typically itemtype 7, which is 'tradeskill' but sometimes item type 15, which is miscellaneous.
     if item.TypeId == 7 or item.TypeId == 15 then
@@ -216,6 +216,7 @@ function Addon:GetItemProperties(arg1, arg2)
             item.IsCraftingReagent = true
         end
     end
+    ]]
 
     -- Pet collection items appear to be type 15, subtype 2 (Miscellaneous - Companion Pets)
 
