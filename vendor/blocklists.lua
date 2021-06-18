@@ -10,13 +10,26 @@ local function isValidListType(listType)
         (listType == ListType.EXTENSION) or
         (listType == ListType.SELL) or
         (listType == ListType.KEEP) or
-        (listType == listType.DESTORY)
+        (listType == ListType.DESTORY)
 end
 
 local function isSystemListType(listType)
     return (listType == ListType.SELL) or
         (listType == ListType.KEEP) or
         (listType == ListType.DESTROY)
+end
+
+local function mapListIdToListType(listId) 
+    -- Determine the list id
+    if ((listId == SystemListId.SELL) or (listId == SystemListId.ALWAYS)) then
+        return ListType.SELL
+    elseif ((listId == SystemListId.KEEP) or (listId == SystemListId.NEVER)) then
+        return ListType.KEEP
+    elseif (listId == SystemListId.DESTROY) then
+        return ListType.DESTROY
+    end
+
+    return nil
 end
 
 local function getListFromProfile(listType)
@@ -43,7 +56,7 @@ local function getCustomList(listId)
 end
 
 local function commitCustomList(listId, list)
-    assert(string.len(listId) ~= 0, "The list must have an ID")    
+    assert(string.len(listId) ~= 0, "The list must have an ID") 
     local listMgr = Addon:GetListManager()
     listMgr:UpdateListContents(listId, list)
 end
@@ -274,7 +287,7 @@ end
 --[[static]] function ExtensionList:New(list)
     local instance = 
     {
-        listType = ListType.CUSTOM,
+        listType = ListType.EXTENSION,
         listId = list.Id,
         listName = list.Name,
         source = list.Extension,
@@ -409,6 +422,11 @@ function Addon:GetList(listType)
             if (isSystemListType(value) and (listType == string.lower(value))) then
                 return SystemBlockList:New(value)
             end
+        end
+
+        local systemListType = mapListIdToListType(listType);
+        if (systemListType) then
+            return SystemBlockList:New(systemListType)
         end
 
         -- Check for custom list

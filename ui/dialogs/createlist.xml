@@ -30,11 +30,8 @@
             <Button inherits="UIPanelButtonTemplate" text="SAVE" parentKey="SaveBtn" hidden="true">
                 <Size x="124" y="22"/>
                 <Anchors>
-                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CanelBtn" relativePoint="BOTTOMLEFT" x="-8"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CancelBtn" relativePoint="BOTTOMLEFT" x="-8"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick></OnClick>
-                </Scripts>
             </Button>	
 
             <Button inherits="UIPanelButtonTemplate" text="CREATE" parentKey="CreateBtn">
@@ -42,9 +39,6 @@
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.CancelBtn" relativePoint="BOTTOMLEFT" x="-8"/>
                 </Anchors>
-                <Scripts>
-                    <OnClick></OnClick>
-                </Scripts>
             </Button>
 
 			<!-- List Properties name, description, etc. -->

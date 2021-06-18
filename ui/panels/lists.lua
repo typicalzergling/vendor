@@ -165,6 +165,9 @@ function ListsPanel:OnLoad()
 
     self:SetScript("OnShow", self.OnShow);
     self:SetScript("OnHide", self.OnHide);
+
+    self.NewList:SetScript("OnClick", function() self:OnCreateList() end)
+    self.EditList:SetScript("OnClick", function() self:OnEditList() end)
 end
 
 --[[===========================================================================
@@ -179,12 +182,19 @@ function ListsPanel:OnShow()
     end
 
     Addon:GetListManager():RegisterCallback("OnListChanged",
-        function(_, id) 
-            local selection = self.Lists:GetSelected()
-            if (selection and selection.id == id) then
-                self:OnSelectionChanged()
+        function(_, id, action)
+            if (action == "UPDATED") then
+                local selection = self.Lists:GetSelected()
+                if (selection and selection.id == id) then
+                    self:OnSelectionChanged()
+                end
+            elseif (action == "ADDED") then
+                self.lists = nil;
+                self.Lists:Update()
             end
-        end, self)
+        end
+        , 
+        self)
 end
 
 --[[===========================================================================
@@ -227,6 +237,17 @@ function ListsPanel:OnAddItem(item)
     end
 end
 
+function ListsPanel:OnCreateList()
+    VendorListDialog:Create();
+end
+
+function ListsPanel:OnEditList()
+    local list = self.Lists:GetSelected();
+    if (list) then
+        VendorListDialog:Edit(list.id, list.name, list.tooltip);
+    end
+end
+
 --[[===========================================================================
     | Retrieves the currently selected list, returns the list, or nil to 
     | indicate there was no selection. Also returns the empty text to show
@@ -243,7 +264,7 @@ function ListsPanel:GetSelectedList()
         elseif (id == SystemListId.DESTROY) then
             return Addon:GetList(ListType.DESTROY), selection.empty;
         else
-            return Addon:GetList(id), "Genreic emptyh message"
+            return Addon:GetList(id), "<<GENERIC EMPTY MESSAGE -- NEED LOC>>"
         end
     end
 
@@ -263,6 +284,7 @@ function ListsPanel:OnSelectionChanged()
         self.Items:SetReadOnly(true)
         self.Items:SetContents();
         self.ItemCount:SetFormattedText("(%d)", 0);
+        self.EditList:Disable()
     else
         local contents = list:GetItems();
         local count = table.getn(contents);
@@ -270,6 +292,12 @@ function ListsPanel:OnSelectionChanged()
         self.Items:SetReadOnly(list:IsReadOnly())
         self.Items:SetContents(contents);
         self.ItemCount:SetFormattedText("(%d)", count)
+
+        if (not list:IsType(ListType.EXTENSION)) then
+            self.EditList:Enable()
+        else 
+            self.EditList:Disable()
+        end
     end
 end
 

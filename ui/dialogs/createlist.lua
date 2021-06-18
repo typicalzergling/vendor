@@ -13,8 +13,7 @@ function CreateListDialog:OnLoad()
 	self.ItemId:RegisterCallback("OnChange", self.OnItemIdChanged, self);
 	self:SetValidItem(-1, false);
 	self.ItemId.Add:SetScript("OnClick", function() 
-			self.items[self.ItemInfo:GetItemID()] = true
-			self:UpdateList()
+			self:OnAddItem(self.ItemInfo:GetItemID())
 			self.ItemId:SetText("")
 			self:SetValidItem(-1, false);
 		end)
@@ -26,28 +25,61 @@ function CreateListDialog:OnLoad()
 	self.Items.OnAddItem = function(_, item) self:OnAddItem(item) end
 	self.Items.OnDeleteItem = function(_, item) self:OnDeleteItem(item) end
 	self.items = {};
+
+	self.CreateBtn:SetScript("OnClick", function() self:OnCreate() end)
+	self.SaveBtn:SetScript("OnClick", function() self:OnSave() end)
 end
 
 function CreateListDialog:Create()
-	self.listId = Addon:GetExtensionManger():CreateUniqueId()
-	self.listItems = {}
-	self.listName = locale.NEW_LIST_NAME
-	self.listDescription = ""
-
+	self.listId = nil;
+	self.Name:SetText(locale.NEW_LIST_NAME)
+	self.Description:SetText("")
 	self:SetCaption("LISTDIALOG_CREATE_CAPTION")
+	self.Name:Enable()
+	self.Description:Enable()
+	self.SaveBtn:Hide()
+	self.CreateBtn:Show()
+	self.items = {};
+	self.changes = nil;
 	self:Show()
 end
 
-function CreateListDialog:Edit(listId)
-	local list = assert(Addon:GetListManager():GetList(listId), "Expected to be given a valid listId to edit")
+function CreateListDialog:OnCreate()
+	-- Need to verify the name is non-empty (We should disable save in that case)
+	local name = self.Name:GetText();
+	local description = self.Description:GetText();
+	local list = Addon:GetListManager():CreateList(name, description, self.items);	
+	self:Hide();
+end
 
-	self.listId = list.Id
-	self.listItems = list.Items
-	self.listName = list.Name
-	self.listDescription = list.Description
-	
+function CreateListDialog:Edit(id, name, description)
+	self.listId = id;
+	self.Name:SetText(name)
+	self.Description:SetText(description)
 	self:SetCaption("LISTDIALOG_EDIT_CAPTION")
+
+	local list = Addon:GetList(id)
+	self.items = list:GetContents()
+	self.listObject = list;
+	self.changes = {}
+	if (not list:IsType(Addon.ListType.CUSTOM)) then
+		self.Name:Disable()
+		self.Description:Disable()
+	else
+		self.Name:Enable()
+		self.Description:Enable()
+	end
+
+	self.CreateBtn:Hide();
+	self.SaveBtn:Show();	
+	self:UpdateList()
 	self:Show()
+end
+
+function CreateListDialog:OnSave()
+	--if (self.changes) then
+	--	table.forEach(self.changes, print)
+	--end
 end
 
 function CreateListDialog:OnShow()
@@ -75,6 +107,14 @@ function CreateListDialog:OnAddItem(item)
 	if (type(itemId) == "number") then
 		self.items[itemId] = true
 		self:UpdateList()
+
+		if (self.changes) then
+			if (self.changes[itemId] == "REMOVE") then
+				self.changes[itemId] = nil
+			else
+				self.changes[itemId] = "ADD"
+			end
+		end
 	end
 end
 
@@ -82,6 +122,14 @@ function CreateListDialog:OnDeleteItem(itemId)
 	if (type(itemId) == "number") then
 		self.items[itemId] = nil
 		self:UpdateList()
+
+		if (self.changes) then
+			if (self.changes[itemId] == "ADD") then
+				self.changes[itemId] = nil
+			else 
+				self.changes[itemId] = "REMOVE"
+			end
+		end
 	end
 end
 

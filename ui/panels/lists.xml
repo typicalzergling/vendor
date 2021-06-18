@@ -67,9 +67,6 @@
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" x="12" y="12"/>
 				</Anchors>
-				<Scripts>
-					<OnClick>VendorListDialog:Create()</OnClick>
-				</Scripts>
 			</Button>			
 			<Button parentKey="EditList" inherits="UIPanelButtonTemplate">
 				<KeyValues>
@@ -81,9 +78,6 @@
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" x="176" y="12" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
-				<Scripts>
-					<OnClick>VendorListDialog:Create()</OnClick>
-				</Scripts>
 			</Button>			
 			<Frame inherits="Vendor_BorderFrame" parentKey="listsBorder">
 				<Size x="176" y="20"/>
