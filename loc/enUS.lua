@@ -381,6 +381,8 @@ EDIT_LIST = "Edit",
 NEW_LIST = "New",
 LISTDIALOG_CREATE_CAPTION = "New List",
 LISTDIALOG_EDIT_CAPTION = "Edit List",
+LISTDIALOG_NAME_LABEL = "Name:",
+LISTDIALOG_DESCR_LABEL = "Description:",
 
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",

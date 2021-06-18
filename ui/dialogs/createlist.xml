@@ -72,6 +72,31 @@
 				</Anchors>
 			</Frame>
 
+			<!-- Add to list by ID -->
+
+			<Frame parentKey="ItemId" inherits="Vendor_Edit">
+				<KeyValues>
+					<KeyValue key="PlaceholderKey" value="EDITLIST_BYID_HELP" type="string"/>
+					<KeyValue key="LabelKey" value="EDITLIST_BYID_LABEL" type="string"/>
+				</KeyValues>
+				<Size x="1" y="30"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Description" x="0" y="-30"/>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.Description" x="0" y="-30"/>
+				</Anchors>
+				<Frames>
+					<Button inherits="UIPanelButtonTemplate" text="CREATE" parentKey="Add">
+						<KeyValues>
+							<KeyValue key="LocKey" value="ADD" type="string"/>
+						</KeyValues>
+						<Size x="84" y="22"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+						</Anchors>
+					</Button>
+				</Frames>
+			</Frame>
+
 			<!-- list and count -->
 
 			<Frame parentKey="Items" inherits="Vendor_ItemList">
@@ -104,6 +129,37 @@
 					<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="TOPRIGHT" x="12" y="0"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.CancelBtn" relativePoint="TOPRIGHT" y="8" x="0"/>
 				</Anchors>
+			</Frame>
+
+			<Frame inherits="Vendor_BorderFrame" parentKey="ItemInfo" mixin="ItemMixin">
+				<Size x="1" y="30"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.ItemId" relativePoint="LEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Items" relativePoint="BOTTOMLEFT" x="-12"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Link" inherits="GameFontDisable" justifyV="MIDDLE" justifyH="LEFT" wordwrap="false">
+							<KeyValues>
+								<KeyValue key="LocKey" value="EDITRULE_NO_ITEM" type="string"/>
+							</KeyValues>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="10" y="-6"/>
+								<Anchor point="BOTTOMRIGHT" x="-10" y="7"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Label" inherits="GameFontNormal" justifyH="LEFT" justifyV="BOTTOM">
+							<KeyValues>
+								<KeyValue key="LocKey" value="EDITLIST_ITEM" type="string"/>
+							</KeyValues>
+							<Size x="20" y="14"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT"  relativePoint="TOPLEFT" x="2" y="4"/>
+								<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-2" y="4"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>				
 			</Frame>
 
 		</Frames>
