@@ -1,8 +1,8 @@
 #@retail@
-## Interface: 90002
+## Interface: 90100
 #@end-retail@
 #@non-retail@
-# ## Interface: 11306
+# ## Interface: 20501
 #@end-non-retail@
 ## Title: Vendor_TSM
 ## Notes: TradeSkillMaster extension for Vendor. Requires both TSM and Vendor.
