@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90100
 ## Title: Vendor_RulesPack
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
 ## Version: @project-version@

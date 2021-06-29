@@ -1,9 +1,9 @@
 #@retail@
-## Interface: 90002
+## Interface: 90100
 ## Dependencies: Vendor, ArkInventoryRules
 #@end-retail@
 #@non-retail@
-# ## Interface: 11306
+# ## Interface: 20501
 # ## Dependencies: Vendor, ArkInventoryRules
 #@end-non-retail@
 ## Title: Vendor_ArkInventory

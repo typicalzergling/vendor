@@ -121,7 +121,7 @@ function ListsPanel:OnLoad()
     self.Lists.ItemTemplate = "Vendor_ItemLists_ListItem";
     self.Lists.ItemClass = ListsItem;
     self.Items.isReadOnly = false;
-	self.EditList:Disable();
+	--self.EditList:Disable();
 
     self.Lists.GetItems = function()
         if (not self.lists) then
@@ -166,8 +166,8 @@ function ListsPanel:OnLoad()
     self:SetScript("OnShow", self.OnShow);
     self:SetScript("OnHide", self.OnHide);
 
-    self.NewList:SetScript("OnClick", function() self:OnCreateList() end)
-    self.EditList:SetScript("OnClick", function() self:OnEditList() end)
+    --self.NewList:SetScript("OnClick", function() self:OnCreateList() end)
+    --self.EditList:SetScript("OnClick", function() self:OnEditList() end)
 end
 
 --[[===========================================================================
@@ -284,7 +284,7 @@ function ListsPanel:OnSelectionChanged()
         self.Items:SetReadOnly(true)
         self.Items:SetContents();
         self.ItemCount:SetFormattedText("(%d)", 0);
-        self.EditList:Disable()
+        --self.EditList:Disable()
     else
         local contents = list:GetItems();
         local count = table.getn(contents);
@@ -293,11 +293,13 @@ function ListsPanel:OnSelectionChanged()
         self.Items:SetContents(contents);
         self.ItemCount:SetFormattedText("(%d)", count)
 
+        --[[
         if (not list:IsType(ListType.EXTENSION)) then
             self.EditList:Enable()
         else 
             self.EditList:Disable()
         end
+        ]]
     end
 end
 

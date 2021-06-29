@@ -2,8 +2,31 @@ local AddonName, Addon = ...
 
 Addon.ReleaseNotes = {
     {
+        release="5.2",
+        on="June 29, 2021",
+        html=
+[[<html>
+<body>
+<h1>Classic / TBC Compat updates</h1>
+<p>It appears as though Blizzard has advanced their Classic and TBC UI to no longer have some of the previous incompatibilites. So with some minor adjustments this version of Vendor should now work on TBC and Classic.
+Note that we have not had heavy use of this version in Classic or TBC, so there may be some bugs still lurking. Please report these on the curseforge site for Vendor and we will investigate.
+</p><br/>
+<h1>Systems Improvements</h1>
+<p>While there are no outward features yet exposed related to improving the systems of Vendor, a fair bit has changed, which may mean new unexpected bugs. Features that use some of the new improvements
+will be forthcoming.
+</p><br/>
+<h1>Updated Item Property - IsCraftingReagent</h1>
+<p>Now uses the GetItemInfo property which tracks this instead of trying to read it from the tooltip.
+</p><br/>
+<h1>Notable Bug Fixes</h1>
+<p>Audit panel will no longer break after 30 days.</p>
+<br/>
+</body>
+</html>]]
+    },
+    {
         release="5.1",
-        on="November TBD, 2020",
+        on="November 23, 2020",
         html=
 [[<html>
 <body>
