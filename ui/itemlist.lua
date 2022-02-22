@@ -44,24 +44,12 @@ function ItemList:SetContents(itemList)
 end
 	
 function ItemList.OnLoad(self)
-	Mixin(self, CallbackRegistryMixin);
+	Mixin(self, CallbackRegistryMixin, Addon.Controls.VendorBackdrop);
 	self.List.isReadOnly = (self.isReadOnly or false);
 	CallbackRegistryMixin.OnLoad(self);
 	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
 
-	self:OnBackdropLoaded();	
-
-	if (self.backdropBorderColor) then
-		local alpha = self.backdropBorderColorAlpha or 1
-		local color = self.backdropBorderColor or RED_FONT_COLOR
-		self:SetBackdropBorderColor(color.r, color.g, color.b, alpha)
-	end
-
-	if (self.backdropColor) then 
-		local alpha = self.backdropColorAlpha or 1
-		local color = self.backdropColor or RED_FONT_COLOR
-		self:SetBackdropColor(color.r, color.g, color.b, alpha)
-	end
+	self:InitBackdrop();	
 
 	--self.List.emptyText.LocKey = self.EmptyTextKey;
 
