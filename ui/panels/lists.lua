@@ -123,6 +123,9 @@ function ListsPanel:OnLoad()
     self.Items.isReadOnly = false;
 	self.EditList:Disable();
 
+    self.NewList:Hide();
+    self.EditList:Hide();
+
     self.Lists.GetItems = function()
         if (not self.lists) then
             local lists = table.copy(SYSTEM_LISTS)

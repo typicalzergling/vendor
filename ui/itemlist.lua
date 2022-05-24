@@ -44,11 +44,12 @@ function ItemList:SetContents(itemList)
 end
 	
 function ItemList.OnLoad(self)
-	Mixin(self, CallbackRegistryMixin);
+	Mixin(self, CallbackRegistryMixin, Addon.Controls.VendorBackdrop);
 	self.List.isReadOnly = (self.isReadOnly or false);
 	CallbackRegistryMixin.OnLoad(self);
-	self:OnBackdropLoaded();
 	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
+
+	self:InitBackdrop();	
 
 	--self.List.emptyText.LocKey = self.EmptyTextKey;
 

@@ -70,7 +70,9 @@ function Edit:OnChange()
 end
 
 function EditHost:OnLoad()
-	self:OnBackdropLoaded();
+	Mixin(self, Addon.Controls.VendorBackdrop)
+	self:InitBackdrop();
+
 	if (self.Scroll) then
 		self:AdjustScrollBar();
 		ScrollFrame_OnLoad(self.Scroll);		

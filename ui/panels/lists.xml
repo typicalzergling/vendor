@@ -78,7 +78,8 @@
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" x="176" y="12" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
-			</Button>			
+			</Button>
+
 			<Frame inherits="Vendor_BorderFrame" parentKey="listsBorder">
 				<Size x="176" y="20"/>
 				<Anchors>
