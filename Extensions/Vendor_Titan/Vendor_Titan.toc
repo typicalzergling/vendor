@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 90100
+## Interface: 90200
 ## Dependencies: Vendor, Titan
 #@end-retail@
 #@non-retail@
@@ -9,7 +9,7 @@
 ## Title: Vendor_Titan
 ## Notes: Titan Plugin for the Vendor addon.
 ## Version: 1.0.0
-## Author: Malvir & Buskin of Lightbringer
+## Author: Thoekh of Sargeras & Buskin of Lightbringer
 loc\locale.lua
 loc\enUS.lua
 vendortitan.xml

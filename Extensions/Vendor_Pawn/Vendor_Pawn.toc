@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 90100
+## Interface: 90200
 #@end-retail@
 #@non-retail@
 # ## Interface: 20501
@@ -7,7 +7,7 @@
 ## Title: Vendor_Pawn
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
 ## Version: 1.1.0
-## Author: Malvir & Buskin of Lightbringer
+## Author: Thoekh of Sargeras & Buskin of Lightbringer
 ## Dependencies: Vendor, Pawn
 
 vendorpawnextension.lua

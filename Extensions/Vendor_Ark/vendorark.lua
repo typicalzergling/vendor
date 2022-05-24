@@ -43,13 +43,31 @@ function Addon:Vendor_AutoSell()
     if not result then
         return false
     else
-        return result > 0
+        return result == 1
+    end
+end
+
+-- Checks if an item is marked for destruction by vendor
+function Addon:Vendor_Destroy()
+    assert(ArkInventory and ArkInventory.API.InternalIdToBlizzardBagId)
+    local object = ArkInventoryRules.Object;
+    if (not object or not object.loc_id or not object.bag_id or not object.slot_id) then
+        return;
+    end
+
+    -- Becuase Ark is on another planet and has its own concept of bags, must convert to blizzard bags.
+    local bag = ArkInventory.API.InternalIdToBlizzardBagId( object.loc_id, object.bag_id )
+    result, ruleid, name = Vendor.EvaluateItem(bag, object.slot_id)
+    if not result then
+        return false
+    else
+        return result == 2
     end
 end
 
 -- Empty function to not break Ark
 local deprecatedMessageDisplayed = false
-local deprecatedMessage = "ArkInventory rule for Vendor scrap, 'venscrap()' is deprecated and no longer functional. For the future stability of Ark, please remove that rule."
+local deprecatedMessage = "ArkInventory rule for Vendor scrap, 'venscrap()' is deprecated and no longer functional. Please remove your Ark rule that uses 'venscrap()', as it does nothing."
 function Addon:Vendor_AutoScrap()
     if not deprecatedMessageDisplayed then
         DEFAULT_CHAT_FRAME:AddMessage(RED_FONT_COLOR_CODE..deprecatedMessage..FONT_COLOR_CODE_CLOSE)
@@ -64,6 +82,7 @@ if (ArkInventoryRules and Vendor) then
     function rules:OnEnable()
         ArkInventoryRules.Register(self, "vensell", Addon.Vendor_AutoSell);
         ArkInventoryRules.Register(self, "venscrap", Addon.Vendor_AutoScrap);
+        ArkInventoryRules.Register(self, "vendestroy", Addon.Vendor_Destroy);
     end;
 end
 

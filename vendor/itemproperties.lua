@@ -182,6 +182,14 @@ function Addon:GetItemProperties(arg1, arg2)
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
 
+    -- Add Bag and Slot information. Initialize to -1 so rule writers can identify them.
+    item.Bag = -1
+    item.Slot = -1
+    item.IsBagAndSlot = location:IsBagAndSlot()
+    if item.IsBagAndSlot then
+        item.Bag, item.Slot = location:GetBagAndSlot()
+    end
+
     -- Check for usability
     item.IsUsable = IsUsableItem(item.Id)
 

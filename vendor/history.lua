@@ -144,12 +144,8 @@ function Addon:PruneHistory(hours, character)
 
     local history = nil
     if not currentChar then
-        local status, err = xpcall(
-            function()
-                currentChar = Addon:GetCharacterFullName()
-            end,
-            CallErrorHandler)
-        if status then
+        currentChar = Addon:GetCharacterFullName()
+        if currentChar == "" then
             debugp("Error getting Character Full Name, skipping pruning of this character.")
             return 0
         end

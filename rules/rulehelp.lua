@@ -68,7 +68,9 @@ Addon.ScriptReference.ItemProperties =
         Notes = L["HELP_ISUNSELLABLE_NOTES"] 
     },
     IsEquipped = L["HELP_ISEQUIPPED_TEXT"],
-
+    IsBagAndSlot = L["HELP_ISBAGANDSLOT_TEXT"],
+    Bag = L["HELP_BAG_TEXT"],
+    Slot = L["HELP_SLOT_TEXT"],
 }
 
 Addon.ScriptReference.Functions =

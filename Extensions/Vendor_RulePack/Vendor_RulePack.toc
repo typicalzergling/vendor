@@ -1,8 +1,8 @@
-## Interface: 90100
+## Interface: 90200
 ## Title: Vendor_RulesPack
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
 ## Version: @project-version@
-## Author: Malvir & Buskin of Lightbringer
+## Author: Thoekh of Sargeras & Buskin of Lightbringer
 ## Dependencies: Vendor
 
 vendorrulepack.lua

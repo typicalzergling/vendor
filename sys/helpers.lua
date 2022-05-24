@@ -130,7 +130,13 @@ local characterName = nil
 function Addon:GetCharacterFullName()
     if not characterName then
         local name, server = UnitFullName("player")
-        characterName = string.format("%s - %s", name, server)
+        -- Sometimes the server or name fails to load, rather than fail in lua,
+        -- return empty string and handle it.
+        if name and server then
+            characterName = string.format("%s - %s", name, server)
+        else
+            characterName = ""
+        end
     end
     return characterName
 end

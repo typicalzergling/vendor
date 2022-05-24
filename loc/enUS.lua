@@ -488,6 +488,9 @@ HELP_ISALREADYKNOWN_TEXT = [[True if the item is "Already known", such as a Toy 
 HELP_ISUSABLE_TEXT = [[True if the item can be used, such as if it has a "Use:" effect described in its tooltip."]],
 HELP_ISUNSELLABLE_TEXT = [[True if the item has 0 value.]],
 HELP_ISUNSELLABLE_NOTES = [[There are a few very rare exceptions where items may have value but are unsellable and so you may get an occasional false negative here. This appears to be an item data error on Blizzard's end.]],
+HELP_ISBAGANDSLOT_TEXT = [[True if the item has a defined bag and slot.]],
+HELP_BAG_TEXT = [[The bag ID of the item, or -1 if it is not in a bag and slot.]],
+HELP_SLOT_TEXT = [[The slot ID of the item, or -1 if it is not in a bag and slot.]],
 
 -- FUNCTION HELP
 

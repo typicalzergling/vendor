@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 90100
+## Interface: 90200
 ## Dependencies: Vendor, ArkInventoryRules
 #@end-retail@
 #@non-retail@
@@ -9,5 +9,5 @@
 ## Title: Vendor_ArkInventory
 ## Notes: ArkInventory extension. Requires both Vendor and ArkInventory
 ## Version: @project-version@
-## Author: Malvir & Buskin of Lightbringer
+## Author: Thoekh of Sargeras & Buskin of Lightbringer
 vendorark.lua
