@@ -123,8 +123,8 @@ function ListsPanel:OnLoad()
     self.Items.isReadOnly = false;
 	self.EditList:Disable();
 
-    self.NewList:Hide();
-    self.EditList:Hide();
+    --self.NewList:Hide();
+    --self.EditList:Hide();
 
     self.Lists.GetItems = function()
         if (not self.lists) then
