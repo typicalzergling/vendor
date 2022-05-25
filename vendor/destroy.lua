@@ -3,20 +3,18 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local Config = Addon:GetConfig()
 
-local function PrintDestroySummary(num)
-    Addon:Print(L.ITEM_DESTROY_SUMMARY, tostring(num))
-end
-
 -- This will hold the item link of whatever item we are trying to delete.
 -- This is so when we do the delete confirmation, we only confirm deletion
 -- for the item we are actually trying to delete.
 local currentDestroyedItem = nil
 
 -- Blizzard Protected DeleteCursorItem() in 9.0.2, which means we can't auto-delete items anymore.
--- So this will
-function Addon:DestroyItems()
-    self:Print(L.ITEM_DESTROY_STARTED)
-    local numDestroyed = 0
+-- So this will Find items and destroy them, and then report how many more items remain to be destroyed.
+-- There's 1 destroy per event. RIP. Thx Blizzard.
+-- Since destruction is quite serious we want to make sure any item we are destroying matches a destroy rule immediately prior
+-- to destroying it. This is not as performant as it could be, but lets be real, destruction is a rare thing, so lets err on
+-- the side of safety rather than performance.
+function Addon:DestroyNextItem()
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, GetContainerNumSlots(bag) do
 
@@ -38,17 +36,28 @@ function Addon:DestroyItems()
                 if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                     PickupContainerItem(bag, slot)
                     DeleteCursorItem()
+                    Addon:AddEntryToHistory(currentDestroyedItem, Addon.ActionType.DESTROY, rule, ruleid, itemCount, 0)
                 else
                     self:Print("Simulating deletion of: %s", tostring(currentDestroyedItem))
                 end
-
-                -- Add to history
-                Addon:AddEntryToHistory(currentDestroyedItem, Addon.ActionType.DESTROY, rule, ruleid, itemCount, 0)
-
                 currentDestroyedItem = nil
-                numDestroyed = numDestroyed + 1
+
+                -- Return now, because Blizzard only allows one deletion per action.
+                return true
             end
         end
     end
-    PrintDestroySummary(numDestroyed)
+    return false
+end
+
+-- Wrapper for item destruction and reporting items that remain.
+function Addon:DestroyItems()
+    if Addon:DestroyNextItem() then
+        -- see if we have more items remaining
+        local count, value, tosell, todestroy, sellitems, destroyitems = Addon:GetEvaluationStatus()
+        self:Print(L.ITEM_DESTROY_MORE_ITEMS, todestroy)
+    else
+        -- No items were destroyed.
+        self:Print(L.ITEM_DESTROY_NONE_REMAIN)
+    end
 end

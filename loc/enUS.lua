@@ -59,6 +59,8 @@ ITEM_DESTROY_SUMMARY = "Destroyed %s items.",
 ITEM_DESTROY_CURRENT = "Destroying %s (%s)",
 ITEM_DESTROY_CANCELLED_CURSORITEM = "Cancelling item destroy due to an item being held.",
 ITEM_DESTROY_STARTED = "Starting destruction of items matching Destroy rules or list...",
+ITEM_DESTROY_MORE_ITEMS = "There are %s more items remaining for destruction.",
+ITEM_DESTROY_NONE_REMAIN = "There are no items identified for destruction.",
 
 -- Tooltip
 TOOLTIP_ADDITEM_ERROR_NOITEM = "Failed to add item to %s-sell list. The game tooltip is not over an item.",
@@ -393,6 +395,23 @@ ITEMLIST_EMPTY_SELL_LIST = "Your always sell list is current empty you can drag 
 ITEMLIST_EMPTY_KEEP_LIST = "Your never sell list is current empty you can drag and drop items into this list to add them.",
 ITEMLIST_REMOVE_TOOLTIP = "Remove from list",
 ITEMLIST_UNSELLABLE = "%s is unsellable, adding to Destroy list instead.",
+
+-- LDB Object
+LDB_BUTTON_BUTTON_LABEL = "Vendor: ",
+LDB_BUTTON_MENU_TEXT = "Vendor",
+LDB_BUTTON_TOOLTIP_TITLE = "Vendor",
+LDB_BUTTON_TOOLTIP_TOSELL = "To Sell",
+LDB_BUTTON_TOOLTIP_TODESTROY = "To Destroy",
+LDB_BUTTON_TOOLTIP_VALUE = "Value",
+LDB_BUTTON_MENU_NEW_RULE = "New Rule",
+LDB_BUTTON_MENU_SETTINGS = "Settings",
+LDB_BUTTON_MENU_KEYBINDINGS = "Keybindings",
+LDB_BUTTON_MENU_SHOWVALUETEXT = "Show Value Text",
+LDB_BUTTON_MENU_HIDE = "Hide",
+LDB_BUTTON_MENU_CHANGE_PROFILES = "Set Profile",
+LDB_BUTTON_MENU_PROFILES = "Profiles",
+LDB_BUTTON_MENU_RUNDESTROY = "Run Destroy",
+
 
 -- ITEM PROPERTIES HELP
 

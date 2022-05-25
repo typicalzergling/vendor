@@ -39,7 +39,6 @@ function Addon:OnInitialize()
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("ITEM_LOCK_CHANGED", "OnItemLockChanged")
-    --self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
     --self:RegisterEvent("USE_NO_REFUND_CONFIRM", function() Addon:Debug("events", "Handling USE_NO_REFUND_CONFIRM") end)
     --self:RegisterEvent("DELETE_ITEM_CONFIRM", function() Addon:Debug("events", "Handling DELETE_ITEM_CONFIRM") end)
@@ -52,7 +51,7 @@ function Addon:OnInitialize()
     self:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
 
     -- Publish our LDB Data Objects
-    self:SetupLDBPlugins()
+    self:SetupLDBPlugin()
 
     -- Do Pruning of History across all characters.
     -- TODO: Make this a setting

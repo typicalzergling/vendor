@@ -106,6 +106,8 @@ function Addon:GetExtensionManger()
 		rawset(self, EXT_MGR_KEY, mgr)
 	end
 
+	--[[
+	Extension list testing.
 	if (not mgr:GetList("test.list")) then
 	mgr:RegisterList({ 
 		Name = 'Non-extension'
@@ -116,6 +118,7 @@ function Addon:GetExtensionManger()
 		Id = "test.list",
 	})
 	end
+	]]--
 
 	return mgr
 end

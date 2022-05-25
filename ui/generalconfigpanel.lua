@@ -28,7 +28,7 @@ end
 --*****************************************************************************
 function GeneralPanel.OnOpenRules()
     Addon:Debug("config", "Showing rules dialog")
-    VendorRulesDialog:Show()
+    Addon:OpenConfigDialog_Cmd()
 end
 
 
