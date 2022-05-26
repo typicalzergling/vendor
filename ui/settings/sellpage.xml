@@ -3,7 +3,7 @@
 
     <Frame name="Vendor_Settings_Sell" inherits="Vendor_Settings_Panel" virtual="true">
         <KeyValues>
-            <KeyValue key="HelpTextLocKey" value="OPTIONS_DESC_SELL" type="string"/>
+            <KeyValue key="HelpTextLocKey" value="OPTIONS_DESC_SELLING" type="string"/>
         </KeyValues>
         <Frames>
             <!-- Auto sell settings -->
@@ -31,7 +31,8 @@
                     <Anchor point="TOPLEFT" relativeKey="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="0" y="0"/>
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
-            </Frame>       
+            </Frame>
+
         </Frames>
 		<Scripts>
 			<OnLoad>Vendor.LoadImplementation(self, "Settings", "Sell")</OnLoad>

@@ -5,15 +5,15 @@ local SettingsPanel = {}
 local SETTINGS_DATA = 
 {
 	{
-		name = "OPTIONS_HEADER_GENERAL",
+		name = "OPTIONS_CATEGORY_GENERAL",
 		template = "Vendor_Settings_General"
 	},
 	{
-		name = "SETTINGS_GENERAL_SELLING",
+		name = "OPTIONS_CATEGORY_SELLING",
 		template = "Vendor_Settings_Sell"
 	},
 	{
-		name = "OPTIONS_HEADER_REPAIR",
+		name = "OPTIONS_CATEGORY_REPAIR",
 		template = "Vendor_Settings_Repair"
 	},
 	{
