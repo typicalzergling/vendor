@@ -9,11 +9,6 @@
 			<KeyValue key="ItemClass" value="ItemListItem" type="string"/>
         </KeyValues>
 		<Layers>
-			<Layer level="BACKGROUND" textureSubLevel="-2">
-				<Texture parentKey="scrollbarBackground">
-					<Color r="0.0" g="0.0" b="0.0" a="0.50"/>
-				</Texture>
-			</Layer>
 			<Layer level="ARTWORK">
                 <FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontDisable" parentKey="EmptyText" hidden="false">
 					<Anchors>

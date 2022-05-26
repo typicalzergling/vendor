@@ -1,0 +1,108 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="settings/generalpage.lua"/>
+
+    <Frame name="Vendor_Settings_General" virtual="true" inherits="Vendor_Settings_Panel">
+        <KeyValues>
+            <KeyValue key="HelpTextLocKey" value="OPTIONS_DESC_GENERAL" type="string"/>
+        </KeyValues>
+        <Frames>
+		
+            <!-- Auto sell settings -->
+            <Frame parentKey="AutoSell" inherits="Vendor_Setting_Checkbox">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_AUTOSELL" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_AUTOSELL" type="string"/>
+				</KeyValues>
+                <Size x="250" y="54"/>
+                <Anchors>
+					<Anchor point="TOP" relativeKey="$parent.HelpText" relativePoint="BOTTOM" y="-16"/>
+                    <Anchor point="LEFT" x="16" y="-24"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>
+
+            <!-- Auto repair settings -->
+            <Frame parentKey="AutoRepair" inherits="Vendor_Setting_Checkbox">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_AUTOREPAIR" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_AUTOREPAIR" type="string"/>
+				</KeyValues>
+                <Size x="250" y="54"/>
+                <Anchors>
+					<Anchor point="TOP" relativeKey="$parent.AutoSell" relativePoint="BOTTOM" y="-16"/>
+                    <Anchor point="LEFT" x="16" y="-24"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>			
+
+			<!--
+            <Frame name="$parent.EnableBuyback" parentKey="EnableBuyback" inherits="Vendor_Setting_Checkbox">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_BUYBACK" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_BUYBACK" type="string"/>
+				</KeyValues>
+                <Size x="250" y="54"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.AutoSell" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>-->
+
+            <!-- Tooltip seetings -->
+            <Frame parentKey="Tooltip" inherits="Vendor_Setting_Checkbox">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_TOOLTIP" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_TOOLTIP" type="string"/>
+				</KeyValues>
+                <Size x="250" y="54"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.AutoRepair" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>
+
+            <!-- MiniMap seetings -->
+            <Frame parentKey="MiniMap" inherits="Vendor_Setting_Checkbox">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_MINIMAP" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_MINIMAP" type="string"/>
+				</KeyValues>
+                <Size x="250" y="54"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>
+
+            <!-- Merchant seetings -->
+			<Frame parentKey="Merchant" inherits="Vendor_Setting_Checkbox">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_MERCHANT_GENERAL" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_MERCHANT_GENERAL" type="string"/>
+				</KeyValues>
+                <Size x="250" y="54"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.MiniMap" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>		
+            
+			<!--<Frame parentKey="TooltipRule" inherits="Vendor_Setting_Check_Small">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_EXTRARULEINFO" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_EXTRARULEINFO" type="string"/>
+				</KeyValues>
+                <Size x="250" y="54"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="32" y="0"/>
+                    <Anchor point="RIGHT" x="-16" />
+                </Anchors>
+            </Frame>-->
+
+        </Frames>
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self, "Settings", "General")</OnLoad>
+		</Scripts>
+    </Frame>
+
+</Ui>

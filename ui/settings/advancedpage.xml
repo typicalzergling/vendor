@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="settings/advancedpage.lua"/>
+
+    <Frame name="Vendor_Settings_Advanced" virtual="true" inherits="Vendor_Settings_Panel">
+        <KeyValues>
+            <KeyValue key="HelpTextLocKey" value="OPTIONS_DESC_ADVANCED" type="string"/>
+        </KeyValues>
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self, "Settings", "Advanced")</OnLoad>
+		</Scripts>
+    </Frame>
+	
+</Ui>

@@ -117,14 +117,11 @@ end
     |  Called to handle the load of the lists panel
     ========================================================================--]]
 function ListsPanel:OnLoad()
-    self.Lists.ItemHeight = 20;
+    self.Lists.ItemHeight = 24;
     self.Lists.ItemTemplate = "Vendor_ItemLists_ListItem";
     self.Lists.ItemClass = ListsItem;
     self.Items.isReadOnly = false;
 	self.EditList:Disable();
-
-    --self.NewList:Hide();
-    --self.EditList:Hide();
 
     self.Lists.GetItems = function()
         if (not self.lists) then

@@ -101,7 +101,7 @@
 				</Anchors>
 			</Frame>
 
-			<Frame parentKey="ProfilesPanel" id="5" inherits="Vendor_ProfilesPanel,Vendor_TabPanel_Base" hidden="true">
+			<Frame parentKey="ProfilesPanel" id="6" inherits="Vendor_ProfilesPanel,Vendor_TabPanel_Base" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
@@ -115,7 +115,14 @@
 				</Anchors>
 			</Frame>
 
-			<Frame parentKey="AuditPanel" id="4" inherits="Vendor_AuditPanel,Vendor_TabPanel_Base" hidden="true">
+			<Frame parentKey="AuditPanel" id="5" inherits="Vendor_AuditPanel,Vendor_TabPanel_Base" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
+				</Anchors>
+			</Frame>
+
+			<Frame inherits="Vendor_TabPanel_Base,Vendor_SettingsPanel" parentKey="ConfigPanel" id="4" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
@@ -161,19 +168,30 @@
 				</Anchors>
 			</Button>
 
+			<!-- config tab -->
+			<Button name="$parentConfigTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ConfigTab" enabled="false">
+				<KeyValues>
+					<KeyValue key="LocKey" value="RULES_DIALOG_CONFIG_TAB" type="string"/>
+					<KeyValue key="TabName" value="config" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.HelpTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
+				</Anchors>
+			</Button>			
+
 			<!-- Audit Tab -->
-			<Button name="$parentAuditTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="AuditTab" enabled="false">
+			<Button name="$parentAuditTab" inherits="Vendor_RulesDialog_Tab" id="5" parentKey="AuditTab" enabled="false">
 				<KeyValues>
 					<KeyValue key="LocKey" value="CONFIG_DIALOG_AUDIT_TAB" type="string"/>
 					<KeyValue key="TabName" value="audit" type="string"/>
 				</KeyValues>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.HelpTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ConfigTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
 				</Anchors>
 			</Button>
 
 			<!-- Profiles -->
-			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="5" parentKey="ProfileTab">
+			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="6" parentKey="ProfileTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
 					<KeyValue key="TabName" value="profiles" type="string"/>
@@ -182,6 +200,7 @@
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.AuditTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
 				</Anchors>
 			</Button>
+
 
 		</Frames>
 		<Scripts>

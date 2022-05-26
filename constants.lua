@@ -25,6 +25,15 @@ Addon.c_Config_SellThrottle = "sell_throttle"
 Addon.c_Config_ThrottleTime = "throttle_time"
 Addon.c_Config_AutoRepair = "autorepair"
 Addon.c_Config_GuildRepair = "guildrepair"
+Addon.c_Config_Minimap = "showminimap"
+Addon.c_Config_MerchantButton = "merchantbutton"
+
+-- Merchant button
+Addon.MerchantButton = {
+    NEVER = 0,
+    ALWAYS = 1,
+    AUTO = 2
+}
 
 -- Rule Types
 Addon.RuleType = {

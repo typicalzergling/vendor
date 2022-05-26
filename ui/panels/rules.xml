@@ -8,10 +8,9 @@
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" parentKey="Name">
-					<Size x="1" y="20"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="8"/>
-						<Anchor point="RIGHT" x="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="-8"/>
 					</Anchors>
 				</FontString>
 			</Layer>

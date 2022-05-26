@@ -50,6 +50,8 @@ function ItemList.OnLoad(self)
 	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
 
 	self:InitBackdrop();	
+	print("--setting item list lsit", Addon.Controls.List.AdjustScrollbar);
+	Addon.Controls.List.AdjustScrollbar(self.List);
 
 	--self.List.emptyText.LocKey = self.EmptyTextKey;
 
