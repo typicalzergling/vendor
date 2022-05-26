@@ -6,6 +6,8 @@ local AddonName, Addon = ...
 
 -- Base frame for event handling.
 local eventFrame = CreateFrame("Frame")
+local eventBroker = Mixin({}, CallbackRegistryMixin)
+CallbackRegistryMixin.OnLoad(eventBroker)
 
 -- Event Handling
 local events = {}
@@ -83,5 +85,63 @@ end
 
 -- Set the script to use the event Dispatcher.
 eventFrame:SetScript("OnEvent", eventDispatcher)
+
+-- Registers a callback for the specified event
+function Addon:RegisterCallback(event, target, handler)
+    assert(event and type(event) == "string", "The event must be a string")
+    assert(target and type(target) == "table", "The target must be an object")
+    assert(type(handle) == "string" or type(handler) == "function", "The handler must be a string or function")
+
+    -- Register the event with a thunk
+    Addon:Debug("events", "Registering callback for event '%s", event)
+    eventBroker:RegisterCallback(event, 
+        function(...)
+            --@debug@--
+            Addon:Debug("events", "Dispatching event '%s'", event)
+            --@end-debug@
+
+            Addon.Invoke(target, handler, ...)
+        end, target)
+end
+
+-- Removes a callback for the given event
+function Addon:UnregisterCallback(event, target)
+    Addon:Debug("events", "Unregistering callback for event '%s'", event)
+    eventBroker:UnregisterCallback(event, target)
+end
+
+-- Raise an event
+function Addon:RaiseEvent(event, ...)
+    --@debug@--
+    Addon:Debug("events", "Raising event '%s'", event)
+    --@end-debug@
+    
+    Addon.Invoke(eventBroker, CallbackRegistryMixin.TriggerEvent, event, ...)
+end
+
+-- Register events which can be raised this is enumeration table 
+-- example: { MY_EVENT = "event" }
+function Addon:GeneratesEvents(events)
+    assert(events and type(events) == "table", "The events argument must be a table")
+    
+    local e = {}
+    for _, event in pairs(events) do
+        table.insert(e, event)
+    end
+
+    eventBroker:GenerateCallbackEvents(e)
+end
+
+-- Unregisters events which can be raised takes the ssame argument as the function above
+function Addon:RemoveEvents(event)
+    assert(events and type(events) == "table", "The events argument must be a table")
+    
+    local e = {}
+    for _, event in pairs(events) do
+        table.insert(e, event)
+    end
+
+    eventBroker:UnregisterEvents(e)
+end
 
 

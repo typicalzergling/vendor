@@ -63,6 +63,12 @@ Addon.SystemListId = {
     DESTROY = "system:always-destroy",
 }
 
+Addon.Events = {
+    AUTO_SELL_START = "auto-sell-start",
+    AUTO_SELL_COMPLETE = "auto-sell-end",
+    AUTO_SELL_ITEM = "auto-sell-item"
+}
+
 -- Blizzard Color Codes that are not in all versions
 -- We create local versions so we can still use these colors regardless of game version.
 Addon.COMMON_GRAY_COLOR		    = CreateColor(0.65882,	0.65882,	0.65882);

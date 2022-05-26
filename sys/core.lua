@@ -27,6 +27,7 @@ local AddonName, Addon = ...
 if _G[AddonName] then
     error("Addon conflict detected. Addon already exists with this name: "..AddonName)
 end
+
 Addon.Public = {}
 _G[AddonName] = Addon.Public
 

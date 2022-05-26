@@ -146,7 +146,10 @@ end
 -- invokes the function and wraps it.
 function Addon.Invoke(object, method, ...)
     if (type(object) == "table") then
-        local fn = object[method];
+        local fn = method
+        if (type(fn) == "string") then
+            fn = object[method];
+        end
         if (type(fn) == "function") then
             local results = { xpcall(fn, CallErrorHandler, object, ...) };
             if (results[1]) then

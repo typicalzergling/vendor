@@ -21,6 +21,7 @@ BINDING_DESC_VENDORRULES = L["BINDING_DESC_VENDORRULES"]
 -- This is the first event fired after Addon is completely ready to be loaded.
 -- This is one-time initialization and setup.
 function Addon:OnInitialize()
+    self:GeneratesEvents(self.Events)
 
     -- Setup Console Commands
     self:SetupConsoleCommands()
@@ -49,6 +50,9 @@ function Addon:OnInitialize()
     self:PreHookFunction(GameTooltip, "SetBagItem", "OnGameTooltipSetBagItem")
     self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
     self:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
+
+    -- Merchant Button
+    self.MerchantButton.Initialize()
 
     -- Publish our LDB Data Objects
     self:SetupLDBPlugin()
