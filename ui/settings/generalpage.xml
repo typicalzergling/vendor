@@ -65,8 +65,8 @@
             <!-- Merchant seetings -->
 			<Frame parentKey="Merchant" inherits="Vendor_Setting_Checkbox">
 				<KeyValues>
-					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_MERCHANT_GENERAL" type="string"/>
-					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_MERCHANT_GENERAL" type="string"/>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_SELLBUTTON" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_SELLBUTTON" type="string"/>
 				</KeyValues>
                 <Size x="250" y="54"/>
                 <Anchors>
@@ -74,7 +74,7 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>		
-            
+
 			<!--<Frame parentKey="TooltipRule" inherits="Vendor_Setting_Check_Small">
 				<KeyValues>
 					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_EXTRARULEINFO" type="string"/>
