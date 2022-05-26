@@ -3,7 +3,7 @@
 
     <Frame name="Vendor_Settings_Performance" virtual="true" inherits="Vendor_Settings_Panel">
 	    <KeyValues>
-            <KeyValue key="HelpTextLocKey" value="OPTIONS_TITLE_PERFORMANCE" type="string"/>
+            <KeyValue key="HelpTextLocKey" value="OPTIONS_DESC_PERFORMANCE" type="string"/>
         </KeyValues>
 		<Frames>
             <Frame  parentKey="SellThrottle" inherits="Vendor_Setting_Slider">

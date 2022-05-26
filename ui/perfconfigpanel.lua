@@ -54,7 +54,7 @@ end
 --*****************************************************************************
 function Addon.ConfigPanel.Perf.Init(self)
     self.Title:SetText(L["OPTIONS_CATEGORY_PERFORMANCE"])
-    self.HelpText:SetText(L["OPTIONS_TITLE_PERFORMANCE"])
+    self.HelpText:SetText(L["OPTIONS_DESC_PERFORMANCE"])
 
     self.SellThrottle.Label:SetText(L["OPTIONS_SETTINGNAME_SELL_THROTTLE"])
     self.SellThrottle.Text:SetText(L["OPTIONS_SETTINGDESC_SELL_THROTTLE"])
