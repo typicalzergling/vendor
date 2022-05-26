@@ -142,6 +142,108 @@
 		</Scripts>
     </Frame>	
 
+    <!--
+        Vendor.Options.SliderTemplate
+            Template used for a slider (value contained to range) this contains the label, instructional text,
+            slider which includes max/min and value text
+    -->
+    <Frame name="Vendor_Setting_Slider" virtual="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Label" inherits="GameFontHighlightLarge" justifyH="LEFT" JustifyV="CENTER">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="-20" relativePoint="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parent.Text" parentKey="Text" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"  x="0" y="-24"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="20"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Max" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER" text="max">
+                    <Size x="30" y="16"/>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.Text" y="-4" x="-8"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Min" inherits="GameFontNormalSmall" justifyH="RIGHT" justifyV="CENTER" text="min">
+                    <Size x="30" y="16"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Text" y="-4" x="8"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="DisplayValue" inherits="GameFontGreen" justifyH="CENTER" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" y="-4" relativeKey="$parent.Min" />
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" y="-4" relativeKey="$parent.Max" />
+                    </Anchors>
+                </FontString>
+
+            </Layer>
+        </Layers>
+        <Frames>
+            <Slider parentKey="Value"  obeyStepOnDrag="true" inherits="HorizontalSliderTemplate">
+                <Size x="10" y="16"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.Min" x="8" />
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.Max" x="-8" />
+                </Anchors>
+                <Scripts>
+                    <OnValueChanged>
+                        local parent = self:GetParent()
+                        local fmt = parent.NumFormat or "%d"
+                        parent.DisplayValue:SetFormattedText(fmt, value)
+
+                        if (type(parent.OnChange) == "function") then
+                            parent.OnChange(value)
+                        end
+                    </OnValueChanged>
+                </Scripts>
+            </Slider>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                local color = HIGHLIGHT_FONT_COLOR
+                self.Min:SetTextColor(color.r, color.g, color.b, 0.8)
+                self.Max:SetTextColor(color.r, color.g, color.b, 0.8)
+
+                local key = self.LabelLocKey
+                if (type(key) == "string") then
+                    self.Label.LocKey = key
+                end
+
+                key = self.TextLocKey
+                if (type(key) == "string") then
+                    self.Text.LocKey = key
+                else
+                    self.Text:Hide()
+                    local h = self:GetHeight() - self.Text:GetHeight()
+                    self.Text:SetHeight(0)
+                    self:SetHeight(h)
+                end
+
+                local max = self.MaxValue or 0
+                local min = self.MinValue or 10
+                local numfmt = self.NumFormat or "%d"
+
+                self.Max:SetFormattedText(numfmt, max)
+                self.Min:SetFormattedText(numfmt, min)
+                self.Value:SetMinMaxValues(min, max)
+                self.Value:SetValueStep(self.Step or 1)
+
+                self.SetValue = function(_, value)
+                    value = math.max(value, min)
+                    value = math.min(value, max)
+                    self.Value:SetValue(value)
+                    self.DisplayValue:SetFormattedText(numfmt, value)
+                end
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+
     <Frame name="Vendor_Settings_Panel" virtual="true">
         <Layers>
             <Layer level="ARTWORK">

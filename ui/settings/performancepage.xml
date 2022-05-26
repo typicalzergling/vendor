@@ -3,8 +3,40 @@
 
     <Frame name="Vendor_Settings_Performance" virtual="true" inherits="Vendor_Settings_Panel">
 	    <KeyValues>
-            <KeyValue key="HelpTextLocKey" value="OPTIONS_DESC_PERFORMANCE" type="string"/>
+            <KeyValue key="HelpTextLocKey" value="OPTIONS_TITLE_PERFORMANCE" type="string"/>
         </KeyValues>
+		<Frames>
+            <Frame  parentKey="SellThrottle" inherits="Vendor_Setting_Slider">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_SELL_THROTTLE" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_SELL_THROTTLE" type="Text"/>
+					<KeyValue key="MaxValue" value="5" type="number"/>
+					<KeyValue key="MinValue" value="1" type="number"/>
+					<KeyValue key="Step" value="1" type="number"/>
+				</KeyValues>
+                <Size x="10" y="80"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.HelpText" relativePoint="BOTTOMLEFT"/>
+                    <Anchor point="RIGHT" relativeKey="$parent.HelpText" />
+                </Anchors>
+            </Frame>
+
+            <Frame  parentKey="TimeThrottle" inherits="Vendor_Setting_Slider">
+				<KeyValues>
+					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_CYCLE_RATE" type="string"/>
+					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_CYCLE_RATE" type="Text"/>
+					<KeyValue key="MaxValue" value="2" type="number"/>
+					<KeyValue key="MinValue" value="0" type="number"/>
+					<KeyValue key="Step" value="0.1" type="number"/>
+					<KeyValue key="NumFormat" value="%0.2f" type="string"/>
+				</KeyValues>
+                <Size x="10" y="80"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.SellThrottle" relativePoint="BOTTOMLEFT" y="-12"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.SellThrottle" relativePoint="BOTTOMRIGHT" y="-12"/>
+                </Anchors>
+            </Frame>
+		</Frames>
 		<Scripts>
 			<OnLoad>Vendor.LoadImplementation(self, "Settings", "Performance")</OnLoad>
 		</Scripts>

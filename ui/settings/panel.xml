@@ -21,18 +21,21 @@
 					</Anchors>
 				</FontString>				
 			</Layer>		
-            <Layer level="BACKGROUND">
-                <FontString inherits="GameFontDisableTiny" justifyH="RIGHT" justifyV="BOTTOM" parentKey="VersionInfo">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="10" y="30"/>
-                        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-10" y="8"/>
-                    </Anchors>
-                </FontString>
-            </Layer>				
+			<Layer level="BACKGROUND">
+				<FontString inherits="GameFontDisableTiny" justifyH="RIGHT" justifyV="BOTTOM" parentKey="VersionInfo">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="10" y="30"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-10" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>				
 		</Layers>
 		<Frames>
 
 			<Frame inherits="Vendor_DropMenu" parentKey="Categories">
+				<KeyValues>
+					<KeyValue key="noAutoSelect" value="true" type="boolean"/>
+				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.CategoryLabel" x="4"/>
 					<Anchor point="RIGHT" x="-16"/>

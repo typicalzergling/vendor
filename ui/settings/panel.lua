@@ -44,9 +44,16 @@ end
 
 function SettingsPanel:OnShow()
 	if (not self.page) then
+		self.Categories:SetText(SETTINGS_DATA[1].name)
 		self:ShowPage(1)
 	else
 		self.page:Show()
+	end
+end
+
+function SettingsPanel:OnHide()
+	if (self.page) then
+		self.page:Hide()
 	end
 end
 
@@ -84,10 +91,10 @@ function SettingsPanel:ShowPage(index)
 	end
 
 	-- Adjust the visiblity of the pages
-	frame:Show()
 	if (self.page) then
 		self.page:Hide()
 	end
+	frame:Show()
 	self.page = frame
 end
 
