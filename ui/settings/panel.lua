@@ -37,14 +37,18 @@ local SETTINGS_DATA =
 function SettingsPanel:OnLoad()
 	self:SetPages();
 
+	self:SetScript("OnShow", self.OnShow)
+	self:SetScript("OnHide", self.OnHide)
+
 	self.Categories.OnSelection = function(_, index) 
         self:ShowPage(index)
     end	
 end
 
 function SettingsPanel:OnShow()
+	Addon:Debug("settings", "Setting tab show")
 	if (not self.page) then
-		self.Categories:SetText(SETTINGS_DATA[1].name)
+		self.Categories:SetText(L[SETTINGS_DATA[1].name])
 		self:ShowPage(1)
 	else
 		self.page:Show()
