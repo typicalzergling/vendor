@@ -142,6 +142,7 @@ end
 
 function MerchantButton:BAG_UPDATE(bag)
 	Addon:Debug("merchantbutton", "Merchant buton bag %d updated", bag)
+	self:UpdateSellState(Addon:IsAutoSelling())
 end
 
 --[[===========================================================================
