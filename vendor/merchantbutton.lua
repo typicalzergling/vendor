@@ -13,55 +13,49 @@ local MerchantButton =
 	_autoHookHandlers = true
 }
 
-local PROGESS = 
-{ 
-	"|cff808080...|r", 
-	"|cffffff00o|cff808080...|r", 
-	"|cffffff00Oo|cff808080..|r", 
-	"|cffffff00oO|cff808080.|r", 
-	".|cffffff00Oo|r|r", 
-	"..|cffffff00o|r",
-}
-
 --[[===========================================================================
    | Called when this panel is loaded 
    ==========================================================================]]
 function MerchantButton:OnLoad()
 	Addon:Debug("merchantbutton", "OnLoad of merchant button")
-	self.progressIndex = 1
 end
 
+local MERCHANT_SELL_ITEMS = "Sell [%d]"
+local MERCHANT_DESTROY_ITEMS = "Destroy [%d]"
+
+--[[===========================================================================
+   | Called to adjust the button state of sell/destroy
+   ==========================================================================]]
+function MerchantButton:SetButtonState(button, text, count)
+	button:SetFormattedText(text, count)
+	if (count == 0 or self.inProgress) then
+		button:Disable()
+	else
+		button:Enable()
+	end
+end
+
+--[[===========================================================================
+   | Called to update the state of our buttons on the merchant frame
+   ==========================================================================]]
 function MerchantButton:UpdateSellState(inProgress)
 	local sell = self.Sell
+	local destory = self.Destroy
 
 	if (inProgress) then
-		sell:SetText("Vendor")
 		sell:Disable()
+		destroy:Disable()
 	else		
-		local _, _, toSell = Addon:GetEvaluationStatus()
+		local _, _, toSell, toDestroy = Addon:GetEvaluationStatus()
 		local maxSell = self:GetProfileValue(MAX_SELL) or 0
-		Addon:Debug("merchantbutton", "Updating state items to sell %d with max %d", toSell, maxSell)
+		Addon:Debug("merchantbutton", "Updating state items to sell %d with max %d, destory %d", toSell, maxSell, toDestroy)
 
 		if (maxSell ~= 0) then
 			toSell = math.min(maxSell, toSell)
 		end
 
-		if (toSell ~= 0) then
-			sell:Enable()
-			sell:SetFormattedText("Vendor (%d items)", toSell)
-			sell:Enable()
-		else
-			sell:Disable()
-			sell:SetText("Vendor")
-		end
-	end
-end
-
-function MerchantButton:OnProgress()
-	self.Sell:SetText(PROGESS[self.progressIndex])
-	self.progressIndex = self.progressIndex + 1
-	if (self.progressIndex > table.getn(PROGESS)) then
-		self.progressIndex = 1
+		self:SetButtonState(sell, MERCHANT_SELL_ITEMS, toSell)
+		self:SetButtonState(destory, MERCHANT_DESTROY_ITEMS, toDestroy)
 	end
 end
 
@@ -74,11 +68,8 @@ function MerchantButton:OnShow()
 	Addon:RegisterCallback(AUTO_SELL_COMPLETE, self, self.OnAutoSellComplete)
 
 	local selling = Addon:IsAutoSelling()
+	self.inProgress = selling
 	self:UpdateSellState(selling)
-	if (selling) then
-		self.progressIndex = 1
-		Addon:RegisterCallback(AUTO_SELL_ITEM, self, self.OnProgress)
-	end
 end
 
 --[[===========================================================================
@@ -126,9 +117,8 @@ end
    ==========================================================================]]
 function MerchantButton:OnAutoSellStarted()
 	Addon:Debug("merchantbutton", "Merchant button auto-sell started")
+	self.inProgress = true
 	self:UpdateSellState(true)
-	self.progressIndex = 1
-	Addon:RegisterCallback(AUTO_SELL_ITEM, self, self.OnProgress)
 end
    
 --[[===========================================================================
@@ -136,13 +126,13 @@ end
    ==========================================================================]]
 function MerchantButton:OnAutoSellComplete()
 	Addon:Debug("merchantbutton", "Merchant buton auto-sell completed")
-	Addon:UnregisterCallback(AUTO_SELL_ITEM, self)
+	self.inProgress = false
 	self:UpdateSellState(false)
 end   
 
 function MerchantButton:BAG_UPDATE(bag)
 	Addon:Debug("merchantbutton", "Merchant buton bag %d updated", bag)
-	self:UpdateSellState(Addon:IsAutoSelling())
+	self:UpdateSellState(self.inProgress)
 end
 
 --[[===========================================================================
