@@ -67,12 +67,12 @@ function Addon:CanSellAtMerchant()
     return GetMerchantNumItems() > 0
 end
 
-local function setIsAutoSelling(isSelling)
+local function setIsAutoSelling(isSelling, limit)
     if (isSelling ~= isAutoSelling) then
         isAutoSelling = isSelling
         if (isAutoSelling) then
             Addon:Debug("autosell", "firing starting event")
-            Addon:RaiseEvent(AUTO_SELL_START)
+            Addon:RaiseEvent(AUTO_SELL_START, limit)
         else
             Addon:Debug("autosell", "firing ending event")
             Addon:RaiseEvent(AUTO_SELL_COMPLETE)
@@ -105,13 +105,19 @@ function Addon:AutoSell()
 
     -- Create the coroutine.
     local thread = function ()
-        setIsAutoSelling(true)
         local numSold = 0
         local totalValue = 0
         local profile = Addon:GetProfile();
         local sellLimitEnabled = profile:GetValue(Addon.c_Config_SellLimit)
         local sellLimitMaxItems = Addon.c_BuybackLimit
         local sellThrottle = profile:GetValue(Addon.c_Config_SellThrottle)
+
+        setIsAutoSelling(true)
+        if (sellLimitEnabled) then
+            setIsAutoSelling(true, sellLimitMaxItems)
+        else
+            setIsAutoSelling(true, 0)
+        end
 
         -- If this merchant has no items it is not a sellable merchant (such as an autohammer), so terminate.
         if not Addon:CanSellAtMerchant() then
@@ -158,10 +164,10 @@ function Addon:AutoSell()
                     -- Still open, so OK to sell it.
                     if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                         UseContainerItem(bag, slot)
-                        Addon:RaiseEvent(AUTO_SELL_ITEM, item.Link)
+                        Addon:RaiseEvent(AUTO_SELL_ITEM, item.Link, numSold, sellLimitMaxItems)
                     else
                         self:Print("Simulating selling of: %s", tostring(item.Link))
-                        Addon:RaiseEvent(AUTO_SELL_ITEM, item.Link)
+                        Addon:RaiseEvent(AUTO_SELL_ITEM, item.Link, numSold, sellLimitMaxItems)
                     end
 
                     -- Record sell data

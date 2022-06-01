@@ -44,6 +44,12 @@ function MerchantButton:UpdateSellState(inProgress)
 	if (inProgress) then
 		sell:Disable()
 		destroy:Disable()
+
+		local left = math.max(1, self.limit - self.soldThisTime)
+		if (left ~= 0) then
+			Addon:Debug("merchantbutton", "Updating button to reflect sold item: %d left", left)
+			self:SetButtonState(sell, MERCHANT_SELL_ITEMS, left)
+		end
 	else		
 		local _, _, toSell, toDestroy = Addon:GetEvaluationStatus()
 		local maxSell = self:GetProfileValue(MAX_SELL) or 0
@@ -53,6 +59,7 @@ function MerchantButton:UpdateSellState(inProgress)
 			toSell = math.min(maxSell, toSell)
 		end
 
+		self.total = toSell
 		self:SetButtonState(sell, MERCHANT_SELL_ITEMS, toSell)
 		self:SetButtonState(destroy, MERCHANT_DESTROY_ITEMS, toDestroy)
 	end
@@ -108,7 +115,7 @@ function MerchantButton.OnMerchantOpened()
 	if (state) then
 		Addon:Debug("merchantbutton", "merchant open")
 		if (not MerchantButton.frame) then
-			frame = CreateFrame("Frame", "VendorMerchantButton", MerchantFrame, "Vendor_Merchant_Button")
+			local frame = CreateFrame("Frame", "VendorMerchantButton", MerchantFrame, "Vendor_Merchant_Button")
 			MerchantButton.frame = frame;
 		end
 
@@ -129,10 +136,14 @@ end
 --[[===========================================================================
    | Called when this page is shown
    ==========================================================================]]
-function MerchantButton:OnAutoSellStarted()
-	Addon:Debug("merchantbutton", "Merchant button auto-sell started")
+function MerchantButton:OnAutoSellStarted(_, limit)
+	Addon:Debug("merchantbutton", "Merchant button auto-sell started (limit: %d)", limit)
 	self.inProgress = true
+	table.forEach(limit, print)
+	self.limit = math.max(limit, self.total or 0)
+	self.soldThisTime = 0
 	self:UpdateSellState(true)
+	Addon:RegisterCallback(AUTO_SELL_ITEM, self, self.OnAutoSellItem)
 end
    
 --[[===========================================================================
@@ -141,8 +152,18 @@ end
 function MerchantButton:OnAutoSellComplete()
 	Addon:Debug("merchantbutton", "Merchant buton auto-sell completed")
 	self.inProgress = false
+	self.limit = -1
+	Addon:UnregisterCallback(AUTO_SELL_ITEM, self)
 	self:UpdateSellState(false)
 end   
+
+function MerchantButton:OnAutoSellItem()
+	if (self.inProgress and self.limit ~= 0) then
+		self.soldThisTime = self.soldThisTime + 1
+		Addon:Debug("merchantframe", "Auto-sold item updating button status %d / %d", self.soldThisTime, self.limit)
+		self:UpdateSellState(true)
+	end
+end
 
 --[[===========================================================================
    | Called when the bag is updated
