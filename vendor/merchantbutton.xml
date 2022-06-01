@@ -3,9 +3,9 @@
 
 	<!-- Rules dialog Frame -->
 	<Frame name="Vendor_Merchant_Button" virtual="true" hidden="true" frameStrata="HIGH">
-		<Size x="132" y="82"/>
+		<Size x="132" y="76"/>
 		<Anchors>
-			<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="MerchantFrameBg"/>
+			<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="MerchantFrameBg"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND" textureSubLevel="-2">
@@ -16,13 +16,6 @@
 					<Anchor point="TOPLEFT"/>
 					<Anchor point="BOTTOMRIGHT"/>
 				</Anchors>
-				<Texture file="Interface\PaperDollFrame\UI-Character-InActiveTab">
-					<Size x="20" y="32"/>
-					<TexCoords left="0" right="0.15625" top="0" bottom="1.0"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="-1"/>
-					</Anchors>
-				</Texture>
 			</Layer>		
 			<Layer  level="ARTWORK">				
 				<FontString parentKey="Title" inherits="GameFontNormal">
@@ -31,8 +24,8 @@
 						<KeyValue key="LocKey" value="ADDON_NAME" type="string"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOOPLEFT" x="8" y="-8"/>
-						<Anchor point="TOPRIGHT" x="-8" y="-8"/>
+						<Anchor point="TOOPLEFT" x="8" y="-4"/>
+						<Anchor point="TOPRIGHT" x="-8" y="-4"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -56,7 +49,7 @@
 					<Anchor point="RIGHT" relativeKey="$parent.Sell"/>
 				</Anchors>
 				<Scripts>
-					<OnClick>self:GetParent().Invoke(self:GetParent(), "OnDesotryClicked")</OnClick>
+					<OnClick>self:GetParent().Invoke(self:GetParent(), "OnDestroyClicked")</OnClick>
 				</Scripts>
 			</Button>			
 		</Frames>

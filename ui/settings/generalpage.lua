@@ -40,11 +40,7 @@ function GeneralPage:OnLoad()
 
 	self.Merchant.OnChange = function(state)
 		Addon:Debug("settings", "General (Merchant) has changed to: %s", state)
-		if (state) then
-			self:SetProfileValue(MERCHANT, MerchantButton.ALWAYS)
-		else
-			self:SetProfileValue(MERCHANT, MerchantButton.NEVER)
-		end
+		self:SetProfileValue(MERCHANT, state == true)
 	end
 
 	self.MiniMap:Disable()
@@ -72,8 +68,7 @@ function GeneralPage:OnShow()
 	self.Tooltip:SetChecked(tooltip)
 	self.AutoRepair:SetChecked(autoRepair)
 	self.MiniMap:SetChecked(true)
-	local button = merchant or MerchantButton.NEVER
-	self.Merchant:SetChecked(button ~= MerchantButton.NEVER)	
+	self.Merchant:SetChecked(merchant)	
 end
 
 Addon.Settings = Addon.Settings or {}

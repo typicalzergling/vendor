@@ -96,6 +96,7 @@ end
 function MerchantButton:OnDestroyClicked()
 	Addon:Debug("merchantbutton", "destroy was clicked")
 	if (not Addon:IsAutoSelling()) then
+		Addon:DestroyItems()
 	end
 end
 
@@ -103,8 +104,8 @@ end
    | Called when this page is shown
    ==========================================================================]]
 function MerchantButton.OnMerchantOpened()
-	local state = Addon:GetProfile():GetValue(MERCHANT)
-	if (state ~= ButtonState.NEVER) then
+	local state = Addon:GetProfile():GetValue(MERCHANT) or false
+	if (state) then
 		Addon:Debug("merchantbutton", "merchant open")
 		if (not MerchantButton.frame) then
 			frame = CreateFrame("Frame", "VendorMerchantButton", MerchantFrame, "Vendor_Merchant_Button")

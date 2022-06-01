@@ -260,6 +260,8 @@ end
 
 function Addon:OnCheckProfileMigration(profile)
 	-- Current a no-op
+
+	-- Set this to true as well: Addon.c_Config_MerchantButton
 end
 
 Addon.Profile = Profile;
