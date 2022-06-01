@@ -24,12 +24,9 @@
 		</Scripts>
 	</ScrollFrame>
 
-	<Frame name="Vendor_ItemList" virtual="true" inherits="TooltipBackdropTemplate">
+	<Frame name="Vendor_ItemList" virtual="true" inherits="Vendor_BorderFrame">
         <KeyValues>
             <KeyValue key="Implementation" value="ItemList" type="string"/>
-			<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
-			<KeyValue key="backdropColor" value="DARKGRAY_COLOR" type="global"/>
-			<KeyValue key="backdropColorAlpha" value="0.20" type="number"/>
         </KeyValues>
 		<Frames>
 			<ScrollFrame parentKey="List" inherits="Vendor_Item_List">

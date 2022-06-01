@@ -36,7 +36,7 @@
 
 local AddonName, Addon = ...
 local ListItem = Addon.Controls.ListItem
-local ListBase = table.copy(Addon.Controls.EmptyListMixin)
+local ListBase = Mixin({}, Addon.Controls.EmptyListMixin)
 local NEED_UPDATE_KEY = {}
 
 --[[===========================================================================

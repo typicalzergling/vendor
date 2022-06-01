@@ -3,9 +3,9 @@
 
 	<!-- Rules dialog Frame -->
 	<Frame name="Vendor_Merchant_Button" virtual="true" hidden="true" frameStrata="HIGH">
-		<Size x="132" y="82"/>
+		<Size x="132" y="76"/>
 		<Anchors>
-			<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="MerchantFrameBg"/>
+			<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="MerchantFrameBg"/>
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND" textureSubLevel="-2">
@@ -21,11 +21,11 @@
 				<FontString parentKey="Title" inherits="GameFontNormal">
 					<Size x="20" y="16"/>
 					<KeyValues>
-						<KeyValue key="LocKey" value="VENDOR" type="string"/>
+						<KeyValue key="LocKey" value="ADDON_NAME" type="string"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOOPLEFT" x="8" y="-8"/>
-						<Anchor point="TOPRIGHT" x="-8" y="-8"/>
+						<Anchor point="TOOPLEFT" x="8" y="-4"/>
+						<Anchor point="TOPRIGHT" x="-8" y="-4"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -49,7 +49,7 @@
 					<Anchor point="RIGHT" relativeKey="$parent.Sell"/>
 				</Anchors>
 				<Scripts>
-					<OnClick>self:GetParent().Invoke(self:GetParent(), "OnDesotryClicked")</OnClick>
+					<OnClick>self:GetParent().Invoke(self:GetParent(), "OnDestroyClicked")</OnClick>
 				</Scripts>
 			</Button>			
 		</Frames>

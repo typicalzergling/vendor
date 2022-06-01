@@ -26,15 +26,7 @@
 		<FontString inherits="ChatFontNormal"/>
    	</EditBox>
 
-	<Frame name="Vendor_FrameBorder" virtual="true" inherits="TooltipBackdropTemplate">
-        <KeyValues>
-			<KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
-			<KeyValue key="backdropColor" value="DARKGRAY_COLOR" type="global"/>
-			<KeyValue key="backdropColorAlpha" value="0.30" type="number"/>
-        </KeyValues>
-	</Frame>
-
-	<Frame name="Vendor_Edit" virtual="true" inherits="Vendor_FrameBorder">
+	<Frame name="Vendor_Edit" virtual="true" inherits="Vendor_BorderFrame">
    		<Layers>
    			<Layer level="BACKGROUND">
 				<FontString parentKey="Placeholder" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="MIDDLE">
@@ -72,10 +64,7 @@
 
 	</Frame>
 
-	<Frame name="Vendor_TextArea" virtual="true" inherits="Vendor_FrameBorder">
-        <KeyValues>
-			<KeyValue key="scrollable" value="true" type="boolean"/>
-		</KeyValues>
+	<Frame name="Vendor_TextArea" virtual="true" inherits="Vendor_BorderFrame">
    		<Layers>
    			<Layer level="BACKGROUND">
 				<FontString parentKey="Placeholder" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" text="placeholder">

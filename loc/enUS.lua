@@ -53,6 +53,8 @@ MERCHANT_SOLD_ITEMS = "Sold %s items for %s",
 MERCHANT_WITHDRAWN_ITEMS = "Withdrew %s items.",
 MERCHANT_SELL_LIMIT_REACHED = "Reached the sell limit (%s), stopping auto-sell.",
 MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL = "Auto-accepted confirmation of making %s non-tradeable.",
+MERCHANT_SELL_ITEMS = "Sell [%d]",
+MERCHANT_DESTROY_ITEMS = "Destroy [%d]",
 
 -- Destroy
 ITEM_DESTROY_SUMMARY = "Destroyed %s items.",

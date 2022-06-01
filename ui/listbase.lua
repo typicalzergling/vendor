@@ -268,6 +268,7 @@ function ListBase:AdjustScrollbar()
         local buttonHeight = scrollbar.ScrollUpButton:GetHeight();
         local background = self.scrollbarBackground;
         if (background) then
+			background:SetColorTexture(0.20, 0.20, 0.20, 0.3)
             background:ClearAllPoints();
             background:SetPoint("TOPLEFT", scrollbar.ScrollUpButton, "BOTTOMLEFT", 0, buttonHeight / 2);
             background:SetPoint("BOTTOMRIGHT", scrollbar.ScrollDownButton, "TOPRIGHT", 0, -buttonHeight / 2);
