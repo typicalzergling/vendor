@@ -1,6 +1,6 @@
 local _, Addon = ...;
 local Edit = {};
-local EditHost = {};
+local EditHost = Mixin({}, BackdropTemplateMixin)
 
 function Edit:OnLoad()
 	CallbackRegistryMixin.OnLoad(self);
@@ -70,8 +70,6 @@ function Edit:OnChange()
 end
 
 function EditHost:OnLoad()
-	Mixin(self, Addon.Controls.VendorBackdrop)
-	self:InitBackdrop();
 
 	if (self.Scroll) then
 		self:AdjustScrollBar();

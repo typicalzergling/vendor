@@ -1,11 +1,13 @@
 local AddonName, Addon = ...
-local locale = Addon:GetLocale();
+local L = Addon:GetLocale();
 local ButtonState = Addon.MerchantButton
 local MERCHANT = Addon.c_Config_MerchantButton
 local AUTO_SELL_START = Addon.Events.AUTO_SELL_START
 local AUTO_SELL_COMPLETE = Addon.Events.AUTO_SELL_COMPLETE
 local MAX_SELL = Addon.c_Config_MaxSellItems
 local AUTO_SELL_ITEM = Addon.Events.AUTO_SELL_ITEM
+local MERCHANT_SELL_ITEMS = L["MERCHANT_SELL_ITEMS"]
+local MERCHANT_DESTROY_ITEMS = L["MERCHANT_DESTROY_ITEMS"]
 
 local MerchantButton = 
 {
@@ -19,9 +21,6 @@ local MerchantButton =
 function MerchantButton:OnLoad()
 	Addon:Debug("merchantbutton", "OnLoad of merchant button")
 end
-
-local MERCHANT_SELL_ITEMS = "Sell [%d]"
-local MERCHANT_DESTROY_ITEMS = "Destroy [%d]"
 
 --[[===========================================================================
    | Called to adjust the button state of sell/destroy
@@ -40,7 +39,7 @@ end
    ==========================================================================]]
 function MerchantButton:UpdateSellState(inProgress)
 	local sell = self.Sell
-	local destory = self.Destroy
+	local destroy = self.Destroy
 
 	if (inProgress) then
 		sell:Disable()
@@ -55,7 +54,7 @@ function MerchantButton:UpdateSellState(inProgress)
 		end
 
 		self:SetButtonState(sell, MERCHANT_SELL_ITEMS, toSell)
-		self:SetButtonState(destory, MERCHANT_DESTROY_ITEMS, toDestroy)
+		self:SetButtonState(destroy, MERCHANT_DESTROY_ITEMS, toDestroy)
 	end
 end
 
@@ -81,6 +80,9 @@ function MerchantButton:OnHide()
 	Addon:UnregisterCallback(AUTO_SELL_COMPLETE, self)
 end
 
+--[[===========================================================================
+   | Called when the sell button is clicked, run auto-sell
+   ==========================================================================]]
 function MerchantButton:OnSellClicked()
 	Addon:Debug("merchantbutton", "auto-sell was clicked")
 	if (not Addon:IsAutoSelling()) then
@@ -89,25 +91,36 @@ function MerchantButton:OnSellClicked()
 end
 
 --[[===========================================================================
+   | Called when the destory button is clicked, destroys one item
+   ==========================================================================]]
+function MerchantButton:OnDestroyClicked()
+	Addon:Debug("merchantbutton", "destroy was clicked")
+	if (not Addon:IsAutoSelling()) then
+	end
+end
+
+--[[===========================================================================
    | Called when this page is shown
    ==========================================================================]]
 function MerchantButton.OnMerchantOpened()
-	Addon:Debug("merchantbutton", "merchant open")
-	if (not MerchantButton.frame) then
-		frame = CreateFrame("Frame", "VendorMerchantButton", MerchantFrame, "Vendor_Merchant_Button")
-		MerchantButton.frame = frame;
-	end
+	local state = Addon:GetProfile():GetValue(MERCHANT)
+	if (state ~= ButtonState.NEVER) then
+		Addon:Debug("merchantbutton", "merchant open")
+		if (not MerchantButton.frame) then
+			frame = CreateFrame("Frame", "VendorMerchantButton", MerchantFrame, "Vendor_Merchant_Button")
+			MerchantButton.frame = frame;
+		end
 
-	MerchantButton.frame:Show()
+		MerchantButton.frame:Show()
+	end
 end
 
 --[[===========================================================================
    | Called when this page is shown
    ==========================================================================]]
 function MerchantButton.OnMerchantClosed()
-	Addon:Debug("merchantbutton", "merchant closed")
-
 	if (MerchantButton.frame) then
+		Addon:Debug("merchantbutton", "merchant closed")
 		MerchantButton.frame:Hide()
 	end
 end
@@ -130,9 +143,14 @@ function MerchantButton:OnAutoSellComplete()
 	self:UpdateSellState(false)
 end   
 
+--[[===========================================================================
+   | Called when the bag is updated
+   ==========================================================================]]
 function MerchantButton:BAG_UPDATE(bag)
-	Addon:Debug("merchantbutton", "Merchant buton bag %d updated", bag)
-	self:UpdateSellState(self.inProgress)
+	if (self:IsShown()) then
+		Addon:Debug("merchantbutton", "Merchant buton bag %d updated", bag)
+		self:UpdateSellState(self.inProgress)
+	end
 end
 
 --[[===========================================================================

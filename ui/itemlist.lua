@@ -5,7 +5,7 @@
     ========================================================================--]]
 
 local AddonName, Addon = ...
-local ItemList = {};
+local ItemList = Mixin({}, CallbackRegistryMixin)
 
 -- Returns true if the item is read-only
 function ItemList:IsReadOnly()
@@ -44,13 +44,10 @@ function ItemList:SetContents(itemList)
 end
 	
 function ItemList.OnLoad(self)
-	Mixin(self, CallbackRegistryMixin, Addon.Controls.VendorBackdrop);
 	self.List.isReadOnly = (self.isReadOnly or false);
 	CallbackRegistryMixin.OnLoad(self);
 	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
 
-	self:InitBackdrop();	
-	print("--setting item list lsit", Addon.Controls.List.AdjustScrollbar);
 	Addon.Controls.List.AdjustScrollbar(self.List);
 
 	--self.List.emptyText.LocKey = self.EmptyTextKey;

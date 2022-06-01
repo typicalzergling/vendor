@@ -75,6 +75,12 @@
                 </Anchors>
             </Frame>		
 
+            <Frame parentKey="New_Merchant" inherits="NewFeatureLabelTemplate">
+                <Anchors>
+                    <Anchor relativeKey="$parent.Merchant" point="RELATIVE" relativePoint="LEFT" x="-4"/>
+                </Anchors>
+            </Frame>
+
 			<!--<Frame parentKey="TooltipRule" inherits="Vendor_Setting_Check_Small">
 				<KeyValues>
 					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_EXTRARULEINFO" type="string"/>

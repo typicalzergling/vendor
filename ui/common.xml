@@ -3,12 +3,19 @@
     <Frame name="Vendor_Dialog_Template2" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" inherits="PortraitFrameTemplate">
     </Frame>
 
-    <Frame inherits="TooltipBackdropTemplate" virtual="true" name="Vendor_BorderFrame">
+    <Frame virtual="true" name="Vendor_BorderFrame" inherits="TooltipBackdropTemplate">
         <KeyValues>
             <KeyValue key="backdropBorderColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
-            <KeyValue key="backdropColor" value="DARKGRAY_COLOR" type="global"/>
+            <KeyValue key="backdropColor" value="LIGHTGRAY_FONT_COLOR" type="global"/>
             <KeyValue key="backdropColorAlpha" value="0.25" type="number"/>
         </KeyValues>
+        <Frames>
+            <Frame>
+                <Scripts>
+                    <OnLoad>self:GetParent():TooltipBackdropOnLoad()</OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
     </Frame>
     
 </Ui>

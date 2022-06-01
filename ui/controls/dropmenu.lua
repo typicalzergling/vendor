@@ -5,9 +5,7 @@ local DropMenu = {}
     | Called to load this control, initalize our state.
     ==========================================================================]]
 function DropMenu:OnLoad()
-    Mixin(self, Addon.Controls.VendorBackdrop);
     self.expanded = false
-    self:InitBackdrop();
 
     self:SetScript("OnMouseDown", function(_, button)
         if (not self.expanded) then

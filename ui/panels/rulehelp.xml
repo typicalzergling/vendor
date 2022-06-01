@@ -96,7 +96,7 @@
 					<Anchor point="RIGHT" x="-8"/>
 				</Anchors>
 			</Frame>
-			<Frame parentKey="Border" inherits="Vendor_FrameBorder">
+			<Frame parentKey="Border" inherits="Vendor_BorderFrame">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.FilterLabel" relativePoint="BOTTOMLEFT" x="0" y="-6"/>
 					<Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
