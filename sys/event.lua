@@ -95,12 +95,24 @@ function Addon:RegisterCallback(event, target, handler)
     -- Register the event with a thunk
     Addon:Debug("events", "Registering callback for event '%s", event)
     eventBroker:RegisterCallback(event, 
-        function(...)
+        function(...)            
             --@debug@--
             Addon:Debug("events", "Dispatching event '%s'", event)
             --@end-debug@
 
-            Addon.Invoke(target, handler, ...)
+            local fn = handler;
+            if (type(handler) == "string") then
+                fn = target[handler]
+            end
+
+            if (type(fn) == "function") then
+                local result, msg = xpcall(fn, CallErrorHandler, ...)
+                if (not result) then
+                    Addon:Debug("error", "Failed to invoke member: %s%s|r", RED_FONT_COLOR_CODE, msg)
+                end
+            else
+                Addon:Debug("events", "Unable to resolve handler for %s", event)
+            end
         end, target)
 end
 
@@ -115,8 +127,8 @@ function Addon:RaiseEvent(event, ...)
     --@debug@--
     Addon:Debug("events", "Raising event '%s'", event)
     --@end-debug@
-    
-    Addon.Invoke(eventBroker, CallbackRegistryMixin.TriggerEvent, event, ...)
+
+    eventBroker:TriggerEvent(event, ...)
 end
 
 -- Register events which can be raised this is enumeration table 

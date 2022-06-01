@@ -1,5 +1,7 @@
 local _, Addon = ...
 local UseProfile = {}
+local PROFILE_CHANGED = Addon.Events.PROFILE_CHANGED
+local NOT_FOUND = {}
 
 --[[===========================================================================
    | Gets a single profile value
@@ -19,12 +21,17 @@ end
    | Gets multiple profile values and returns them
    | Example: 
    |    local a, b = GetProfileValue("a","b") 
+   | 
+   | Note: if the setting isn't found you will get a "NOT_FOUND" in that
+   |       position
    ==========================================================================]]
 function UseProfile:GetProfileValues(...)
 	local v = {}
 	local profile = Addon:GetProfile()
 	for i, name in ipairs({...}) do 
-		table.insert(v, profile:GetValue(name) or nil)
+		local pv = profile:GetValue(name)
+		if (pv == nil) then pv = NOT_FOUND end
+		table.insert(v, pv)
 	end
 	return unpack(v)
 end
@@ -50,9 +57,16 @@ end
    | Hooks up a change event to be called when the values in the profile
    | change, or hte profile itself changes
    ==========================================================================]]
-function UseProfile:ListenForProfileChanges()
+function UseProfile:ObserveProfile()
 	if (type(self.OnProfileChanged) == "function") then
-		local manager = Addon:GetProfileManager()
+		self._listening = true
+		Addon:RegisterCallback(PROFILE_CHANGED, self, self.OnProfileChanged)
+	end
+end
+
+function UseProfile:StopObservingProfile()
+	if (self._listening) then
+		Addon:UnregisterCallback(PROFILE_CHANGED, self)
 	end
 end
 

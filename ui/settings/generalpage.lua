@@ -63,6 +63,8 @@ end
 function GeneralPage:OnShow()
 	local autoSell, tooltip, autoRepair, miniMap, merchant =
 		self:GetProfileValues(AUTO_SELL, TOOLTIP, AUTO_REPAIR, MINIMAP, MERCHANT)
+
+	print(autoSell, tooltip, autoRepair, miniMap, merchant)
 	
 	self.AutoSell:SetChecked(autoSell)
 	self.Tooltip:SetChecked(tooltip)

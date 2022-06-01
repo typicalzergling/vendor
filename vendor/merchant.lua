@@ -75,6 +75,7 @@ local function setIsAutoSelling(isSelling, limit)
             Addon:RaiseEvent(AUTO_SELL_START, limit)
         else
             Addon:Debug("autosell", "firing ending event")
+            Addon:ClearResultCache()
             Addon:RaiseEvent(AUTO_SELL_COMPLETE)
         end
     end
@@ -112,7 +113,6 @@ function Addon:AutoSell()
         local sellLimitMaxItems = Addon.c_BuybackLimit
         local sellThrottle = profile:GetValue(Addon.c_Config_SellThrottle)
 
-        setIsAutoSelling(true)
         if (sellLimitEnabled) then
             setIsAutoSelling(true, sellLimitMaxItems)
         else

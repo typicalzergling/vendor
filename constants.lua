@@ -66,7 +66,8 @@ Addon.SystemListId = {
 Addon.Events = {
     AUTO_SELL_START = "auto-sell-start",
     AUTO_SELL_COMPLETE = "auto-sell-end",
-    AUTO_SELL_ITEM = "auto-sell-item"
+    AUTO_SELL_ITEM = "auto-sell-item",
+    PROFILE_CHANGED = "profile-changed",
 }
 
 -- Blizzard Color Codes that are not in all versions
