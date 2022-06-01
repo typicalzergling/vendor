@@ -64,7 +64,7 @@ end
 
 -- If this merchant has no items it is not a sellable merchant (such as an autohammer).
 function Addon:CanSellAtMerchant()
-    return GetMerchantNumItems() == 0
+    return GetMerchantNumItems() > 0
 end
 
 local function setIsAutoSelling(isSelling)
