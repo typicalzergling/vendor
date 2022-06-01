@@ -54,6 +54,38 @@ function Addon:OnGameTooltipHide(tooltip)
 end
 
 
+local function GetAppearanceInfo(appearanceId)
+    local appearanceCollected = false
+        --categoryID, visualID, canEnchant, icon, isCollected, itemLink, transmogLink, unknown1, itemSubTypeIndex = C_TransmogCollection.GetAppearanceSourceInfo(sourceID)
+
+
+        isCollected = select(5, C_TransmogCollection.GetAppearanceSourceInfo(appearanceSourceID))
+
+
+    local playerCanCollect = false
+    local accountCanCollect = false
+    local sources = C_TransmogCollection.GetAppearanceSources(appearanceId)
+    if sources then
+        print("Have sources..")
+        for i, source in pairs(sources) do
+            -- If the player can collect it, then so can the account.
+            local hasData, canCollect = C_TransmogCollection.PlayerCanCollectSource(source.sourceID)
+            if canCollect then
+                playerCanCollect = true
+                --accountCanCollect = true
+                --break
+            end
+            -- If player cannot collect, see if account can.
+            hasData, canCollect =_TransmogCollection.AccountCanCollectSource(source.sourceID)
+            if canCollect then
+                accountCanCollect = true
+                -- Can't break here because other sources may be player collectable.
+            end
+        end
+    end
+    return playerCanCollect, accountCanCollect
+end
+
 -- Gets information about an item
 -- Here is the list of captured item properties.
 --     Name
@@ -91,6 +123,36 @@ end
 -- Argument combinations
 --      location
 --      bag, slot             - we will use the location.
+
+-- Because Blizzard doesn't make this easy.
+local transmog_invtypes = {
+    INVTYPE_HEAD = true,
+    INVTYPE_SHOULDER = true,
+    INVTYPE_BODY = true,
+    INVTYPE_CHEST = true,
+    INVTYPE_WAIST = true,
+    INVTYPE_LEGS = true,
+    INVTYPE_FEET = true,
+    INVTYPE_WRIST = true,
+    INVTYPE_HAND = true,
+    INVTYPE_WEAPON = true,
+    INVTYPE_SHIELD = true,
+    INVTYPE_RANGED = true,
+    INVTYPE_CLOAK = true,
+    INVTYPE_2HWEAPON = true,
+    INVTYPE_TABARD = true,
+    INVTYPE_ROBE = true,
+    INVTYPE_WEAPONMAINHAND = true,
+    INVTYPE_WEAPONOFFHAND = true,
+    INVTYPE_HOLDABLE = true,
+    INVTYPE_THROWN = true,
+    INVTYPE_RANGEDRIGHT = true,
+}
+
+local function isTransmogEquipment(invtype)
+    if not invtype then return false end
+    return transmog_invtypes[invtype] or false
+end
 
 function Addon:GetItemProperties(arg1, arg2)
 
@@ -152,9 +214,10 @@ function Addon:GetItemProperties(arg1, arg2)
     item.IsUsable = false
     item.IsEquipment = false
     item.IsSoulbound = false
+    item.IsAccountBound = false
     item.IsBindOnEquip = false
     item.IsBindOnUse = false
-    item.IsUnknownAppearance = false
+    item.IsCosmetic = false
     item.IsToy = false
     item.IsAlreadyKnown = false
     item.IsAzeriteItem = false
@@ -169,6 +232,8 @@ function Addon:GetItemProperties(arg1, arg2)
     item.Name = getItemInfo[1]
     item.Quality = getItemInfo[3]
     item.EquipLoc = getItemInfo[9]          -- This is a non-localized string identifier. Wrap in _G[""] to localize.
+    item.EquipLocName = _G[item.EquipLoc]
+    item.EquipLocName = item.EquipLocName or "" -- Make sure its populated
     item.Type = getItemInfo[6]              -- Note: This is localized, TypeId better to use for rules.
     item.MinLevel = getItemInfo[5]
     item.TypeId = getItemInfo[12]
@@ -176,30 +241,35 @@ function Addon:GetItemProperties(arg1, arg2)
     item.SubTypeId = getItemInfo[13]
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
+    item.StackCount = C_Item.GetStackCount(item.Location)
     item.UnitValue = getItemInfo[11]
     item.IsCraftingReagent = getItemInfo[17]
     item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
+    item.InventoryType = C_Item.GetItemInventoryType(item.Location)
 
     -- Add Bag and Slot information. Initialize to -1 so rule writers can identify them.
     item.Bag = -1
     item.Slot = -1
-    item.IsBagAndSlot = location:IsBagAndSlot()
+    item.IsBagAndSlot = item.Location:IsBagAndSlot()
     if item.IsBagAndSlot then
-        item.Bag, item.Slot = location:GetBagAndSlot()
+        item.Bag, item.Slot = item.Location:GetBagAndSlot()
     end
 
-    -- Check for usability
     item.IsUsable = IsUsableItem(item.Id)
-
-    -- Save string compares later.
-    item.IsEquipment = item.EquipLoc ~= "" and item.EquipLoc ~= "INVTYPE_BAG"
+    item.IsEquipment = IsEquippableItem(item.Id)
     item.IsEquipped = item.Location:IsEquipmentSlot()
+    item.IsTransmogEquipment = isTransmogEquipment(item.EquipLoc)
 
     -- Get soulbound information
     if C_Item.IsBound(location) then
         item.IsSoulbound = true         -- This actually also covers account bound.
+        -- TODO watch for better way. Blizzard API doesn't expose it, which means we need
+        -- to scan the tooltip, which sucks.
+        if self:IsItemAccountBoundInTooltip(item.Location) then
+            item.IsAccountBound = true
+        end
     else
         if item.BindType == 2 then
             item.IsBindOnEquip = true
@@ -208,25 +278,48 @@ function Addon:GetItemProperties(arg1, arg2)
         end
     end
 
-    -- Determine if this item is an uncollected transmog appearance
-    -- We can save the scan by skipping if it is Soulbound (would already have it) or not equippable
-    if not item.IsSoulbound and item.IsEquipment then
-        if self:IsItemUnknownAppearanceInTooltip(item.Location) then
-            item.IsUnknownAppearance = true
-        end
+    -- Determine if this item is cosmetic.
+    -- This information is currently not available via API.
+    if item.IsEquipment and self:IsItemCosmeticInTooltip(item.Location) then
+        item.IsCosmetic = true
     end
 
-    --[[
-    -- Determine if crafting reagent
-    -- These are typically itemtype 7, which is 'tradeskill' but sometimes item type 15, which is miscellaneous.
-    if item.TypeId == 7 or item.TypeId == 15 then
-        if self:IsItemCraftingReagentInTooltip(item.Location) then
-            item.IsCraftingReagent = true
-        end
+    -- Get Transmog info
+    -- We aren't using PlayerHasTransmog becuase item id is unreliable, better to use the actual itemloc & appearance info.
+    item.IsCollected = false
+    -- We do not expose appearanceId of an item, becuase it will be 0 if the player cannot use it.
+    -- This could lead to trying to collect an appearance and getting false positives.
+    local appearanceId = 0
+    local baseItemTransmogInfo = C_Item.GetBaseItemTransmogInfo(item.Location);
+    local baseInfo = C_TransmogCollection.GetAppearanceInfoBySource(baseItemTransmogInfo.appearanceID);
+    if baseInfo then
+        -- This will be zero if the player cannot use the item. More blizzard being awesome.
+        appearanceId = baseInfo.appearanceID
+        item.IsCollected = baseInfo.appearanceIsCollected
     end
-    ]]
 
-    -- Pet collection items appear to be type 15, subtype 2 (Miscellaneous - Companion Pets)
+    -- Treat AppearanceId of 0 as cannot-use. Appearances the player cannot use have appearanceId 0.
+    -- Items that dont' have an appearance also have 0. Without tracking appearances across all characters
+    -- we don't have a way of knowing just yet whether the appearance is collectable by another character.
+    -- However, we can leverage the fact that appearance will be 0 for unusable equipment to identify unusable equipment.
+    -- We will assume that rings, cloaks, and the like are "usable" by everyone, even though on some edge cases they are
+    -- not. This is a safe assumption for things like "Keep usable gear" or "vendor unusable gear" so we err on the side
+    -- of safety.
+    item.IsEquippable = false
+    if item.IsEquipment and ((not item.IsTransmogEquipment) or (item.IsTransmogEquipment and appearanceId ~= 0)) then
+        item.IsEquippable = true
+    end
+
+    -- (we could track all appearances on other characters, but there's addons for that and it would be
+    -- better to have a plugin for Mog-it or something like that instead of re-writing that code.)
+    -- However, we can assume that if the item is BoA or BoE and the player does not have it, that it
+    -- could be collectable, and therefore we will err on the side of caution and flag it as collectable
+    -- if the player cannot use it but could potentially trade it to other characters.
+    -- This may not include illusions. TODO: Check illusion behavior.
+    item.IsCollectable = false
+    if not item.IsCollected and item.IsTransmogEquipment and (item.IsBindOnEquip or item.IsAccountBound) and not (appearanceId == 0) then
+        item.IsCollectable = true
+    end
 
     -- Determine if this is a toy.
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.

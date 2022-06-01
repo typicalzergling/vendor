@@ -122,4 +122,12 @@ function Addon:IsItemCraftingReagentInTooltip(location)
     return self:IsStringInTooltipLeftText(location, L["TOOLTIP_SCAN_CRAFTINGREAGENT"])
 end
 
+-- Account Bound
+function Addon:IsItemAccountBoundInTooltip(location)
+    return self:IsStringInTooltipLeftText(location, L["TOOLTIP_SCAN_BLIZZARDACCOUNTBOUND"])
+end
 
+-- Cosmetic Item
+function Addon:IsItemCosmeticInTooltip(location)
+    return self:IsStringInTooltipLeftText(location, L["TOOLTIP_SCAN_COSMETIC"])
+end

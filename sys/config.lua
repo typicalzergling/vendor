@@ -57,7 +57,7 @@ Addon.DefaultConfig.Settings =
     version = 2,
 
     -- Default values of our settings
-    [Addon.c_Config_ThrottleTime] = 0.15,
+    [Addon.c_Config_ThrottleTime] = 0.2,
     [Addon.c_Config_AutoSell] = true,
     [Addon.c_Config_AutoRepair] = true,
     [Addon.c_Config_GuildRepair] = true,
@@ -66,6 +66,8 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_SellLimit] = true,
     [Addon.c_Config_Tooltip_Rule] = true,
     [Addon.c_Config_MaxSellItems] = false,
+    [Addon.c_Config_Minimap] = true,
+    [Addon.c_Config_MerchantButton] = true,
 }
 
 --*****************************************************************************
@@ -74,7 +76,7 @@ Addon.DefaultConfig.Settings =
 Addon.DefaultConfig.Rules =
 {
     -- Current version of the rules config
-    version = 5,
+    version = 6,
     
     -- Current interface version of the client
     interfaceversion = select(4, GetBuildInfo()),
@@ -85,6 +87,7 @@ Addon.DefaultConfig.Rules =
         "keep.equipmentset",
         "keep.unknownappearance",
         "keep.potentialupgrades",
+        "keep.cosmetic",
     },
 
     -- The default rules to enable which cause items to be sold.

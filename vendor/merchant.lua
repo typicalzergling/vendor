@@ -62,6 +62,11 @@ function Addon:IsAutoSelling()
     return not not self:GetThread(threadName)
 end
 
+-- If this merchant has no items it is not a sellable merchant (such as an autohammer).
+function Addon:CanSellAtMerchant()
+    return GetMerchantNumItems() == 0
+end
+
 local function setIsAutoSelling(isSelling)
     if (isSelling ~= isAutoSelling) then
         isAutoSelling = isSelling
@@ -107,6 +112,13 @@ function Addon:AutoSell()
         local sellLimitEnabled = profile:GetValue(Addon.c_Config_SellLimit)
         local sellLimitMaxItems = Addon.c_BuybackLimit
         local sellThrottle = profile:GetValue(Addon.c_Config_SellThrottle)
+
+        -- If this merchant has no items it is not a sellable merchant (such as an autohammer), so terminate.
+        if not Addon:CanSellAtMerchant() then
+            Addon:Debug("autosell", "Cannot sell at merchant, aborting autosell.")
+            setIsAutoSelling(false)
+            return
+        end
 
         -- Loop through every bag slot once.
         for bag=0, NUM_BAG_SLOTS do
@@ -156,6 +168,12 @@ function Addon:AutoSell()
                         self:Print("Simulating selling of: %s", tostring(item.Link))
                         Addon:RaiseEvent(AUTO_SELL_ITEM, item.Link)
                     end
+
+                    -- Record sell data
+                    local netValue = item.UnitValue * itemCount
+                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue), tostring(rule))
+                    numSold = numSold + 1
+                    totalValue = totalValue + netValue
 
                     -- Add to history
                     Addon:AddEntryToHistory(item.Link, Addon.ActionType.SELL, rule, ruleid, itemCount, netValue)
