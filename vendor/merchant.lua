@@ -155,11 +155,6 @@ function Addon:AutoSell()
                         return
                     end
 
-                    local netValue = item.UnitValue * itemCount
-                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(item.Link), self:GetPriceString(netValue), tostring(rule))
-                    numSold = numSold + 1
-                    totalValue = totalValue + netValue
-
                     -- Still open, so OK to sell it.
                     if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                         UseContainerItem(bag, slot)
