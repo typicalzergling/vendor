@@ -30,7 +30,7 @@ function GeneralPage:OnLoad()
 			self:SetProfileValue(GUILD_REPAIR, true)
 		else
 			self:SetProfileValue(AUTO_REPAIR, false)
-		end
+		end		
 	end
 
 	self.MiniMap.OnChange = function(state)
@@ -48,6 +48,17 @@ function GeneralPage:OnLoad()
 	end
 
 	self.MiniMap:Disable()
+	self.MiniMap:SetChecked(true)
+
+	if (not Addon.IsClassic) then
+		local merchantNew = CreateFrame("Frame", nil,  self, "NewFeatureLabelTemplate")
+		merchantNew:SetPoint("TOPRIGHT", self.Merchant, "TOPRIGHT", -16, -10)
+		merchantNew:Show()
+
+		local miniNew = CreateFrame("Frame", nil,  self, "NewFeatureLabelTemplate")
+		miniNew:SetPoint("TOPRIGHT", self.MiniMap, "TOPRIGHT", -16, -10)
+		miniNew:Show()
+	end
 end
 
 --[[===========================================================================
@@ -60,7 +71,7 @@ function GeneralPage:OnShow()
 	self.AutoSell:SetChecked(autoSell)
 	self.Tooltip:SetChecked(tooltip)
 	self.AutoRepair:SetChecked(autoRepair)
-	self.MiniMap:SetChecked(miniMap)
+	self.MiniMap:SetChecked(true)
 	local button = merchant or MerchantButton.NEVER
 	self.Merchant:SetChecked(button ~= MerchantButton.NEVER)	
 end

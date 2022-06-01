@@ -29,8 +29,7 @@
 				</KeyValues>
                 <Size x="250" y="54"/>
                 <Anchors>
-					<Anchor point="TOP" relativeKey="$parent.AutoSell" relativePoint="BOTTOM" y="-16"/>
-                    <Anchor point="LEFT" x="16" y="-24"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.AutoSell" relativePoint="BOTTOMLEFT" y="-16"/>
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>			
@@ -74,24 +73,6 @@
                     <Anchor point="RIGHT" x="-16" />
                 </Anchors>
             </Frame>		
-
-            <Frame parentKey="New_Merchant" inherits="NewFeatureLabelTemplate">
-                <Anchors>
-                    <Anchor relativeKey="$parent.Merchant" point="RELATIVE" relativePoint="LEFT" x="-4"/>
-                </Anchors>
-            </Frame>
-
-			<!--<Frame parentKey="TooltipRule" inherits="Vendor_Setting_Check_Small">
-				<KeyValues>
-					<KeyValue key="LabelLocKey" value="OPTIONS_SETTINGNAME_EXTRARULEINFO" type="string"/>
-					<KeyValue key="TextLocKey" value="OPTIONS_SETTINGDESC_EXTRARULEINFO" type="string"/>
-				</KeyValues>
-                <Size x="250" y="54"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent.Tooltip" relativePoint="BOTTOMLEFT" x="32" y="0"/>
-                    <Anchor point="RIGHT" x="-16" />
-                </Anchors>
-            </Frame>-->
 
         </Frames>
 		<Scripts>

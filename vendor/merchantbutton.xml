@@ -28,7 +28,7 @@
 				<FontString parentKey="Title" inherits="GameFontNormal">
 					<Size x="20" y="16"/>
 					<KeyValues>
-						<KeyValue key="LocKey" value="VENDOR" type="string"/>
+						<KeyValue key="LocKey" value="ADDON_NAME" type="string"/>
 					</KeyValues>
 					<Anchors>
 						<Anchor point="TOOPLEFT" x="8" y="-8"/>
