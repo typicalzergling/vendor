@@ -79,6 +79,7 @@ TOOLTIP_RULEMATCH_DESTROY = "Destroy: %s",
 OPTIONS_TITLE_ADDON = "These settings are for configuring Vendor behavior.\n\n",
 OPTIONS_SHOW_BINDINGS = "Key Bindings",
 OPTIONS_OPEN_RULES = "Open Rules",
+OPTIONS_OPEN_SETTINGS = "Open Settings",
 
 OPTIONS_AUDIT_INTRO_TEXT = "Records of all recent actions Vendor has taken for this character up to the last 30 days.",
 OPTIONS_AUDIT_SEARCH_LABEL = "Search:",
