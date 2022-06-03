@@ -29,7 +29,6 @@ end
    ==========================================================================]]
 function RepairPage:OnShow()
    local autoRepair, guildRepair = self:GetProfileValues(AUTO_REPAIR, GUILD_REPAIR)
-   print("-- repairpage: onshow")
 
    self.AutoRepair:SetChecked(autoRepair)
    self.GuildRepair:SetChecked(guildRepair)

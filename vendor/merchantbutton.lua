@@ -46,9 +46,7 @@ function MerchantButton:UpdateSellState(inProgress)
 		sell:Disable()
 		destroy:Disable()
 
-		print(type(self.limit), type(self.sold))
 		local left = math.max(0, self.limit - self.sold)
-		print("left:", left, self.limit, self.sold)
 		if (left > 0) then
 			Addon:Debug("merchantbutton", "Updating button to reflect sold item: %d left", left)
 			self:SetButtonState(sell, MERCHANT_SELL_ITEMS, left)
@@ -151,7 +149,6 @@ function MerchantButton:OnAutoSellStarted(limit)
 	Addon:Debug("merchantbutton", "Merchant button auto-sell started (limit: %d) [%d]", limit, self.total or 0)
 	self.inProgress = true
 
-	print("limit2: ", type(limit))
 	if (limit == 0) then
 		self.limit = self.total
 	else

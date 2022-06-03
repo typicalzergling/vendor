@@ -25,6 +25,7 @@ end
 --*****************************************************************************
 function ConfigPanel:OnOpenRules(tab)
     Addon:Debug("config", "Showing rules dialog: %s", tab or "rules")
+    InterfaceOptionsFrame_Show()
     VendorRulesDialog:Open(tab or "rules")
 end
 
@@ -34,8 +35,8 @@ end
 --*****************************************************************************
 function ConfigPanel:OpenBindings()
     Addon:Debug("config", "Showing key bindings")
-    Addon:OpenKeybindings_Cmd()
     InterfaceOptionsFrame_Show()
+    Addon:OpenKeybindings_Cmd()
 end
 
 --*****************************************************************************

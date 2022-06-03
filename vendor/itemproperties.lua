@@ -66,7 +66,6 @@ local function GetAppearanceInfo(appearanceId)
     local accountCanCollect = false
     local sources = C_TransmogCollection.GetAppearanceSources(appearanceId)
     if sources then
-        print("Have sources..")
         for i, source in pairs(sources) do
             -- If the player can collect it, then so can the account.
             local hasData, canCollect = C_TransmogCollection.PlayerCanCollectSource(source.sourceID)
