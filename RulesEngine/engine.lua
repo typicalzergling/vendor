@@ -14,6 +14,7 @@ local function insertCategory(self, category)
     while (categories[index] and categories[index]:GetId() < category:GetId()) do
         index = (index + 1);
     end
+
     table.insert(categories, index, category);
     return index;
 end
@@ -43,15 +44,17 @@ end
     | engine_CreateCategory
     |   Creates a new category in the engine with the specified ID, if the
     |   category alreay exists this raises an error.
+    |
+    | Note: categoryWeight is optional
     =======================================================================--]]
-local function engine_CreateCategory(self, categoryId, categoryName)
+local function engine_CreateCategory(self, categoryId, categoryName, categoryWeight)
     assert(type(categoryName) == "string" and string.len(categoryName) ~= 0, "A category name must be a valid string");
     assert(tonumber(categoryId), "Category IDs must be numeric");
     assert(not findCategory(self, categoryId), "A category with id='" .. tostring(categoryId) .. "' already exists");
 
-    local category = Package.CreateCategory(categoryId, categoryName);
+    local category = Package.CreateCategory(categoryId, categoryName, categoryWeight);
     insertCategory(self, category);
-    self.log:Write("Created category(%d, %s)", categoryId, categoryName);
+    self.log:Write("Created category(%d, %s, %d)", categoryId, categoryName, categoryWeight or 0);
 end
 
 --[[===========================================================================
@@ -198,7 +201,7 @@ function engine_AddRule(self, categoryId, ruleDef, params)
     end
 
     local category = assert(findCategory(self, categoryId), "The specified categoryId (" .. tostring(categoryId) .. ") is invalid, remember to call AddCategory first");
-    local rule, message = Package.CreateRule(ruleDef.Id, ruleDef.Name, ruleDef.Script, params);
+    local rule, message = Package.CreateRule(ruleDef.Id, ruleDef.Name, ruleDef.Script, params, ruleDef.Weight or 0);
     if (not rule) then
         self.log:Write("Failed to add '%s' to category=%d due to error: %s", ruleDef.Id, categoryId, message);
         return false, message;
@@ -219,11 +222,12 @@ local function evaluateRules(self, log, categories, ruleEnv, ...)
     local result = false;
     local rule;
     local category;
+    local weight = -1
 
     for _, cat in ipairs(categories) do
 
         log:StartBlock("Category(%d, '%s')", cat:GetId(), cat:GetName());
-        local r, ran, message = cat:Evaluate(self, log, ruleEnv, ...);
+        local r, ran, message, w = cat:Evaluate(self, log, ruleEnv, ...);
         rulesRun = (rulesRun + ran);
         log:EndBlock(" End [ran=%d]", ran);
 
@@ -231,11 +235,12 @@ local function evaluateRules(self, log, categories, ruleEnv, ...)
             rule = r;
             category = cat;
             result = true;
+            weight = w
             break;
         end
     end
 
-    return result, rule, category, rulesRun;
+    return result, rule, category, rulesRun, weight;
 end
 
 --[[===========================================================================
@@ -331,7 +336,7 @@ local function engine_Evaluate(self, object, ...)
     local categoryId = nil;
 
     self.log:StartBlock("Evaluating \"%s\"", object.Name or "<unknown>")
-    local result, rule, category, rulesRun = evaluateRules(self, self.log, self.categories, ruleEnv, ...)
+    local result, rule, category, rulesRun, weight = evaluateRules(self, self.log, self.categories, ruleEnv, ...)
     if (result and rule and category) then
         matchedRuleId = rule:GetId();
         matchedRuleName = rule:GetName();
@@ -339,8 +344,35 @@ local function engine_Evaluate(self, object, ...)
         categoryId = category:GetId();
     end
 
-    self.log:EndBlock("result=%d, id=%s [%s], ran=%d", result, matchedRuleId, matchedCategory, rulesRun)
-    return result, rulesRun, categoryId, matchedRuleId, matchedRuleName, matchedCategory
+    self.log:EndBlock("result=%s, id=%s [%s], ran=%d, weight=%d", tostring(result), matchedRuleId, matchedCategory, rulesRun, weight or 0)
+    return result, rulesRun, categoryId, matchedRuleId, matchedRuleName, matchedCategory, weight or 0
+end
+
+--[[===========================================================================
+    | engine_EvaluateEx
+    |   This is the same as evaluate except it puts the result inot a table
+    |   with named keys
+
+    |   returns as tabke with keys:
+    |       result (true or false)
+    |       categoryId - the category the match belongs to
+    |       categoryName - the name of the category which contained the matched rule
+    |       ruleId- the identifier of the matched rule
+    |       ruleName - the name of the matched rule
+    |       run - the n umber rules excecuted
+    =======================================================================--]]
+local function engine_EvaluateEx(self, object, ...)
+    local result, num, category, matched, name, matchedCat, weight = engine_Evaluate(self, object, ...)
+
+    return {
+            result = result or false,
+            categoryId = category or false,
+            ruleId = matched or false,
+            ruleName = name or false,
+            run = num or 0,
+            categoryName = matchedCat or false,
+            weight = weight
+        }
 end
 
 --[[===========================================================================
@@ -452,6 +484,7 @@ local engine_API =
 {
     CreateRuleId = engine_CreateRuleId,
     Evaluate = engine_Evaluate,
+    EvaluateEx = engine_EvaluateEx,
     AddRule = engine_AddRule,
     ImportGlobals = engine_ImportGlobals,
     AddFunctions = engine_AddFunctions,

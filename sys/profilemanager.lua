@@ -58,6 +58,7 @@ function ProfileManager:GetProfile()
     profile:RegisterCallback("OnChanged", function()
             Addon:Debug("profile", "Broadcasting change '%s'", profile:GetName());
             self:TriggerEvent("OnProfileChanged", profile);
+            Addon:RaiseEvent("OnProfileChanged", profile);
         end, self);
     return profile;
 end
@@ -89,9 +90,11 @@ function ProfileManager:SetProfile(profile)
     activeProfileVariable:Replace(prof:GetId());
     prof:RegisterCallback("OnChanged", function()
             Addon:Debug("profile", "Broadcasting changes '%s'", prof:GetName())
-            self:TriggerEvent("OnProfileChanged", prof)
+            self:TriggerEvent("OnProfileChanged", prof)            
+            Addon:RaiseEvent("OnProfileChanged", profile);
         end, self)
     self:TriggerEvent("OnProfileChanged", prof)
+    Addon:RaiseEvent("OnProfileChanged", profile);
 end
 
 --[[===========================================================================
@@ -108,6 +111,7 @@ function ProfileManager:CreateProfile(profileName)
     Addon.Invoke(Addon, "OnInitializeProfile", profile);
     Addon:Debug("profile", "Created new profile '%s'", profile:GetId());
     self:TriggerEvent("OnProfileCreated", profile);
+    Addon:RaiseEvent("OnProfileCreated", profile);
     return profile;
 end
 
@@ -128,8 +132,9 @@ function ProfileManager:CopyProfile(profile, newProfileName)
     profilesVariable:Set(profile:GetId(), data);
     profile:SetName(newProfileName);
     Addon.Invoke(Addon, "OnCopyProfile", profile)
-    Addon:Debug("profile", "Copied profile '%s' to '%s'", profileId, data.id);
+    Addon:Debug("profile", "Copied profile '%s' to '%s'", profileId, data.id);    
     self:TriggerEvent("OnProfileCreated", profile);
+    Addon:RaiseEvent("OnProfileCreated", profile)
     return profile;
 end
 
@@ -142,7 +147,9 @@ function ProfileManager:DeleteProfile(profile)
     if (data) then
         profilesVariable:Set(profileId, nil);
         Addon:Debug("profile", "Deleted profile '%s'", profileId);
-        self:TriggerEvent("OnProfileDeleted", CreateProfile(Addon.Profile, profileId));
+        local profile = CreateProfile(Addon.Profile, profileId)
+        self:TriggerEvent("OnProfileDeleted", profile)
+        Addon:RaiseEvent("OnProfileDeleted", profile)
         return true;
     end
 
@@ -288,3 +295,5 @@ function Addon:GetCurrentProfile()
     if profile then return profile:GetName() end
     return ""
 end
+
+Addon:GeneratesEvents({"OnProfileChanged", "OnProfileCreated", "OnProfileDeleted"})

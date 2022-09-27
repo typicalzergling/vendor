@@ -116,7 +116,7 @@ function Addon.object(typeName, instance, API, events)
                         return member;
                     end
 
-                    --error(string.format("Type '%s' has no member '%s'", typeName, key));
+                    error(string.format("Type '%s' has no member '%s'", typeName, key));
                 end
             end,
             __newindex = function(self, key, value)

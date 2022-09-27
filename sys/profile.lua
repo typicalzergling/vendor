@@ -126,7 +126,7 @@ local function CreateProfile(id)
 		profileId = id or string.format("%s:%d%04d", AddonName, time(), math.floor(math.random() * 1000)),
 		active = false,
 		timer = false,
-		defaults = nil,
+		defaults = false,
 	};
 	
 	-- Create our object and return it

@@ -73,6 +73,19 @@ end
 local addonLifetimeFrame = CreateFrame("Frame")
 local onInitializeActions = {}
 local onTerminateActions = {}
+local isInitialized = false
+local isInitializedLate = false
+local isTerminated = false
+
+local function invokeActions(what, actions)
+    assert(type(actions) == "table", "Expected a table of actions to invoke")
+    for _, closure in ipairs(actions) do 
+        local status = xpcall(closure, CallErrorHandler)
+        if (not status) then
+            Addon:Print("An error occured while executing an '%s' action")
+        end
+    end
+end
 
 local function lifetimeEventHandler(frame, event, ...)
     -- On player login, the addon is completely loaded and all saved variables are expected to be present.
@@ -80,12 +93,12 @@ local function lifetimeEventHandler(frame, event, ...)
     if event == "PLAYER_LOGIN" then
 
         -- Safe call all initialization functions.
-        for i, h in ipairs(onInitializeActions) do
-            local status, err = xpcall(h, CallErrorHandler, ...)
-            if not status then
-                Addon:Print("Error executing initialize function: %s", tostring(err))
-            end
-        end
+        local initActions = table.copy(onInitializeActions)
+        onInitializeActions = {}
+        isInitialized = true
+
+        invokeActions("Initialize", initActions);
+        C_Timer.After(5, function () isInitializedLate = true invokeActions("Initialize (late)", onInitializeActions) end)
 
         -- Call the default OnInitialize function, if defined.
         -- If it is defined it must be a function or this is a programmer error.
@@ -103,11 +116,10 @@ local function lifetimeEventHandler(frame, event, ...)
     -- On player logout we get an opportunity to do cleanup and save variables.
     -- This happens on client exit, disconnect, and logout.
     elseif event == "PLAYER_LOGOUT" then
-        for i, h in ipairs(onTerminateActions) do
-            xpcall(h, CallErrorHandler, ...)
-            -- We don't bother printing errors becuase nobody is here to see them.
-            -- We could try to add them to saved vars, perhaps, but who will bother looking there?
-        end
+        isTerminated = true
+        onInitializeActions = {}
+
+        invokeActions(onTerminateActions, "Terminate")
         addonLifetimeFrame:UnregisterEvent("PLAYER_LOGOUT")
     else
         -- We should never have any other events here. See "event.lua" for that.
@@ -130,20 +142,16 @@ addonLifetimeFrame:RegisterEvent("PLAYER_LOGOUT")
     =======================================================================--]]
 function Addon:AddInitializeAction(action, ...)
     assert(type(action) == "function", "Initialize Action must be a function.")
-    if (select("#", ...) > 0) then
-        table.insert(onInitializeActions, GenerateClosure(action, ...));
-    else
-        table.insert(onInitializeActions, action)
-    end
+    assert(not isInitialized or not isInitializedLate)
+
+    table.insert(onInitializeActions, GenerateClosure(action, ...))
 end
 
 function Addon:AddTerminateAction(action, ...)
     assert(type(action) == "function", "Terminate Action must be a function.")
-    if (select("#", ...) > 0) then
-        table.insert(onTerminateActions, GenerateClosure(action, ...));
-    else
-        table.insert(onTerminateActions, action)
-    end
+    assert(not isTerminated, "We have already began to terminate the addon")
+
+    table.insert(onTerminateActions, GenerateClosure(action, ...))
 end
 
 -- Useful for any Addon to know.

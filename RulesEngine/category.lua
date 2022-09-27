@@ -47,11 +47,13 @@ end
     |   false value breaks the loop stops evaluation
     =======================================================================--]]
 local function category_Evaluate(self, engine, log, environment)
-    local count = 0;
-    for _, rule in ipairs(self.rules) do
+    local count = 0
+    local base = 2 * (#self.rules + 1)
+    for index, rule in ipairs(self.rules) do
         if (rule:IsHealthy()) then
-            count = count + 1;
-            log:Write("Evaluating rule '%s'", rule:GetId());
+            count = count + 1
+            
+            log:Write("Evaluating rule '%s' (weight: %d)", rule:GetId(), weight);
             local status, result, message = rule:Execute(environment);
             if (not status) then
                 log:Write("Rule '%s' failed to execute: %s", rule:GetId(), message or "<unknown error>");
@@ -59,17 +61,24 @@ local function category_Evaluate(self, engine, log, environment)
                     engine.OnRuleStatusChange("UNHEALTHY", self.id, rule:GetId(), rule:GetError());
                 end
             elseif (status and (result ~= nil) and result) then
-                return rule, count, nil;
+                local rw = rule:GetWeight()
+                if (rw and (rw ~= 0)) then
+                    rw = base + rw
+                else
+                    rw = math.max(0, base - (2 * index))
+                end
+
+                return rule, count, nil, (self:GetWeight() + rw)
             end
         else
             -- Skipping rule because it isn't healthy
-            log:Write("Skipping rule '%s' (unhealthy)", rule:GetId());
+            log:Write("Skipping rule '%s' (unhealthy)", rule:GetId())
         end
     end
 
     -- We ran everything and nothing returned a valid result, so we just
     -- want to return the count of rules that we ran.
-    return nil, count, nil;
+    return nil, count, nil, 0;
 end
 
 --[[===========================================================================
@@ -97,6 +106,7 @@ local category_API =
     Evaluate = category_Evaluate,
     GetName = function(self) return self.name end,
     GetId = function(self) return self.id end,
+    GetWeight = function (self) return self.weight end,
     GetRuleStatus = category_GetRuleStatus,
     Find = category_Find,
 };
@@ -106,15 +116,17 @@ local category_API =
     |   Create a new category with the specified name, the name must be a
     |   non-empty string.
     =======================================================================--]]
-local function new_Category(id, name)
+local function new_Category(id, name, weight)
     assert(type(name) == "string" and (string.len(name) ~= 0), "The category name must be a valid string");
     assert(id and type(id) == "number", "The category id must be provided and be non-empty");
+    assert(not weight or type(weight) == "number", "The weight of a category must be a number")
 
     local instance =
     {
         name = name,
         id = id,
         rules = {},
+        weight = weight or 0
     };
 
     return Package.CreateObject(CATEGORY_OBJECT_TYPE, instance, category_API);

@@ -7,8 +7,8 @@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History
-## SavedVariablesPerCharacter: Vendor_RulesConfig Vendor_ActiveProfile
+## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History Vendor_Account_Data Vendor_XX_InstanceInfo Vendor_XX_LootInfo
+## SavedVariablesPerCharacter: Vendor_RulesConfig Vendor_ActiveProfile Vendor_Character_Data
 ## Author: Malvir & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
@@ -32,6 +32,9 @@ vendor\vendor.xml
 
 # User Interface
 ui\ui.xml
+
+# Features
+features\features.xml
 
 # public API export should be last
 publicAPI.lua

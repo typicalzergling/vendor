@@ -61,7 +61,8 @@ local function isStringInTooltipText(text, location, str)
             error("Invalid location")
         end
     else
-        error("Invalid arguments to Tooltip Scanner")
+        Addon:Debug("errors", "Invalid arguments to Tooltip Scanner: %s", tostring(location))
+        return nil
     end
 
 
