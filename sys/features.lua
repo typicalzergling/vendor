@@ -122,7 +122,7 @@ function Feature:Enable()
         end
 
         -- Finally if the feature provides an "OnInitialize" invoke it
-        if (not self:invoke("OnInitialize", self.account, self.character)) then
+        if (not self:invoke("OnInitialize", self.account, self.character, self)) then
             Addon:Debug("Feature '%s' failed to initialize", name)
             self:Disable()
             return false;
@@ -138,7 +138,7 @@ end
    | Disables this feature
    ==========================================================================]]
 function Feature:Disable()
-    if (self.enabled) then         
+    if (self.enabled) then
         -- Disconnect Frame and Addon events
         self.frame:UnregisterAllEvents()
         for event, handler in pairs(self.impl) do
@@ -212,22 +212,101 @@ function Feature:Create(feature, account, character)
         frame = false,
         account = accountData,
         character = characterData,
+        dialogs = false,
+        host = false,
 
         invoke = function(this, what, ...)
-            if (this.feature and (type(this.feature[what]) == "function")) then
-                local result = xpcall(this.feature[what], CallErrorHandler, this.feature, ...)
+            print("---> invoke :: ", this, what)
+            table.forEach(this, print)
+            -- If we were not given a function then trt to resolve it
+            if (type(what) ~= "function") then
+                if this.feature and (type(this.feature[what]) == "function") then
+                    what = this.feature[what]
+                end
+                --assert(type(what) == "function", string.format("attempted to invoke invalid method '%s' on '%s'", what, this:GetName()))
+            end
+
+            if (type(what) == "function") then
+                local result, msg = xpcall(what, CallErrorHandler, this.feature, ...)
                 if (not result) then
-                    Addon:Debug("errors", "Feature.invoke: failed to invoke '%s' on '%s'", what, this:GetName())
+                    Addon:Debug("errors", "Feature.invoke: failed to invoke '%s' on '%s' :: %s", what, this:GetName(), msg or "")
                 end
                 return result
             end
 
             return true
-        end
+        end,
+
+        CreateDialog = function(...)
+            self.host:CreateDialog(...)
+        end,
     }
 
-    return Addon.object(AddonName .. "Feature", instance, self)
+    local api = table.copy(self)
+
+    -- Put the feature object methods onto the object
+    --for event, handler in pairs(self) do
+        --api[event] = handler;
+    --end
+
+    -- Put he feature API into the object
+    for name, method in pairs(feature) do
+        if (type(method) == "function") then
+            if (string.find("ON_", name) ~= 1) and (string.find("On", name) ~= 1) then
+                assert(self[name] == nil)
+                api[name] = function(this, ...) this.invoke(this.feature, method, ...) end
+            end
+        end
+    end
+
+    local t = Addon.object(AddonName .. "Feature", instance, api)
+    instance.host = t
+    return t
 end
+
+local function attach(frame, ...)
+    for _, impl in ipairs({...}) do
+        if (impl and type(impl) == "table") then
+            for name, what in pairs(impl) do
+                if (type(what) == "function") then
+                    if (frame:HasScript(name)) then
+                        frame:SetScript(name, what)
+                    end
+                else
+                    frame[name] = what
+                end
+            end
+        end
+    end
+
+    if (type(frame.OnLoad) == "function") then
+        local result, msg = xpcall(frame.OnLoad, CallErrorHandler, frame)
+        if not result then
+            Addon:Debug("errors", "%s.OnLoad: failed - %s", frame:GetName(), this:GetName(), msg)
+        end
+    end
+end
+
+-- creates a dialog, the diffrence between a dialog and a frame is that a dialog is added to the globals
+-- and cleared when the feature is disabled.
+function Feature:CreateDialog(name, template, ...)
+    local frame = CreateFrame("Frame", name, UIParent, template)
+    Addon.LocalizeFrame(frame)
+    attach(frame, frame.Implementation, ...)
+    _G[name] = frame
+    self.dialogs = self.dialogs or {}
+    self.dialogs[name] = frame
+    return frame
+end
+
+-- Creates a frame
+function Feature:CreateFrame(parent, template, ...)
+    local frame = CreateFrame("Frame", nil, parent or UIParent, template)
+    Addon.LocalizeFrame(frame)
+    attach(frame, framne.Implementation, ...)
+    return frame
+end
+
 
 --[[===========================================================================
    | Called to initialize the the addons features
@@ -268,6 +347,7 @@ end
    | Setup all of features including enabling/disabling them
    ==========================================================================]]
 function Features:EnableFeatures()
+    table.forEach(Addon.Features, print)
     Addon:Debug("%s loaded - checking for features", AddonName)
     if (type(Addon.Features) ~= "table") then
         Addon:Debug("features", "There are no features to register")
@@ -297,7 +377,7 @@ function Features:EnableFeatures()
         Addon:AddTerminateAction(function () 
             self:Terminate()
         end)
-    end
+    end 
 end
 
 --[[===========================================================================

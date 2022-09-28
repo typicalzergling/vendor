@@ -1,0 +1,19 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
+	<Frame name="Import_ImportDialog" virtual="true">
+        <Size x="200" y="200"/>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="blah" file="Interface\Buttons\UI-Button-Borders">
+                    <Size x="120" y="36"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="10" y="10"/>
+                    </Anchors>
+                    <TexCoords left="0.0" right="1.0" top="0.59375" bottom="1.0"/>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>
