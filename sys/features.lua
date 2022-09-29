@@ -288,14 +288,18 @@ end
 
 -- creates a dialog, the diffrence between a dialog and a frame is that a dialog is added to the globals
 -- and cleared when the feature is disabled.
-function Feature:CreateDialog(name, template, ...)
+function Feature:CreateDialog(name, template, class, buttons)
     local dialog = CreateFrame("Frame", name, UIParent, "DialogBox_Base")
     local frame = CreateFrame("Frame", name, dialog, template)
 
     dialog:SetContent(frame)
     Addon.LocalizeFrame(dialog)
     Addon.LocalizeFrame(frame)
-    attach(frame, frame.Implementation, ...)
+
+    attach(frame, class)
+    if (type(buttons) == "table") then
+        dialog:SetButtons(buttons)
+    end
 
     _G[name] = dialog
     self.dialogs = self.dialogs or {}

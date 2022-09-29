@@ -31,6 +31,7 @@ rules\rules.xml
 vendor\vendor.xml
 
 # User Interface
+_ui\ui.xml
 ui\ui.xml
 
 # Features

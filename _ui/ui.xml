@@ -1,0 +1,11 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <!-- Code -->
+    <Script file="common.lua"/>
+    <Script file="buttons.lua"/>
+    <Script file="dialog_box.lua"/>
+    <Script file="textarea.lua"/>
+
+    <!-- UX -->
+    <Include file="buttons.xml"/>
+    <Include file="dialog_box.xml"/>
+</Ui>

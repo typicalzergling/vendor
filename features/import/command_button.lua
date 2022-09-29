@@ -1,6 +1,7 @@
 local _, Addon = ...
 local locale = Addon:GetLocale();
 Addon.Controls = Addon.Controls or {}
+local CommonUI = Addon.CommonUI
 
 local WHITE = WHITE_FONT_COLOR
 local GRAY = GRAY_FONT_COLOR
@@ -16,100 +17,6 @@ local BACKDROP =
     insets = { left = 3, right = 3, top = 3, bottom = 3 },    
 }
 
-local COLORS =
-{
-    Border = { WHITE.r, WHITE.g, WHITE.b, 0.75 },
-    Background = { WHITE.r, WHITE.g, WHITE.b, 0.1 },
-    Text = { WHITE.r, WHITE.g, WHITE.b, 0.75 },
-    Hover = { WHITE.r, WHITE.g, WHITE.b, .25 },
-    HoverText = { WHITE.r, WHITE.g, WHITE.b, 1 },
-    Disabled = { GRAY.r, GRAY.g, GRAY.b, 0.5 },
-    DisabledBackground = { GRAY.r, GRAY.g, GRAY.b, 0.05 },
-}
-
-Addon.Controls.Placeholder = 
-{
-    InitializePlaceholder = function(frame)
-        local placeholder = frame:CreateFontString(nil, "BACKGROUND", "GameFontNormalSmall")
-        placeholder:SetPoint("TOPLEFT", 8, -8)
-        placeholder:SetPoint("BOTTOMRIGHT", -8, 8)
-        placeholder:SetTextColor(1, 1, 1, 0.8)
-        placeholder:SetDrawLayer("BACKGROUND", 10)
-
-        if (frame.Placeholder) then
-            local loctext = locale[frame.Placeholder]
-            placeholder:SetText(loctext or frame.Placeholder)
-        end
-
-        frame.__placeholder = placeholder
-    end,
-
-    ShowPlaceholder = function(frame, state)
-        if (state ~= frame.__placeholderState) then
-            frame.__placeholderState = state
-            if (frame.__placeholder) then
-                if (state) then
-                    frame.__placeholder:Show()
-                else
-                    frame.__placeholder:Hide()
-                end
-            end
-        end
-    end,
-
-    SetPlaceholder = function(frame, text)
-        local loctext = locale[text]
-        if (frame.__placeholder) then
-            frame.__placeholder:SetText(loctext or text)
-        end
-    end
-}
-
-Addon.Controls.CommandButton = 
-{
-    OnLoad = function(button) 
-        button.backdropInfo = BACKDROP
-        button:OnBackdropLoaded()
-        button:SetBackdropColor(unpack(COLORS.Background))
-        button:SetBackdropBorderColor(unpack(COLORS.Border))
-        button.Text:SetTextColor(unpack(COLORS.Text))
-
-        if (type(button.LocKey) == "string") then
-            button.Text:SetText(locale[button.LocKey])
-        end
-    end,
-
-    OnEnter = function(button)
-        button:SetBackdropColor(unpack(COLORS.Hover))
-        button:SetBackdropBorderColor(unpack(COLORS.HoverText))
-        button.Text:SetTextColor(unpack(COLORS.HoverText))
-    end,
-
-    OnLeave = function(button)
-        button:SetBackdropColor(unpack(COLORS.Background))
-        button:SetBackdropBorderColor(unpack(COLORS.Border))
-        button.Text:SetTextColor(unpack(COLORS.Text))
-    end,
-
-    OnDisable = function(button)
-        button:SetBackdropColor(unpack(COLORS.DisabledBackground))
-        button:SetBackdropBorderColor(unpack(COLORS.Disabled))
-        button.Text:SetTextColor(unpack(COLORS.Disabled))
-    end,
-
-    OnEnable = function(button)
-        button:SetBackdropColor(unpack(COLORS.Background))
-        button:SetBackdropBorderColor(unpack(COLORS.Border))
-        button.Text:SetTextColor(unpack(COLORS.Text))
-    end,
-
-    OnClick = function(button)
-        if (button.Handler) then
-            print("handler:", button.Handler)
-            Addon.Invoke(button:GetParent(), button.Handler, button)
-        end
-    end,
-}
 
 local DIALOG_CAPTION_COLOR = { 1, 1, 1, 1 }
 local DIALOG_DIVIDER_COLOR = { 1, 1, 1, 0.5 }
@@ -198,8 +105,9 @@ Addon.Controls.TextArea =
             textarea:SetBackdropColor(unpack(TEXTAREA_BACK))
         end
 
-        Mixin(textarea, Addon.Controls.Placeholder)
+        Mixin(textarea, CommonUI.Mixins.Placeholder, CommonUI.Mixins.ScrollView)
         textarea:InitializePlaceholder()
+        textarea:InitializeScrollView(textarea.Scroller)
 
         local edit = textarea.Scroller:GetScrollChild()
         edit:SetScript("OnEditFocusGained", function()
@@ -223,6 +131,8 @@ Addon.Controls.TextArea =
                         end
                     end)
             end)
+
+        ScrollFrame_OnLoad(textarea.Scroller)
     end,
 
     HasText = function(textarea)

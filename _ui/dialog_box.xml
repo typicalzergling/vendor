@@ -1,0 +1,35 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
+    <Frame name="DialogBox_Base" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" mixin="BackdropTemplateMixin" hidden="true">
+        <KeyValues>
+            <KeyValue key="_autoHookHandlers" value="true" type="boolean"/>
+            <KeyValue key="paddingBottom" value="20" type="number"/>
+            <KeyValue key="paddingTop" value="20" type="number"/>
+        </KeyValues>
+        <!-- The size reflects the dialog box minus the contents -->
+        <Size x="40" y="104"/>
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString parentKey="Caption" inherits="GameFontNormalLarge" justifyH="LEFT" maxLines="1" text="CAPTION" justifyV="MIDDLE">
+                    <Size x="1" y="28"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="24" y="-18"/>
+                        <Anchor point="TOPRIGHT" x="-24" y="-18"/>
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="Divider">
+                    <Size x="1" y="1"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Caption" relativePoint="BOTTOMLEFT" x="-8" y="-2"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.Caption" relativePoint="BOTTOMRIGHT" x="8" y="-2"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "DialogBox")</OnLoad>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+    </Frame>
+</Ui>
