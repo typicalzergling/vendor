@@ -2,7 +2,6 @@ local _, Addon = ...
 local CATEGORY_TAKE = Addon.SmartLoot.CATEGORY_TAKE
 local CATEGORY_SKIP = Addon.SmartLoot.CATEGORY_SKIP
 
-print("take:::", CATEGORY_TAKE)
 
 Addon.SmartLoot.Category = {
 

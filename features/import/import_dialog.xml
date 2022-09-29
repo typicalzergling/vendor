@@ -1,19 +1,147 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
-	<Frame name="Import_ImportDialog" virtual="true">
-        <Size x="200" y="200"/>
-        <Anchors>
-            <Anchor point="CENTER"/>
-        </Anchors>
+    <Script file="import/command_button.lua"/>
+
+    <Button name="CommandButton" virtual="true" mixin="BackdropTemplateMixin">
+        <KeyValues>
+            <KeyValue key="_autoHookHandlers" value="true" type="boolean"/>
+        </KeyValues>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "Controls", "CommandButton")</OnLoad>
+        </Scripts>
+        <Size x="120" y="30"/>
         <Layers>
-            <Layer level="ARTWORK">
-                <Texture parentKey="blah" file="Interface\Buttons\UI-Button-Borders">
-                    <Size x="120" y="36"/>
+            <Layer level="OVERLAY">
+                <FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER" maxLines="1" justifyV="MIDDLE">
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="10" y="10"/>
+                        <Anchor point="TOPLEFT" x="16" y="-4"/>
+                        <Anchor point="BOTTOMRIGHT" x="-16" y="4"/>
                     </Anchors>
-                    <TexCoords left="0.0" right="1.0" top="0.59375" bottom="1.0"/>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Button>
+
+	<Frame name="TextArea" virtual="true" mixin="BackdropTemplateMixin">
+        <KeyValues>
+            <KeyValue key="_autoHookHandlers" value="true" type="boolean"/>
+        </KeyValues>
+   		<Layers>
+			<Layer level="OVERLAY">
+				<FontString  parentKey="Label" inherits="GameFontNormal" justifyH="LEFT" justifyV="BOTTOM">
+					<Size x="1" y="14"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"  relativePoint="TOPLEFT" x="2" y="4"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-2" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+   		</Layers>
+		<Frames>
+			<ScrollFrame inherits="UIPanelScrollFrameTemplate" parentKey="Scroller">
+				<Anchors>
+					<Anchor point="TOPLEFT" y="-6" x="6"/>
+					<Anchor point="BOTTOMRIGHT" x="-27" y="5"/>
+				</Anchors>				
+				<ScrollChild>
+                    <EditBox name="Vendor_EditBox_Base" autoFocus="false" multiline="true">
+						<Size x="200" y="100"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"/>
+                        </Anchors>
+		                <Scripts>
+							<OnUpdate>ScrollingEdit_OnUpdate(self, elapsed, self:GetParent())</OnUpdate>
+							<OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
+			                <OnEscapePressed function="EditBox_ClearFocus"/>
+                        </Scripts>
+            		    <TextInsets>
+	    		            <AbsInset left="4" right="4" top="4" bottom="4"/>
+		                </TextInsets>
+		                <FontString inherits="ChatFontNormal"/>
+   	                </EditBox>
+				</ScrollChild>
+				<Scripts>
+					<OnMouseDown>self:GetScrollChild():SetFocus()</OnMouseDown>
+				</Scripts>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>Vendor.LoadImplementation(self, "Controls", "TextArea")</OnLoad>
+		</Scripts>
+	</Frame>    
+
+    <Frame name="DialogBox_Base" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" mixin="BackdropTemplateMixin" hidden="true">
+        <KeyValues>
+            <KeyValue key="_autoHookHandlers" value="true" type="boolean"/>
+            <KeyValue key="paddingBottom" value="20" type="number"/>
+            <KeyValue key="paddingTop" value="20" type="number"/>
+        </KeyValues>
+        <!-- The size reflects the dialog box minus the contents -->
+        <Size x="40" y="74"/>
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString parentKey="Caption" inherits="GameFontNormalLarge" justifyH="LEFT" maxLines="1" text="CAPTION" justifyV="MIDDLE">
+                    <Size x="1" y="28"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="24" y="-20"/>
+                        <Anchor point="TOPRIGHT" x="-24" y="-20"/>
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="Divider">
+                    <Size x="1" y="1"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Caption" relativePoint="BOTTOMLEFT" x="-8" y="-2"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.Caption" relativePoint="BOTTOMRIGHT" x="8" y="-2"/>
+                    </Anchors>
                 </Texture>
             </Layer>
         </Layers>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "Controls", "DialogBox")</OnLoad>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+    </Frame>
+
+	<Frame name="Import_ImportDialog" virtual="true">
+        <Size x="300" y="400"/>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Frames>
+            <Button inherits="CommandButton" parentKey="Import">
+                <Size x="120" y="28"/>
+                <KeyValues>
+                    <KeyValue key="LocKey" value="IMPORT" type="string"/>
+                    <KeyValue key="Handler" value="OnImport" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-24"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommandButton" parentKey="Cancel">
+                <Size x="120" y="28"/>
+                <KeyValues>
+                    <KeyValue key="LocKey" value="CANCEL" type="string"/>
+                    <KeyValue key="Handler" value="OnCancel" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="RIGHT" x="-12" relativePoint="LEFT" relativeKey="$parent.Import"/>
+                </Anchors>
+            </Button>
+            <Frame inherits="TextArea" parentKey="Data">
+                <KeyValues>
+                    <KeyValue key="backdropInfo" value="BACKDROP_TUTORIAL_16_16" type="GLOBAL"/>
+                    <KeyValue key="Placeholder" value="Paste you import text here" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="TOPRIGHT"/>
+                    <Anchor point="BOTTOM" relativeKey="$parent.Import" relativePoint="TOP" y="12"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+        <Scripts>
+        </Scripts>
     </Frame>
 </Ui>

@@ -216,7 +216,6 @@ function Feature:Create(feature, account, character)
         host = false,
 
         invoke = function(this, what, ...)
-            print("---> invoke :: ", this, what)
             table.forEach(this, print)
             -- If we were not given a function then trt to resolve it
             if (type(what) ~= "function") then
@@ -290,13 +289,18 @@ end
 -- creates a dialog, the diffrence between a dialog and a frame is that a dialog is added to the globals
 -- and cleared when the feature is disabled.
 function Feature:CreateDialog(name, template, ...)
-    local frame = CreateFrame("Frame", name, UIParent, template)
+    local dialog = CreateFrame("Frame", name, UIParent, "DialogBox_Base")
+    local frame = CreateFrame("Frame", name, dialog, template)
+
+    dialog:SetContent(frame)
+    Addon.LocalizeFrame(dialog)
     Addon.LocalizeFrame(frame)
     attach(frame, frame.Implementation, ...)
-    _G[name] = frame
+
+    _G[name] = dialog
     self.dialogs = self.dialogs or {}
     self.dialogs[name] = frame
-    return frame
+    return dialog
 end
 
 -- Creates a frame

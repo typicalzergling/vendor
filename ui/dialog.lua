@@ -2,7 +2,7 @@ local _, Addon = ...;
 local Dialog = {};
 local locale = Addon:GetLocale();
 
-local AUTO_HOOK_HANDLERS = { "OnHide", "OnShow", "OnDragStart", "OnDragStart", "OnMouseDown", "OnMouseUp", "OnLeave", "OnEnter" }
+local AUTO_HOOK_HANDLERS = { "OnHide", "OnShow", "OnDragStart", "OnDragStart", "OnMouseDown", "OnMouseUp", "OnLeave", "OnEnter", "OnClickl" }
 
 -- Locate and object/mixin from the addon.
 local function findObject(name, context)
@@ -36,11 +36,17 @@ Addon.LoadImplementation = function(frame, context, impl)
 
 		-- Auto connect script handlers (temp delgate on property)
 		if (frame._autoHookHandlers) then
-			for _, handler in ipairs(AUTO_HOOK_HANDLERS) do
-				if (type(frame[handler]) == "function") then
-					frame:SetScript(handler, function (target, ...)
+			for name, handler in pairs(mixin) do
+				-- Hook widget handlers
+				if (type(handler) == "function") and (name ~= "OnLoad") and frame:HasScript(name) then
+					frame:SetScript(name, function (target, ...)
 						Addon.Invoke(target, handler, target, ...)
 					end)
+				end
+
+				-- Hook WOW events "ON_<EVENT_NAME>"
+				if (type(handler) == "function") and (string.find(name, "ON_") == 1) then
+					print("REGISTER-EVENT", name)
 				end
 			end
 		end

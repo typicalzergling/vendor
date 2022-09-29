@@ -9,10 +9,9 @@ local Feature = {
 function Feature:OnInitialize(a, b, host)
     Addon:Debug("import feature initialize")
 
-    for a,b in pairs(host) do print("xxx --->", a, b) end
-
     local f = host:CreateDialog("VendorImportDialog", "Import_ImportDialog")
-    f:Show()
+    f:SetCaption("IMPORT_IMPORT_RULES")
+    f:Toggle()
     return true;
 end
 
