@@ -1,15 +1,18 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
+local DialogBox = {}
 
-local DIALOG_CAPTION_COLOR = { 1, 1, 1, 1 }
-local DIALOG_DIVIDER_COLOR = { 1, 1, 1, 0.5 }
 local DIALOG_BUTTON_GAP = 8
 local DIALOG_BUTTON_WIDTH = 124
 local DIALOG_BUTTON_HEIGHT = 28
 local DIALOG_PADDING_X = 14
 local DIALOG_PADDING_Y = 14
-local DIALOG_CONTENT_PADDING_X = 12
+local DIALOG_CONTENT_PADDING_X = 18
 local DIALOG_CONTENT_PADDING_Y = 12
+local DIALOG_BACK_COLOR = CreateColor(0.4, 0.45, 0.4, 0.8)
+local DIALOG_CONTENT_BORDER_COLOR = CreateColor(1, 1, 1, 0.25)
+local DIALOG_CAPTION_BACK_COLOR = CreateColor(0.3, 0.35, 0.35, 1)
+local DIALOG_CAPTION_COLOR = WHITE_FONT_COLOR
 
 local DIALOG_BACKDROP = {
 	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -30,7 +33,6 @@ local DIALOG_CONTENT_BACKDROP = {
 	edgeSize = 16,
 	insets = { left = 4, right = 4, top = 4, bottom = 4 },
 };
-
 
 local function layoutDialog(dialog)
     local cy = (DIALOG_PADDING_Y * 2) + dialog.Titlebar:GetHeight()
@@ -96,113 +98,115 @@ local function layoutDialog(dialog)
         0.2578125, coordstart, 0.3671875, coordstart)
     divider:SetTexture(DIALOG_BACKDROP.edgeFile, true, true)
 
+    dialog.__needsLayout = nil
 end
 
-Addon.CommonUI.DialogBox = 
-{
-    OnLoad = function(dialog)
-        dialog.backdropInfo = DIALOG_BACKDROP
-        dialog:OnBackdropLoaded()
-        dialog.Caption:SetTextColor(unpack(DIALOG_CAPTION_COLOR))
-        dialog.Divider:SetColorTexture(unpack(DIALOG_DIVIDER_COLOR))
-        dialog:SetBackdropColor(0.4, 0.45, 0.4, 0.8)
-
-        dialog.Host.backdropInfo = DIALOG_CONTENT_BACKDROP
-        dialog.Host:OnBackdropLoaded()
-        dialog.Host:SetBackdropBorderColor(1, 1, 1, 0.25)
-        --dialog.Host:SetBackdropColor(0, 0, 0, 0.75)
-
-        local titlebar = dialog.Titlebar
-        titlebar.back:SetTexture(DIALOG_BACKDROP.bgFile, true, true)
-        titlebar.back:SetVertexColor(0.3, 0.35, 0.3, 1)
-    end,
-
-    OnShow = function(dialog)        
-        if (dialog.__needsLayout) then 
-           layoutDialog(dialog)
-        end
-
-        if (dialog.__content) then
-            dialog.__content:Show()
-        end
-
-        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-    end,
-
-    OnHide = function(dialog)
-        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
-
-        if (dialog.__content) then
-            dialog.__content:Hide()
-        end
-    end,
-
-    Toggle = function(dialog)
-        if (not dialog:IsShown()) then
-            dialog:Show()
-        else
-            dialog:Hide()
-        end
-    end,
-
-    SetContent = function(dialog, frame)
-        if (frame:GetParent() ~= dialog) then
-            frame:SetParent(dialog)
-        end
-
-        if (dialog:IsShown()) then
-            layoutDialog(dialog)
-            frame:Show()
-        else
-            frame:Hide()
-        end
-
-        dialog.__content = frame
+local function layout(dialog)
+    if (dialog:IsShown()) then
+        layoutDialog(dialog)
+    else
         dialog.__needsLayout = true
-    end,
-
-    SetCaption = function(dialog, name)
-        local addon = locale.ADDON_NAME
-        local caption = name
-        if (addon) then
-            local text = locale[name]
-            caption = string.format("%s: %s", addon, text or name)
-        else
-            local text =locale[name]
-            caption = text or name
-        end
-        dialog.Titlebar.text:SetText(caption)
-    end,
-
-    SetButtons = function(dialog, buttons)
-        assert(type(buttons) == "table", "expected the buttons to be a table")
-
-        dialog.__buttons = {}
-        for key, button in pairs(buttons) do
-            print("creating buttons", key, button.label, button.handler)
-            local frame = CreateFrame("Button", nil, dialog, "CommandButton")
-            frame:SetLabel(button.label)
-            if (button.help) then
-                frame:SetHelp(button.help)
-            end
-
-            if (button.handler) then
-                frame:SetScript("OnClick", function(this)
-                        if (type(button.handler) == "string") then
-                            Addon.Invoke(dialog, button.handler, this)
-                        elseif (type(button.handler) == "function") then
-                            xpcall(button.handler, CallErrorHandler, this)
-                        end
-                    end)
-            end
-
-            dialog.__buttons[key] = frame
-            dialog.__needsLayout = true
-        end
     end
-}
+end
 
-local DialogBox = Addon.CommonUI.DialogBox
+function DialogBox:OnLoad()
+    self.backdropInfo = DIALOG_BACKDROP
+    self:OnBackdropLoaded()
+    self:SetBackdropColor(DIALOG_BACK_COLOR:GetRGBA())
+
+    local host = self.Host
+    host.backdropInfo = DIALOG_CONTENT_BACKDROP
+    host:OnBackdropLoaded()
+    host:SetBackdropBorderColor(DIALOG_CONTENT_BORDER_COLOR:GetRGBA())
+
+    local titlebar = self.Titlebar
+    titlebar.back:SetTexture(DIALOG_BACKDROP.bgFile, true, true)
+    titlebar.back:SetVertexColor(DIALOG_CAPTION_BACK_COLOR:GetRGBA())
+    titlebar.text:SetTextColor(DIALOG_CAPTION_COLOR:GetRGBA())
+end
+
+function DialogBox:OnShow()
+    if (self.__needsLayout) then 
+        layoutDialog(self)
+    end
+
+    if (self.__content) then
+        self.__content:Show()
+    end
+
+    PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
+end
+
+function DialogBox:OnHide()
+    PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
+
+    if (self.__content) then
+        self.__content:Hide()
+    end
+end
+
+function DialogBox:Toggle()
+    if (not self:IsShown()) then
+        self:Show()
+    else
+        self:Hide()
+    end
+end
+
+function DialogBox:SetContent(frame)
+    if (frame:GetParent() ~= self) then
+        frame:SetParent(self)
+    end
+
+    if (self:IsShown()) then
+        frame:Show()
+    else
+        frame:Hide()
+    end
+
+    self.__content = frame
+    layout(self)
+end
+
+function DialogBox:SetCaption(name)
+    local addon = locale.ADDON_NAME
+    local caption = name
+    if (addon) then
+        local text = locale[name]
+        caption = string.format("%s: %s", addon, text or name)
+    else
+        local text =locale[name]
+        caption = text or name
+    end
+    self.Titlebar.text:SetText(caption)
+end
+
+function DialogBox:SetButtons(buttons)
+    assert(type(buttons) == "table", "expected the buttons to be a table")
+
+    self.__buttons = {}
+    for key, button in pairs(buttons) do
+        print("creating buttons", key, button.label, button.handler)
+        local frame = CreateFrame("Button", nil, self, "CommandButton")
+        frame:SetLabel(button.label)
+        if (button.help) then
+            frame:SetHelp(button.help)
+        end
+
+        if (button.handler) then
+            frame:SetScript("OnClick", function(this)
+                    if (type(button.handler) == "string") then
+                        Addon.Invoke(self, button.handler, this)
+                    elseif (type(button.handler) == "function") then
+                        xpcall(button.handler, CallErrorHandler, this)
+                    end
+                end)
+        end
+
+        self.__buttons[key] = frame
+        layout(self)
+    end
+end
 
 -- Sets the enabled/disabled state of the button
 function DialogBox:SetButtonEnabled(id, enabled)
@@ -225,11 +229,13 @@ function DialogBox:SetButtonVisiblity(id, show)
         if (button) then
             if (not button:IsShown() and show) then
                 button:Show()
-                layoutDialog(self)
+                layout(self)
             elseif (button:IsShown() and not show) then
                 button:Hide()
-                layoutDialog(self)
+                layout(self)
             end
         end
     end
 end
+
+Addon.CommonUI.DialogBox = DialogBox
