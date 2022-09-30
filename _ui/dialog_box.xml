@@ -2,21 +2,27 @@
     <Frame name="DialogBox_Base" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" mixin="BackdropTemplateMixin" hidden="true">
         <KeyValues>
             <KeyValue key="_autoHookHandlers" value="true" type="boolean"/>
-            <KeyValue key="paddingBottom" value="20" type="number"/>
-            <KeyValue key="paddingTop" value="20" type="number"/>
         </KeyValues>
         <!-- The size reflects the dialog box minus the contents -->
         <Size x="40" y="104"/>
         <Layers>
             <Layer level="OVERLAY">
-                <FontString parentKey="Caption" inherits="GameFontNormalLarge" justifyH="LEFT" maxLines="1" text="CAPTION" justifyV="MIDDLE">
+                <!--<Texture parentKey="Title">
+                    <Color r="1" g="0" b="0" a="1"/>
+                    <Size x="1" y="32"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </Texture>-->
+                <FontString parentKey="Caption" inherits="GameFontNormalLarge" justifyH="LEFT" maxLines="1" text="CAPTION" justifyV="MIDDLE" hidden="true">
                     <Size x="1" y="28"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="24" y="-18"/>
-                        <Anchor point="TOPRIGHT" x="-24" y="-18"/>
+                        <Anchor point="TOPLEFT" x="0" y="-18"/>
+                        <Anchor point="TOPRIGHT" x="0" y="-18"/>
                     </Anchors>
                 </FontString>
-                <Texture parentKey="Divider">
+                <Texture parentKey="Divider" hidden="true">
                     <Size x="1" y="1"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeKey="$parent.Caption" relativePoint="BOTTOMLEFT" x="-8" y="-2"/>
@@ -25,6 +31,52 @@
                 </Texture>
             </Layer>
         </Layers>
+        <Frames>
+            <Frame parentKey="Titlebar" mixin="BackdropTemplateMixin">
+                <Size x="1" y="19"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="5" y="-5"/>
+                    <Anchor point="TOPRIGHT" x="-4" y="-5"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="back">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture parentKey="divider">
+                            <Size x="1" y="16"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent.divider" y="0" relativePoint="BOTTOMLEFT"/>
+                                <Anchor point="TOPRIGHT" relativeKey="$parent.divider" y="0" relativePoint="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="text" inherits="GameFontNormal" text="CAPTION" justifyV="MIDDLE" justifyH="LEFT" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="16"/>
+                                <Anchor point="BOTTOMRIGHT" y="2"/>
+                            </Anchors>
+                        </FontString>
+                     </Layer>
+                </Layers>
+                <Frames>
+                    <Button inherits="UIPanelCloseButton" parentKey="close">
+                        <Size x="32" y="32"/>
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" x="7" y="7"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>self:GetParent():GetParent():Hide()</OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+            </Frame>
+            <Frame parentKey="Host" mixin="BackdropTemplateMixin"/>
+        </Frames>
         <Scripts>
             <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "DialogBox")</OnLoad>
         </Scripts>
