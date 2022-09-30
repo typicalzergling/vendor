@@ -8,6 +8,8 @@ local DIALOG_BUTTON_WIDTH = 124
 local DIALOG_BUTTON_HEIGHT = 28
 local DIALOG_PADDING_X = 14
 local DIALOG_PADDING_Y = 14
+local DIALOG_CONTENT_PADDING_X = 12
+local DIALOG_CONTENT_PADDING_Y = 12
 
 local DIALOG_BACKDROP = {
 	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -21,7 +23,7 @@ local DIALOG_BACKDROP = {
 
 local DIALOG_CONTENT_BACKDROP = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-	edgeFile = "Interface\\Glues\\Common\\TextPanel-Border",
+	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 	tile = true,
 	tileEdge = true,
 	tileSize = 32,
@@ -36,17 +38,18 @@ local function layoutDialog(dialog)
 
     -- Position the main content
     local content = dialog.__content
-    local contentWidth = content:GetWidth() + (DIALOG_BUTTON_GAP * 2)
-    local contentHeight = content:GetHeight() + (DIALOG_BUTTON_GAP * 2)
+    local contentWidth = content:GetWidth() + (DIALOG_CONTENT_PADDING_X * 2)
+    local contentHeight = content:GetHeight() + (DIALOG_CONTENT_PADDING_Y * 2)
     local host = dialog.Host
 
     content:ClearAllPoints()
-    content:SetPoint("TOPLEFT", host, "TOPLEFT", DIALOG_BUTTON_GAP, -DIALOG_BUTTON_GAP)
-    content:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", -DIALOG_BUTTON_GAP, DIALOG_BUTTON_GAP)
+    content:SetPoint("TOPLEFT", host, "TOPLEFT", DIALOG_CONTENT_PADDING_X, -DIALOG_CONTENT_PADDING_Y)
+    content:SetPoint("BOTTOMRIGHT", host, "BOTTOMRIGHT", -DIALOG_CONTENT_PADDING_X, DIALOG_CONTENT_PADDING_Y)
     
-    cy = cy + (contentHeight + DIALOG_BUTTON_GAP)
+    cy = cy + (contentHeight + DIALOG_BUTTON_GAP + 4)
     host:ClearAllPoints()
-    host:SetPoint("TOPLEFT", dialog.Titlebar, "BOTTOMLEFT", DIALOG_PADDING_X, -DIALOG_BUTTON_GAP)
+    host:SetPoint("LEFT", DIALOG_PADDING_X, 0)
+    host:SetPoint("TOP", dialog.Titlebar, "BOTTOM", 0, -(DIALOG_BUTTON_GAP + 4))
 
     -- Position the buttons if needed
     if (dialog.__buttons) then
@@ -102,12 +105,12 @@ Addon.CommonUI.DialogBox =
         dialog:OnBackdropLoaded()
         dialog.Caption:SetTextColor(unpack(DIALOG_CAPTION_COLOR))
         dialog.Divider:SetColorTexture(unpack(DIALOG_DIVIDER_COLOR))
-        dialog:SetBackdropColor(0.4, 0.4, 0.6, 0.8)
+        dialog:SetBackdropColor(0.4, 0.45, 0.4, 0.8)
 
         dialog.Host.backdropInfo = DIALOG_CONTENT_BACKDROP
         dialog.Host:OnBackdropLoaded()
         dialog.Host:SetBackdropBorderColor(1, 1, 1, 0.25)
-        dialog.Host:SetBackdropColor(0, 0, 0, 0.75)
+        --dialog.Host:SetBackdropColor(0, 0, 0, 0.75)
 
         local titlebar = dialog.Titlebar
         titlebar.back:SetTexture(DIALOG_BACKDROP.bgFile, true, true)
@@ -198,3 +201,35 @@ Addon.CommonUI.DialogBox =
         end
     end
 }
+
+local DialogBox = Addon.CommonUI.DialogBox
+
+-- Sets the enabled/disabled state of the button
+function DialogBox:SetButtonEnabled(id, enabled)
+    if (self.__buttons) then
+        local button = self.__buttons[id]
+        if (button) then
+            if (enabled) then
+                button:Enable()
+            else
+                button:Disable()
+            end
+        end
+    end
+end
+
+-- Show or hide the dialog button
+function DialogBox:SetButtonVisiblity(id, show)
+    if (self.__buttons) then
+        local button = self.__buttons[id]
+        if (button) then
+            if (not button:IsShown() and show) then
+                button:Show()
+                layoutDialog(self)
+            elseif (button:IsShown() and not show) then
+                button:Hide()
+                layoutDialog(self)
+            end
+        end
+    end
+end
