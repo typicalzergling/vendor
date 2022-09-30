@@ -294,46 +294,20 @@ function Feature:CreateDialog(name, template, class, buttons)
 
     dialog:SetContent(frame)
     Addon.LocalizeFrame(dialog)
-    Addon.LocalizeFrame(frame)
-
-    if (type(class) == "table") then
-        local events = nil
-
-        for name, value in pairs(class) do
-            if (type(value) == "function") then
-                if (name == "OnShow") or (name == "OnHide") then
-                    frame:SetScript(name, value)
-                elseif dialog:HasScript(name) then
-                    dialog:SetScript(name, value)
-                elseif (string.find(name, "ON_") == 1) then
-                    local event = sttring.sub(name, 3)
-                    dialog:RegisterEvent(event)
-                    events = events or {}
-                    events[event] = value
-                else
-                    dialog[name] = function(...) 
-                        xpcall(value, CallErrorHandler, ...)
-                    end
-                end
-            end
-        end
-
-        if (events) then
-            dialog:SetScript("OnEvent", function(this, event, ...)
-                    local func = events[event]
-                    if (type(func) == "function") then
-                        xpcall(func, CallErrorHandler, this, ...)
-                    end
-                end)
-        end
-
-    end
 
     if (type(buttons) == "table") then
         dialog:SetButtons(buttons)
     end
 
-    Addon.Invoke(dialog, "OnInitDialog")
+    if (type(class) == "table") then
+        Addon.AttachImplementation(frame, class);
+    end
+
+    frame.GetDialog = function() 
+            return dialog 
+        end
+
+    frame:Invoke("OnInitDialog", dialog)
     self.dialogs = self.dialogs or {}
     self.dialogs[name] = frame
     _G[name] = dialog

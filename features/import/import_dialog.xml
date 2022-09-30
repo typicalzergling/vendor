@@ -49,9 +49,7 @@
 		</Scripts>
 	</Frame>    
 
-
-	<Frame name="Import_ImportDialog" virtual="true">
-        <Size x="300" y="400"/>
+	<Frame name="ImportRules_Step1" virtual="true">
         <Layers>
             <Layer level="ARTWORK">                
                 <FontString parentKey="help" inherits="GameFontHighlight" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." justifyH="LEFT">
@@ -71,6 +69,21 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-8"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+	</Frame>
+
+	<Frame name="Import_ImportDialog" virtual="true">
+        <Size x="300" y="400"/>
+        <Frames>
+            <Frame inherits="CommonUI_TabControl" parentKey="tabs">
+                <KeyValues>
+                    <KeyValue key="hideTabs" value="true" type="boolean"/>
+                </KeyValues>
+                <Anchors>
+					<Anchor point="TOPLEFT"/>
                     <Anchor point="BOTTOMRIGHT"/>
                 </Anchors>
             </Frame>

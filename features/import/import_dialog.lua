@@ -13,10 +13,13 @@ local BUTTONS = {
     }
 }
 
-function ImportDialog:OnInitDialog()
-    self:SetButtons(BUTTONS)
-    self:SetCaption("IMPORT_IMPORT_RULES")
-    --self:SetButtonEnabled("import", false)
+function ImportDialog:OnInitDialog(dialog)
+    dialog:SetButtons(BUTTONS)
+    dialog:SetCaption("IMPORT_IMPORT_RULES")
+    --dialog:SetButtonEnabled("import", false)
+
+    self.tabs:AddTab("step1", nil, "ImportRules_Step1", {})
+    self.tabs:ShowTab("step1")
 end
 
 function ImportDialog:OnShow()

@@ -4,8 +4,10 @@
     <Script file="buttons.lua"/>
     <Script file="dialog_box.lua"/>
     <Script file="textarea.lua"/>
+    <Script file="TabControl.lua"/>
 
     <!-- UX -->
     <Include file="buttons.xml"/>
     <Include file="dialog_box.xml"/>
+    <Include file="TabControl.xml"/>
 </Ui>
