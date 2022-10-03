@@ -49,7 +49,8 @@
 		</Scripts>
 	</Frame>    
 
-	<Frame name="ImportRules_Step1" virtual="true">
+	<Frame name="ImportRules_Step1" virtual="true" hidden="true">
+        <Size x="20" y="20"/>
         <Layers>
             <Layer level="ARTWORK">                
                 <FontString parentKey="help" inherits="GameFontHighlight" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." justifyH="LEFT">

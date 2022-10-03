@@ -13,14 +13,14 @@ function Tab:GetFrame()
     if (not self.frame) then
         local frame = CreateFrame("Frame", nil, self:GetParent(), self.template)
         if (type(self.class) == "table") then
-            Addon.AttachImplementation(frame, self.class)
+            Addon.AttachImplementation(frame, self.class, 1)
         else
             Addon.LocalizeFrame(frame)
         end
         self.frame = frame
     end
 
-    return frame
+    return self.frame
 end
 
 function Tab:Activate()
@@ -54,19 +54,20 @@ end
     tab.template = template
     tab.class = class
     tab.name = name
-    Vendor.AttachImplementation(tab, self)
+    Addon.AttachImplementation(tab, Tab, 1)
     return tab
 end
 
 --[[=========================================================================]]
 
 function TabControl:OnLoad()
+    print("table control on load", self)
+    self.__tabs = {}
 end
 
 function TabControl:AddTab(id, name, template, class, far)
     assert(not self.__tabs[id], "There is already a table with the specified id: " .. id)
     local tab = Tab.Create(self, name, template, class)
-    self.__tabs = self.__tabs or {}
     self.__tabs[id] = tab
 end
 

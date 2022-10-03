@@ -300,14 +300,14 @@ function Feature:CreateDialog(name, template, class, buttons)
     end
 
     if (type(class) == "table") then
-        Addon.AttachImplementation(frame, class);
+        Addon.AttachImplementation(frame, class, 1);
     end
 
     frame.GetDialog = function() 
             return dialog 
         end
 
-    frame:Invoke("OnInitDialog", dialog)
+    Addon.Invoke(frame, "OnInitDialog", dialog)
     self.dialogs = self.dialogs or {}
     self.dialogs[name] = frame
     _G[name] = dialog

@@ -31,14 +31,14 @@ function Addon.LoadImplementation(frame, namespace, class)
 			error(string.format("Unable to locate implementation '%s' from '%s'",
 				class or 'NIL', namespace or AddonName))
 		end
-		Addon.AttachImplementation(frame, mixin, not frame._autoHookHandlers)
+		Addon.AttachImplementation(frame, mixin, (namespace == "CommonUI") or frame._autoHookHandlers)
 	else
 		error("Expected object name for implementation")
 	end
 end
 
 -- Simple helper function for laoding an implementation into the frame
-function Addon.AttachImplementation(frame, mixin, nohook)
+function Addon.AttachImplementation(frame, mixin, hook)
 	if (not mixin or (type(mixin) ~= "table")) then
 		error("Expected implementation to be a table")
 	end
@@ -48,7 +48,7 @@ function Addon.AttachImplementation(frame, mixin, nohook)
 	local events = false
 
 	-- Auto connect script handlers (temp delgate on property)
-	if (not nohook) then
+	if (hook) then
 		for name, handler in pairs(mixin) do
 			if (type(handler) == "function") then
 				-- Hook widget handlers
@@ -88,6 +88,7 @@ function Addon.AttachImplementation(frame, mixin, nohook)
 				end
 			end)
 		end
+	end
 
 		-- A wrapepr around invoke
 		frame.Invoke = function(target, handler, ...)
@@ -99,8 +100,7 @@ function Addon.AttachImplementation(frame, mixin, nohook)
 		end
 
 		frame:Invoke("OnLoad")
-	end
-end;
+end
 
 -- Called when the dialog is loaded
 function Dialog:OnLoad()

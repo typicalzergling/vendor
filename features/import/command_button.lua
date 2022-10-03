@@ -26,6 +26,7 @@ local TEXTAREA_HOVER = { 1, 1, 1, .75 }
 Addon.Controls.TextArea = 
 {
     OnLoad = function(textarea) 
+        print("$$$$$ textarea on load ")
         textarea.backdropInfo = BACKDROP
         if (textarea.backdropInfo) then
             textarea:OnBackdropLoaded()
