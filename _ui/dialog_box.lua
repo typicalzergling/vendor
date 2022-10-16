@@ -1,6 +1,7 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
-local DialogBox = {}
+local DialogBox = Mixin({}, Addon.CommonUI.Mixins.Border)
+local Colors = Addon.CommonUI.Colors
 
 local DIALOG_BUTTON_GAP = 8
 local DIALOG_BUTTON_WIDTH = 124
@@ -9,30 +10,6 @@ local DIALOG_PADDING_X = 14
 local DIALOG_PADDING_Y = 14
 local DIALOG_CONTENT_PADDING_X = 18
 local DIALOG_CONTENT_PADDING_Y = 12
-local DIALOG_BACK_COLOR = CreateColor(0.4, 0.45, 0.4, 0.8)
-local DIALOG_CONTENT_BORDER_COLOR = CreateColor(1, 1, 1, 0.25)
-local DIALOG_CAPTION_BACK_COLOR = CreateColor(0.3, 0.35, 0.35, 1)
-local DIALOG_CAPTION_COLOR = WHITE_FONT_COLOR
-
-local DIALOG_BACKDROP = {
-	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-	edgeFile = "Interface\\Glues\\Common\\TextPanel-Border",
-	tile = true,
-	tileEdge = true,
-	tileSize = 16,
-	edgeSize = 16,
-	insets = { left = 4, right = 4, top = 4, bottom = 4 },
-};
-
-local DIALOG_CONTENT_BACKDROP = {
-	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-	tile = true,
-	tileEdge = true,
-	tileSize = 32,
-	edgeSize = 16,
-	insets = { left = 4, right = 4, top = 4, bottom = 4 },
-};
 
 local function layoutDialog(dialog)
     local cy = (DIALOG_PADDING_Y * 2) + dialog.Titlebar:GetHeight()
@@ -90,14 +67,6 @@ local function layoutDialog(dialog)
     dialog:SetWidth(cx)
     dialog:SetHeight(cy)
 
-    local coordstart = 0.0625
-    local divider = dialog.Titlebar.divider
-    local repeatX = max(0, (divider:GetWidth() / 16) * dialog:GetEffectiveScale() - coordstart)
-    divider:SetTexCoord(
-        0.2578125, repeatX,  0.3671875, repeatX,
-        0.2578125, coordstart, 0.3671875, coordstart)
-    divider:SetTexture(DIALOG_BACKDROP.edgeFile, true, true)
-
     dialog.__needsLayout = nil
 end
 
@@ -110,19 +79,42 @@ local function layout(dialog)
 end
 
 function DialogBox:OnLoad()
-    self.backdropInfo = DIALOG_BACKDROP
-    self:OnBackdropLoaded()
-    self:SetBackdropColor(DIALOG_BACK_COLOR:GetRGBA())
+    self:OnBorderLoaded(nil, Colors.DIALOG_BORDER_COLOR, Colors.DIALOG_BACK_COLOR)
 
+    -- Setup our host
     local host = self.Host
-    host.backdropInfo = DIALOG_CONTENT_BACKDROP
-    host:OnBackdropLoaded()
-    host:SetBackdropBorderColor(DIALOG_CONTENT_BORDER_COLOR:GetRGBA())
+    Mixin(host, Addon.CommonUI.Mixins.Border)
+    host:OnBorderLoaded()
+    print("--> setting content")
+    host:SetBackgroundColor(Colors.DIALOG_CONTENT_BACKGROUND_COLOR)
+    host:SetBorderColor(Colors.DIALOG_CONTENT_BORDER_COLOR)
 
+    -- Setup te title bar
     local titlebar = self.Titlebar
-    titlebar.back:SetTexture(DIALOG_BACKDROP.bgFile, true, true)
-    titlebar.back:SetVertexColor(DIALOG_CAPTION_BACK_COLOR:GetRGBA())
-    titlebar.text:SetTextColor(DIALOG_CAPTION_COLOR:GetRGBA())
+    titlebar.back:SetColorTexture(Colors.DIALOG_CAPTION_BACK_COLOR:GetRGBA())
+    titlebar.text:SetTextColor(Colors.DIALOG_CAPTION_COLOR:GetRGBA())
+    titlebar.divider:SetColorTexture(Colors.DIALOG_BORDER_COLOR:GetRGBA())
+
+    -- Setup our closed button
+    local close = titlebar.close
+    close.text:SetTextColor(Colors.BUTTON_TEXT:GetRGBA())
+    Mixin(close, Addon.CommonUI.Mixins.Border)
+    close:OnBorderLoaded(nil, Colors.TRANSPARENT, Colors.TRANSPARENT)
+    close:SetScript("OnClick", function(close)
+            self:Hide()
+        end)
+    close:SetScript("OnEnter", function(frame)
+            frame.text:SetTextColor(Colors.BUTTON_HOVER_TEXT:GetRGBA())
+            frame:SetBackgroundColor(Colors.BUTTON_HOVER_BACK)
+            frame:SetBorderColor(Colors.BUTTON_HOVER_BORDER)
+        end)
+    titlebar.close:SetScript("OnLeave", function(frame)
+            frame:SetBackgroundColor(Colors.TRANSPARENT)
+            frame:SetBorderColor(Colors.TRANSPARENT)
+        end)
+
+    self:SetClampedToScreen(true)
+    self:RegisterForDrag("LeftButton")
 end
 
 function DialogBox:OnShow()
@@ -143,6 +135,14 @@ function DialogBox:OnHide()
     if (self.__content) then
         self.__content:Hide()
     end
+end
+
+function DialogBox:OnDragStart()
+    self:StartMoving()
+end
+
+function DialogBox:OnDragStop()
+    self:StopMovingOrSizing()
 end
 
 function DialogBox:Toggle()

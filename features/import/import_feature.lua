@@ -8,10 +8,6 @@ local Feature = {
 
 function Feature:OnInitialize(a, b, host)
     Addon:Debug("import feature initialize")
-    
-    local dlg = host:CreateDialog("VendorImportDialog", "Import_ImportDialog", self.ImportDialog)
-    dlg:Toggle()
-    return true;
 end
 
 function Feature:OnTerminate()

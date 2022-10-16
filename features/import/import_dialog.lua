@@ -18,7 +18,8 @@ function ImportDialog:OnInitDialog(dialog)
     dialog:SetCaption("IMPORT_IMPORT_RULES")
     --dialog:SetButtonEnabled("import", false)
 
-    self.tabs:AddTab("step1", nil, "ImportRules_Step1", {})
+    self.tabs:AddTab("step1", "test", "ImportRules_Step1", {})
+    self.tabs:AddTab("step2", "test 2", "ImportRules_Step1", {})
     self.tabs:ShowTab("step1")
 end
 

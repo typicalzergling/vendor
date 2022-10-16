@@ -32,42 +32,62 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame parentKey="Titlebar" mixin="BackdropTemplateMixin">
-                <Size x="1" y="19"/>
+            <Frame parentKey="Titlebar">
+                <Size x="1" y="22"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" x="5" y="-5"/>
-                    <Anchor point="TOPRIGHT" x="-4" y="-5"/>
+                    <Anchor point="TOPLEFT" x="1" y="-1"/>
+                    <Anchor point="TOPRIGHT" x="-1" y="-1"/>
                 </Anchors>
                 <Layers>
                     <Layer level="BACKGROUND">
                         <Texture parentKey="back">
                             <Anchors>
                                 <Anchor point="TOPLEFT"/>
-                                <Anchor point="BOTTOMRIGHT"/>
+                                <Anchor point="BOTTOMRIGHT" y="1"/>
                             </Anchors>
-                        </Texture>
+                        </Texture>                 
+                    </Layer>
+                    <Layer level="BORDER">
                         <Texture parentKey="divider">
-                            <Size x="1" y="16"/>
+                            <Size x="16" y="1"/>
                             <Anchors>
-                                <Anchor point="TOPLEFT" relativeKey="$parent.divider" y="0" relativePoint="BOTTOMLEFT"/>
-                                <Anchor point="TOPRIGHT" relativeKey="$parent.divider" y="0" relativePoint="BOTTOMRIGHT"/>
+                                <Anchor point="BOTTOMLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
                             </Anchors>
                         </Texture>
                     </Layer>
                     <Layer level="ARTWORK">
                         <FontString parentKey="text" inherits="GameFontNormal" text="CAPTION" justifyV="MIDDLE" justifyH="LEFT" maxLines="1">
                             <Anchors>
-                                <Anchor point="TOPLEFT" x="16"/>
-                                <Anchor point="BOTTOMRIGHT" y="2"/>
+                                <Anchor point="TOPLEFT" x="16" y="-1"/>
+                                <Anchor point="BOTTOMRIGHT" x="-16" y="1"/>
                             </Anchors>
                         </FontString>
                      </Layer>
                 </Layers>
                 <Frames>
-                    <Button inherits="UIPanelCloseButton" parentKey="close">
-                        <Size x="32" y="32"/>
+                    <Button parentKey="close">   
+                        <Size x="16" y="16"/>
+                        <Layers>
+                            <Layer level="BACKGROUND">
+                                <Texture parentKey="bg">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT"/>
+                                        <Anchor point="BOTTOMRIGHT"/>
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                            <Layer level="ARTWORK">
+                                <FontString parentKey="text" text="X" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE" maxlines="1">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT"/>
+                                        <Anchor point="BOTTOMRIGHT"/>
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                        </Layers>
                         <Anchors>
-                            <Anchor point="TOPRIGHT" x="6" y="7"/>
+                            <Anchor point="RIGHT" x="-4"/>
                         </Anchors>
                         <Scripts>
                             <OnClick>self:GetParent():GetParent():Hide()</OnClick>
@@ -75,7 +95,7 @@
                     </Button>
                 </Frames>
             </Frame>
-            <Frame parentKey="Host" mixin="BackdropTemplateMixin"/>
+            <Frame parentKey="Host"/>
         </Frames>
         <Scripts>
             <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "DialogBox")</OnLoad>

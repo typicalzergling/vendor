@@ -1,0 +1,108 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+    <Frame name="Vendor_EditRule_Matches" virtual="true" hidden="true">
+        <Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="MATCHES">
+					<Size x="1" y="18"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="Vendor_EditRule_ItemInfo" virtual="true" hidden="true">
+        <Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="ITEM INFORMATION">
+					<Size x="1" y="18"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+	<Frame name="Vendor_EditRule_HelpItem" virtual="true">
+		<KeyValues>
+			<KeyValue key="baseHeight" value="38" type="number"/>
+		</KeyValues>		
+		<Size x="20" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="headerBackground">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="title" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontHighlight" maxLines="1">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.headerBackground" x="10"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.headerBackground" x="-10"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="contents">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.headerBackground" relativePoint="BOTTOM" y="-8"/>
+					<Anchor point="LEFT" relativeKey="$parent.title"/>
+					<Anchor point="BOTTOMRIGHT" y="10"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+
+    <Frame name="Vendor_EditRule_Help" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString  parentKey="label" inherits="GameFontHighlight" justifyV="MIDDLE" justifyH="LEFT">
+					<KeyValues>
+						<KeyValue key="LocKey" value="EDITRULE_FILTER_LABEL" type="string"/>
+					</KeyValues>
+					<Size x="50" y="30"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</FontString>		
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="filter" inherits="CommonUI_Edit">
+				<KeyValues>
+					<KeyValue key="Placeholder" value="EDITRULE_FILTER_HELPTEXT" type="string"/>
+					<KeyValue key="Handler" value="FilterHelp" type="string"/>					
+				</KeyValues>
+				<Size x="1" y="30"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="TOPRIGHT"/>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="items" inherits="CommonUI_List">
+				<Size x="10" y="100"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetHelpItems" type="string"/>
+					<KeyValue key="ItemCreator" value="CreateHelpItem" type="string"/>
+					<KeyValue key="EmptyText" value="RULEHELP_NO_MATCHES" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="BOTTOMLEFT" y="-12"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+    </Frame>    
+
+</Ui>
+

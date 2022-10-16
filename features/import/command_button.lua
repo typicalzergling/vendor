@@ -19,20 +19,14 @@ local BACKDROP =
 
 
 
-local TEXTAREA_BORDER = { 1, 1, 1, .5 }
-local TEXTAREA_BACK = { 1, 1, 1, .08 }
-local TEXTAREA_HOVER = { 1, 1, 1, .75 }
+local TEXTAREA_BORDER = CreateColor(0.5, 0.5, 0.5, .5)
+local TEXTAREA_BACK = CreateColor(0.9, 0.9, 0.9, .08)
 
-Addon.Controls.TextArea = 
+local TextArea = 
 {
     OnLoad = function(textarea) 
         print("$$$$$ textarea on load ")
-        textarea.backdropInfo = BACKDROP
-        if (textarea.backdropInfo) then
-            textarea:OnBackdropLoaded()
-            textarea:SetBackdropBorderColor(unpack(TEXTAREA_BORDER))
-            textarea:SetBackdropColor(unpack(TEXTAREA_BACK))
-        end
+        textarea:OnBorderLoaded(nil, TEXTAREA_BORDER, TEXTAREA_BACK)
 
         Mixin(textarea, CommonUI.Mixins.Placeholder, CommonUI.Mixins.ScrollView)
         textarea:InitializePlaceholder()
@@ -73,3 +67,5 @@ Addon.Controls.TextArea =
         textarea.Scroller:GetScrollChild():SetFocus()
     end,
 }
+
+Addon.CommonUI.XTextArea = Mixin(TextArea, Addon.CommonUI.Mixins.Border)

@@ -1,0 +1,143 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Button name="Vendor_RuleType" parentArray="ruleType" virtual="true">
+        <Size x="1" y="56"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Size x="1" y="18"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-8"/>
+						<Anchor point="TOPRIGHT" x="-8" y="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="help" inherits="GameFontHighlightSmall" justifyH="LEFT" justifyV="TOP">
+					<Size x="256" y="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.label" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+    <Frame name="Vendor_RuleStatus" virtual="true">
+        <Size x="2" y="64"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString inherits="GameFontNormalLarge" parentKey="title" justifyH="LEFT" justifyV="TOP">
+                    <Size x="1" y="18"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormalSmall" parentKey="text" justifyH="LEFT" justifyV="TOP" wordwrap="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.title" x="0" y="-2"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+    
+    <Frame name="Vendor_Dialogs_EditRule" virtual="true" hidden="true">
+        <Size x="796" y="550"/>
+        <Frames>
+            <Frame parentKey="tabs" inherits="CommonUI_TabControl">
+                <Anchors>
+                    <Anchor point="TOPRIGHT"/>
+                    <Anchor point="LEFT" relativePoint="CENTER" x="6"/>
+                    <Anchor point="BOTTOM"/>
+                </Anchors>
+            </Frame>
+
+			<!-- 
+				Rule Parameters
+			-->
+
+			<Frame parentKey="name" inherits="CommonUI_Edit">
+				<KeyValues>
+					<KeyValue key="Placeholder" value="EDITRULE_NAME_HELPTEXT" type="string"/>
+					<KeyValue key="Label" value="EDITRULE_NAME_LABEL" type="string"/>
+				</KeyValues>
+				<Size x="1" y="30"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" y="-18"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-6"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="description"  inherits="CommonUI_TextArea">
+				<KeyValues>
+					<KeyValue key="Placeholder" value="EDITRULE_DESCR_HELPTEXT" type="string"/>
+					<KeyValue key="Label" value="EDITRULE_DESCR_LABEL" type="string"/>
+				</KeyValues>
+				<Size x="1" y="80"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.name" x="0" y="-24"/>
+					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="script"  inherits="CommonUI_TextArea">
+				<Size x="1" y="120"/>
+				<KeyValues>
+					<KeyValue key="Place" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
+					<KeyValue key="Label" value="EDITRULE_SCRIPT_LABEL" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.description" x="0" y="-24"/>
+					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+				</Anchors>
+			</Frame>
+
+            <Button inherits="Vendor_RuleType" parentKey="sellRule">
+				<KeyValues>
+					<KeyValue key="Help" value="EDITRULE_SELLRULE_TEXT" type="string"/>
+					<KeyValue key="Label" value="EDITRULE_SELLRULE_LABEL" type="string"/>
+					<KeyValue key="Type" value="SELL" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.script" x="0" y="-10"/>
+					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+				</Anchors>
+            </Button>
+
+            <Button inherits="Vendor_RuleType" parentKey="keepRule">
+				<KeyValues>
+					<KeyValue key="Help" value="EDITRULE_KEEPRULE_TEXT" type="string"/>
+					<KeyValue key="Label" value="EDITRULE_KEEPRULE_LABEL" type="string"/>
+					<KeyValue key="Type" value="KEEP" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.sellRule" x="0" y="-8"/>
+					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+				</Anchors>
+            </Button>
+
+            <Button inherits="Vendor_RuleType" parentKey="deleteRule">
+				<KeyValues>
+					<KeyValue key="Help" value="EDITRULE_DELETERULE_TEXT" type="string"/>
+					<KeyValue key="Label" value="EDITRULE_DELETERULE_LABEL" type="string"/>
+					<KeyValue key="Type" value="DELETE" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.keepRule" x="0" y="-8"/>
+					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+				</Anchors>
+            </Button>
+
+            <Frame inherits="Vendor_RuleStatus" hidden="true" parentKey="ruleStatus">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT"/>
+                    <Anchor point="RIGHT" relativeKey="$parent.name"/>
+                </Anchors>
+            </Frame>
+
+        </Frames>
+    </Frame>
+</Ui>
+
