@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="panels/lists.lua"/>
+	<Script file="ui/panels/lists.lua"/>
 
 	<!-- Item List, List Template -->
 	<Button virtual="true" name="Vendor_ItemLists_ListItem">

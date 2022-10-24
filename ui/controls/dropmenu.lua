@@ -6,7 +6,6 @@ local DropMenu = {}
     ==========================================================================]]
 function DropMenu:OnLoad()
     self.expanded = false
-    self:OnBackdropLoaded()
     self:SetScript("OnMouseDown", function(_, button)
         if (not self.expanded) then
             self.expanded = true

@@ -20,10 +20,10 @@ function TabFrameMixin:InitializeTabs(tabs, panels, active)
     
     self.tfTabs = tabs or {};
     self.tfPanels = panels or {}; 
-    table.forEach(self.tfTabs, PanelTemplates_TabResize, 0);
+    --table.forEach(self.tfTabs, PanelTemplates_TabResize, 0);
     self.selectedTab = math.min(#self.Tabs, selectedTab or 0);
     PanelTemplates_SetNumTabs(self, table.getn(self.Tabs));
-    PanelTemplates_UpdateTabs(self);
+    pcall(function() PanelTemplates_UpdateTabs(self) end);
     if (table.getn(tabs)) then
         self:SetActiveTab(active or tabs[1]:GetID());
     end
@@ -39,7 +39,7 @@ function TabFrameMixin:SetActiveTab(tabId, quiet)
         end
         
         local tab = assert(self:GetTab(tabId), string.format("Expected %d tab to be valid", tabId));
-        PanelTemplates_Tab_OnClick(tab, self);
+        --PanelTemplates_Tab_OnClick(tab, self);
         
         table.forEach(self.tfPanels, 
             function(panel)

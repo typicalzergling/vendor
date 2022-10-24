@@ -48,7 +48,6 @@ function ItemList.OnLoad(self)
 	Mixin(self, CallbackRegistryMixin);
 	self.List.isReadOnly = (self.isReadOnly or false);
 	CallbackRegistryMixin.OnLoad(self);
-	self:OnBackdropLoaded();
 	self:GenerateCallbackEvents({"OnAddItem", "OnDeleteItem"});
 
 	--self.List.emptyText.LocKey = self.EmptyTextKey;

@@ -70,7 +70,6 @@ function Edit:OnChange()
 end
 
 function EditHost:OnLoad()
-	self:OnBackdropLoaded();
 	if (self.Scroll) then
 		self:AdjustScrollBar();
 		ScrollFrame_OnLoad(self.Scroll);		

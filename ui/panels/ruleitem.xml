@@ -1,8 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="panels/ruleitem.lua"/>
-	<Script file="panels/ruleparameters.lua"/>
+	<Script file="ui/panels/ruleitem.lua"/>
+	<Script file="ui/panels/ruleparameters.lua"/>
 	
-    <Frame name="Vendor_RuleParam_Numeric" virtual="true" visble="false">
+    <Frame name="Vendor_RuleParam_Numeric" virtual="true" hidden="true">
 		<Size x="1" y="30"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -40,13 +40,13 @@
                 <Texture parentKey="Unhealthy" file="Interface\RAIDFRAME\ReadyCheck-NotReady" hidden="true">
                     <Size x="20" y="20"/>
                    <Anchors>
-                        <Anchor pointe="TOPLEFT" relativeKey="$parent.Enabled"/>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Enabled"/>
                     </Anchors>
                 </Texture>
                 <Texture parentKey="Migrate" file="Interface\RAIDFRAME\ReadyCheck-Waiting" hidden="true">
                     <Size x="20" y="20"/>
                    <Anchors>
-                        <Anchor pointe="TOPLEFT" relativeKey="$parent.Enabled"/>						
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Enabled"/>						
                     </Anchors>
                 </Texture>
 				<FontString inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" parentKey="Name">

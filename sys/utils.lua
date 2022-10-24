@@ -75,9 +75,7 @@ function Addon.object(typeName, instance, API, events)
 
         -- If the object has events then mixin the callback registry
         if (type(events) == "table") then
-            fullApi.RegisterCallback = CallbackRegistryMixin.RegisterCallback;
-            fullApi.TriggerEvent = CallbackRegistryMixin.TriggerEvent;
-            fullApi.UnregisterCallback = CallbackRegistryMixin.UnregisterCallback;
+            fullApi = Mixin(fullApi, CallbackRegistryMixin)
         end
 
         rawset(TypeInformation, fullName, fullApi);
