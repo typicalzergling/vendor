@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="panels/audit.lua"/>
+	<Script file="ui/panels/audit.lua"/>
 
 	<Button name="Vendor_AuditItem" virtual="true" mixin="ItemMixin">
 		<Size x="200" y="18"/>
@@ -116,7 +116,7 @@
 
 			<ScrollFrame parentKey="History" inherits="FauxScrollFrameTemplate">
 				<KeyValues>
-					<KeyValue key="ItemTemplate" value="Vendor_AuditItem" style="string"/>
+					<KeyValue key="ItemTemplate" value="Vendor_AuditItem" type="string"/>
 					<KeyValue key="ItemHeight" value="18" type="number"/>
 				</KeyValues>
 				<Layers>

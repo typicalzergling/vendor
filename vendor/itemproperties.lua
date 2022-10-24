@@ -190,8 +190,9 @@ function Addon:DoGetItemProperties(itemObj)
     -- If it's bag and slot then the count can be retrieved, if it isn't
     -- then it must be an inventory slot, which means 1.
     local count = 1
-    if location and location:IsBagAndSlot() then
-        count = select(2, GetContainerItemInfo(location:GetBagAndSlot()))
+    if location:IsBagAndSlot() then
+        local bag, slot = location:GetBagAndSlot()
+        count = select(2, C_Container.GetContainerItemInfo(bag, slot))
     end
 
     -- Item properties may already be cached

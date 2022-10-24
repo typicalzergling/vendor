@@ -2,13 +2,16 @@
 	<Script file="rulesdialog.lua"/>
 
 	<!-- Templates -->
-	<Texture name="Vendor.RulesUI.ConfigPanelTabSpacerTemplate" virtual="true" visible="false" parentArray="Spacers"/>
+	<Texture name="Vendor.RulesUI.ConfigPanelTabSpacerTemplate" virtual="true" hidden="false" parentArray="Spacers"/>
 
-	<Frame name="Vendor_TabPanel_Base" virtual="true" visible="false" parentArray="Panels"/>
+	<Frame name="Vendor_TabPanel_Base" virtual="true" hidden="true" parentArray="Panels"/>
 
-	<Button name="Vendor_RulesDialog_Tab" inherits="OptionsFrameTabButtonTemplate" virtual="true" visible="false" parentArray="Tabs">
+	<Button name="Vendor_RulesDialog_Tab" inherits="OptionsFrameTabButtonTemplate" virtual="true" hidden="true" parentArray="Tabs">
 		<Scripts>
 			<OnClick>self:GetParent():SetActiveTab(self:GetID())</OnClick>
+			<OnLoad>
+				self.Text = _G[self:GetName() .. "Text"]
+			</OnLoad>
 		</Scripts>
 	</Button>
 
@@ -147,7 +150,7 @@
 			</Button>
 
 			<!-- Lists Tab -->
-			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="ListsTab" enabled="false">
+			<Button name="$parentListsTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="ListsTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="CONFIG_DIALOG_LISTS_TAB" type="string"/>
 					<KeyValue key="TabName" value="lists" type="string"/>
@@ -158,7 +161,7 @@
 			</Button>
 
 			<!-- Help Tab -->
-			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="HelpTab" enabled="false">
+			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="HelpTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
 					<KeyValue key="TabName" value="help" type="string"/>
@@ -180,7 +183,7 @@
 			</Button>			
 
 			<!-- Audit Tab -->
-			<Button name="$parentAuditTab" inherits="Vendor_RulesDialog_Tab" id="5" parentKey="AuditTab" enabled="false">
+			<Button name="$parentAuditTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="AuditTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="CONFIG_DIALOG_AUDIT_TAB" type="string"/>
 					<KeyValue key="TabName" value="audit" type="string"/>
