@@ -45,8 +45,8 @@ function Addon:OnInitialize()
     --self:RegisterEvent("DELETE_ITEM_CONFIRM", function() Addon:Debug("events", "Handling DELETE_ITEM_CONFIRM") end)
 
     -- Tooltip hooks
-    self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
-    self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
+    --self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
+    --self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
     self:PreHookFunction(GameTooltip, "SetBagItem", "OnGameTooltipSetBagItem")
     self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
     self:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")

@@ -185,7 +185,8 @@ function Addon:GetItemProperties(arg1, arg2)
     -- then it must be an inventory slot, which means 1.
     local count = 1
     if location:IsBagAndSlot() then
-        count = select(2, GetContainerItemInfo(location:GetBagAndSlot()))
+        local bag, slot = location:GetBagAndSlot()
+        count = select(2, C_Container.GetContainerItemInfo(bag, slot))
     end
 
     -- Item properties may already be cached

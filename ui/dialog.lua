@@ -29,7 +29,7 @@ Addon.LoadImplementation = function(frame, context, impl)
 
 	if (implementation and (type(implementation) == "string")) then
 		local mixin = findObject(implementation, context);
-		assert(mixin and (type(mixin) == "table"), string.format("Expected implementation to be a valid table: '%s/%s'", context or "", impl or "<unknown>"))
+		assert(mixin and (type(mixin) == "table"), "Expected implementation to be a valid table: " .. implementation .. " context: " .. (context or ""));
 		Mixin(frame, mixin);
 		Addon.Invoke(frame, "OnLoad", frame)
 		Addon.LocalizeFrame(frame)

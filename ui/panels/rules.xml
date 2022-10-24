@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="panels/rules.lua"/>
-	<Include file="panels/ruleitem.xml"/>
+	<Script file="ui/panels/rules.lua"/>
+	<Include file="ui/panels/ruleitem.xml"/>
 
 	<!-- Profile Item -->
 	<Button name="Vendor_RuleType_Item" virtual="true">

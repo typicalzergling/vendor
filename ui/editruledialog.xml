@@ -195,7 +195,7 @@
            	</Frame>
 
 			<!-- Tabs-->
-			<Button name="$parentMatchesTab" inherits="OptionsFrameTabButtonTemplate" id="1" parentKey="MatchesTab" parentArray="Tabs">
+			<Button name="$parentMatchesTab" inherits="Vendor_RulesDialog_Tab" id="1" parentKey="MatchesTab" parentArray="xTabs">
                 <KeyValues>
                     <KeyValue key="LocKey" value="EDITRULE_MATCHES_TAB_NAME" type="string"/>
                 </KeyValues>
@@ -207,7 +207,7 @@
 	        	</Scripts>
 			</Button>
 
-			<Button name="$parentItemInfoTab" inherits="OptionsFrameTabButtonTemplate" id="2" parentKey="ItemInfoTab" parentArray="Tabs">
+			<Button name="$parentItemInfoTab" inherits="Vendor_RulesDialog_Tab" id="2" parentKey="ItemInfoTab" parentArray="xTabs">
                 <KeyValues>
                     <KeyValue key="LocKey" value="EDITRULE_ITEMINFO_TAB_NAME" type="string"/>
                 </KeyValues>
@@ -219,7 +219,7 @@
 	        	</Scripts>
 			</Button>
 
-			<Button name="$parentHelpTab" inherits="OptionsFrameTabButtonTemplate" id="3" parentKey="HelpTab" parentArray="Tabs">
+			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="HelpTab" parentArray="xTabs">
                 <KeyValues>
                     <KeyValue key="LocKey" value="EDITRULE_HELP_TAB_NAME" type="string"/>
                 </KeyValues>

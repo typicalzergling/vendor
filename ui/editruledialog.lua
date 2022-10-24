@@ -427,7 +427,7 @@ function EditRuleDialog:EditRule(ruleDef, readOnly, infoPanelId)
         self:SetCaption(L.EDITRULE_CAPTION)
     end
 
-    self:Show();
+    pcall(function() self:Show() end)
 end
 
 function EditRuleDialog:CheckRuleHealth(ruleDef)
@@ -481,7 +481,7 @@ function EditRuleDialog:SetRuleStatus(ruleStatus, statusMsg)
     frame.Text:SetTextColor(textColor.r, textColor.g, textColor.b);
 
     if (not frame:IsShown()) then
-        frame:Show();
+        pcall(function() frame:Show() end)
     end
 end
 
