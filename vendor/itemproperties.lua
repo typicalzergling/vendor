@@ -421,3 +421,11 @@ end
 function Addon:GetItemPropertiesFromEquipmentSlot(equip)
     return self:DoGetItemProperties(Item:CreateFromEquipmentSlot(equip))
 end
+
+function Addon:GetItemPropertiesFromItem(item)
+    if (not item) then
+        return nil
+    end
+
+    return self:DoGetItemProperties(item)
+end

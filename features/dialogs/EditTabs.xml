@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Script file="dialogs/ItemInfo.lua"/>
 
     <Frame name="Vendor_EditRule_Matches" virtual="true" hidden="true">
         <Layers>
@@ -14,18 +15,87 @@
         </Layers>
     </Frame>
 
-    <Frame name="Vendor_EditRule_ItemInfo" virtual="true" hidden="true">
-        <Layers>
-			<Layer level="ARTWORK">
-				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="ITEM INFORMATION">
-					<Size x="1" y="18"/>
+	<Frame name="Vendor_EditRule_ItemProperty" virtual="true" hidden="true">
+		<KeyValues>
+			<KeyValue key="PaddingY" value="8" type="number"/>
+		</KeyValues>
+		<Size x="1" y="1"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="hilite" hidden="true">
+					<Color r="1" g="1" b="1" a=".125"/>
 					<Anchors>
 						<Anchor point="TOPLEFT"/>
-						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="name" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" maxLines="1" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-4"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="130"/>
 					</Anchors>
 				</FontString>
-            </Layer>
-        </Layers>
+				<FontString parentKey="equals" justifyH="CENTER" justifyV="TOP" inherits="GameFontHighlight" maxLines="1" text="=">
+					<Size x="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="value" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.equals" relativePoint="TOPRIGHT"/>
+						<Anchor point="RIGHT" x="-8" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+    <Frame name="Vendor_EditRule_ItemInfo" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontHighlight" justifyV="MIDDLE" justifyH="LEFT">
+					<Size x="50" y="30"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="EDITRULE_ITEM_LABEL" type="string"/>
+ 					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame inherits="CommonUI_ItemLink" parentKey="item">
+				<KeyValues>
+					<KeyValue key="AllowDrop" value="true" type="boolean"/>
+					<KeyValue key="OnItemChanged" value="ShowItemProperties" type="string"/>
+					<KeyValue key="Placeholder" value="EDITRULE_NO_ITEM" type="string"/>
+				</KeyValues>
+				<Size x="1" y="50"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.label"/>
+					<Anchor point="RIGHT"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.label"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="properties" inherits="CommonUI_List">
+				<Size x="10" y="100"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetItemProperties" type="string"/>
+					<KeyValue key="ItemCreator" value="CreatePropertyItem" type="string"/>
+					<KeyValue key="EmptyText" value="EDITRULE_ITEM_PROPERTIES_EMPTY" type="string"/>
+					<KeyValue key="OnInsertText" value="InsertScriptText" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="BOTTOMLEFT" y="-12"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
     </Frame>
 
 	<Frame name="Vendor_EditRule_HelpItem" virtual="true">

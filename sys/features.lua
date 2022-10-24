@@ -44,6 +44,13 @@ local FEATURE_PREVIEW = "preview"
 local FEATURE_BETA = "beta"
 local FEATURE_RETAIL = "retail"
 
+if (type(table.unpack) ~= "function") then
+    table.unpack = function(t, i, j) 
+    ---@diagnostic disable-next-line: deprecated
+        return unpack(t, i, j)
+    end
+end
+
 local function debug(message, ...) 
     Addon:Debug("features", message, ...)
 end
@@ -52,7 +59,7 @@ end
    | Checks the enabled state of this feature
    ==========================================================================]]
 function Feature:IsEnabled()
-    return self.eanbled;
+    return self.enabled;
 end
 
 --[[===========================================================================
@@ -60,7 +67,7 @@ end
    ==========================================================================]]
 function Feature:IsBeta()
     local state = self.impl.STATE or ""
-    return (string.lower(state) == FEATURE_BETA) 
+    return (string.lower(state) == FEATURE_BETA)
 end
 
 --[[===========================================================================
@@ -121,11 +128,41 @@ function Feature:Enable()
             end
         end
 
-        -- Finally if the feature provides an "OnInitialize" invoke it
-        if (not self:invoke("OnInitialize", self.account, self.character, self)) then
-            Addon:Debug("Feature '%s' failed to initialize", name)
-            self:Disable()
-            return false;
+        -- Add thunks for member functions
+        self.feature.CreateDialog = function(feature, ...)
+                return self:CreateDialog(...)
+            end
+
+        self.feature.Debug = function(_, ...)
+                Addon:Debug("feature:" .. name, ...)
+            end
+
+        self.feature.GetHost = function(feature)
+                return self
+            end
+
+        self.feature.GetDependency = function(name)
+                return self.depends[name]
+            end
+
+        -- If the feature has an oninitialize method, it can return both a public
+        -- and an intenral API, merge them into the respective apis.
+        for name, depend in pairs(self.depends) do
+            self.feature[name] = depend
+        end        
+        local internalApi, publicApi = self:invoke("OnInitialize", self.account, self.character, self)
+
+        if (type(internalApi) == "table") then
+            for name, func in pairs(internalApi) do
+                print("--> making internal api", name, func)
+                Addon[name] = function(addon, ...) return self:invoke(func, ...) end
+            end
+        end
+
+        if (type(publicApi) == "table") then
+            for name, func in pairs(publicApi) do
+                Addon.Public[name] = function(addon, ...) returnself:invoke(func, ...) end
+            end
         end
 
         debug("Feature '%s' is ready (%d events connected)", name, events)
@@ -173,12 +210,45 @@ function Feature:GetDescription()
     return self.impl.DESCRIPTION or false
 end
 
+--[[
+    Retrieve the version of the feature
+]]
 function Feature:GetVersion()
     local v = self.impl.VERSION
     if (v ~= nil) then
         return tostring(v)
     end
     return "0"
+end
+
+--[[
+    Retrieves the dependecies for this feature
+]]
+function Feature:GetDependencies()
+    return self.impl.DEPENDENCIES or {}
+end
+
+--[[
+    Assigns a dependency to this feature
+]]
+function Feature:SetDependency(name, depend)
+    assert(depend:IsEnabled())
+
+    if (not self.depends[name]) then
+        Addon:Debug("features", "Setting dependency '%s' of '%s'", name, self:GetName())
+        local instance = depend:GetInstance()
+        if (self.feature) then
+            self.feature[name] = instance
+        end
+        self.depends[string.lower(name)] = instance
+    end
+end
+
+--[[
+    Returns the instance of the feature
+]]
+function Feature:GetInstance()
+    return self.feature
 end
 
 --[[===========================================================================
@@ -210,13 +280,13 @@ function Feature:Create(feature, account, character)
         feature = false,
         enabled = false,
         frame = false,
+        depends = {},
         account = accountData,
         character = characterData,
         dialogs = false,
         host = false,
 
         invoke = function(this, what, ...)
-            table.forEach(this, print)
             -- If we were not given a function then trt to resolve it
             if (type(what) ~= "function") then
                 if this.feature and (type(this.feature[what]) == "function") then
@@ -226,41 +296,17 @@ function Feature:Create(feature, account, character)
             end
 
             if (type(what) == "function") then
-                local result, msg = xpcall(what, CallErrorHandler, this.feature, ...)
-                if (not result) then
-                    Addon:Debug("errors", "Feature.invoke: failed to invoke '%s' on '%s' :: %s", what, this:GetName(), msg or "")
+                local result = { xpcall(what, CallErrorHandler, this.feature, ...) }
+                if (result[1] ~= true) then
+                    Addon:Debug("errors", "Feature.invoke: failed to invoke '%s' on '%s' :: %s", what, this:GetName(), result[2] or "")
+                else
+                    return select(2, table.unpack(result))
                 end
-                return result
             end
-
-            return true
-        end,
-
-        CreateDialog = function(...)
-            self.host:CreateDialog(...)
         end,
     }
 
-    local api = table.copy(self)
-
-    -- Put the feature object methods onto the object
-    --for event, handler in pairs(self) do
-        --api[event] = handler;
-    --end
-
-    -- Put he feature API into the object
-    for name, method in pairs(feature) do
-        if (type(method) == "function") then
-            if (string.find("ON_", name) ~= 1) and (string.find("On", name) ~= 1) then
-                assert(self[name] == nil)
-                api[name] = function(this, ...) this.invoke(this.feature, method, ...) end
-            end
-        end
-    end
-
-    local t = Addon.object(AddonName .. "Feature", instance, api)
-    instance.host = t
-    return t
+    return Addon.object(AddonName .. "Feature", instance, self)
 end
 
 local function attach(frame, ...)
@@ -289,23 +335,57 @@ end
 -- creates a dialog, the diffrence between a dialog and a frame is that a dialog is added to the globals
 -- and cleared when the feature is disabled.
 function Feature:CreateDialog(name, template, class, buttons)
+    assert(self:IsEnabled())
+
     local dialog = CreateFrame("Frame", name, UIParent, "DialogBox_Base")
     local frame = CreateFrame("Frame", name, dialog, template)
 
     dialog:SetContent(frame)
     Addon.LocalizeFrame(dialog)
+    Addon.LocalizeFrame(frame)
 
     if (type(buttons) == "table") then
         dialog:SetButtons(buttons)
     end
 
+    -- If there was an implementation provided, then we need to merge 
+    -- it into the frame (meaning the frame becomes the instance), this will
+    -- hook any events we've got, and then push the APIs onto the dialog
     if (type(class) == "table") then
-        Addon.AttachImplementation(frame, class, 1);
+        for name, value in pairs(class) do
+            if (type(value) == "function") then
+                if frame:HasScript(name) then
+                    frame:SetScript(name, value)
+                elseif Addon:RaisesEvent(name) then
+                    Addon:RegisterCallback(name, frame, value)
+                else
+                    -- Expose the API through both the Dialog itself (Forward thunk) and
+                    -- on the actual frame.
+                    frame[name] = value                    
+                    dialog[name] = function(_, ...) 
+                        value(frame, ...)
+                    end
+                end
+            else
+                frame[name] = value
+            end
+        end
     end
 
     frame.GetDialog = function() 
             return dialog 
         end
+
+    frame.GetFeature = function()
+            return self.feature
+        end
+
+    frame.GetDependecy = function(_, dep)
+            dep = string.lower(dep)
+            return self.depends[dep]
+        end
+
+    frame.Debug = self.feature.Debug
 
     Addon.Invoke(frame, "OnInitDialog", dialog)
     self.dialogs = self.dialogs or {}
@@ -319,7 +399,7 @@ end
 function Feature:CreateFrame(parent, template, ...)
     local frame = CreateFrame("Frame", nil, parent or UIParent, template)
     Addon.LocalizeFrame(frame)
-    attach(frame, framne.Implementation, ...)
+    attach(frame, frame.Implementation, ...)
     return frame
 end
 
@@ -328,12 +408,32 @@ end
    | Called to initialize the the addons features
    ==========================================================================]]
 function Features:Initialize() 
-    --Addon:AddInitializeAction(function()
-    --    self:EnableFeatures()
-    --end)
-
-    C_Timer.After(10, function() self:EnableFeatures() end)
     Addon:GeneratesEvents({ "OnFeatureEnabled", "OnFeatureDisabled", "OnFeatureReady" })
+
+    -- After 10 seconds create all the feature objects and then start initialziing 
+    -- all of our feastures
+    C_Timer.After(10, function()
+            Addon:Debug("%s loaded - checking for features", AddonName)
+            if (type(Addon.Features) ~= "table") then
+                Addon:Debug("features", "There are no features to register")
+                return
+            end
+
+            -- TODO: here is where would fiter beta va not
+
+            for feature, impl in pairs(Addon.Features) do
+                local featureObj =  Feature:Create(impl, self.account, self.chracter)
+                self.features[featureObj:GetName()] = featureObj
+                Addon:Debug("features", "Registered feature '%s' (v%s)", featureObj:GetName(), featureObj:GetVersion())
+            end
+
+            -- Register a terminate handler
+            Addon:AddTerminateAction(function()
+                self:Terminate()
+            end)
+
+            xpcall(self.EnableOneFeature, CallErrorHandler, self)
+        end)
 end
 
 --[[===========================================================================
@@ -359,41 +459,53 @@ function Features:IsFeatureEnabled(feature)
     return featureObj and featureObj:IsEnabled()
 end
 
---[[===========================================================================
-   | Setup all of features including enabling/disabling them
-   ==========================================================================]]
-function Features:EnableFeatures()
-    table.forEach(Addon.Features, print)
-    Addon:Debug("%s loaded - checking for features", AddonName)
-    if (type(Addon.Features) ~= "table") then
-        Addon:Debug("features", "There are no features to register")
-    else
-        -- Create all of features
-        for feature, impl in pairs(Addon.Features) do
-            local featureObj =  Feature:Create(impl, self.account, self.chracter)
-            self.features[featureObj:GetName()] = featureObj
-            Addon:Debug("features", "Registered feature '%s' (v%s)", featureObj:GetName(), featureObj:GetVersion())
-        end
+--[[
+    Checks if all the dependecies of the specified featrure eare enabled (ready)
+    if they are then 
+]]
+function Features:CheckDepdencies(feature)
+    local deps = feature:GetDependencies()
+    print("depds", feature:GetName(), deps)
+    table.forEach(deps, print)
+    if (not deps or table.getn(deps) == 0) then
+        return true
+    end
 
-        -- Enable addons that should be enabled
-        for _, featureObj in pairs(self.features) do
-            -- Enable our features
-            if (featureObj:IsPreview()) then
-                -- toto
-                featureObj:Enable()
-            elseif (featureObj:IsBeta()) then
-                -- todo
-                featureObj:Enable()
-            else 
-                featureObj:Enable()
+    for _, dep in ipairs(deps) do
+        local dependency = self.features[dep]
+        if (not dependency) then
+            Addon:Debug("features", "Feature '%s' depends on '%s' which doesn't exist", feature:GetName(), dep)
+            error(string.format("Feature '%s' has an unsatisified dependency '%s'", feature:GetName(), dep))
+            return false
+        elseif dependency:IsEnabled() then
+            feature:SetDependency(dep, dependency)
+        else
+            return false
+        end
+    end
+
+    return true
+end
+
+--[[
+    Enables a single feature, and then queues an operation to enable another one
+]]
+function Features:EnableOneFeature()
+    -- Enable addons that should be enabled
+    for _, feature in pairs(self.features) do
+        if not feature:IsEnabled() then
+            if (self:CheckDepdencies(feature)) then
+                feature:Enable()
+                C_Timer.After(1, 
+                    function()
+                        xpcall(self.EnableOneFeature, CallErrorHandler, self)
+                    end)
+                return
+            else
+                Addon:Debug("features", "Feature '%s' has dependecies are not ready yet", feature:GetName())
             end
         end
-
-        -- Register a terminate handler
-        Addon:AddTerminateAction(function () 
-            self:Terminate()
-        end)
-    end 
+    end
 end
 
 --[[===========================================================================

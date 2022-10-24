@@ -71,4 +71,8 @@ function RuleStatus:SetStatus(status, message)
     self:Show()
 end
 
+function RuleStatus:Clear()
+    self:Hide()
+end
+
 Dialogs.RuleStatus = RuleStatus

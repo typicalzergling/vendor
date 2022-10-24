@@ -1,7 +1,7 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
 local TabControl = {}
-local Tab = Mixin({}, Addon.CommonUI.Mixins.Border)
+local Tab = Mixin({}, Addon.CommonUI.Mixins.Border, CallbackRegistryMixin)
 
 local TABCONTROL_BORDER = CreateColor(1, 1, 1, .60)
 local TABCONROL_BACK = { r = 0, g = 0, b = 0, a = 0 }
@@ -31,6 +31,12 @@ function Tab:GetFrame()
         else
             Addon.LocalizeFrame(frame)
         end
+
+        -- Provide a trigger event delegate
+        frame.TriggerEvent = function(_, ...) 
+                print("trigger:", ...)
+                self:TriggerEvent(...) 
+            end
         self.frame = frame
     end
 
@@ -101,6 +107,9 @@ end
         tab:SetName(name)
     end
 
+    CallbackRegistryMixin.OnLoad(tab)
+    tab:SetUndefinedEventsAllowed(true)
+
     return tab
 end
 
@@ -141,6 +150,8 @@ function TabControl:AddTab(id, name, template, class, far)
     if (self:IsShown()) then
         self:Layout()
     end
+
+    return tab
 end
 
 function TabControl:ActivateTab(tab)

@@ -21,6 +21,13 @@ Addon.CommonUI.Colors =
     DIALOG_CAPTION_COLOR = CreateColor(1, 1, 0, 1),
     DIALOG_BORDER_COLOR = CreateColor(.5, .5, .5, .8),
 
+    -- Edit Colors
+    EDIT_BORDER = CreateColor(1, 1, 1, .4),
+    EDIT_BACK = CreateColor(.8, .8, .8, .1),
+    EDIT_HIGHLIGHT = CreateColor(1, 1, 1, .7),
+    EDIT_DISABLED = CreateColor(.5, .5, .5, .5),
+    EDIT_TEXT = WHITE_FONT_COLOR,
+    
     -- Button colors
     BUTTON_BORDER = CreateColor(1, 1, 1, .75),
     BUTTON_BACK = CreateColor(0, 0, 0, .4),

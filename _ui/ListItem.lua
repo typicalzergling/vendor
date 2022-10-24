@@ -149,7 +149,7 @@ function ListItem:Attach(list)
         if (type(handler) == "function") then
             if (self:HasScript(name)) then
                 self:SetScript(name, function(_, ...)
-                    print(xpcall(handler, CallErrorHandler, self, ...))
+                    xpcall(handler, CallErrorHandler, self, ...)
                 end)
             end
         end
@@ -169,6 +169,25 @@ function ListItem:Detach()
     end
 
     rawset(self, STATE_KEY, nil)
+end
+
+--[[
+    Notify the parent of the list that a notable event happend (thise are up the list
+    item and the parent to define)
+]]
+function ListItem:Notify(event, ...)
+    local state = rawget(self, STATE_KEY)
+
+    if state.list then
+        local handler = state.list[event]
+        if (type(handler) == "string") then
+            local parent = state.list:GetParent()
+            local target = parent[handler]
+            if (type(target) == "function") then
+                pcall(target, parent, self, ...)
+            end
+        end
+    end
 end
 
 Addon.CommonUI.List.ListItem = ListItem

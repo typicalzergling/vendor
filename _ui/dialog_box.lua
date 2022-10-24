@@ -11,6 +11,40 @@ local DIALOG_PADDING_Y = 14
 local DIALOG_CONTENT_PADDING_X = 18
 local DIALOG_CONTENT_PADDING_Y = 12
 
+local function layoutButtons(dialog)
+    -- Position the buttons if needed
+    if (dialog.__buttons) then
+        local last = nil
+        local buttonsWidth  = 0
+
+        for _, button in pairs(dialog.__buttons) do
+            if (button:IsShown()) then
+                if (buttonsWidth == 0) then
+                    buttonsWidth = 2 * DIALOG_PADDING_X
+                end
+
+                button:ClearAllPoints()
+
+                button:SetHeight(DIALOG_BUTTON_HEIGHT)
+                button:SetWidth(DIALOG_BUTTON_WIDTH)
+                if (not last) then
+                    button:SetPoint("BOTTOMRIGHT", dialog, "BOTTOMRIGHT", -DIALOG_PADDING_X, DIALOG_PADDING_Y)
+                else
+                    button:SetPoint("BOTTOMRIGHT", last, "BOTTOMLEFT", -DIALOG_BUTTON_GAP, 0)
+                    buttonsWidth = buttonsWidth + DIALOG_BUTTON_GAP
+                end
+
+                last = button
+                buttonsWidth = buttonsWidth + DIALOG_BUTTON_WIDTH
+            end
+        end
+
+        return buttonsWidth, last
+    end
+
+    return 0
+end
+
 local function layoutDialog(dialog)
     local cy = (DIALOG_PADDING_Y * 2) + dialog.Titlebar:GetHeight()
     local cx = (DIALOG_PADDING_X * 2)
@@ -33,22 +67,7 @@ local function layoutDialog(dialog)
     -- Position the buttons if needed
     if (dialog.__buttons) then
         local last = nil
-        local buttonsWidth  = 2 * DIALOG_PADDING_X
-        for _, button in pairs(dialog.__buttons) do
-            button:ClearAllPoints()
-
-            button:SetHeight(DIALOG_BUTTON_HEIGHT)
-            button:SetWidth(DIALOG_BUTTON_WIDTH)
-            if (not last) then
-                button:SetPoint("BOTTOMRIGHT", dialog, "BOTTOMRIGHT", -DIALOG_PADDING_X, DIALOG_PADDING_Y)
-            else
-                button:SetPoint("BOTTOMRIGHT", last, "BOTTOMLEFT", -DIALOG_BUTTON_GAP, 0)
-                buttonsWidth = buttonsWidth + DIALOG_BUTTON_GAP
-            end
-
-            last = button
-            buttonsWidth = buttonsWidth + DIALOG_BUTTON_WIDTH
-        end
+        local buttonsWidth, last  = layoutButtons(dialog)
 
         cy = cy + DIALOG_BUTTON_HEIGHT + DIALOG_PADDING_Y
         host:SetPoint("BOTTOM", last, "TOP", 0, DIALOG_BUTTON_GAP)
@@ -236,6 +255,41 @@ function DialogBox:SetButtonVisiblity(id, show)
             end
         end
     end
+end
+
+--[[
+    Set the state of all the buttons at once, if the button is prensent in the 
+    array then this will disable/hide the button
+]]
+function DialogBox:SetButtonState(buttons)
+    assert(type(buttons) == "table", "Expected the button state to be a table")
+    if self.__buttons then
+        for id, button in pairs(self.__buttons) do
+            local state = buttons[id]
+            if (not state) then
+                button:Hide()
+                button:Disable()
+            elseif (type(state) == "boolean" and state == true) then
+                button:Show()
+                button:Enable()
+            elseif (type(state) == "table") then
+                table.forEach(state, print)
+                if (state.enabled == true) then
+                    button:Enable()
+                else
+                    button:Disable()
+                end
+
+                if (state.show == true) then
+                    button:Show()
+                else
+                    button:Hide()
+                end
+            end
+        end
+    end
+
+    layoutButtons(self)
 end
 
 Addon.CommonUI.DialogBox = DialogBox

@@ -62,6 +62,7 @@
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_NAME_HELPTEXT" type="string"/>
 					<KeyValue key="Label" value="EDITRULE_NAME_LABEL" type="string"/>
+					<KeyValue key="Handler" value="OnNameChanged" type="string"/>
 				</KeyValues>
 				<Size x="1" y="30"/>
 				<Anchors>
@@ -74,6 +75,7 @@
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_DESCR_HELPTEXT" type="string"/>
 					<KeyValue key="Label" value="EDITRULE_DESCR_LABEL" type="string"/>
+					<KeyValue key="Handler" value="OnDescriptionChanged" type="string"/>
 				</KeyValues>
 				<Size x="1" y="80"/>
 				<Anchors>
@@ -87,6 +89,7 @@
 				<KeyValues>
 					<KeyValue key="Place" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
 					<KeyValue key="Label" value="EDITRULE_SCRIPT_LABEL" type="string"/>
+					<KeyValue key="Handler" value="OnScriptChanged" type="string"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.description" x="0" y="-24"/>

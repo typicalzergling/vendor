@@ -132,7 +132,7 @@ local function _createItem(list, state, model)
     
     -- Create the actual item, and attach our implementaition
     Mixin(frame, list.ListItem)
-    frame:Attach(frame);
+    frame:Attach(list);
     frame:SetModel(model)
     Addon.Invoke(frame, "OnCreated", frame)
     Addon.Invoke(list, "OnItemCreated", frame, model)
@@ -451,7 +451,14 @@ function List:Rebuild()
     state.update = true
     state.items = nil
     state.view = nil
-    state.frames = nil
+
+    if (state.frames) then
+        for _, f in pairs(state.frames) do
+            f:Hide()
+        end
+    end
+
+    state.frames = {}
 end
 
 --[[

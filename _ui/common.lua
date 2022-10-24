@@ -250,3 +250,26 @@ end
 
 
 Addon.CommonUI.Mixins.Border = Border;
+
+Addon.CommonUI.Mixins.Debounce = 
+{
+    --[[
+        Adds a function which will be invoked after the specified time has elased, 
+        calling it again extends the timer, calling with a nil hanlder or a zero
+        time will cancel the timer.
+    ]]
+    Debounce = function(debounce, time, handler, ...)
+        if (debounce.__dtimer) then
+            debounce.__dtimer:Cancel()
+            debounce.__dtimer = nil
+        end
+
+        if (time ~= 0) and handler then
+            local args = { ... }
+            debounce.__dtimer = C_Timer.After(time, function()
+                debounce.__dtimer = nil
+                Addon.Invoke(debounce, handler, unpack(args))
+            end)
+        end
+    end
+}
