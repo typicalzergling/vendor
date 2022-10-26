@@ -4,9 +4,12 @@ local TEST_CATEGORY = 1
 local TEST_ID = "test.id"
 local TEST_NAME = "<test-rule>"
 local TEST_CATEGORY_NAME = "<test>"
+local EVENTS = { "OnRuleDefinitionCreated", "OnRuleDefinitionUpdated", "OnRuleDefinitionDeleted", "OnRuleFunctionsChanged" }
 
 function RulesFeature:OnInitialize()
     self:Debug("Initialize Rules Feature")
+    Addon:GeneratesEvents(EVENTS)
+
     return
         -- Internal API
         {
@@ -45,6 +48,66 @@ function RulesFeature:GetMatches(script, parameters)
 end
 
 --[[
+    Locates a rule with the specified Id, the rule is returned with
+    "IsSystem" and "IsExtension" set as appropriate
+]]
+function RulesFeature:FindRule(ruleId)
+    local rule, type = Addon.Rules.GetDefinition(ruleId, nil, true)
+    if (rule) then
+        rule = table.copy(rule)
+        if (type == "SYSTEM") then
+            rule.IsSystem = true
+        end
+
+        if (type == "EXT") then
+            rule.IsExtension = true
+        end
+    end
+
+    return rule
+end
+
+--[[
+    Called to delete a rule from the custom definitions, the rule MUST be a 
+    custom rule for this to do anything.
+]]
+function RulesFeature:DeleteRule(ruleId)
+    if type(ruleId) == "table" then
+        ruleId = rule.Id
+    end
+
+    if (type(ruleId) == "string") then
+        local rule = Addon.Rules.DeleteDefinition(ruleId)
+        if (rule) then
+            Addon:RaiseEvent("OnRuleDefinitionDeleted", rule)
+        end
+    end
+end
+
+--[[
+    Called to save/create a rule, setting create to true forces a new rule
+    to be created, otherwise it will be created if there is no 'Id' provided
+]]
+function RulesFeature:SaveRule(rule, create)
+    local ruleId = rule.Id or "NEW"
+    local new = false
+    self:Debug("Saving rule '%s'", ruleId)
+
+    -- Create a new rule if we need to
+    if (not rule.Id or create) then
+        rule.Id = string.lower(Addon.RuleManager.CreateCustomRuleId())
+        new = true
+    end
+
+    Addon.Rules.UpdateDefinition(rule)
+    if (new) then
+        Addon:RaiseEvent("OnRuleDefinitionCreated", rule)
+    else
+        Addon:RaiseEvent("OnRuleDefinitionUpdated", rule)
+    end
+end
+
+--[[
     Create new instaence of the rules engine
 ]]
 function RulesFeature:CreateRulesEngine()
@@ -54,6 +117,8 @@ end
 function RulesFeature:OnTerminate()
     self.validateEngine = nil
     self.matchEngine = nil
+
+    Addon:RemoveEvents(EVENTS)
 end
 
 Addon.Features.Rules = RulesFeature

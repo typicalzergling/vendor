@@ -87,7 +87,7 @@
 			<Frame parentKey="script"  inherits="CommonUI_TextArea">
 				<Size x="1" y="120"/>
 				<KeyValues>
-					<KeyValue key="Place" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
+					<KeyValue key="Placeholder" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
 					<KeyValue key="Label" value="EDITRULE_SCRIPT_LABEL" type="string"/>
 					<KeyValue key="Handler" value="OnScriptChanged" type="string"/>
 				</KeyValues>

@@ -75,7 +75,7 @@ end
 --[[===========================================================================
    | Sets the sepcified value ini the profile.
    ==========================================================================]]
-function Profile:GetValue(key, value)
+function Profile:GetValue(key)
 	local var = profilesVariable:Get(self.profileId) or {};
 
 	--@debug@--
@@ -83,21 +83,22 @@ function Profile:GetValue(key, value)
 	--@end-debug@
 
 	local value = var[key];
+	Addon:Debug("profile", "---> getvalue  %s %s", key, tostring(value))
+	
 	if (value == nil) then
 		if (type(self.defaults) == "table" and table.hasKey(key)) then
-			Addon:Debug("Value '%s' was requested but is not present but there is a default value", key)
+			Addon:Debug("profile", "Value '%s' was requested but is not present but there is a default value", key)
 			local default = self.default[key]
 			self:SetValue(key, default)
+			value = default
 		end
-
-		return nil;
 	end
 	
 	if (type(value) == "table") then
 		return table.copy(value);
 	end
 
-	return value;	
+	return value
 end
 
 --[[===========================================================================

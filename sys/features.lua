@@ -141,20 +141,25 @@ function Feature:Enable()
                 return self
             end
 
-        self.feature.GetDependency = function(name)
-                return self.depends[name]
+        self.feature.GetDependency = function(_, name)
+                return self.depends[string.lower(name)]
             end
 
         -- If the feature has an oninitialize method, it can return both a public
         -- and an intenral API, merge them into the respective apis.
         for name, depend in pairs(self.depends) do
             self.feature[name] = depend
-        end        
-        local internalApi, publicApi = self:invoke("OnInitialize", self.account, self.character, self)
+        end
+
+        local onInit = self.feature.OnInitialize
+        if (type(onInit) == "function") then
+            onInit(self.feature, self)
+        end
+
+        --[[local internalApi, publicApi = self:invoke("OnInitialize", self.account, self.character, self)
 
         if (type(internalApi) == "table") then
             for name, func in pairs(internalApi) do
-                print("--> making internal api", name, func)
                 Addon[name] = function(addon, ...) return self:invoke(func, ...) end
             end
         end
@@ -163,7 +168,7 @@ function Feature:Enable()
             for name, func in pairs(publicApi) do
                 Addon.Public[name] = function(addon, ...) returnself:invoke(func, ...) end
             end
-        end
+        end]]
 
         debug("Feature '%s' is ready (%d events connected)", name, events)
         Addon:RaiseEvent("OnFeatureReady", self)
@@ -242,6 +247,18 @@ function Feature:SetDependency(name, depend)
         end
         self.depends[string.lower(name)] = instance
     end
+end
+
+--[[
+    Retrieve the specified dependency
+]]
+function Feature:GetDependency(depend)
+    local instance = self.depends[string.lower(depend)]
+    if (not instance) then
+        error("The depenedency \"" .. depend .. "\" was not found in \"" .. self:GetName() .. "\"")
+    end
+
+    return instance
 end
 
 --[[
@@ -357,11 +374,11 @@ function Feature:CreateDialog(name, template, class, buttons)
                 if frame:HasScript(name) then
                     frame:SetScript(name, value)
                 elseif Addon:RaisesEvent(name) then
-                    Addon:RegisterCallback(name, frame, value)
+                    Addon:RegisterCallback(name, value, frame)
                 else
                     -- Expose the API through both the Dialog itself (Forward thunk) and
                     -- on the actual frame.
-                    frame[name] = value                    
+                    frame[name] = value                  
                     dialog[name] = function(_, ...) 
                         value(frame, ...)
                     end
@@ -373,24 +390,28 @@ function Feature:CreateDialog(name, template, class, buttons)
     end
 
     frame.GetDialog = function() 
-            return dialog 
+            return dialog
         end
 
     frame.GetFeature = function()
             return self.feature
         end
 
-    frame.GetDependecy = function(_, dep)
-            dep = string.lower(dep)
-            return self.depends[dep]
+    frame.GetDependency = function(_, dep)
+            return self.depends[string.lower(dep)]
         end
 
     frame.Debug = self.feature.Debug
+    if (type(frame.OnInitDialog) == "function") then
+        xpcall(frame.OnInitDialog, CallErrorHandler, frame, dialog)
+    end
 
-    Addon.Invoke(frame, "OnInitDialog", dialog)
     self.dialogs = self.dialogs or {}
     self.dialogs[name] = frame
-    _G[name] = dialog
+
+    if (type(name) == "string") then
+        _G[name] = dialog
+    end
 
     return dialog
 end
@@ -432,7 +453,7 @@ function Features:Initialize()
                 self:Terminate()
             end)
 
-            xpcall(self.EnableOneFeature, CallErrorHandler, self)
+            self:EnableOneFeature()
         end)
 end
 
@@ -465,8 +486,6 @@ end
 ]]
 function Features:CheckDepdencies(feature)
     local deps = feature:GetDependencies()
-    print("depds", feature:GetName(), deps)
-    table.forEach(deps, print)
     if (not deps or table.getn(deps) == 0) then
         return true
     end
@@ -496,9 +515,9 @@ function Features:EnableOneFeature()
         if not feature:IsEnabled() then
             if (self:CheckDepdencies(feature)) then
                 feature:Enable()
-                C_Timer.After(1, 
+                C_Timer.After(1,
                     function()
-                        xpcall(self.EnableOneFeature, CallErrorHandler, self)
+                        self:EnableOneFeature()
                     end)
                 return
             else
@@ -546,6 +565,19 @@ function Features:GetEnabled()
     return filter(self.features, true, true, true, true)
 end
 
+function Features:GetFeature(name)
+    local featureObj = self.features[name]
+    if (not featureObj) then
+        error("Unable to locate feature: " .. name)
+    end
+
+    if (not featureObj:IsEnabled()) then
+        error("Requested diabled feature: " .. name)
+    end
+
+    return featureObj:GetInstance()
+end
+
 local FEATURES = {}
 
 --[[===========================================================================
@@ -572,4 +604,12 @@ end
    ==========================================================================]]
 function Addon:IsFeatureEnabled(feature)
     return Addon:GetFeatures():IsFeatureEnabled(feature)
+end
+
+--[[
+    Retrieves the feature with the specified name
+]]
+function Addon:GetFeature(name)
+    local features = self:GetFeatures()
+    return features:GetFeature(name)
 end

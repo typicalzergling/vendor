@@ -5,6 +5,8 @@ local TRANSPARENT = CreateColor(0,0,0,0)
 Addon.CommonUI.Colors =
 {
     TRANSPARENT = TRANSPARENT,
+    TEXT = WHITE_FONT_COLOR,
+    SECONDARY_TEXT = CreateColor(1, 1, 1, .6),
 
     PLACEHOLDER_COLOR = CreateColor(1, 1, 1, .6),
 
@@ -41,5 +43,16 @@ Addon.CommonUI.Colors =
 
     LIST_BORDER = CreateColor(1, 1, 1, .5),
     LIST_BACK = TRANSPARENT,
-    LIST_EMPTY_TEXT = CreateColor(.5, .5, .5, .5)
+    LIST_EMPTY_TEXT = CreateColor(.5, .5, .5, .5),
+
+    -- Checkbox
+    CHECKBOX_BORDER = CreateColor(1, 1, 1, .5),
+    CHECKBOX_LABEL = WHITE_FONT_COLOR,
+    CHECKBOX_HELP = CreateColor(1, 1, 1, .6),
+    CHECKBOX_BACK = TRANSPARENT,
+    CHECKBOX_HOVER_BORDER = YELLOW_FONT_COLOR,
+    CHECKBOX_HOVER_BACK = CreateColor(1, 1, 1, 0.05),
+    CHECKBOX_CHECK = CreateColor(1, 1, 0, 0.6),
+    CHECKBOX_DISABLED = CreateColor(1, 1, 1, .5),
+
 }

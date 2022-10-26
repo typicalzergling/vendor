@@ -2,28 +2,13 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local Dialogs = Addon.Features.Dialogs
 local EditRule = Mixin({}, Addon.CommonUI.Mixins.Debounce)
+local RuleType = Addon.RuleType.SELL
 
-local BUTTONS = 
-{
-    cancel = {
-        label = CANCEL,
-        handler = "Toggle"
-    },
-
-    save = {
-        label = SAVE,
-        handler = "SaveRule"
-    },
-
-    delete = {
-        label = DELETE,
-        hanlder = "DeleteRule"
-    },
-
-    close = {
-        label = CLOSE,
-        hanlder = "Toggle"
-    }
+local BUTTONS = {
+    cancel = { label = CANCEL, handler = "Toggle"  },
+    save = { label = SAVE, handler = "SaveRule" },
+    delete = { label = DELETE, handler = "DeleteRule" },
+    close = { label = CLOSE, handler = "Toggle" }
 }
 
 local RuleType = Mixin({}, Addon.CommonUI.Mixins.Border)
@@ -249,6 +234,7 @@ end
     Initialize the edit rule dialog
 ]]
 function EditRule:OnInitDialog(dialog)
+    local feature = self:GetFeature()
     local tabs = self.tabs
 
     dialog:SetButtons(BUTTONS)
@@ -262,12 +248,10 @@ function EditRule:OnInitDialog(dialog)
         end)
     end
 
-    tabs:AddTab("matches", "matches", "Vendor_EditRule_Matches")
-
-    local itemInfo = tabs:AddTab("iteminfo", "iteminfo", "Vendor_EditRule_ItemInfo", self.ItemInfoTab)
-    itemInfo:RegisterCallback("INSERT_TEXT", self.InsertText, self)
-
-    tabs:AddTab("help", "help", "Vendor_EditRule_Help", HelpTab)
+    self.help = tabs:AddTab("help", "help", "Vendor_EditRule_Help", HelpTab)
+    self.matches = tabs:AddTab("matches", "matches", "Vendor_EditRule_Matches", self.MatchesTab)
+    self.items = tabs:AddTab("iteminfo", "iteminfo", "Vendor_EditRule_ItemInfo", self.ItemInfoTab)
+    self.items:RegisterCallback("INSERT_TEXT", self.InsertText, self)
 
     self:SetRuleType("SELL")
     tabs:ShowTab("help")
@@ -296,10 +280,12 @@ end
 
 function EditRule:UpdateMatches()
     if (self.changes.scriptValid) then
-        local matches = self:GetDependecy("Rules"):GetMatches(self.changes.script)
-        table.forEach(matches, print)
+        local matches = self:GetDependency("Rules"):GetMatches(self.changes.script)
+        table.forEach(self.MatchesTab, print)
+        table.forEach(self.matchesTab, print)
+        self.matches:Call("SetMatches", matches)
     else
-        self:Debug("--> clear the matches pane")
+        self.matches:Call("ClearMatches", matches)
     end
 end
 
@@ -308,7 +294,7 @@ end
 ]]
 function EditRule:OnScriptChanged(text)
     local scriptValid = false
-    local rules = self:GetDependecy("Rules")
+    local rules = self:GetDependency("Rules")
     local errorMessage = nil
 
     if (text and string.len(text) ~= 0) then
@@ -332,11 +318,11 @@ function EditRule:OnScriptChanged(text)
                 errorMessage = string.trim(msg)
             end
         end
-
-        self:Debounce(.75, function() 
-                self:UpdateMatches() 
-            end)
     end
+
+    self:Debounce(.75, function() 
+        self:UpdateMatches() 
+    end)
 
     if (not scriptValid) then
         if (not errorMessage) then
@@ -411,7 +397,7 @@ end
 ]]
 function EditRule:InViewMode()
     local rule = self.rule
-    return (type(rule) == "table") and (rule.Extension or rule.System)
+    return (type(rule) == "table") and (rule.IsSystem or rule.IsExtension)
 end
 
 --[[
@@ -457,11 +443,12 @@ end
     Sets the rule we are viewing or editing this requries a valid rule
 ]]
 function EditRule:SetRule(rule)
-    self.rule = rule;
+    assert(type(rule) == "table", "Expected the rule definition to be a table")
+
     local dialog = self:GetDialog()
     self.changes = {}
-
-    assert(type(rule) == table)
+    
+    self.rule = rule;
     self:SetRuleType(rule.Type or "sell")
     self.description:SetText(rule.Description or "")
     self.name:SetText(rule.Name or "")
@@ -472,7 +459,7 @@ function EditRule:SetRule(rule)
     self.script:SetText(script or "")
 
     if (self:InViewMode()) then
-        dialog:SetVaption("VIEWRULE_CAPTION")
+        dialog:SetCaption("VIEWRULE_CAPTION")
 
         self.script:Disable()
         self.name:Disable()
@@ -509,6 +496,37 @@ function EditRule:NewRule()
 
     self.ruleStatus:Clear()
     self:UpdateButtons()
+end
+
+function EditRule:SaveRule()
+    local rule = {}
+    local changes = self.changes or {}
+    local rules = self:GetDependency("Rules")
+
+    -- If we have a rule, then copy it into the rule
+    if (type(self.rule) == "table") then
+        for k, v in pairs(self.rule) do
+            rule[k] = value
+        end
+    end
+
+    -- Assign the type
+    local type = self:GetRuleType()
+    if type == "SELL" then
+        rule.Type = RuleType.SELL
+    elseif (type == "KEEP") then
+        rule.Type = RuleType.KEEP
+    elseif (type == "DESTROY") then
+        rule.Type = RuleType.DESTROY
+    end
+
+    -- Merge in our changes
+    rule.Name = changes.name or rule.Name
+    rule.Description = changes.description or rule.Description
+    rule.Script = changes.script or rule.Script
+
+    -- Save the rule
+    rules:SaveRule(rule)
 end
 
 Dialogs.EditRule = EditRule

@@ -23,6 +23,19 @@ function Tab:SetName(name)
     self:SetWidth((TAB_PADDING_X * 2) + self.text:GetWidth())
 end
 
+--[[
+    Call a method on the tab frame
+]]
+function Tab:Call(method, ...)
+    local frame = self:GetFrame()
+    if (frame) then
+        local func = frame[method]
+        if (type(func) == "function") then
+            xpcall(func, CallErrorHandler, frame, ...)
+        end
+    end
+end
+
 function Tab:GetFrame()
     if (not self.frame) then
         local frame = CreateFrame("Frame", nil, self:GetParent(), self.template)
@@ -34,7 +47,6 @@ function Tab:GetFrame()
 
         -- Provide a trigger event delegate
         frame.TriggerEvent = function(_, ...) 
-                print("trigger:", ...)
                 self:TriggerEvent(...) 
             end
         self.frame = frame
@@ -44,8 +56,6 @@ function Tab:GetFrame()
 end
 
 function Tab:Activate()
-    print("*** active ", self.text:GetText())
-
     self:SetBackgroundColor(TABCONROL_BACK)
     self:SetBorderColor(TABCONTROL_BORDER)
     self.text:SetTextColor(TABCONTROL_TEXT:GetRGBA())
@@ -57,8 +67,6 @@ function Tab:Activate()
 end
 
 function Tab:Deactivate()
-    print("*** deactive ", self.text:GetText())
-
     self:SetBackgroundColor(TABCONTROL_INACTIVE_BACK)
     self:SetBorderColor(TABCONTROL_INACTIVE_BORDER)
     self.text:SetTextColor(TABCONTROL_INACTIVE_TEXT:GetRGBA())
@@ -155,7 +163,6 @@ function TabControl:AddTab(id, name, template, class, far)
 end
 
 function TabControl:ActivateTab(tab)
-    print("$$$ activate", tab)
     local frame = tab:GetFrame()
 
     frame:ClearAllPoints()

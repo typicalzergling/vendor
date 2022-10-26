@@ -2,6 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local DialogBox = Mixin({}, Addon.CommonUI.Mixins.Border)
 local Colors = Addon.CommonUI.Colors
+local AddonColors = Addon.Colors or  {}
 
 local DIALOG_BUTTON_GAP = 8
 local DIALOG_BUTTON_WIDTH = 124
@@ -104,7 +105,6 @@ function DialogBox:OnLoad()
     local host = self.Host
     Mixin(host, Addon.CommonUI.Mixins.Border)
     host:OnBorderLoaded()
-    print("--> setting content")
     host:SetBackgroundColor(Colors.DIALOG_CONTENT_BACKGROUND_COLOR)
     host:SetBorderColor(Colors.DIALOG_CONTENT_BORDER_COLOR)
 
@@ -177,6 +177,8 @@ function DialogBox:SetContent(frame)
         frame:SetParent(self)
     end
 
+    self.Colorize(frame)
+
     if (self:IsShown()) then
         frame:Show()
     else
@@ -205,7 +207,6 @@ function DialogBox:SetButtons(buttons)
 
     self.__buttons = {}
     for key, button in pairs(buttons) do
-        print("creating buttons", key, button.label, button.handler)
         local frame = CreateFrame("Button", nil, self, "CommandButton")
         frame:SetLabel(button.label)
         if (button.help) then
@@ -273,7 +274,6 @@ function DialogBox:SetButtonState(buttons)
                 button:Show()
                 button:Enable()
             elseif (type(state) == "table") then
-                table.forEach(state, print)
                 if (state.enabled == true) then
                     button:Enable()
                 else
@@ -290,6 +290,90 @@ function DialogBox:SetButtonState(buttons)
     end
 
     layoutButtons(self)
+end
+
+local function _visit(frame, getColor, getLocText)
+    -- Handle children
+    for _, child in pairs({ frame:GetChildren() }) do        
+        local color = child.Color
+        if (type(color) == "string") then
+            color = getColor(color)
+
+            if (ype(child.SetTextColor) == "function") then
+                child:SetTextColor(color:GetRGBA())
+            end
+        end
+
+        local loc = child.LocKey or child.LocText
+        if (type(loc) == "string") then
+            loc = getLocText(loc)
+
+            if (type(child.SetText) == "function") then
+                child:SetText(loc)
+            end
+        end
+
+        _visit(child, getColor, getLocText)
+    end
+
+    -- Handle regions
+    for _, region in pairs({ frame:GetRegions() }) do
+        local color = region.Color
+        if (type(color) == "string") then
+            color = getColor(color)
+
+            if (type(region.SetTextColor) == "function") then
+                region:SetTextColor(color:GetRGBA())
+            end
+
+            if (type(region.SetColorTexture) == "function") then
+                region:SetColorTexture(color:GetRGBA())
+            end
+        end
+
+        local loc = region.LocKey or region.LocText
+        if (type(loc) == "string") then
+            loc = getLocText(loc)
+            if (type(region.SetText) == "function") then
+                region:setText(loc)
+            end
+        end
+    end
+end
+
+local function _getLocalizedString(string)
+    local text = locale:GetString(key)
+    return text or ("[ERRR:" .. string.upper(key) .. "]")
+end
+
+local function _getColor(name)
+    name = string.upper(name)
+
+    -- Addon can override common colors
+    local clr = AddonColors[name]
+    if (type(clr) == "table") then
+        return clr
+    end
+
+    clr = Colors[name]
+    if (type(clr) == "table") then
+        return clr
+    end
+
+    return RED_FONT_COLOR
+end
+
+--[[
+    Given a frame this will traverse all of the frames and apply text/vertex
+    color to each region
+
+    This uses CommonUI.Colors and  Addon.Colors
+]]
+function DialogBox.Colorize(frame)
+    local colors = Addon.CommonUI.Colors
+    local addonColors = Addon.Colors or {}
+
+    _visit(frame, _getColor, _getLocalizedString)
 end
 
 Addon.CommonUI.DialogBox = DialogBox

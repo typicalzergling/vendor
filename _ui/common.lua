@@ -58,9 +58,9 @@ Addon.CommonUI.Mixins.Placeholder = {
         Changes the placeholder text
     ]]
     SetPlaceholder = function(frame, text)
-        local loctext = locale[text]
+        local loctext = locale:GetString(text)
         if (frame.__placeholder) then
-            frame.__placeholder:SetText(loctext or text)
+            frame.__placeholder:SetText(loctext or text or "")
         end
     end
 }

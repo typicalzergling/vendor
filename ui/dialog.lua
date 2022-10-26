@@ -19,7 +19,6 @@ local function findObject(name, context)
 end
 
 function Addon.LoadImplementation(frame, namespace, class)
-	print("--> load", namespace, class)
 	class = class or frame.Implementation;
 	if (type(namespace) ~= "string") then
 		namespace = frame.Namespace

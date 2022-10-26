@@ -172,7 +172,7 @@
 			</Button>
 
 			<!-- config tab -->
-			<Button name="$parentConfigTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ConfigTab" enabled="false">
+			<Button name="$parentConfigTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ConfigTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="RULES_DIALOG_CONFIG_TAB" type="string"/>
 					<KeyValue key="TabName" value="config" type="string"/>

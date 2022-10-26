@@ -1,8 +1,8 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
 local CommonUI = Addon.CommonUI
-
-local BaseEdit = Mixin({}, CommonUI.Mixins.Border, CommonUI.Mixins.Placeholder)
+local Colors = Addon.CommonUI.Colors
+local BaseEdit = Mixin({}, CommonUI.Mixins.Border, CommonUI.Mixins.Placeholder, CommonUI.Mixins.Debounce)
 
 local EDIT_BORDER_COLOR = CreateColor(1, 1, 1, .4)
 local EDIT_BACK_COLOR = CreateColor(.8, .8, .8, .1)
@@ -27,6 +27,7 @@ function BaseEdit:OnEditLoaded()
     -- Hook to our edit
     self.control:SetScript("OnEditFocusGained", function (_) self:_OnFocus() end)
     self.control:SetScript("OnEditFocusLost", function (_) self:_OnBlur() end)
+    self.control:SetTextColor(Colors.TEXT:GetRGBA())
 end
 
 function BaseEdit:ShowHighlight(show)
@@ -88,19 +89,20 @@ function BaseEdit:GetText()
 end
 
 function BaseEdit:SetText(text)
-    print("set-text", type(text), text or "nil")
     if type(text) ~= "string" then
         self.control:SetText("")
     else
-        if (self.noempty and string.len(text) == 0) then error("empty") end
         self.control:SetText(string.trim(text))
+    end
+
+    if (not self.control:HasFocus()) then
+        self:ShowPlaceholder(not self:HasText())
     end
 end
 
 function BaseEdit:Insert(text)
     if (type(text) == "string") and (string.len(text) ~= 0) then
         self.control:Insert(text)
-        --self:_HandleTextChange()
     end
 end
 
@@ -115,11 +117,13 @@ end
 function BaseEdit:Enable()
     -- enable the label
     self.control:Enable()
+	self.control:SetTextColor(Colors.TEXT:GetRGBA())
 end
 
 function BaseEdit:Disable()
     -- disable the label
-    self.control:OnDisable()
+    self.control:Disable()
+    self.control:SetTextColor(EDIT_DISABLED_COLOR:GetRGBA())
 end
 
 function BaseEdit:_HandleTextChange()
@@ -127,8 +131,6 @@ function BaseEdit:_HandleTextChange()
         self.__timer:Cancel()
         self.__timer = nil
     end
-
-    print("handle text hcnage")
 
     self.__timer = C_Timer.NewTimer(0.25, function() 
         self.__timer = nil
@@ -164,6 +166,7 @@ end
 --[[=========================================================================]]
 
 local TextArea = {}
+
 function TextArea:OnLoad()
     self.control = self.scrollingEdit:GetScrollChild()
     ScrollFrame_OnLoad(self.scrollingEdit)

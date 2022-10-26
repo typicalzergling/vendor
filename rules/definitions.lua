@@ -469,7 +469,7 @@ function Rules.DeleteDefinition(ruleId)
             if (string.lower(ruleDef.Id) == id) then
                 table.remove(Vendor_CustomRuleDefinitions, i);
                 Rules.OnDefinitionsChanged("DELETE", ruleDef.Id);
-                break;
+                return ruleDef
             end
         end
     end
@@ -609,7 +609,7 @@ function Rules.GetDefinition(ruleId, ruleType, includeLocked)
         if (not ruleDef.Locked or includeLocked) then
             if (string.lower(ruleDef.Id) == id) then
                 if ((not ruleType) or (ruleType == ruleDef.Type)) then
-                    return ruleDef;
+                    return ruleDef, "SYSTEM";
                 end
             end
         end
@@ -627,7 +627,7 @@ function Rules.GetDefinition(ruleId, ruleType, includeLocked)
     if (Package.Extensions) then
         local ext = Package.Extensions:GetRule(id, ruleType);
         if (ext) then
-            return ext;
+            return ext, "EXT";
         end
     end
 

@@ -92,18 +92,25 @@ local function _createItem(list, state, model)
     local frame = nil
 
     -- Does the list or parent handle the creation?
-    local creator = list.ItemCreator  
+    local creator = list.ItemCreator
     if (type(creator) == "string") then
         local func = list[creator]
         if (not func) then
             local parent = list:GetParent()
             func = parent[creator]
             if (func) then
-                frame = func(parent)
+                frame = func(parent, model)
             end
         else
-            frame = func(list)
+            frame = func(list, model)
         end
+
+        assert(frame, "Expected the item creator to create a frame")
+        frame:SetParent(state.scroller:GetScrollChild())
+    end
+
+    if (not frame and type(list.CreateItem) == "function") then
+        frame = list:CreateItem(model)
 
         assert(frame, "Expected the item creator to create a frame")
         frame:SetParent(state.scroller:GetScrollChild())
@@ -225,14 +232,15 @@ local function _reflow(list)
     local state = rawget(list, STATE_KEY)
     if (state.reflow) then
         state.reflow = false
-
+        local space = tonumber(list.ItemSpacing) or 0
         local width = state.scroller:GetScrollChild():GetWidth()
-        local height = 0
+        local height = space
+        local num = table.getn(state.view)
 
-        for _, model in ipairs(state.view) do
+        for pos, model in ipairs(state.view) do
             local frame = state.frames[model]
             frame:SetPoint("TOPLEFT", 0, -height)
-            height = height + frame:GetHeight()
+            height = height + frame:GetHeight() + space
         end
 
         state.scroller:GetScrollChild():SetHeight(height)
@@ -267,13 +275,14 @@ end
     ========================================================================--]]
 local function _getItems(list)
     local func = list.GetItems
+    debug("--list _GetItems: %s", tostring(func))
     if (not func) then
         func = list.OnGetItems
     end
 
     if (type(func) == "function") then
         -- List handles the fetch
-        local success, items = xpcall(func, CallErrorHandler, list)
+        local success, items = xpcall(func, CallErrorHandler, list)        
         if (success) then 
             return items or {}
         end
@@ -448,6 +457,8 @@ end
 function List:Rebuild()
     local state = rawget(self, STATE_KEY)
 
+    debug("Rebuiid")
+
     state.update = true
     state.items = nil
     state.view = nil
@@ -459,6 +470,11 @@ function List:Rebuild()
     end
 
     state.frames = {}
+end
+
+function List:Reflow()
+    local state = rawget(self, STATE_KEY)
+    state.reflow = true
 end
 
 --[[

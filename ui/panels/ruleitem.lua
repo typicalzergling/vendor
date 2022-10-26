@@ -359,7 +359,8 @@ function RuleItem:OnContextMenu()
             notCheckable = true,
             text = L.RULE_CMENU_VIEW,
             func = function()
-                VendorEditRuleDialog:EditRule(self:GetModel().Rule, true)
+                local editRule = Addon:GetFeature("Dialogs")
+                editRule:ShowEditRule(self:GetModel().Rule.Id)
             end
         })		
     else
@@ -368,7 +369,10 @@ function RuleItem:OnContextMenu()
             notCheckable = true,
             text = L.RULE_CMENU_EDIT,
             func = function()
-                VendorEditRuleDialog:EditRule(self:GetModel().Rule, false)
+                local editRule = Addon:GetFeature("Dialogs")
+                print("=== editRule:", editRule)
+                table.forEach(ediRule, print)
+                editRule:ShowEditRule(self:GetModel().Rule.Id)
             end
         })		
     end
