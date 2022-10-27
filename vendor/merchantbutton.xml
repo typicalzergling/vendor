@@ -11,11 +11,11 @@
 			<Layer level="BACKGROUND" textureSubLevel="-2">
 				<Texture parentKey="Background">
 					<Color r="0.0" g="0.0" b="0.0" a="0.50"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
 				</Texture>
-				<Anchors>
-					<Anchor point="TOPLEFT"/>
-					<Anchor point="BOTTOMRIGHT"/>
-				</Anchors>
 			</Layer>		
 			<Layer  level="ARTWORK">				
 				<FontString parentKey="Title" inherits="GameFontNormal">

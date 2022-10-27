@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="settings/sellpage.lua"/>
+	<Script file="ui/settings/sellpage.lua"/>
 
     <Frame name="Vendor_Settings_Sell" inherits="Vendor_Settings_Panel" virtual="true">
         <KeyValues>

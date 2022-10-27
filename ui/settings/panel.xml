@@ -1,12 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="settings/panel.lua"/>
-	<Include file="settings/common.xml"/>
-	<Include file="settings/generalpage.xml"/>
-	<Include file="settings/repairpage.xml"/>
-	<Include file="settings/sellpage.xml"/>
-	<Include file="settings/tooltippage.xml"/>
-	<Include file="settings/advancedpage.xml"/>
-	<Include file="settings/performancepage.xml"/>
+	<Script file="ui/settings/panel.lua"/>
+	<Include file="ui/settings/common.xml"/>
+	<Include file="ui/settings/generalpage.xml"/>
+	<Include file="ui/settings/repairpage.xml"/>
+	<Include file="ui/settings/sellpage.xml"/>
+	<Include file="ui/settings/tooltippage.xml"/>
+	<Include file="ui/settings/advancedpage.xml"/>
+	<Include file="ui/settings/performancepage.xml"/>
 
 	<Frame name="Vendor_SettingsPanel" virtual="true">
 		<Layers>
