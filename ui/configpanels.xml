@@ -248,7 +248,7 @@
             This is the main config panel for vendor, this contains the options that most likely
             will need to be changed.
     -->
-    <Frame name="VendorGeneralConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
+    <Frame name="VendorGeneralConfigPanel" hidden="true" parent="UIParent">
         <Frames>
 
             <!-- Auto sell settings -->
