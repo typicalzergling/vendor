@@ -14,6 +14,69 @@ function SettingsFeature:OnInitialize()
     self:CreateGeneralSettings()
 end
 
+--[[
+    Creates the settings objects and caches them, this invokes each
+    categroy to retrieve the list of settings
+]]
+function SettingsFeature:CreateSettings()
+    if (not self.settings) then
+        self.settings = {}
+        if type(self.Categories) == "table" then
+            for _, category in pairs(self.Categories) do
+                local settings = category:CreateSettings()
+                if (settings and table.getn(settings)) then
+                    for _, setting in ipairs(settings) do
+                        local key = string.lower(setting:GetName())
+                        assert(self.settings[key] == nil, "A ssetting with the name " .. key .. " already exists")
+                        self.settings[key] = setting
+                    end
+                end
+            end
+        end
+    end
+end
+
+--[[ Retrieves a setting with te specified name ]]
+function SettingsFeature:GetSetting(name)
+    if (self.settings) then
+        local setting = self.settings[string.lower(name)]
+        if (setting ~= nil) then
+            return
+        end
+    end
+
+    self:Debug("Setting '%s' was requested but doesn't exist", name)
+    return nil -- no such setting
+end
+
+--[[
+     Retrieves a list of all the settings supported, this is an ordered list of items
+     based on the categoriies order.  each entry also has a function to create the list
+]]
+function SettingsFeature:GetSettings()
+    self:CreateSettings()
+
+    local settings = {}
+    if type(self.Categories) == "table" then
+        for _, category in pairs(self.Categories) do
+            table.insert(settings, {
+                Key = category:GetName(),
+                Text = category:GetText(),
+                Order = category:GetOrder() or 1000,
+                CreateList = function()
+                    return category:CreateList()
+                end
+            })
+        end
+    end
+
+    table.sort(settings, function(a, b)
+            return (a.Order < b.Order)
+        end)
+
+    return settings
+end
+
 function SettingsFeature:CreateGeneralSettings()
     local list = self.CreateList()
     list:SetWidth(340)

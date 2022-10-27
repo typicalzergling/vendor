@@ -40,7 +40,9 @@ end
 --[[ Sets the value of this setting ]]
 function Setting:SetValue(value)
     local current = self.getValue()
+    print("current", self:GetName(), self:GetValue())
     if (value ~= current) then
+        print("setting", self:GetName(), value)
         self.setValue(value)
         for _, handler in ipairs(self.handlers) do
             handler(self)

@@ -17,14 +17,29 @@ local function _setText(region, text)
     end
 end
 
+--[[ Default setting predicate if none is provided ]]
+local function _defaultPredicate(setting)
+    print("--> default predicate", tostring(setting:GetValue()))
+    if (not setting) then
+        return false
+    end
+
+    if (setting:GetType() == "boolean") then
+        return setting:GetValue() == true
+    end
+
+    local value = setting:GetValue()
+    return not not value
+end
+
 --[[ Checkbox ]]-----------------------------------------------------------------
 
 --[[ Initialize a setting ]]
 function Checkbox:OnLoad()
     Mixin(self.check, Addon.CommonUI.Mixins.Border)
     self.check:OnBorderLoaded(nil, Colors.CHECKBOX_BORDER, Colors.CHECKBOX_BACK)
-    self.label:SetTextColor(Colors.CHECKBOX_LABEL:GetRGBA())
-    self.help:SetTextColor(Colors.CHECKBOX_HELP:GetRGBA())
+    self.label:SetTextColor(Colors.TEXT:GetRGBA())
+    self.help:SetTextColor(Colors.SECONDARY_TEXT:GetRGBA())
 
     self.check.checked:SetColorTexture(Colors.CHECKBOX_CHECK:GetRGBA())
     self.check:SetScript("OnEnter", self.OnCheckEnter)
@@ -44,20 +59,28 @@ function Checkbox:OnShow()
 end
 
 function Checkbox.OnCheckLeave(check)
-    check:SetBorderColor(Colors.CHECKBOX_BORDER)
-    check:SetBackgroundColor(Colors.CHECKBOX_BACK)
+    if (check:IsEnabled()) then
+        check:SetBorderColor(Colors.CHECKBOX_BORDER)
+        check:SetBackgroundColor(Colors.CHECKBOX_BACK)
+    end
 end
 
 function Checkbox.OnCheckEnter(check)
-    print("enter:", check)
-    check:SetBorderColor(Colors.CHECKBOX_HOVER_BORDER)
-    check:SetBackgroundColor(Colors.CHECKBOX_HOVER_BACK)
+    if (check:IsEnabled()) then
+        check:SetBorderColor(Colors.CHECKBOX_HOVER_BORDER)
+        check:SetBackgroundColor(Colors.CHECKBOX_HOVER_BACK)
+    end
+end
+
+function Checkbox:IsChecked()
+    return self.check.checked:IsShown() == true
 end
 
 function Checkbox:OnCheckClicked()
-    local checked = self.setting:GetValue()
-    print("oncheckclicked", checked)
-    self.setting:SetValue(not checked)
+    if (self.check:IsEnabled()) then
+        local checked = self:IsChecked()
+        self.setting:SetValue(not checked)
+    end
 end
 
 --[[ Assign a setting to this control ]]
@@ -78,7 +101,7 @@ function Checkbox:UpdateValue()
     print("checkbox - update setting", self.setting:GetValue())
 
     local value = self.setting:GetValue() == true
-    if (not value) then
+    if (value) then
         self.check.checked:Show()
     else
         self.check.checked:Hide()
@@ -107,6 +130,24 @@ end
 --[[ Sets the help text, or none of there is no help for this setting ]]
 function Checkbox:SetHelp(help)
     _setText(self.help, help)
+end
+
+function Checkbox:Disable()
+    self.check:Disable()
+
+    self.check:SetBorderColor(Colors.CHECKBOX_DISABLED)
+    self.check.checked:SetColorTexture(Colors.CHECKBOX_DISABLED:GetRGBA())
+    self.label:SetTextColor(Colors.CHECKBOX_DISABLED:GetRGBA())
+    self.help:SetTextColor(Colors.CHECKBOX_DISABLED:GetRGBA())
+end
+
+function Checkbox:Enable()
+    self.check:Enable()
+
+    self.check:SetBorderColor(Colors.CHECKBOX_BORDER)
+    self.label:SetTextColor(Colors.TEXT:GetRGBA())
+    self.help:SetTextColor(Colors.SECONDARY_TEXT:GetRGBA())
+    self.check.checked:SetColorTexture(Colors.CHECKBOX_CHECK:GetRGBA())
 end
 
 --[[ Create a checkbox control for the specified setting ]]
@@ -166,31 +207,37 @@ end
 
 --[[ Create an item for the setting list ]]
 function SettingsList:CreateItem(model)
+    local setting = nil
+
     if (not model.Setting) then
         return Settings.CreateHeader(model.Header, model.Help, self)
-    elseif (model.Group) then
-        -- todo
     else
         if (model.Setting:GetType() == "boolean") then
-            local setting = Settings.CreateCheckbox(model.Setting, model.Label, model.Help, self)
-
-            if (model.Predicate) then
-                if (type(model.Predicate) == "table") then
-                    model.Predicate:RegisterHandler(function()
-                        print("--> predicate", model.Predicate:GetValue())
-                        if (model.Predicate:GetValue()) then
-                            setting:Enable()
-                        else
-                            setting:Disable()
-                        end
-                    end)
-                else
-                end
-            end
-
-            return setting
+            setting = Settings.CreateCheckbox(model.Setting, model.Label, model.Help, self)
         end
     end
+
+    if type(model.Depend)  == "table" then
+        local function handleUpdate()
+            local result = false
+            if type(model.Predicate) == "function" then
+                result = model.Predicate(model.Depends)
+            else
+                result = _defaultPredicate(model.Depend)
+            end
+    
+            if (result) then
+                setting:Enable()
+            else
+                setting:Disable()
+            end
+        end
+    
+        model.Depend:RegisterHandler(handleUpdate)
+        handleUpdate()
+    end
+
+    return setting
 end
 
 --[[ Get the settings items for the list ]]
@@ -208,12 +255,12 @@ function SettingsList:AddHeader(header, help)
 end
 
 --[[ Adds a setting to the help list ]]
-function SettingsList:AddSetting(setting, label, help, predicate)
+function SettingsList:AddSetting(setting, label, help, depend)
     table.insert(self.settings, {
             Setting = setting,
             Label = label,
             Help = help,
-            Predicate = predicate
+            Depend = depend
         })
 end
 
