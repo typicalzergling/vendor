@@ -8,6 +8,7 @@ local AddonName, Addon = ...
 local eventFrame = CreateFrame("Frame")
 local eventBroker = Mixin({}, CallbackRegistryMixin)
 CallbackRegistryMixin.OnLoad(eventBroker)
+Addon.eventBroker = eventBroker
 
 -- Event Handling
 local events = {}
@@ -156,4 +157,7 @@ function Addon:RemoveEvents(event)
     eventBroker:UnregisterEvents(e)
 end
 
-
+-- Checks if the addon raises the specified event
+function Addon:RaisesEvent(event)
+    return eventBroker:DoesFrameHaveEvent(event)
+end

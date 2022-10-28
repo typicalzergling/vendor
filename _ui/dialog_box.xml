@@ -1,0 +1,107 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
+    <Frame name="DialogBox_Base" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" mixin="BackdropTemplateMixin" hidden="true">
+        <KeyValues>
+            <KeyValue key="_autoHookHandlers" value="true" type="boolean"/>
+        </KeyValues>
+        <!-- The size reflects the dialog box minus the contents -->
+        <Size x="40" y="104"/>
+        <Layers>
+            <Layer level="OVERLAY">
+                <!--<Texture parentKey="Title">
+                    <Color r="1" g="0" b="0" a="1"/>
+                    <Size x="1" y="32"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </Texture>-->
+                <FontString parentKey="Caption" inherits="GameFontNormalLarge" justifyH="LEFT" maxLines="1" text="CAPTION" justifyV="MIDDLE" hidden="true">
+                    <Size x="1" y="28"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="-18"/>
+                        <Anchor point="TOPRIGHT" x="0" y="-18"/>
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="Divider" hidden="true">
+                    <Size x="1" y="1"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Caption" relativePoint="BOTTOMLEFT" x="-8" y="-2"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.Caption" relativePoint="BOTTOMRIGHT" x="8" y="-2"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="Titlebar">
+                <Size x="1" y="22"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="1" y="-1"/>
+                    <Anchor point="TOPRIGHT" x="-1" y="-1"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="back">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="BOTTOMRIGHT" y="1"/>
+                            </Anchors>
+                        </Texture>                 
+                    </Layer>
+                    <Layer level="BORDER">
+                        <Texture parentKey="divider">
+                            <Size x="16" y="1"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="text" inherits="GameFontNormal" text="CAPTION" justifyV="MIDDLE" justifyH="LEFT" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="16" y="-1"/>
+                                <Anchor point="BOTTOMRIGHT" x="-16" y="1"/>
+                            </Anchors>
+                        </FontString>
+                     </Layer>
+                </Layers>
+                <Frames>
+                    <Button parentKey="close">   
+                        <Size x="16" y="16"/>
+                        <Layers>
+                            <Layer level="BACKGROUND">
+                                <Texture parentKey="bg">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT"/>
+                                        <Anchor point="BOTTOMRIGHT"/>
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                            <Layer level="ARTWORK">
+                                <FontString parentKey="text" text="X" inherits="GameFontNormal" justifyH="CENTER" justifyV="MIDDLE" maxlines="1">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT"/>
+                                        <Anchor point="BOTTOMRIGHT"/>
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                        <Anchors>
+                            <Anchor point="RIGHT" x="-4"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>self:GetParent():GetParent():Hide()</OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+            </Frame>
+            <Frame parentKey="Host"/>
+        </Frames>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "DialogBox")</OnLoad>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+    </Frame>
+</Ui>

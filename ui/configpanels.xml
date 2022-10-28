@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Script file="configpanels.lua"/>
+    <Script file="ui/configpanels.lua"/>
 
     <!--
         VendorGeneralConfigPanel
@@ -248,7 +248,7 @@
             This is the main config panel for vendor, this contains the options that most likely
             will need to be changed.
     -->
-    <Frame name="VendorGeneralConfigPanel" hidden="true" parent="UIParent" inherits="Vendor.OptionsPanel.Template">
+    <Frame name="VendorGeneralConfigPanel" hidden="true" parent="UIParent">
         <Frames>
 
             <!-- Auto sell settings -->

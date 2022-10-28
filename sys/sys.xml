@@ -13,6 +13,7 @@
     <Script file="profilemanager.lua"/>
     <Script file="useprofile.lua"/>
     <Script file="libdatabroker.lua"/>
+    <Script file="features.lua"/>
 
     <!--@do-not-package@-->
     <Script file="debug.lua"/>

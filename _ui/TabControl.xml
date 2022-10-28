@@ -1,0 +1,34 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
+
+    <Button name="CommonUI_Tab" virtual="true">
+        <Size x="64" y="24"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" inherits="GameFontNormal" justifyH="CENTER" maxLines="1" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="LEFT" x="10"/>
+                        <Anchor point="TOP"/>
+                        <Anchor point="BOTTOM"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Button>
+
+    <Frame name="CommonUI_TabControl" virtual="true">
+        <Frames>
+            <Frame parentKey="frames">
+                <Anchors>
+                    <Anchor point="LEFT"/>
+                    <Anchor point="BOTTOM"/>
+                    <Anchor point="RIGHT"/>
+                    <Anchor point="TOP"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "TabControl")</OnLoad>
+        </Scripts>
+    </Frame>
+
+</Ui>

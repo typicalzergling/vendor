@@ -1,0 +1,52 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <!-- Code -->
+    <Script file="colors.lua"/>
+    <Script file="common.lua"/>
+    <Script file="buttons.lua"/>
+    <Script file="edits.lua"/>
+    <Script file="dialog_box.lua"/>
+    <Script file="textarea.lua"/>
+    <Script file="TabControl.lua"/>
+    <Script file="List.lua"/>
+    <Script file="ListItem.lua"/>
+    <Script file="ItemLink.lua"/>
+    
+    <!-- UX -->
+    <Include file="buttons.xml"/>
+    <Include file="edits.xml"/>
+    <Include file="dialog_box.xml"/>
+    <Include file="TabControl.xml"/>
+
+    <Frame virtual="true" name="CommonUI_List">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="empty" hidden="true" inherits="GameFontNormal" justifyH="center" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="12" y="-12"/>
+                        <Anchor point="BOTTOMRIGHT" x="-12" y="-12"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "List")</OnLoad>
+        </Scripts>
+    </Frame>
+
+    <Frame virtual="true" name="CommonUI_ItemLink">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" maxLines="1" inherits="ChatFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="8"/>
+                        <Anchor point="BOTTOMRIGHT" x="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+        <!-- todo: make "CommonUI.ItemLink" work for laod -->
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "ItemLink")</OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>

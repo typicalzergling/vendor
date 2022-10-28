@@ -1,0 +1,74 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+    <!-- Checkbox (boolen setting) -->
+    <Frame name="Vendor_Settings_Checkbox" virtual="true">
+        <Size x="1" y="22"/>
+        <KeyValues>
+            <KeyValue key="Indent" value="24" type="number"/>
+        </KeyValues>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="label" inherits="GameFontHighlight" maxLines="1" justifyH="LEFT" JustifyV="CENTER">
+                    <KeyValues>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Size x="1" y="22"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="36" y="0"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="help" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" hidden="true" wordwrap="true">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.label"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.label" x="-2"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="check">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.label" x="-8"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="checked" hidden="true">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="2" y="-2"/>
+                                <Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <!-- Represents a header -->
+    <Frame name="Vendor_Settings_Header" virtual="true" hidden="true">
+        <Size x="1" y="22"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="header" inherits="GameFontNormalLarge" maxLines="1" justifyH="LEFT" JustifyV="CENTER">
+                    <Size x="1" y="22"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="12"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="help" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" hidden="true"  wordwrap="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.header"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.header" x="-2"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+</Ui>

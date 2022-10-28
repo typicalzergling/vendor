@@ -113,7 +113,14 @@ local function setLocale()
 
     -- Set up proxy for the localized strings
     -- This table is empty, so adds or edits at this point will always be errors.
-    localizedStringsProxy = {}
+    localizedStringsProxy = {
+        
+        -- Retrieves the string if exists, otherwise it returns nil
+        GetString  = function(t, k)
+            return localizedStrings[k]
+        end
+    }
+
     local proxyMetatable = {
         __metatable = {},
 
@@ -137,6 +144,7 @@ local function setLocale()
                 error("Attempting to create or modify localized string with identifier: "..tostring(k))
             end,
     }
+
     setmetatable(localizedStringsProxy, proxyMetatable)
 
     -- Free up memory for all the unused strings.

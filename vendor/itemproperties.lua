@@ -153,34 +153,40 @@ local function isTransmogEquipment(invtype)
     return transmog_invtypes[invtype] or false
 end
 
-function Addon:GetItemProperties(arg1, arg2)
+function Addon:DoGetItemProperties(itemObj)
+    assert(type(itemObj) == "table", "Expected an ItemMixin as the argument")
+    assert(type(itemObj.GetItemID) == "function", "Expected an ItemMixin as the argument")
 
+    -- If the item isn't cached then there isn't anything we can do yet so
+    -- return an empty properties object, then when it shows up evalaute and
+    -- put the items into our cache
+    --if (itemObj:IsItemEmpty() and not itemObj:IsItemDataCached()) then
+        --itemObj:ContinueOnItemLoad(function() 
+          --  Addon:GetItemProperties(itemObj)
+        --end)
+        --return nil
+    --end
+
+    -- If the item is empty it doesn't exist so we've got no properties to make
+    if (itemObj:IsItemEmpty()) then
+        Addon:Debug("itemerrors", "Properties were asked for on an empty item")
+        return nil
+    end
+    
     local tooltip = nil
     local location = nil
-
-    -- Location directly passed in
-    if type(arg1) == "table" then
-        location = arg1
-
-    -- Bag and Slot passed in
-    elseif type(arg1) == "number" and type(arg2) == "number" then
-        location = ItemLocation:CreateFromBagAndSlot(arg1, arg2)
-    else
-        assert("Invalid arguments to GetItemProperties")
-        return nil
-    end
-
-    -- No loc means no item.
-    if not location or not C_Item.DoesItemExist(location) then
-        return nil
-    end
+    local item = nil
 
     -- Get link from location
-    local link = C_Item.GetItemLink(location)
+    local link = itemObj:GetItemLink()
+    local itemId = itemObj:GetItemID()
+    if (itemObj:HasItemLocation()) then
+        location = itemObj:GetItemLocation()
+    end
 
     -- Guid is how we uniquely identify items.
-    local guid = C_Item.GetItemGUID(location)
-
+    local guid = itemObj:GetItemGUID()
+    
     -- If it's bag and slot then the count can be retrieved, if it isn't
     -- then it must be an inventory slot, which means 1.
     local count = 1
@@ -190,25 +196,29 @@ function Addon:GetItemProperties(arg1, arg2)
     end
 
     -- Item properties may already be cached
-    local item = Addon:GetItemFromCache(guid)
-    if item then
-        -- Return cached item and count
-        return item, count
-    else
-        -- Item not cached, so we need to populate the properties.
-        item = {}
-        -- Item may not be loaded, need to handle this in a non-hacky way.
-        item.GUID = guid
-        item.Location = location
-        item.Link = link
+    if guid then
+        item = Addon:GetItemFromCache(guid)
+        if item then
+            -- Return cached item and count
+            return item, count
+        end
     end
+    
+    -- Item not cached, so we need to populate the properties.
+    item = {}
+
+    -- Item may not be loaded, need to handle this in a non-hacky way.
+    item.GUID = guid or false
+    item.Location = location or false
+    item.Link = link
+    item.Count = count
 
     -- Get more id and cache GetItemInfo, because we aren't bad.
     local getItemInfo = {GetItemInfo(item.Link)}
 
     -- Safeguard to make sure GetItemInfo returned something. If not bail.
     -- This will happen if we get this far with a Keystone, because Keystones aren't items. Go figure.
-    if #getItemInfo == 0 then return nil end
+    if #getItemInfo == 0 then return nil end -- this should never happen now
 
     -- Initialize properties to boolean false for easier rule ingestion.
     item.IsUsable = false
@@ -228,7 +238,7 @@ function Addon:GetItemProperties(arg1, arg2)
     item.Level = GetDetailedItemLevelInfo(item.Link)
 
     -- Rip out properties from GetItemInfo
-    item.Id = self:GetItemIdFromString(item.Link)
+    item.Id = itemObj:GetItemID()
     item.Name = getItemInfo[1]
     item.Quality = getItemInfo[3]
     item.EquipLoc = getItemInfo[9]          -- This is a non-localized string identifier. Wrap in _G[""] to localize.
@@ -241,29 +251,37 @@ function Addon:GetItemProperties(arg1, arg2)
     item.SubTypeId = getItemInfo[13]
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
-    item.StackCount = C_Item.GetStackCount(item.Location)
-    item.UnitValue = getItemInfo[11]
-    item.IsCraftingReagent = getItemInfo[17]
+    item.StackCount = 1
+    item.UnitValue = getItemInfo[11] or  0
+    item.IsCraftingReagent = getItemInfo[17] or false
     item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
-    item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Link);
-    item.InventoryType = C_Item.GetItemInventoryType(item.Location)
+    item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemId);
+    item.InventoryType = itemObj:GetInventoryType()
+    item.IsConduit = false
+    item.IsKeystone = C_Item.IsItemKeystoneByID(itemId) or false
+    --IsItemSpecificToPlayerClass
+
+    if (location) then 
+        item.StackCount = C_Item.GetStackCount(location) or 1
+        item.IsConduit = C_Item.IsItemConduit(location) or false
+    end
 
     -- Add Bag and Slot information. Initialize to -1 so rule writers can identify them.
     item.Bag = -1
     item.Slot = -1
-    item.IsBagAndSlot = item.Location:IsBagAndSlot()
+    item.IsBagAndSlot = location and item.Location:IsBagAndSlot()
     if item.IsBagAndSlot then
-        item.Bag, item.Slot = item.Location:GetBagAndSlot()
+        item.Bag, item.Slot = location:GetBagAndSlot()
     end
 
-    item.IsUsable = IsUsableItem(item.Id)
-    item.IsEquipment = IsEquippableItem(item.Id)
-    item.IsEquipped = item.Location:IsEquipmentSlot()
+    item.IsUsable = IsUsableItem(itemId)
+    item.IsEquipment = IsEquippableItem(itemId)
+    item.IsEquipped = location and item.Location:IsEquipmentSlot()
     item.IsTransmogEquipment = isTransmogEquipment(item.EquipLoc)
 
     -- Get soulbound information
-    if C_Item.IsBound(location) then
+    if location and C_Item.IsBound(location) then
         item.IsSoulbound = true         -- This actually also covers account bound.
         -- TODO watch for better way. Blizzard API doesn't expose it, which means we need
         -- to scan the tooltip, which sucks.
@@ -280,22 +298,26 @@ function Addon:GetItemProperties(arg1, arg2)
 
     -- Determine if this item is cosmetic.
     -- This information is currently not available via API.
-    if item.IsEquipment and self:IsItemCosmeticInTooltip(item.Location) then
+    item.IsCosmetic = false
+    if location and item.IsEquipment and self:IsItemCosmeticInTooltip(location) then
         item.IsCosmetic = true
     end
 
     -- Get Transmog info
     -- We aren't using PlayerHasTransmog becuase item id is unreliable, better to use the actual itemloc & appearance info.
     item.IsCollected = false
-    -- We do not expose appearanceId of an item, becuase it will be 0 if the player cannot use it.
-    -- This could lead to trying to collect an appearance and getting false positives.
     local appearanceId = 0
-    local baseItemTransmogInfo = C_Item.GetBaseItemTransmogInfo(item.Location);
-    local baseInfo = C_TransmogCollection.GetAppearanceInfoBySource(baseItemTransmogInfo.appearanceID);
-    if baseInfo then
-        -- This will be zero if the player cannot use the item. More blizzard being awesome.
-        appearanceId = baseInfo.appearanceID
-        item.IsCollected = baseInfo.appearanceIsCollected
+
+    if (location) then
+        -- We do not expose appearanceId of an item, becuase it will be 0 if the player cannot use it.
+        -- This could lead to trying to collect an appearance and getting false positives.
+        local baseItemTransmogInfo = C_Item.GetBaseItemTransmogInfo(location);
+        local baseInfo = C_TransmogCollection.GetAppearanceInfoBySource(baseItemTransmogInfo.appearanceID);
+        if baseInfo then
+            -- This will be zero if the player cannot use the item. More blizzard being awesome.
+            appearanceId = baseInfo.appearanceID
+            item.IsCollected = baseInfo.appearanceIsCollected
+        end
     end
 
     -- Treat AppearanceId of 0 as cannot-use. Appearances the player cannot use have appearanceId 0.
@@ -324,40 +346,87 @@ function Addon:GetItemProperties(arg1, arg2)
     -- Determine if this is a toy.
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
     -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
-    if item.TypeId == 15 or item.TypeId == 0 then
-        if self:IsItemToyInTooltip(item.Location) then
+    item.IsToy = false
+    if location and item.TypeId == 15 or item.TypeId == 0 then
+        if self:IsItemToyInTooltip(location) then
             item.IsToy = true
         end
     end
 
     -- Determine if this is an already-collected item, which should only be usable items.
-    if item.IsUsable then
-        if self:IsItemAlreadyKnownInTooltip(item.Location) then
+    item.IsAlreadyKnown = false
+    if location and item.IsUsable then
+        if self:IsItemAlreadyKnownInTooltip(location) then
             item.IsAlreadyKnown = true
         end
     end
 
     -- Import the tooltip text as item properties for custom rules.
-    item.TooltipLeft = self:ImportTooltipTextLeft(item.Location)
-    item.TooltipRight = self:ImportTooltipTextRight(item.Location)
+    item.TooltipLeft = ""
+    item.TooltipRight = ""
+    if (location) then
+        item.TooltipLeft = self:ImportTooltipTextLeft(location)
+        item.TooltipRight = self:ImportTooltipTextRight(location)
+    end
 
-    Addon:AddItemToCache(item, guid)
+    if (guid) then
+        Addon:AddItemToCache(item, guid)
+    end
+
     return item, count
+end
+
+-- Existing functionality which uses what we had before
+function Addon:GetItemProperties(arg1, arg2)
+    -- Location directly passed in
+    if type(arg1) == "table" then
+        return self:DoGetItemProperties(Item:CreateFromItemLocation(location))
+    end
+
+    -- Bag and Slot passed in
+    if type(arg1) == "number" and type(arg2) == "number" then
+        return self:DoGetItemProperties(Item:CreateFromBagAndSlot(arg1, arg2))
+    end
+        
+    assert("Invalid arguments to GetItemProperties")
+    return nil
 end
 
 -- Both bag and slot must be numbers and both passed in.
 function Addon:GetItemPropertiesFromBag(bag, slot)
-    return self:GetItemProperties(bag, slot)
+    return self:DoGetItemProperties(Item:CreateFromBagAndSlot(bag, slot))
 end
 
 -- If we have a tooltip we will use it for scanning.
 -- Tooltip is optional
 function Addon:GetItemPropertiesFromTooltip()
-    return self:GetItemProperties(tooltipLocation)
+    if (not tooltipLocation) then
+        return nil
+    end
+
+    return self:DoGetItemProperties(Item:CreateFromItemLocation(tooltipLocation))
 end
 
 -- Pure location item
 function Addon:GetItemPropertiesFromLocation(location)
-    return self:GetItemProperties(location)
+    return self:DiGetitemProperties(Item:CreateFromItemLocation(location))
 end
 
+function Addon:GetItemPropertiesFromItemLink(itemLink)
+    if (not itemLink) then
+        return nil
+    end
+    return self:DoGetItemProperties(Item:CreateFromItemLink(itemLink));
+end
+
+function Addon:GetItemPropertiesFromEquipmentSlot(equip)
+    return self:DoGetItemProperties(Item:CreateFromEquipmentSlot(equip))
+end
+
+function Addon:GetItemPropertiesFromItem(item)
+    if (not item) then
+        return nil
+    end
+
+    return self:DoGetItemProperties(item)
+end

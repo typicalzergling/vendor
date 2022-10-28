@@ -15,7 +15,6 @@
     <Include file="radiobutton.xml"/>
     <Include file="itemlist.xml"/>
     <Include file="editpanels.xml"/>
-    <Include file="configpanels.xml"/>
     <Include file="panels/profiles.xml"/>
     <Include file="panels/rules.xml"/>
     <Include file="panels/about.xml"/>
@@ -23,9 +22,6 @@
     <Include file="panels/iteminfo.xml"/>
     <Include file="panels/rulehelp.xml"/>
     <Include file="panels/audit.xml"/>
-
-    <Include file="settings/panel.xml"/>
-
 
     <Include file="dialogs/createlist.xml"/>
     <Include file="rulesdialog.xml"/>

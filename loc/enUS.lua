@@ -105,7 +105,8 @@ RULES_DIALOG_CONFIG_TAB = "Settings",
 SETTINGS_CATEGORY_LABEL = "Category",
 
 -- Setting categories and descriptions.
-OPTIONS_CATEGORY_GENERAL = "Common",
+OPTIONS_CATEGORY_GENERAL = "General",
+OPTIONS_CATEGORY_QUICK = "Common",
 OPTIONS_DESC_GENERAL = "These are the quick high-level set of common settings to govern overall Vendor behavior. Use the drop-down menu for more refined setting adjustment.",
 OPTIONS_CATEGORY_SELLING = "Selling",
 OPTIONS_DESC_SELLING = "Controls what Vendor does when you are selling at a merchant. ",

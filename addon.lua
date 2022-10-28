@@ -54,8 +54,8 @@ function Addon:OnInitialize()
     -- Merchant Button
     self.MerchantButton.Initialize()
 
-    -- Publish our LDB Data Objects
-    self:SetupLDBPlugin()
+    local features = self:GetFeatures()
+    features:Initialize()
 
     -- Do Pruning of History across all characters.
     -- TODO: Make this a setting
