@@ -292,60 +292,47 @@ function DialogBox:SetButtonState(buttons)
     layoutButtons(self)
 end
 
+--[[ Handle processing a particular item for loc + colors ]]
+local function _process(item, getColor, getLocText)
+    local color = item.Color
+    if (type(color) == "string") then
+        color = getColor(color)
+        if (type(item.SetTextColor) == "function") then
+            item:SetTextColor(color:GetRGBA())
+        end
+
+        if (type(item.SetColorTexture) == "function") then
+            item:SetColorTexture(color:GetRGBA())
+        end
+    end
+
+    local loc = item.LocKey or item.LocText
+    if (type(loc) == "string") then
+        loc = getLocText(loc)
+        if (type(item.SetText) == "function") then
+            item:SetText(loc)
+        end
+    end
+end
+
 local function _visit(frame, getColor, getLocText)
-    -- Handle children
-    for _, child in pairs({ frame:GetChildren() }) do        
-        local color = child.Color
-        if (type(color) == "string") then
-            color = getColor(color)
-
-            if (ype(child.SetTextColor) == "function") then
-                child:SetTextColor(color:GetRGBA())
-            end
-        end
-
-        local loc = child.LocKey or child.LocText
-        if (type(loc) == "string") then
-            loc = getLocText(loc)
-
-            if (type(child.SetText) == "function") then
-                child:SetText(loc)
-            end
-        end
-
+    for _, child in pairs({ frame:GetChildren() }) do
+        _process(child, getColor, getLocText)
         _visit(child, getColor, getLocText)
     end
 
     -- Handle regions
-    for _, region in pairs({ frame:GetRegions() }) do
-        local color = region.Color
-        if (type(color) == "string") then
-            color = getColor(color)
-
-            if (type(region.SetTextColor) == "function") then
-                region:SetTextColor(color:GetRGBA())
-            end
-
-            if (type(region.SetColorTexture) == "function") then
-                region:SetColorTexture(color:GetRGBA())
-            end
-        end
-
-        local loc = region.LocKey or region.LocText
-        if (type(loc) == "string") then
-            loc = getLocText(loc)
-            if (type(region.SetText) == "function") then
-                region:setText(loc)
-            end
-        end
+    for _, region in ipairs({ frame:GetRegions() }) do
+        _process(region, getColor, getLocText)
     end
 end
 
-local function _getLocalizedString(string)
+local function _getLocalizedString(key)
     local text = locale:GetString(key)
-    return text or ("[ERRR:" .. string.upper(key) .. "]")
+    return text or ("[|cffff0000ERRR:" .. string.upper(key) .. "|r]")
 end
 
+--[[ Handle looking up a color ]]
 local function _getColor(name)
     name = string.upper(name)
 
@@ -370,9 +357,6 @@ end
     This uses CommonUI.Colors and  Addon.Colors
 ]]
 function DialogBox.Colorize(frame)
-    local colors = Addon.CommonUI.Colors
-    local addonColors = Addon.Colors or {}
-
     _visit(frame, _getColor, _getLocalizedString)
 end
 

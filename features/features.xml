@@ -6,4 +6,5 @@
     <Include file="dialogs/dialogs.xml"/>
     <Include file="import/import.xml"/>
     <Include file="settings/settings.xml"/>
+    <Include file="vendor/vendor.xml"/>
 </Ui>

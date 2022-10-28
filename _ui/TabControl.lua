@@ -39,6 +39,7 @@ end
 function Tab:GetFrame()
     if (not self.frame) then
         local frame = CreateFrame("Frame", nil, self:GetParent(), self.template)
+        Addon.CommonUI.DialogBox.Colorize(frame)
         if (type(self.class) == "table") then
             Addon.AttachImplementation(frame, self.class, 1)
         else
@@ -107,6 +108,7 @@ end
 
 --[[static]] function Tab.Create(parent, name, template, class)
     local tab = CreateFrame("Button", nil, parent, "CommonUI_Tab")
+    Addon.CommonUI.DialogBox.Colorize(tab)
     tab.template = template
     tab.class = class
 
@@ -180,13 +182,15 @@ function TabControl:ActivateTab(tab)
 
     self.tabsNear:SetPoint("RIGHT", tab, "LEFT", 1, 0)
     self.tabsFar:SetPoint("LEFT", tab, "RIGHT", -1, 0)
+
+    return tab
 end
 
 function TabControl:ShowTab(id)
     if (self.__tabs) then
         local tab = self.__tabs[id]
         if (tab) then            
-            self:ActivateTab(tab)
+            return self:ActivateTab(tab)
         end
     end
 end

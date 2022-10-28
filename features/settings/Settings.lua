@@ -11,7 +11,7 @@ local SettingsFeature = {
 function SettingsFeature:OnInitialize()
     self:Debug("Initialize settings feature")
 
-    self:CreateGeneralSettings()
+    --self:CreateGeneralSettings()
 end
 
 --[[
@@ -77,6 +77,7 @@ function SettingsFeature:GetSettings()
     return settings
 end
 
+--[[ Add the selling settings to the setting list ]]
 function SettingsFeature:CreateGeneralSettings()
     local list = self.CreateList()
     list:SetWidth(340)
@@ -109,7 +110,7 @@ function SettingsFeature:CreateGeneralSettings()
     list:AddSetting(guildrepair, "OPTIONS_SETTINGNAME_GUILDREPAIR", "OPTIONS_SETTINGDESC_GUILDREPAIR")
 
     list:SetPoint("CENTER")
-    list:Hide()
+    --list:Show()
 end
 
 --[[

@@ -18,7 +18,7 @@ function CommandButton:OnLoad()
 end
 
 function CommandButton:SetLabel(label)
-    local loc = locale[label] or label
+    local loc = locale:GetString(label) or label
     if (type(loc) == "string") then
         self.text:SetText(loc)
         self.text:SetTextColor(Colors.BUTTON_TEXT:GetRGBA())
@@ -46,7 +46,7 @@ function CommandButton:OnEnter()
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
         GameTooltip:ClearAllPoints()
         GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -4)
-        GameTooltip:SetText(toltip, Colors.BUTTON_TEXT:GetRGBA())
+        GameTooltip:SetText(tooltip, Colors.BUTTON_TEXT:GetRGBA())
         GameTooltip:Show()
     end
 end

@@ -1,0 +1,138 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    
+	<Button name="Vendor_CategoryItem" virtual="true">
+		<Size x="1" y="22"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Color r="1" g="0" b="0" a=".2"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" y="-1" x="2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontNormal" parentKey="text" justifyH="LEFT" justifyV="MIDDLE" maxLines="1">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="12"/>
+						<Anchor point="BOTTOMRIGHT" x="-12"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<Frame name="Vendor_RulesTab" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontNormal" parentKey="help" justifyH="LEFT">
+					<KeyValues>
+						<KeyValue key="LocText" value="RULES_TAB_HELPTEXT"/>
+						<KeyValue key="Color" value="SECONDARY_TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPTIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button inherits="CommonUI_CommandButton" parentKey="createRule">
+				<KeyValues>
+					<KeyValue key="Label" value="LDB_BUTTON_MENU_NEW_RULE"/>
+					<KeyValue key="Handler" value="OnCreateRule"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT"/>
+				</Anchors>				
+			</Button>
+			<Frame parentKey="ruleType" inherits="CommonUI_List">
+				<Size x="224" y="1"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetCategories"/>
+					<KeyValue key="ItemCreator" value="CreateCategoryItem"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+					<Anchor point="BOTTOMLEFT" y="12" relativePoint="TOPLEFT" relativeKey="$parent.createRule"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="rules" inherits="CommonUI_List">
+				<Size x="224" y="1"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetRules"/>
+					<KeyValue key="EmptyText" value="RULE_LIST_EMPTY"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.ruleType" x="12"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+
+<Frame name="Vendor_ListsTab" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontNormal" parentKey="help" justifyH="LEFT">
+					<KeyValues>
+						<KeyValue key="LocText" value="LISTS_TAB_HELPTEXT"/>
+						<KeyValue key="Color" value="SECONDARY_TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPTIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button inherits="CommonUI_CommandButton" parentKey="createList">
+				<KeyValues>
+					<KeyValue key="Label" value="Create List"/>
+					<KeyValue key="Handler" value="OnCreateList"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT"/>
+				</Anchors>				
+			</Button>
+			<Frame parentKey="ruleType" inherits="CommonUI_List">
+				<Size x="224" y="1"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetCategories"/>
+					<KeyValue key="ItemCreator" value="CreateCategoryItem"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+					<Anchor point="BOTTOMLEFT" y="12" relativePoint="TOPLEFT" relativeKey="$parent.createList"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="rules" inherits="CommonUI_List">
+				<Size x="224" y="1"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetRules"/>
+					<KeyValue key="EmptyText" value="RULE_LIST_EMPTY"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.ruleType" x="12"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>	
+
+    <Frame name="Vendor_MainDialog" virtual="true" hidden="true">
+        <Size x="796" y="550"/>
+        <Frames>
+            <Frame parentKey="tabs" inherits="CommonUI_TabControl">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+            </Frame>
+		</Frames>
+    </Frame>
+</Ui>
+
