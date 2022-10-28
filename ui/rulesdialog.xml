@@ -6,13 +6,23 @@
 
 	<Frame name="Vendor_TabPanel_Base" virtual="true" hidden="true" parentArray="Panels"/>
 
-	<Button name="Vendor_RulesDialog_Tab" inherits="OptionsFrameTabButtonTemplate" virtual="true" hidden="true" parentArray="Tabs">
+	<Button name="Vendor_RulesDialog_Tab" inherits="OptionsFrameTabButtonTemplate" virtual="true" hidden="false" parentArray="Tabs">
 		<Scripts>
 			<OnClick>self:GetParent():SetActiveTab(self:GetID())</OnClick>
-			<OnLoad>
-				self.Text = _G[self:GetName() .. "Text"]
-			</OnLoad>
+			<OnShow>
+				
+			</OnShow>
 		</Scripts>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlightSmall" parentKey="Text" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="-16"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-16" y="-52"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
 	</Button>
 
 	<Frame name="Vendor_List_Container" virtual="true" inherits="InsetFrameTemplate">
@@ -104,7 +114,7 @@
 				</Anchors>
 			</Frame>
 
-			<Frame parentKey="ProfilesPanel" id="6" inherits="Vendor_ProfilesPanel,Vendor_TabPanel_Base" hidden="true">
+			<Frame parentKey="ProfilesPanel" id="4" inherits="Vendor_ProfilesPanel,Vendor_TabPanel_Base" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
@@ -118,21 +128,21 @@
 				</Anchors>
 			</Frame>
 
-			<Frame parentKey="AuditPanel" id="5" inherits="Vendor_AuditPanel,Vendor_TabPanel_Base" hidden="true">
+			<Frame parentKey="AuditPanel" id="3" inherits="Vendor_AuditPanel,Vendor_TabPanel_Base" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
 				</Anchors>
 			</Frame>
 
-			<Frame inherits="Vendor_TabPanel_Base,Vendor_SettingsPanel" parentKey="ConfigPanel" id="4" hidden="true">
+			<Frame inherits="Vendor_TabPanel_Base,Vendor_SettingsPanel" parentKey="ConfigPanel" id="6" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
 				</Anchors>
 			</Frame>
 
-			<Frame inherits="Vendor_AboutPanel,Vendor_TabPanel_Base" parentKey="helpPanel" id="3" hidden="true">
+			<Frame inherits="Vendor_AboutPanel,Vendor_TabPanel_Base" parentKey="helpPanel" id="5" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Container"/>
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Container"/>
@@ -156,7 +166,7 @@
 					<KeyValue key="TabName" value="lists" type="string"/>
 				</KeyValues>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeKey="$parent.RulesTab" relativePoint="BOTTOMRIGHT" x="-16" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.RulesTab" relativePoint="BOTTOMRIGHT"/>
 				</Anchors>
 			</Button>
 
@@ -183,26 +193,48 @@
 			</Button>			
 
 			<!-- Audit Tab -->
-			<Button name="$parentAuditTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="AuditTab">
+			<Button name="$parentAuditTab" inherits="Vendor_RulesDialog_Tab" id="3" parentKey="AuditTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="CONFIG_DIALOG_AUDIT_TAB" type="string"/>
 					<KeyValue key="TabName" value="audit" type="string"/>
 				</KeyValues>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ConfigTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ListsTab" relativePoint="BOTTOMRIGHT"/>
 				</Anchors>
 			</Button>
 
 			<!-- Profiles -->
-			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="6" parentKey="ProfileTab">
+			<Button name="$parentProfilesTab" inherits="Vendor_RulesDialog_Tab" id="4" parentKey="ProfileTab">
 				<KeyValues>
 					<KeyValue key="LocKey" value="OPTIONS_PROFILE_TITLE" type="string"/>
 					<KeyValue key="TabName" value="profiles" type="string"/>
 				</KeyValues>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.AuditTab" relativePoint="BOTTOMLEFT" x="16" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ListsTab" relativePoint="BOTTOMRIGHT"/>
 				</Anchors>
 			</Button>
+
+			<!-- Help Tab -->
+			<Button name="$parentHelpTab" inherits="Vendor_RulesDialog_Tab" id="5" parentKey="HelpTab">
+				<KeyValues>
+					<KeyValue key="LocKey" value="RULES_DIALOG_HELP_TAB" type="string"/>
+					<KeyValue key="TabName" value="help" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ProfileTab" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+			</Button>
+
+			<!-- config tab -->
+			<Button name="$parentConfigTab" inherits="Vendor_RulesDialog_Tab" id="6" parentKey="ConfigTab">
+				<KeyValues>
+					<KeyValue key="LocKey" value="RULES_DIALOG_CONFIG_TAB" type="string"/>
+					<KeyValue key="TabName" value="config" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.HelpTab" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+			</Button>			
 
 
 		</Frames>
