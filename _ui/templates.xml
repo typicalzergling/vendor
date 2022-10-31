@@ -1,0 +1,59 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+    <Frame virtual="true" name="CommonUI_List">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="empty" hidden="true" inherits="GameFontNormal" justifyH="center" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="12" y="-12"/>
+                        <Anchor point="BOTTOMRIGHT" x="-12" y="-12"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "List")</OnLoad>
+        </Scripts>
+    </Frame>
+
+    <!-- A specialization of a list setup for categories request a model with Text and Help attributes -->
+    <Frame virtual="true" name="CommonUI_CategoryList" inherits="CommonUI_List">
+        <KeyValues>
+            <KeyValue key="ItemSource" value="GetCategories"/>
+            <KeyValue key="ItemTemplate" value="CommonUI_CategoryItem"/>
+            <KeyValue key="ItemClass" value="CommonUI.CategoryItem"/>
+        </KeyValues>
+    </Frame>
+
+    <!-- An item in the category list -->
+    <Button virtual="true" name="CommonUI_CategoryItem">
+        <Size x="1" y="22"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" maxLines="1" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="8"/>
+                        <Anchor point="BOTTOMRIGHT" x="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Button>
+
+    <Frame virtual="true" name="CommonUI_ItemLink">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" maxLines="1" inherits="ChatFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="8"/>
+                        <Anchor point="BOTTOMRIGHT" x="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+        <!-- todo: make "CommonUI.ItemLink" work for laod -->
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "ItemLink")</OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>

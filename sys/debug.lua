@@ -38,6 +38,16 @@ function Addon:PrintDebugChannels()
     end
 end
 
+--[[ Gets the debug channels ]]
+function Addon:GetDebugChannels()
+    local keys = {}
+    for key in pairs(_G[DEBUG_VARIABLE].channel) do
+        table.insert(keys, key)
+    end
+    table.sort(keys)
+    return keys
+end
+
 function Addon:DisableAllDebugChannels()
     debugEnsureVariable()
     for name, enabled in pairs(_G[DEBUG_VARIABLE].channel) do

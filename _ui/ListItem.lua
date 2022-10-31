@@ -126,7 +126,11 @@ function ListItem:SetSelected(selected)
     local state = rawget(self, STATE_KEY)
 	if (state.selected ~= selected) then
 		state.selected = selected;
-        invoke(self, "OnSelected", self, selected)
+        if (selected) then
+            invoke(self, "OnSelected", self, selected)
+        else
+            invoke(self, "OnUnselected", self, selected)
+        end
 	end
 end
 

@@ -61,8 +61,8 @@ function Tab:Activate()
     self:SetBorderColor(TABCONTROL_BORDER)
     self.text:SetTextColor(TABCONTROL_TEXT:GetRGBA())
 
-    Addon.Invoke(self, "OnActivate", self, self:GetParent())
     if (self.frame) then
+        Addon.Invoke(self.frame, "OnActivate", self.frame)
         self.frame:Show()
     end
 end
@@ -72,8 +72,8 @@ function Tab:Deactivate()
     self:SetBorderColor(TABCONTROL_INACTIVE_BORDER)
     self.text:SetTextColor(TABCONTROL_INACTIVE_TEXT:GetRGBA())
 
-    Addon.Invoke(self, "OnDeactivate", self, self:GetParent())
     if (self.frame) then
+        Addon.Invoke(self.frame, "OnDeactivate", self.frame)
         self.frame:Hide()
     end
 end

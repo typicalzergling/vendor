@@ -5,7 +5,11 @@ local TRANSPARENT = CreateColor(0,0,0,0)
 Addon.CommonUI.Colors =
 {
     TRANSPARENT = TRANSPARENT,
+
     TEXT = WHITE_FONT_COLOR,
+    HOVER_TEXT = YELLOW_FONT_COLOR,
+    SELECTED_TEXT = YELLOW_FONT_COLOR,
+
     SECONDARY_TEXT = CreateColor(1, 1, 1, .6),
 
     PLACEHOLDER_COLOR = CreateColor(1, 1, 1, .6),
@@ -13,7 +17,11 @@ Addon.CommonUI.Colors =
     -- Selected Colors 
     SELECTED_BACKGROUND = CreateColor(1, 1, 0, 0.125),
     SELECTED_BORDER = CreateColor(1, 1, 0, 0.4),
-    SELECTED_PRIMARY_TEXT = YELLOW_TEXT_COLOR,
+    SELECTED_PRIMARY_TEXT = YELLOW_FONT_COLOR,
+
+    HOVER_BACKGROUND = CreateColor(1, 1, 1, 0.125),
+    HOVER_BORDER = CreateColor(1, 1, 0, 0.125),
+
 
     -- Dialog Colors
     DIALOG_BACK_COLOR = CreateColor(0.4, 0.45, 0.4, 0.5),

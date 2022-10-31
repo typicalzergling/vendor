@@ -2,6 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local Settings = Addon.Features.Settings
 local GeneralSettings =  Mixin({}, Addon.UseProfile)
+local INDENT = { left = 16 }
 
 --[[ Gets the name of this setting ]]
 function GeneralSettings:GetName()
@@ -19,8 +20,8 @@ function GeneralSettings:GetSummary()
 end
 
 --[[ Creates the list for this settings page ]]
-function GeneralSettings:CreateList()
-	local list = Settings.CreateList()
+function GeneralSettings:CreateList(parent)
+	local list = Settings.CreateList(parent)
 
 	-- merchant and minimap button
 	local minimap = Settings.CreateSetting(Addon.c_Config_Minimap, false)
@@ -42,7 +43,8 @@ function GeneralSettings:CreateSell(list)
 	list:AddHeader("OPTIONS_CATEGORY_SELLING", "OPTIONS_DESC_SELLING")
  
 	local autosell = Settings.CreateSetting(Addon.c_Config_AutoSell, true)
-	list:AddSetting(autosell, "OPTIONS_SETTINGNAME_AUTOSELL", "OPTIONS_SETTINGDESC_AUTOSELL")
+	local setting = list:AddSetting(autosell, "OPTIONS_SETTINGNAME_AUTOSELL", "OPTIONS_SETTINGDESC_AUTOSELL")
+	setting.Margins = INDENT
 
 	local buyback = Settings.CreateSetting(Addon.c_Config_MaxSellItems, true,
 		function()
@@ -57,29 +59,35 @@ function GeneralSettings:CreateSell(list)
 			self:SetProfileValue(Addon.c_Config_MaxSellItems, items)
 		end)
 
-	list:AddSetting(buyback, "OPTIONS_SETTINGNAME_BUYBACK", "OPTIONS_SETTINGDESC_BUYBACK", autosell)
+	setting = list:AddSetting(buyback, "OPTIONS_SETTINGNAME_BUYBACK", "OPTIONS_SETTINGDESC_BUYBACK", autosell)
+	setting.Margins = INDENT
+
 end
 
 --[[ Adds the repair settings to the list ]]
 function GeneralSettings:CreateRepair(list)
     list:AddHeader("OPTIONS_CATEGORY_REPAIR", "OPTIONS_DESC_REPAIR")
 
-    local autorepair = self.CreateSetting(Addon.c_Config_AutoRepair, true)
-    list:AddSetting(autorepair, "OPTIONS_SETTINGNAME_AUTOREPAIR", "OPTIONS_SETTINGDESC_AUTOREPAIR")
+    local autorepair = Settings.CreateSetting(Addon.c_Config_AutoRepair, true)
+    local setting = list:AddSetting(autorepair, "OPTIONS_SETTINGNAME_AUTOREPAIR", "OPTIONS_SETTINGDESC_AUTOREPAIR")
+	setting.Margins = INDENT
 
-    local guildrepair = self.CreateSetting(Addon.c_Config_GuildRepair, true)
-    list:AddSetting(guildrepair, "OPTIONS_SETTINGNAME_GUILDREPAIR", "OPTIONS_SETTINGDESC_GUILDREPAIR", autorepair)
+    local guildrepair = Settings.CreateSetting(Addon.c_Config_GuildRepair, true)
+    setting = list:AddSetting(guildrepair, "OPTIONS_SETTINGNAME_GUILDREPAIR", "OPTIONS_SETTINGDESC_GUILDREPAIR", autorepair)
+	setting.Margins = INDENT
 end
 
 --[[ Adds the tooltip settings to the list ]]
 function GeneralSettings:CreateTooltip(list)
     list:AddHeader("OPTIONS_CATEGORY_TOOLTIP", "OPTIONS_DESC_TOOLTIP")
 
-    local tooltip = self.CreateSetting(Addon.c_Config_Tooltip, true)
-    list:AddSetting(tooltip, "OPTIONS_SETTINGNAME_TOOLTIP", "OPTIONS_SETTINGDESC_TOOLTIP")
+    local tooltip = Settings.CreateSetting(Addon.c_Config_Tooltip, true)
+    local setting = list:AddSetting(tooltip, "OPTIONS_SETTINGNAME_TOOLTIP", "OPTIONS_SETTINGDESC_TOOLTIP")
+	setting.Margins = INDENT
 
-    local tooliupRule = self.CreateSetting(Addon.c_Config_GuildRepair, true)
-    list:AddSetting(tooliupRule, "OPTIONS_SETTINGNAME_EXTRARULEINFO", "OPTIONS_SETTINGDESC_EXTRARULEINFO", tooltip)
+    local tooliupRule = Settings.CreateSetting(Addon.c_Config_GuildRepair, true)
+    setting = list:AddSetting(tooliupRule, "OPTIONS_SETTINGNAME_EXTRARULEINFO", "OPTIONS_SETTINGDESC_EXTRARULEINFO", tooltip)
+	setting.Margins = INDENT
 end
 
-Settings.General = GeneralSettings
+Settings.Categories.General = GeneralSettings

@@ -19,7 +19,6 @@ end
 
 --[[ Default setting predicate if none is provided ]]
 local function _defaultPredicate(setting)
-    print("--> default predicate", tostring(setting:GetValue()))
     if (not setting) then
         return false
     end
@@ -98,8 +97,6 @@ end
 
 --[[ Updates the state based on the value of the setting ]]
 function Checkbox:UpdateValue()
-    print("checkbox - update setting", self.setting:GetValue())
-
     local value = self.setting:GetValue() == true
     if (value) then
         self.check.checked:Show()
@@ -118,7 +115,6 @@ function Checkbox:OnSizeChanged()
 
     if (height > self:GetHeight()) then
         self:SetHeight(height)
-        print("height :: ", height)
     end
 end
 
@@ -217,6 +213,10 @@ function SettingsList:CreateItem(model)
         end
     end
 
+    if (model.Margins) then
+        setting.Margins = model.Margins
+    end
+
     if type(model.Depend)  == "table" then
         local function handleUpdate()
             local result = false
@@ -256,12 +256,14 @@ end
 
 --[[ Adds a setting to the help list ]]
 function SettingsList:AddSetting(setting, label, help, depend)
-    table.insert(self.settings, {
+    local setting = {
             Setting = setting,
             Label = label,
             Help = help,
             Depend = depend
-        })
+        }
+    table.insert(self.settings, setting)
+    return setting
 end
 
 --[[ Create a new settings list ]]

@@ -45,6 +45,20 @@ local function debug(...)
     print(YELLOW_FONT_COLOR_CODE, "####LIST###:|r", ...)
 end
 
+local function _invokeHandler(list, handler, ...)
+    local func = list[handler]
+    debug("invoke", handler, func)
+    if (type(func) == "string") then
+        local parent = list:GetParent()
+        func = parent[func]
+        if (type(func) == "function") then
+            xpcall(func, CallErrorHandler, parent, ...)
+        end
+    elseif (type(func) == "function") then
+        xpcall(func, CallErrorHandler, list, ...)
+    end
+end
+
 --[[
     Create the child scrollview which actually holds the contents
 ]]
@@ -75,14 +89,24 @@ end
 
 -- Simple helper that resolve "a.b.c" from the addon
 local function _resolve(root, path)
+    local function split(str)
+        local result = {};
+        for match in string.gmatch(str .. ".", "(.-)" .. "[.]" ) do
+            table.insert(result, match)
+        end
+        return result
+    end
+
     local c = root
-    for _, part in ipairs(string.split(path, ".")) do
-        if (not c) then 
-            return nil 
+    for _, part in ipairs(split(path)) do
+        if (not c) then
+            return nil
         end
 
         c = c[part]
     end
+
+    return c
 end
 
 --[[ 
@@ -118,7 +142,7 @@ local function _createItem(list, state, model)
 
     -- Create it ourselves with the keys
     if not frame then
-        local template = template or list.FrameType or list.ItemType
+        local template = template or list.FrameType or list.ItemType or list.ItemTemplate
         local itemClass = itemClass or list.ItemClass
     
         -- Determine if we have an implementation to attach	
@@ -189,7 +213,9 @@ local function _buildView(state)
         state.view = view
     end
 end
-    
+
+local NO_MARGINS = { left = 0, right = 0 }
+
 -- Layout he view relative relative to the specified frame, if they are outside of the
 -- current view bounds the frame is hidden, returns the total width/height of the resulting
 -- view
@@ -210,7 +236,8 @@ local function _layoutView(list, container, state, cx, cy)
             state.frames[model] = litem
         end
 
-        litem:SetWidth(cx)
+        local margins = litem.Margins or NO_MARGINS
+        litem:SetWidth(cx -  (margins.left or 0) - (margins.right or 0))
 
         if (index == 1) then
             litem:SetPosition("first")
@@ -221,7 +248,7 @@ local function _layoutView(list, container, state, cx, cy)
         end
     
         litem:Show()
-        top = top + litem:GetHeight()
+        top = top + litem:GetHeight() + (margins.top or 0) + (margins.bottom or 0)
         state.reflow  = true
     end
 
@@ -233,14 +260,13 @@ local function _reflow(list)
     if (state.reflow) then
         state.reflow = false
         local space = tonumber(list.ItemSpacing) or 0
-        local width = state.scroller:GetScrollChild():GetWidth()
         local height = space
-        local num = table.getn(state.view)
 
-        for pos, model in ipairs(state.view) do
+        for pos, model in ipairs(state.view) do            
             local frame = state.frames[model]
-            frame:SetPoint("TOPLEFT", 0, -height)
-            height = height + frame:GetHeight() + space
+            local margins = frame.Margins or NO_MARGINS
+            frame:SetPoint("TOPLEFT", (margins.left or 0), -(height + (margins.top or 0)))
+            height = height + frame:GetHeight() + space + (margins.bottom or 0)
         end
 
         state.scroller:GetScrollChild():SetHeight(height)
@@ -359,13 +385,29 @@ function List:Select(item)
     local newSel = nil;
 
     if (type(item) == "number") then
+        if (not state.items) then
+            state.items = _getItems(self)
+        end
+
+        if (not state.view) then
+            _buildView(state)
+        end
+
         local model = state.view[item];
+        if (not model) then
+            return
+        end
+
         sel = self:FindItem(model)
+        if (not sel) then
+            sel = _createItem(self, state, model)
+            state.frames[model] = sel
+        end
     elseif (type(item) == "table") then
         sel = self:FindItem(item);
     end
 
-    for _, frame in pairs(frames) do
+    for _, frame in pairs(state.frames) do
         if (frame == sel) then
             newSel = frame;
             frame:SetSelected(true);
@@ -380,7 +422,13 @@ function List:Select(item)
             model = newSel:GetModel();
         end
 
-        Addon.Invoke(self, "OnSelection", model);
+        local func = self.OnSelection
+        if (type(func) ~= "function") then
+            local parent = self:GetParent()
+            local hanler
+        end
+
+        _invokeHandler(self, "OnSelection", model, newSel)
     end
 end
 

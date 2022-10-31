@@ -16,7 +16,7 @@ function MainDialog:OnInitDialog(dialog)
 	tabs:AddTab("lists", "-lists-", "Vendor_ListsTab", {})
 	tabs:AddTab("audit", "-audit-", "", {})
 	tabs:AddTab("profiles", "-profiles-", "", {})
-	tabs:AddTab("settings", "-settings-", "", {})
+	tabs:AddTab("settings", "-settings-", "Vendor_SettingsTab", self.SettingsTab)
 	tabs:AddTab("help", "-help-", "", {})
 
 	local t = tabs:ShowTab("rules"):GetFrame()

@@ -2,6 +2,7 @@
     <Script file="features/vendor/vendor.lua"/>
     <Script file="features/vendor/MainDialog.lua"/>
     <Script file="features/vendor/RulesTab.lua"/>
+    <Script file="features/vendor/SettingsTab.lua"/>
 
     <Include file="features/vendor/MainDialog.xml"/>
 </Ui>
