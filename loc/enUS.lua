@@ -147,6 +147,13 @@ OPTIONS_SETTINGDESC_MINIMAP = "Vendor will show a minimap button for quickly acc
 OPTIONS_SETTINGNAME_SELLBUTTON = "Show Auto-Sell Button on Merchant Window",
 OPTIONS_SETTINGDESC_SELLBUTTON = "Add an 'Auto-Sell' button to the merchant's sell window to run the Vendor Auto-sell.",
 
+QUICK_SELL_SETTING = "[re-visit] Auto-Sell",
+QUICK_SELL_SETTING_HELP = "[re-visit] Automatically sell items when interacting with a merchant. If this is disabled you can still manually sell by setting a hotkey or by adding a button.\n\nenables buyback limit",
+QUICK_REPAIR_SETTING = "[re-visit] Auto-Repair",
+QUICK_REPAIR_SETTING_HELP = "[re-visit] Automatically repair when visiting a repair-capable vendor.\nEnables guild repair",
+QUICK_LDB_SETTING = "[re-visit] LDB",
+QUICK_LDB_SETTING_HELP = "[re-visit] LDB enable minimap and titan?",
+
 -- Profiles Page
 OPTIONS_PROFILE_TITLE = "Profiles",
 OPTIONS_PROFILE_HELPTEXT = "All rules settings, addon settings, and Sell / Keep / Destroy list contents are stored per-profile. "..

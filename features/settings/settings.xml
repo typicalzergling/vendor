@@ -5,5 +5,6 @@
     <Script file="features/settings/widgets.lua"/>
     <Include file="features/settings/widgets.xml"/>
     <Script file="features/settings/GeneralSettings.lua"/>
+    <Script file="features/settings/QuickSettings.lua"/>
     <Script file="features/settings/DebugSettings.lua"/>
 </Ui>

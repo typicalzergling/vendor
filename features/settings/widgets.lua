@@ -31,6 +31,15 @@ local function _defaultPredicate(setting)
     return not not value
 end
 
+--[[ Shows a new tag on the frame ]]
+local function _showNewTag(frame, point, x, y)
+    if (not Addon.IsClassic) then
+        local tag = CreateFrame("Frame", nil,  frame, "NewFeatureLabelTemplate")
+        tag:SetPoint("TOPRIGHT", frame, point, x, y)
+        tag:Show()
+    end
+end
+
 --[[ Checkbox ]]-----------------------------------------------------------------
 
 --[[ Initialize a setting ]]
@@ -221,7 +230,7 @@ function SettingsList:CreateItem(model)
         local function handleUpdate()
             local result = false
             if type(model.Predicate) == "function" then
-                result = model.Predicate(model.Depends)
+                result = model.Predicate(model.Depend)
             else
                 result = _defaultPredicate(model.Depend)
             end
@@ -235,6 +244,10 @@ function SettingsList:CreateItem(model)
     
         model.Depend:RegisterHandler(handleUpdate)
         handleUpdate()
+    end
+
+    if (setting and model.isNew == true) then
+        _showNewTag(setting, "TOPRIGHT", -24, 0)
     end
 
     return setting

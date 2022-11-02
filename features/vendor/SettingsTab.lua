@@ -9,9 +9,9 @@ function SettingsTab:GetCategories()
 end
 
 function SettingsTab:OnActivate()
-	--if (not self.settings:GetSelected()) then
-	--	self.settings:Select(1)
-	--end
+	if (not self.settings:GetSelected()) then
+		self.settings:Select(1)
+	end
 end
 
 function SettingsTab:ShowSettings(settings)

@@ -106,11 +106,17 @@ function Tab:ShowFrame(show)
     end
 end
 
---[[static]] function Tab.Create(parent, name, template, class)
+--[[ Gets the ID of this tab ]]
+function Tab:GetId()
+    return self.id or ""
+end
+
+--[[static]] function Tab.Create(parent, id, name, template, class)
     local tab = CreateFrame("Button", nil, parent, "CommonUI_Tab")
     Addon.CommonUI.DialogBox.Colorize(tab)
     tab.template = template
     tab.class = class
+    tab.id = id
 
     Addon.AttachImplementation(tab, Tab, 1)
     if (type(name) == "string") then
@@ -146,10 +152,21 @@ function TabControl:OnLoad()
     self.tabsFar:Show()
 end
 
+--[[ Find a tab with the specified id ]]
+function TabControl:GetTab(tabId)
+    for _, tab in ipairs(self.__tabs) do
+        if (tab:GetId() == tabId) then
+            return tab
+        end
+    end
+
+    return nil
+end
+
 function TabControl:AddTab(id, name, template, class, far)
-    assert(not self.__tabs[id], "There is already a table with the specified id: " .. id)
-    local tab = Tab.Create(self, name, template, class)
-    self.__tabs[id] = tab
+    assert(not self:GetTab(id), "There is already a table with the specified id: " .. id)
+    local tab = Tab.Create(self, id, name, template, class)
+    table.insert(self.__tabs, tab)
 
     tab:SetScript("OnClick", function(target)
         if (target ~= self.__active) then
@@ -162,6 +179,11 @@ function TabControl:AddTab(id, name, template, class, far)
     end
 
     return tab
+end
+
+--[[ True if there is an active tab ]]
+function TabControl:HasActiveTab()
+    return self.__active ~= nil
 end
 
 function TabControl:ActivateTab(tab)
@@ -187,17 +209,15 @@ function TabControl:ActivateTab(tab)
 end
 
 function TabControl:ShowTab(id)
-    if (self.__tabs) then
-        local tab = self.__tabs[id]
-        if (tab) then            
-            return self:ActivateTab(tab)
-        end
+    local tab = self:GetTab(id)
+    if (tab) then
+        return self:ActivateTab(tab)
     end
 end
 
 function TabControl:Layout()
    local last = nil
-   for _, tab in pairs(self.__tabs) do
+   for _, tab in ipairs(self.__tabs) do
         tab:ClearAllPoints()
 
         if (not last) then
@@ -210,17 +230,6 @@ function TabControl:Layout()
         tab:Show()
         last = tab
     end
-end
-
-function TabControl:GetClientPoints()
-    if (self.__tabs) then
-        -- tabs on top
-        local _, first = next(self.__tabs)
-        local _, height = first:GetSize()
-        return 4, -(4 + height), -4, 4
-    end
-
-    return 0, 0, 0, 0
 end
 
 function TabControl:OnShow()

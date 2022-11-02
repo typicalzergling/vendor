@@ -12,12 +12,12 @@ function MainDialog:OnInitDialog(dialog)
 	dialog:SetButtons(BUTTONS)
 
 	local tabs = self.tabs
-	tabs:AddTab("rules", "-rules-", "Vendor_RulesTab", self.RulesTab)
-	tabs:AddTab("lists", "-lists-", "Vendor_ListsTab", {})
-	tabs:AddTab("audit", "-audit-", "", {})
-	tabs:AddTab("profiles", "-profiles-", "", {})
-	tabs:AddTab("settings", "-settings-", "Vendor_SettingsTab", self.SettingsTab)
-	tabs:AddTab("help", "-help-", "", {})
+	tabs:AddTab("rules", "CONFIG_DIALOG_RULES_TAB", "Vendor_RulesTab", self.RulesTab)
+	tabs:AddTab("lists", "CONFIG_DIALOG_LISTS_TAB", "Vendor_ListsTab", {})
+	tabs:AddTab("audit", "CONFIG_DIALOG_AUDIT_TAB", "", {})
+	tabs:AddTab("profiles", "OPTIONS_PROFILE_TITLE", "", {})
+	tabs:AddTab("settings", "RULES_DIALOG_CONFIG_TAB", "Vendor_SettingsTab", self.SettingsTab)
+	tabs:AddTab("help", "EDITRULE_HELP_TAB_NAME", "", {})
 
 	local t = tabs:ShowTab("rules"):GetFrame()
 	Addon.CommonUI.DialogBox.Colorize(t)

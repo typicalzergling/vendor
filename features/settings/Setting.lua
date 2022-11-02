@@ -4,6 +4,9 @@ local Setting = {}
 
 --[[ Initialize a setting ]]
 function Setting:Init(name, defaultValue, getValue, setValue)
+    CallbackRegistryMixin.OnLoad(self)
+    --self:GenerateCallbackEvents("OnChanged")
+
     self.name = name
     self.default = defaultValue
     self.handlers = {}
@@ -39,14 +42,15 @@ end
 
 --[[ Sets the value of this setting ]]
 function Setting:SetValue(value)
+    assert(type(value) == self:GetType())
     local current = self.getValue()
-    print("current", self:GetName(), self:GetValue())
     if (value ~= current) then
         print("setting", self:GetName(), value)
         self.setValue(value)
         for _, handler in ipairs(self.handlers) do
             handler(self)
         end
+        self:TriggerEvent("OnChanged", value)
     end
 end
 
@@ -77,7 +81,29 @@ function Setting:RegisterHandler(handler, owner)
 end
 
 function Addon.Features.Settings.CreateSetting(name, defaultValue, getValue, setValue)
-    local setting = CreateFromMixins(Setting)
+    local setting = CreateFromMixins(Setting, CallbackRegistryMixin)
     setting:Init(name, defaultValue, getValue, setValue)
+    return setting
+end
+
+--[[ Creates a feature which controls the enabling/disabling of a feature ]]
+function Addon.Features.Settings.CreateFeatureSetting(name)
+    local setting = CreateFromMixins(Setting, CallbackRegistryMixin)
+
+    -- Gets the current value
+    local get = function()
+        return Addon:IsFeatureEnabled(name) == true
+    end
+
+    -- Sets the current value
+    local set = function(value)
+        if (value) then
+            Addon:EnableFeature(name)
+        else
+            Addon:DiableFeature(name)
+        end
+    end
+
+    setting:Init(name, get(), get, set)
     return setting
 end
