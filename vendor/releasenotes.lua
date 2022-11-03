@@ -2,6 +2,51 @@ local AddonName, Addon = ...
 
 Addon.ReleaseNotes = {
     {
+        release="5.3",
+        on="TBD",
+        html=
+[[<html>
+<body>
+<h1>Dragonflight Pre-Patch Fixes</h1>
+<p>Blizzard has changed a lot of things in this expansion pre-patch, with more changes coming in the 10.0.2 revision (currently beta). The purpose of this update is to
+enable Vendor to work during the pre-patch. It will not be pretty, as we have UI changes designed for the Beta where they have more significant changes that are incompatible
+with the live version. So expect us to break again in 10.0.2 because they are changing C_Container and how tooltips work.
+</p><br/>
+<h1>Tabs extend off the side!</h1>
+<p>Yes, we know the tabs extend off to the side of the frame, its a bug with blizzard changing how frames work again, please bear with it for a few weeks. We didn't want to hold up our release on fixing this, as we have an entirely new UI in Beta and fixing this just for a few weeks in pre-patch is really not worth the time or delaying the update. We do not plan on fixing this for the pre-patch, sorry, please just...ignore it for a short time.
+</p><br/>
+<h1>Merchant Sell/Destroy Buttons</h1>
+<p>Those who use our addon have long requested a "button" on the merchant to do selling manually, and we have finally added this. The Functionality is new and the settings have not been hooked up in this version properly, but we have added both of them for convenience. In our next update you will be able to enable/disable both of these features. In the mean time please use them and give us feedback. :)
+</p><br/>
+<h1>Transmog Support Altered (may have bugs!)</h1>
+<p>We have had a bit of a complete rework around the Transmog items and are attempting to capture transmogs you might potentially want. This is particularly relevant
+with the new (old?) group loot feature. Instead of scanning for tooltip we are using the Transmog APIs directly, but the transmog APIs are...strange. We think that "not IsCollected" is equivalent to the old "IsUncollectedAppearance" in functionality.
+There may be bugs in the transmog feature. If you spot one please report it to us on Curseforge and we will investigate. Please note that Blizzard understands transmogs at the character level and whether a character can use an item seems to affect whether they consider it "collectable". As such it is difficult to identify a transmog item that you haven't collected which this character cannot use.
+</p><br/>
+<h1>IsUncollectedAppearance Removed</h1>
+<p>This property was removed and the built-in rule updated to use the new properties. You can now use "IsCollected" or the exact equivalent is '(not IsCollected)' if you have a rule that is now broken because of this.
+We thought about keeping the other one for compatibility but we didn't want to crap up our properties. We will look at adding hidden equivalence for better back compat in the future. Apologies for this if your rule is now broken. If you used the built in Keep Uncollected Appearances you should be fine.
+</p><br/>
+<h1>Several New Properties</h1>
+<p>We've added item counts into the properties</p>
+<p>StackCount - Number of current items in this stack. In other words, the current stack size.</p>
+<p>IsCollectable - Is this a collectable appearance?</p>
+<p>IsCollected - Have you collected this appearance?</p>
+<p>The intent here is that you can decide to keep any collectable appearance if you so desire so as not to miss out on. Do note that this is CHARACTER based, so if your character cannot equip an item then the appearance will show as not collectable. This is a Blizzard limitation, and we can't do much about it without book keeping every one of your other characters. We feel the best solution here is to add an extension to a popular Transmog addon and leverage their tracking of transmog data for rules. That will come at some point but for now just know that transmog equipment is a bit wonky.</p>
+<br/>
+<h1>LibDataBroker Added</h1>
+<p>We added support for LibDataBroker for Vendor, which replaced the Vendor Titan plugin. If you were using Vendor Titan you can go add the new LibDataBroker one thorugh the interface. This will allow us to appear in many other places other than Titan. Since many addons support LibDataBroker you may now find Vendor icon and support in more of your addons! Hopefully this works well enough and we plan on improving this more to the point where it has the old titan plugin functionality (where you right-click and can destroy or change profiles).
+</p><br/>
+<h1>Minimap Button</h1>
+<p>We've added a minimap button but the setting do disable it is not yet hooked up. Apologies. In our 10.0.2 update you will be able to disable this. It uses LibDataBroker just like the new Titan plugin option.
+</p><br/>
+<h1>Notable Bug Fixes</h1>
+<p>Too many to name really, we've been doing a lot of reworking and hard to pin down exact bugs fixed along the way.</p>
+<br/>
+</body>
+</html>]]
+    },
+    {
         release="5.2",
         on="June 29, 2021",
         html=

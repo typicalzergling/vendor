@@ -186,7 +186,7 @@ function Addon:GetItemProperties(arg1, arg2)
     local count = 1
     if location:IsBagAndSlot() then
         local bag, slot = location:GetBagAndSlot()
-        count = select(2, C_Container.GetContainerItemInfo(bag, slot))
+        count = select(2, GetContainerItemInfo(bag, slot))
     end
 
     -- Item properties may already be cached

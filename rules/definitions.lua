@@ -276,15 +276,6 @@ Rules.SystemRules =
         Script = function() return IsCosmetic and (IsBindOnEquip or IsAccountBound) end,
         Order = 1250,
     },
-    {
-        Id = "keep.possibletransmog",
-        Type = KEEP_RULE,
-        Name = L["SYSRULE_KEEP_POSSIBLETRANSMOG"],
-        Description = L["SYSRULE_KEEP_POSSIBLETRANSMOG_DESC"],
-        ScriptText = "(not IsCollected) and (IsTransmogEquipment) and (IsAccountBound or IsBindOnEquip)",
-        Script = function() return (not IsCollected) and (IsTransmogEquipment) and (IsAccountBound or IsBindOnEquip) end,
-        Order = 1260,
-    },
     --@end-retail@
 
     -- Safeguard Rule
