@@ -17,10 +17,8 @@ function MainDialog:OnInitDialog(dialog)
 	tabs:AddTab("audit", "CONFIG_DIALOG_AUDIT_TAB", "", {})
 	tabs:AddTab("profiles", "OPTIONS_PROFILE_TITLE", "", {})
 	tabs:AddTab("settings", "RULES_DIALOG_CONFIG_TAB", "Vendor_SettingsTab", self.SettingsTab)
-	tabs:AddTab("help", "EDITRULE_HELP_TAB_NAME", "", {})
-
-	local t = tabs:ShowTab("rules"):GetFrame()
-	Addon.CommonUI.DialogBox.Colorize(t)
+	tabs:AddTab("help", "EDITRULE_HELP_TAB_NAME", "Vendor_HelpTab", self.HelpTab)
+	tabs:ShowTab("rules")
 end
 
 function MainDialog:NavigateTo(tabId)

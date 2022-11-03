@@ -8,6 +8,7 @@
     <Script file="textarea.lua"/>
     <Script file="TabControl.lua"/>
     <Script file="List.lua"/>
+    <Script file="Url.lua"/>
     <Script file="ListItem.lua"/>
     <Script file="ItemLink.lua"/>
     <Script file="CategoryItem.lua"/>

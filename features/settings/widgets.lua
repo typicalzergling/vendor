@@ -255,7 +255,6 @@ end
 
 --[[ Get the settings items for the list ]]
 function SettingsList:GetItems()
-    table.forEach(self.settings, print, " getitems ")
     return self.settings
 end
 

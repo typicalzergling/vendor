@@ -114,6 +114,7 @@ end
 ]]
 local function _createItem(list, state, model)
     local frame = nil
+    local success = false
 
     -- Does the list or parent handle the creation?
     local creator = list.ItemCreator
@@ -123,12 +124,13 @@ local function _createItem(list, state, model)
             local parent = list:GetParent()
             func = parent[creator]
             if (func) then
-                frame = func(parent, model)
+                success, frame = xpcall(func, CallErrorHandler, parent, model)
             end
         else
-            frame = func(list, model)
+            success, frame = xpcall(func, CallErrorHandler,  list, model)
         end
 
+        assert(success, "failed to create the frame for the model")
         assert(frame, "Expected the item creator to create a frame")
         frame:SetParent(state.scroller:GetScrollChild())
     end
@@ -301,7 +303,6 @@ end
     ========================================================================--]]
 local function _getItems(list)
     local func = list.GetItems
-    debug("--list _GetItems: %s", tostring(func))
     if (not func) then
         func = list.OnGetItems
     end

@@ -56,4 +56,9 @@
             <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "ItemLink")</OnLoad>
         </Scripts>
     </Frame>
+
+    <!-- URL -->
+	<EditBox name="CommonUI_Url" virtual="true" font="ChatFontNormal" autoFocus="false">
+		<Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Url")</OnLoad></Scripts>
+	</EditBox>
 </Ui>

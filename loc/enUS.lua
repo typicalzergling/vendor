@@ -15,6 +15,7 @@ ABOUT_TUTORIAL_LABEL = "Tutorial:",
 ABOUT_RELEASES_LABEL = "Releases:",
 ABOUT_VERSION_LABEL = "Version:",
 DEFAULT_PROFILE_NAME = "Default",
+ABOUT_COPY = "Copy",
 
 -- Date Formats - For cultures who may wish to change these.
 CMD_HISTORY_DATEFORMAT = "%c",

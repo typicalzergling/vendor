@@ -76,7 +76,9 @@ end
 
 function CommandButton:OnClick()
     if (self.Handler) then
-        Addon.Invoke(button:GetParent(), self.Handler, self)
+        print("self.Handler", self.Handler, self:GetParent()[self.Handler])
+        table.forEach(self:GetParent(), print, "parent")
+        Addon.Invoke(self:GetParent(), self.Handler, self)
     end
 end
 
