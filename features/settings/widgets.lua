@@ -125,6 +125,8 @@ function Checkbox:OnSizeChanged()
     if (height > self:GetHeight()) then
         self:SetHeight(height)
     end
+
+    print("compute height:", height)
 end
 
 --[[ Sets the label for this setting ]]
@@ -190,6 +192,7 @@ function Header:OnSizeChanged()
     end
 
     self:SetHeight(height)
+    print("--> header height", height)
 end
 
 function Addon.Features.Settings.CreateHeader(header, help, parent)
@@ -211,8 +214,9 @@ function SettingsList:OnLoad()
 end
 
 --[[ Create an item for the setting list ]]
-function SettingsList:CreateItem(model)
+function SettingsList:OnCreateItem(model)
     local setting = nil
+    print("--> create item", model)
 
     if (not model.Setting) then
         return Settings.CreateHeader(model.Header, model.Help, self)
@@ -254,7 +258,7 @@ function SettingsList:CreateItem(model)
 end
 
 --[[ Get the settings items for the list ]]
-function SettingsList:GetItems()
+function SettingsList:OnGetItems()
     return self.settings
 end
 

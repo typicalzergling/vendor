@@ -8,11 +8,11 @@
         </KeyValues>
         <Layers>
             <Layer level="ARTWORK">
-                <FontString parentKey="label" inherits="GameFontHighlight" maxLines="1" justifyH="LEFT" JustifyV="CENTER">
+                <FontString parentKey="label" inherits="GameFontNormal" maxLines="1" justifyH="LEFT" JustifyV="CENTER">
                     <KeyValues>
                         <KeyValue key="Color" value="TEXT"/>
                     </KeyValues>
-                    <Size x="1" y="22"/>
+                    <Size x="1" y="24"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="36" y="0"/>
                         <Anchor point="TOPRIGHT"/>
@@ -55,7 +55,7 @@
         <Layers>
             <Layer level="ARTWORK">
                 <FontString parentKey="header" inherits="GameFontNormalLarge" maxLines="1" justifyH="LEFT" JustifyV="CENTER">
-                    <Size x="1" y="22"/>
+                    <Size x="1" y="24"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="12"/>
                         <Anchor point="TOPRIGHT"/>

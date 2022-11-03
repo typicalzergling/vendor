@@ -14,9 +14,8 @@ function HelpTab:GetCategories()
     if type(Addon.ReleaseNotes) == "table" then
         for index, notes in ipairs(Addon.ReleaseNotes) do
             table.insert(releases, { 
-                Index = index, 
-                Notes = notes.content or {},
-                Text = string.format("%s (%s)", notes.release, notes.on),
+                Markdown = notes.Notes,
+                Text = notes.Release
             })
         end
     end
@@ -81,7 +80,12 @@ end
 
 --[[ Show the specified release notes ]]
 function HelpTab:ShowRelease(release)
-    self.notes:Rebuild()
+    table.forEach(release, print, "markdown")
+    if (release.Markdown) then
+        self.notes:SetMarkdown(release.Markdown)
+    else
+        self.notes:SetMarkdown("")
+    end
 end
 
 Vendor.MainDialog.HelpTab = HelpTab

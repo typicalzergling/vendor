@@ -135,8 +135,8 @@ local function _createItem(list, state, model)
         frame:SetParent(state.scroller:GetScrollChild())
     end
 
-    if (not frame and type(list.CreateItem) == "function") then
-        frame = list:CreateItem(model)
+    if (not frame and type(list.OnCreateItem) == "function") then
+        frame = list:OnCreateItem(model)
 
         assert(frame, "Expected the item creator to create a frame")
         frame:SetParent(state.scroller:GetScrollChild())
@@ -144,8 +144,8 @@ local function _createItem(list, state, model)
 
     -- Create it ourselves with the keys
     if not frame then
-        local template = template or list.FrameType or list.ItemType or list.ItemTemplate
-        local itemClass = itemClass or list.ItemClass
+        local template = list.FrameType or list.ItemType or list.ItemTemplate
+        local itemClass = list.ItemClass
     
         -- Determine if we have an implementation to attach	
         if (not state.itemclass) then
@@ -267,10 +267,13 @@ local function _reflow(list)
         for pos, model in ipairs(state.view) do            
             local frame = state.frames[model]
             local margins = frame.Margins or NO_MARGINS
-            frame:SetPoint("TOPLEFT", (margins.left or 0), -(height + (margins.top or 0)))
+
+            height = height + (margins.top or 0)
+            frame:SetPoint("TOPLEFT", (margins.left or 0), -height)
             height = height + frame:GetHeight() + space + (margins.bottom or 0)
         end
 
+        height = height + space
         state.scroller:GetScrollChild():SetHeight(height)
     end
 end

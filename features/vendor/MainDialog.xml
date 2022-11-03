@@ -197,12 +197,7 @@
                     <Anchor point="BOTTOMLEFT"/>
                 </Anchors>
             </Frame>
-            <Frame parentKey="notes" inherits="CommonUI_List">
-                <KeyValues>
-                    <KeyValue key="ItemSource" value="GetContents"/>
-                    <KeyValue key="ItemCreator" value="CreateNoteItem"/>
-                    <KeyValue key="ItemSpacing" value="10" type="number"/>                    
-                </KeyValues>
+            <Frame parentKey="notes" inherits="CommonUI_Markdown">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.releases" relativePoint="TOPRIGHT" x="12"/>
                     <Anchor point="BOTTOMRIGHT"/>
