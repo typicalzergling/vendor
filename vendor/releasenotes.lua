@@ -3,7 +3,7 @@ local AddonName, Addon = ...
 Addon.ReleaseNotes = {
     {
         release="5.3",
-        on="TBD",
+        on="November 3, 2022",
         html=
 [[<html>
 <body>
