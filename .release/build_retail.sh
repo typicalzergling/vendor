@@ -14,8 +14,6 @@ addon_tsm="$ADDON_NAME""_TSM"
 addon_path_tsm="$addons_folder$addon_tsm"
 addon_pawn="$ADDON_NAME""_Pawn"
 addon_path_pawn="$addons_folder$addon_pawn"
-addon_titan="$ADDON_NAME""_Titan"
-addon_path_titan="$addons_folder$addon_titan"
 
 # Remove the junctions before removing the local folder.
 $JUNCTION_TOOL -d "$addon_path"
@@ -24,7 +22,6 @@ $JUNCTION_TOOL -d "$addon_path_ark"
 $JUNCTION_TOOL -d "$addon_path_adi"
 $JUNCTION_TOOL -d "$addon_path_tsm"
 $JUNCTION_TOOL -d "$addon_path_pawn"
-$JUNCTION_TOOL -d "$addon_path_titan"
 
 # Now recursively delete the old folder.
 rm -rf ".release/retail"
@@ -39,4 +36,3 @@ $JUNCTION_TOOL "$addon_path_ark" "retail\\$addon_ark"
 $JUNCTION_TOOL "$addon_path_adi" "retail\\$addon_adi"
 $JUNCTION_TOOL "$addon_path_tsm" "retail\\$addon_tsm"
 $JUNCTION_TOOL "$addon_path_pawn" "retail\\$addon_pawn"
-$JUNCTION_TOOL "$addon_path_titan" "retail\\$addon_titan"
