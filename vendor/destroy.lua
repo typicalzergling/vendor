@@ -34,7 +34,7 @@ function Addon:DestroyNextItem()
                 currentDestroyedItem = item.Link
                 self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem), tostring(rule))
                 if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
-                    PickupContainerItem(bag, slot)
+                    C_Container.PickupContainerItem(bag, slot)
                     DeleteCursorItem()
                     Addon:AddEntryToHistory(currentDestroyedItem, Addon.ActionType.DESTROY, rule, ruleid, itemCount, 0)
                 else
