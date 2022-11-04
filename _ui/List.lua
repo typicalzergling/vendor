@@ -162,7 +162,6 @@ local function _createItem(list, state, model)
 
         frame = CreateFrame("Button", nil, state.scroller:GetScrollChild(), template)
         Addon.AttachImplementation(frame, state.itemclass, true)
-        table.forEach(frame, print, "item")
     end
     
     -- Create the actual item, and attach our implementaition

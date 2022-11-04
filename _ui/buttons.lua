@@ -164,6 +164,7 @@ function Chip:OnEnter()
         GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
         GameTooltip:SetText(self.text:GetText())
         local color = Colors.BUTTON_TEXT
+        GameTooltip:AddLine(" ")
         GameTooltip:AddLine(self.help, color.r, color.g, color.b, true)
         GameTooltip:Show()
     end
@@ -192,6 +193,7 @@ Addon.CommonUI.Chip = Chip
 --[[=========================================================================]]
 
 local Layouts = {}
+Addon.CommonUI.Layouts = Layouts
 
 function Layouts.Flow(frame, marginX, marginY)
     local width = frame:GetWidth()
@@ -233,6 +235,54 @@ function Layouts.Flow(frame, marginX, marginY)
     end
 
     frame:SetHeight(height)
+end
+
+function Layouts.Stack(panel, children, padding, spacing)
+    local paddingTop = 0
+    local paddingBottom = 0
+    local paddingLeft = 0
+    local paddingRight = 0
+    local space = 0
+
+    if (type(spacing) == "number") then
+        space = spacing
+    end
+
+    if (type(padding) == "number") then
+        paddingTop = padding
+        paddingLeft = padding
+        paddingRight = padding
+        paddingBottom = padding
+    elseif (type(padding) == "table") then
+        paddingTop = padding.top or 0
+        paddingBottom = padding.bottom or 0
+        paddingLeft = padding.left or 0
+        paddingRight = padding.right or 0
+    end
+
+    local height = paddingTop
+    for i, child in ipairs(children) do
+        if (child:IsShown()) then
+            local objectType = child:GetObjectType()
+
+            child:ClearAllPoints()
+            child:SetPoint("TOPLEFT", panel, "TOPLEFT", paddingLeft, -height)
+            child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -paddingRight, -height)
+
+            if (objectType == "FontString") then
+                child:SetHeight(0)
+            elseif (objectType ~= "Texture" and objectType ~= "Line") then
+                -- If the child has a layout handler then invoke it
+                if (type(child.Layout) == "function") then
+                    xpcall(child.Layout, CallErrorHandler, child)
+                end
+            end
+            
+             height = height + child:GetHeight() + space
+        end
+    end
+
+    panel:SetHeight(height + paddingBottom)
 end
 
 local ChipList = {}

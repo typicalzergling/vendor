@@ -32,8 +32,6 @@ function Dialogs:ShowEditRule(ruleId)
         error("Unable to locate rule: " .. ruleId)
     end
 
-    table.forEach(rule, print, "rule")
-
     local dialog = self:GetEditRule()
     dialog:SetRule(rule)
     dialog:Show()

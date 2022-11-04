@@ -273,3 +273,81 @@ Addon.CommonUI.Mixins.Debounce =
         end
     end
 }
+
+Addon.CommonUI.Mixins.Tooltip =
+{
+    --[[ Called to see if we should show a tooltip ]]
+    OnEnter = function(self)
+        if (type(self._OnEnter) == "function") then
+            self:_OnEnter()
+        end
+
+        -- Should we show a tooltip?
+        local func = self.HasTooltip
+        if (type(func) == "function") then
+            local success, show = xpcall(self.HasTooltip, self)
+            if (not success or not show) then
+                return 
+            end
+        end
+
+        -- Invoke the tooltip
+        GameTooltip:SetOwner(self, "ANCHOR_NONE")
+        GameTooltip:ClearAllPoints()
+        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+        func = self.OnTooltip
+        if (type(func) == "function") then
+            xpcall(self.OnTooltip, self, GameTooltip)
+        end
+        GameTooltip:Show()
+    end,
+
+    --[[ Called to hide the tooltip if we are showing it ]]
+    OnLeave = function(self)
+        if (GameTooltip:GetOwner() == self) then
+            GameTooltip:Hide()
+        end
+
+        if (type(self._OnLeave) == "function") then
+            self:_OnLeave()
+        end
+    end
+}
+
+local HIGHLIGHT_KEY = {}
+
+Addon.CommonUI.Mixins.Highlight =
+{
+    --[[ Called to initialize the highlight ]]
+    InitHighlight = function(self, color)
+        if (not color) then
+            if (type(self.HighlightColor) == "string") then
+                color = Colors:Get(self.HighlightColor, Colors.HOVER_BACKGROUND)
+            else
+                color = Colors.HOVER_BACKGROUND
+            end
+        end
+
+        local highlight = self:CreateTexture("BACKGROUND")
+        highlight:SetAllPoints(self)
+        highlight:SetColorTexture(color:GetRGBA())
+        highlight:Hide()
+        rawset(self, HIGHLIGHT_KEY, highlight)
+    end,
+
+    --[[ Called to update the state of the highlight ]]
+    OnUpdate = function(self, ...)
+        if (self:IsVisible()) then
+            local highlight = rawget(self, HIGHLIGHT_KEY)
+            if (self:IsMouseOver()) then
+                highlight:Show()
+            elseif (highlight:IsVisible()) then
+                highlight:Hide()
+            end
+        end
+
+        if (type(self._OnUpdate) == "function") then
+            self:_OnUpdate(...)
+        end
+    end
+}

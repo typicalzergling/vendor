@@ -6,6 +6,9 @@
     <Script file="features/vendor/HelpTab.lua"/>
     <Script file="features/vendor/HistoryTab.lua"/>
     <Script file="features/vendor/HistoryItem.lua"/>
+    <Script file="features/vendor/RuleItem.lua"/>
+    <Script file="features/vendor/RuleParameters.lua"/>
 
     <Include file="features/vendor/MainDialog.xml"/>
+    <Include file="features/vendor/Rules.xml"/>
 </Ui>

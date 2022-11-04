@@ -39,6 +39,19 @@ local ITEM_LEVEL_PARAMS =
         Name=L["RULEUI_LABEL_ITEMLEVEL"],
         Key="ITEMLEVEL",
     },
+    {
+        Type="boolean",
+        Name="i am a boolean param",
+        Key="bbITEMLEVEL",
+    },    {
+        Type="numeric",
+        Name=L["RULEUI_LABEL_ITEMLEVEL"],
+        Key="ITEMLEVEL",
+    },    {
+        Type="numeric",
+        Name=L["RULEUI_LABEL_ITEMLEVEL"],
+        Key="ITEMLEVEL",
+    },    
 };
 
 Rules.SystemRules =
@@ -82,6 +95,14 @@ Rules.SystemRules =
             return (TypeId == 0) and (SubTypeId == 5) and (Level ~= 1) and (Level <= (PlayerLevel() - 10));
         end,
         Order = 1100,
+        Params = {
+            {
+                Type ="boolean",
+                Name = "Exclude level 1",
+                Key = "EXCLUDE_LEVEL_ONE",
+                Default = true,
+            },           
+        }
     },
 
     --@retail@

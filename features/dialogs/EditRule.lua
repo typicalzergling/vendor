@@ -281,8 +281,6 @@ end
 function EditRule:UpdateMatches()
     if (self.changes.scriptValid) then
         local matches = self:GetDependency("Rules"):GetMatches(self.changes.script)
-        table.forEach(self.MatchesTab, print)
-        table.forEach(self.matchesTab, print)
         self.matches:Call("SetMatches", matches)
     else
         self.matches:Call("ClearMatches", matches)

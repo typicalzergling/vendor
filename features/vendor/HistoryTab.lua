@@ -30,9 +30,6 @@ end
 
 function HistoryTab:OnDeactivate()
     local profile = Addon:GetProfile()
-
-    print("de-activeate")
-    table.forEach(self.filters:GetSelected(), print, "save")
     profile:SetValue(ENABLED_FILTERS, self.filters:GetSelected())
 end
 

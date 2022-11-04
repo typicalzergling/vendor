@@ -5,6 +5,7 @@ local TEST_ID = "test.id"
 local TEST_NAME = "<test-rule>"
 local TEST_CATEGORY_NAME = "<test>"
 local EVENTS = { "OnRuleDefinitionCreated", "OnRuleDefinitionUpdated", "OnRuleDefinitionDeleted", "OnRuleFunctionsChanged" }
+local RuleType = Addon.RuleType
 
 function RulesFeature:OnInitialize()
     self:Debug("Initialize Rules Feature")
@@ -45,6 +46,26 @@ function RulesFeature:GetMatches(script, parameters)
     --self.matchEngine:RemoveRule(TEST_ID)
 
     return results
+end
+
+--@debug@--
+-- Validae the rule type
+local function isValidRuleType(type)
+    return not type or
+        type == RuleType.SELL or
+        type == RuleType.KEEP or
+        type == RuleType.DESTROY
+end
+--@end-debug@
+
+--[[
+    Retrieves all the rules, with an optional type match
+]]
+function RulesFeature:GetRules(type)
+    --@debug@
+    assert(isValidRuleType(type), "An invalid rule type was provided :: " .. tostring(type))
+    --@end-debug@
+    return Addon.Rules.GetDefinitions(type)
 end
 
 --[[

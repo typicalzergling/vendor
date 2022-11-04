@@ -1,6 +1,9 @@
 local _, Addon = ...
 Addon.CommonUI = { Mixins = {} }
 local TRANSPARENT = CreateColor(0,0,0,0)
+local ERROR_COLOR = CreateColor(1, 0, .1, 1)
+Addon.Colors = Addon.Colors or {}
+local AddonColors = Addon.Colors
 
 Addon.CommonUI.Colors =
 {
@@ -11,6 +14,8 @@ Addon.CommonUI.Colors =
     SELECTED_TEXT = YELLOW_FONT_COLOR,
 
     SECONDARY_TEXT = CreateColor(1, 1, 1, .6),
+    SELECTED_SECONDARY_TEXT = CreateColor(1, 1, 0, .6),
+    HOVER_SECONDARY_TEXT = CreateColor(1, 1, 0.6),
 
     PLACEHOLDER_COLOR = CreateColor(1, 1, 1, .6),
 
@@ -66,4 +71,18 @@ Addon.CommonUI.Colors =
     CHECKBOX_CHECK = CreateColor(1, 1, 0, 0.6),
     CHECKBOX_DISABLED = CreateColor(1, 1, 1, .5),
 
+    --[[ Retrieves the specified color or RED to indicate error ]]
+    Get = function(self, key, defaultColor)
+        local color = AddonColors[key]
+        
+        if (type(color) ~= "table") then
+            color = self[key]
+        end
+
+        if (type(color) ~= "table") then
+            color = defaultColor or ERROR_COLOR
+        end
+
+        return color
+    end
 }

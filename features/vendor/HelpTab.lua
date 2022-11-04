@@ -80,7 +80,6 @@ end
 
 --[[ Show the specified release notes ]]
 function HelpTab:ShowRelease(release)
-    table.forEach(release, print, "markdown")
     if (release.Markdown) then
         self.notes:SetMarkdown(release.Markdown)
     else
