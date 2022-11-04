@@ -15,9 +15,22 @@ local function rule_Execute(self, environment)
         self.executed = (self.executed + 1);
         -- Adjust the environment to for the rule
         rawset(environment, RULE_PARAMS_KEY, self.params);
+
+        if (type(self.params) == "table") then
+            for key, value in pairs(self.params) do
+                rawset(environment, key, value)
+            end
+        end
+
         setfenv(self.script, environment)
         local status, result = pcall(self.script)
         rawset(environment, RULE_PARAMS_KEY, nil);
+
+        if (type(self.params) == "table") then
+            for key, value in pairs(self.params) do
+                rawset(environment, string.upper(key), nil)
+            end
+        end
 
         if status then
             self.healthy = true;

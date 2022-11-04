@@ -28,11 +28,10 @@ local function debug(msg, ...)
 end
 
 function RuleItem:OnLoad()
+    self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 end
 
 function RuleItem:OnModelChange(model)
-    debug("OnModelChange(%s)", model.Description or "<unknown>")
-
     self.name:SetText(model.Name)
     if (type(model.Description) == "string") then
         self.description:SetWordWrap(true)
@@ -42,22 +41,27 @@ function RuleItem:OnModelChange(model)
     end
 
     self:CreateParams()
-    self:ShowParams(false)
+    self:ShowParams(self:GetChecked())
 end
 
 function RuleItem:OnShow()
     self:SetColors()
 end
 
-function RuleItem:OnClick()
-    if (self:GetChecked()) then
-        self.backdrop:Show()
+function RuleItem:OnClick(button)
+    if (button == "RightButton") then
+        local dialog = Addon:GetFeature("Dialogs")
+        dialog:ShowEditRule(self:GetModel().Id)
     else
-        self.backdrop:Hide()
-    end
+        if (self:GetChecked()) then
+            self.backdrop:Show()
+        else
+            self.backdrop:Hide()
+        end
 
-    self:SetColors()
-    self:ShowParams(self:GetChecked())
+        self:SetColors()
+        self:ShowParams(self:GetChecked())
+    end
 end
 
 function RuleItem:_OnEnter()
@@ -74,7 +78,9 @@ function RuleItem:SetActive(active)
     else
         self:SetChecked(false)
     end
+
     self:ShowParams(active)
+    self:SetColors()
 end
 
 function RuleItem:SetColors()
@@ -111,13 +117,13 @@ function RuleItem:OnSizeChanged()
     xpcall(Layouts.Stack, CallErrorHandler, self, self.stack, 6, 4)
 end
 
-
 function RuleItem:CreateParams()
     local rule = self:GetModel()
     if (type(rule.Params) == "table") then
         self.params = {}
         for _, param in ipairs(rule.Params) do
             local frame = Vendor.CreateRuleParameter(self, param)
+            frame:SetDefault()
             table.insert(self.stack, frame)
             self.params[param.Key] = frame
         end
@@ -125,11 +131,9 @@ function RuleItem:CreateParams()
 end
 
 function RuleItem:ShowParams(show)
-    debug("showParams: %s", tostring(show))
-
     if (self.params) then
         for _, param in pairs(self.params) do
-            if (show) then 
+            if (show) then
                 param:Show()
             else
                 param:Hide()
@@ -141,11 +145,8 @@ function RuleItem:ShowParams(show)
 end
 
 function RuleItem:SetParameters(params)
-    debug("Set parameters", self.params)
-
     if (self.params) then
         for key, param in pairs(self.params) do
-            debug("Checking parameter: %s", key)
             if (type(params) == "table") then
                 param:SetValue(params[key])
             else
@@ -153,8 +154,6 @@ function RuleItem:SetParameters(params)
             end
         end
     end
-
-    self:ShowParams(self:GetChecked())
 end
 
 Vendor.RuleItem = RuleItem

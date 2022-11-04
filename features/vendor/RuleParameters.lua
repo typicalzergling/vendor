@@ -40,10 +40,20 @@ end
 
 function RuleParameter:SetDefault()
     local default = self.Parameter.Default
+
     if (type(default) == "function") then
         self:SetValue(default())
-    else
+    elseif (type(default) ~= "nil") then
         self:SetValue(default)
+    else
+        local type = self.Parameter.Type
+        if (type == "boolean") then
+            self:SetValue(false)
+        elseif (type == "number" or type == "numeric") then
+            self:SetValue(0)
+        else
+            self:SetValue("")
+        end
     end
 end
 

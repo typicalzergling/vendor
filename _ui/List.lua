@@ -145,8 +145,6 @@ local function _createItem(list, state, model)
     if not frame then
         local template = list.FrameType or list.ItemType or list.ItemTemplate
         local itemClass = list.ItemClass
-
-        print("Create:", template, itemClass)
     
         -- Determine if we have an implementation to attach	
         if (not state.itemclass) then
@@ -197,9 +195,17 @@ local function _buildView(list, state)
         for _,  model in ipairs(state.items) do
             if (filter) then
                 if (filter(model)) then
+                    if (not state.frames[model]) then
+                        state.frames[model] = _createItem(list, state, model)
+                    end
+    
                     table.insert(view, model)
                 end
             else
+                if (not state.frames[model]) then
+                    state.frames[model] = _createItem(list, state, model)
+                end
+
                 table.insert(view, model)
             end
         end
@@ -422,18 +428,20 @@ function List:Select(item)
         end
     end
 
-    if (newSel ~= currentSel) then
+    print("--> ", currentSel, sel)
+
+    if (not currentSel or newSel ~= currentSel) then
         local model = nil;
         if (newSel) then
             model = newSel:GetModel();
         end
 
         local func = self.OnSelection
-        if (type(func) ~= "function") then
-            local parent = self:GetParent()
-            local hanler
+        if (type(func) == "function") then
+            self:OnSelected(model, newSel)
         end
 
+        print("---> firing", model, newSel)
         _invokeHandler(self, "OnSelection", model, newSel)
     end
 end

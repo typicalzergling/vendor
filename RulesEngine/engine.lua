@@ -181,6 +181,24 @@ function Package.validateRuleDefinition(rule, skip)
     return true;
 end
 
+--[[ Retrieves the default value of the parameter ]]
+local function _getParamDefault(param)
+    local default = param.Default
+    if (type(default) == "function") then
+        return default()
+    elseif (type(default) == "nil") then
+        if (type(param.Type) == "boolean") then
+            return false
+        elseif (param.type == "string") then
+            return ""
+        else
+            return 0
+        end
+    end
+
+    return default
+end
+
 --[[===========================================================================
     | engine_AddRule
     |   Adds creates and adds a rule with the specified definition to the
@@ -193,11 +211,24 @@ end
     |   In addtion, you can pass a table of parameters available to the
     |   rule when it's evaluated.
     =======================================================================--]]
-function engine_AddRule(self, categoryId, ruleDef, params)
+local function engine_AddRule(self, categoryId, ruleDef, params)
     assert(type(categoryId) == "number", "The category id must be numeric identifier");
     Package.validateRuleDefinition(ruleDef, 3);
     if (params and type(params) ~= "table") then
         error("The rule parameters must be a table, providing the parameters as key-value pairs", 2);
+    end
+
+    -- Apply the default values into the rule parameters if it's not
+    -- already there.
+    if (type(ruleDef.Params) == "table") then
+        local ruleParams = {}
+        for _, param in ipairs(ruleDef.Params) do
+            if (not params or type(params[param.Key]) == "nil") then
+                ruleParams[string.upper(param.Key)] = _getParamDefault(param)
+            else
+                ruleParams[string.upper(param.Key)] = params[param.Key]
+            end
+        end
     end
 
     local category = assert(findCategory(self, categoryId), "The specified categoryId (" .. tostring(categoryId) .. ") is invalid, remember to call AddCategory first");
@@ -464,7 +495,7 @@ end
     |   and rules can be added to it. If we fail to create the object
     |   the returns "nil".
     =========================================================================]]
-function engine_AddRuleset(self, categoryId, id, name)
+local function engine_AddRuleset(self, categoryId, id, name)
     assert(type(categoryId) == "number", "The category identifier must be numeric.");
 
     local category = assert(findCategory(self, categoryId), "The specified categoryId (" .. tostring(categoryId) .. ") is invalid, remember to call AddCategory first");

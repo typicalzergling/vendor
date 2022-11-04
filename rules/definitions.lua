@@ -90,9 +90,12 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_OLDFOOD"],
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
-        ScriptText = "TypeId == 0 and SubTypeId == 5 and Level ~= 1 and Level <= (PlayerLevel() - 10)",
+        ScriptText = "TypeId == 0 and SubTypeId == 5 and (not EXCLUDE_LEVEL_ONE or Level ~= 1) and Level <= (PlayerLevel() - 10)",
         Script = function()
-            return (TypeId == 0) and (SubTypeId == 5) and (Level ~= 1) and (Level <= (PlayerLevel() - 10));
+            return (TypeId == 0) and 
+                    (SubTypeId == 5) and 
+                    (not EXCLUDE_LEVEL_ONE or Level ~= 1) and
+                    (Level <= (PlayerLevel() - 10));
         end,
         Order = 1100,
         Params = {

@@ -279,8 +279,35 @@ function EditRule:InsertText(_, text)
 end
 
 function EditRule:UpdateMatches()
-    if (self.changes.scriptValid) then
-        local matches = self:GetDependency("Rules"):GetMatches(self.changes.script)
+    local rules = self:GetDependency("rules")
+    local matches
+
+    if (self.readonly) then
+        assert(self.rule, "Expected a valid rule definition")
+        local params
+
+        if (type(self.rule.Params) == "table") then
+            params = {}
+            for _, param in ipairs(self.rule.Params) do
+                local default = param.Default
+                if (type(default) == "function") then
+                    default = default()
+                end
+
+                params[param.Key] = default
+            end
+        end
+
+        matches = rules:GetMatches(self.rule.Script, params)
+    elseif (self.changes.scriptValid) then
+        local params
+        if (type(self.rule) == "table") then
+            params = self.rule.Params
+        end
+        local matches = rules:GetMatches(self.changes.script, params)
+    end
+
+    if (matches) then
         self.matches:Call("SetMatches", matches)
     else
         self.matches:Call("ClearMatches", matches)
@@ -291,47 +318,46 @@ end
     Called when the script changes
 ]]
 function EditRule:OnScriptChanged(text)
-    local scriptValid = false
     local rules = self:GetDependency("Rules")
-    local errorMessage = nil
 
-    if (text and string.len(text) ~= 0) then
-        local valid, msg = rules:ValidateRule(text)
-        self:Debug("Validate script '%s' [%s, %s]", text, valid, msg or "")
+    if (not self.readonly) then
+        local errorMessage = nil
+        local scriptValid = false
 
-        if (valid) then
-            scriptValid = true
-            self.changes.scriptValid = true
-            self.changes.script = text
-            self.ruleStatus:SetStatus("ok")
-            
+        if (text and string.len(text) ~= 0) then
+            local valid, msg = rules:ValidateRule(text)
+            self:Debug("Validate script '%s' [%s, %s]", text, valid, msg or "")
 
-            --self.tabs:GetTab("matches"):Update(rules, text)
-        else
-            print(string.match(msg, "(%[.*%]:%d:)(.*)"))
-            local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
-            if (err) then
-                errorMessage = string.trim(err)
+            if (valid) then
+                scriptValid = true
+                self.changes.scriptValid = true
+                self.changes.script = text
+                self.ruleStatus:SetStatus("ok")
             else
-                errorMessage = string.trim(msg)
+                print(string.match(msg, "(%[.*%]:%d:)(.*)"))
+                local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
+                if (err) then
+                    errorMessage = string.trim(err)
+                else
+                    errorMessage = string.trim(msg)
+                end
             end
+        end
+
+        if (not scriptValid) then
+            if (not errorMessage) then
+                self.ruleStatus:Clear()
+            else
+                self.ruleStatus:SetStatus("invalid", errorMessage)
+            end
+    
+            self.changes.scriptValid = false
         end
     end
 
     self:Debounce(.75, function() 
         self:UpdateMatches() 
     end)
-
-    if (not scriptValid) then
-        if (not errorMessage) then
-            self.ruleStatus:Clear()
-        else
-            self.ruleStatus:SetStatus("invalid", errorMessage)
-        end
-
-        self.changes.scriptValid = false
-        --self.tabs:GetTab("matches"):Clear()
-    end
 
     self:UpdateButtons()
 end
@@ -381,7 +407,7 @@ end
 --[[
     Checks if the specified string is both a valid string, and also no empty
 ]]
-local function validateString(str)
+local function validateString(str)    
     if (type(str) == "string") then
         str = string.trim(str)
         return string.len(str) ~= 0
@@ -457,6 +483,7 @@ function EditRule:SetRule(rule)
     self.script:SetText(script or "")
 
     if (self:InViewMode()) then
+        self.readonly = true
         dialog:SetCaption("VIEWRULE_CAPTION")
 
         self.script:Disable()
