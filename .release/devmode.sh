@@ -8,8 +8,8 @@
 # Load paths. We assume paths are in the .env file and that this is being executed from the addon's .release folder.
 . ".env"
 
-all_flavors="_retail_ _ptr_ _classic_"
-all_extensions="_RulePack _Ark _AdiBags _TSM _Pawn _Titan"
+all_flavors="_retail_ _ptr_ _classic_ _beta_"
+all_extensions="_RulePack _Ark _AdiBags _TSM _Pawn"
 
 flavors=$all_flavors
 
