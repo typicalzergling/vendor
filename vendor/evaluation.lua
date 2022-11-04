@@ -181,7 +181,7 @@ end
 function Addon:LoadAllBagItemLinks()
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, ContainerFrame_GetContainerNumSlots(bag) do
-            C_Container.GetContainerItemInfo(big, slot)
+            C_Container.GetContainerItemInfo(bag, slot)
         end
     end
 end

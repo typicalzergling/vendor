@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 90200
+## Interface: 100002
 ## Dependencies: Vendor, ArkInventoryRules
 #@end-retail@
 #@non-retail@

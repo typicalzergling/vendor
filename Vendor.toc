@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 90200
+## Interface: 100002
 #@end-retail@
 #@non-retail@
 # ## Interface: 20501
@@ -9,7 +9,7 @@
 ## Version: @project-version@
 ## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History Vendor_Account_Data Vendor_XX_InstanceInfo Vendor_XX_LootInfo
 ## SavedVariablesPerCharacter: Vendor_RulesConfig Vendor_ActiveProfile Vendor_Character_Data
-## Author: Malvir & Buskin of Lightbringer
+## Author: Thoekh of Sargeras & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
 # Constants defined first
