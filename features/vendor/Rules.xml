@@ -38,9 +38,11 @@
             <Frame parentKey="rules" inherits="CommonUI_List">
                 <Size x="224" y="1"/>
                 <KeyValues>
+                    <KeyValue key="ItemSpacing" value="1" type="number"/>
                     <KeyValue key="ItemSource" value="GetRules"/>
                     <KeyValue key="ItemCreator" value="CreateRuleItem"/>
                     <KeyValue key="EmptyText" value="RULE_LIST_EMPTY"/>
+                    <KeyValue key="OnViewCreated" value="UpdateConfig"/>
                 </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.ruleType" x="12"/>

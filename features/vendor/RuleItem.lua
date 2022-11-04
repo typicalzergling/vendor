@@ -74,6 +74,7 @@ function RuleItem:SetActive(active)
     else
         self:SetChecked(false)
     end
+    self:ShowParams(active)
 end
 
 function RuleItem:SetColors()
@@ -118,14 +119,16 @@ function RuleItem:CreateParams()
         for _, param in ipairs(rule.Params) do
             local frame = Vendor.CreateRuleParameter(self, param)
             table.insert(self.stack, frame)
-            table.insert(self.params, frame)
+            self.params[param.Key] = frame
         end
     end
 end
 
 function RuleItem:ShowParams(show)
+    debug("showParams: %s", tostring(show))
+
     if (self.params) then
-        for _, param in ipairs(self.params) do
+        for _, param in pairs(self.params) do
             if (show) then 
                 param:Show()
             else
@@ -135,6 +138,23 @@ function RuleItem:ShowParams(show)
     end
 
     self:OnSizeChanged()
+end
+
+function RuleItem:SetParameters(params)
+    debug("Set parameters", self.params)
+
+    if (self.params) then
+        for key, param in pairs(self.params) do
+            debug("Checking parameter: %s", key)
+            if (type(params) == "table") then
+                param:SetValue(params[key])
+            else
+                param:SetDefault()
+            end
+        end
+    end
+
+    self:ShowParams(self:GetChecked())
 end
 
 Vendor.RuleItem = RuleItem

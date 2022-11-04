@@ -38,6 +38,15 @@ function RuleParameter:InvokeCallback(...)
     end
 end
 
+function RuleParameter:SetDefault()
+    local default = self.Parameter.Default
+    if (type(default) == "function") then
+        self:SetValue(default())
+    else
+        self:SetValue(default)
+    end
+end
+
 --[[==== BooleanParameter =====================================================]]
 local BooleanParameter = table.copy(RuleParameter)
 
@@ -73,7 +82,7 @@ function BooleanParameter:SetValue(value)
         self.value:SetChecked(true)
         self.value.check:Show()
     else
-        self:SetChecked(true)
+        self.value:SetChecked(true)
         self.value.check:Hide()
     end
 end

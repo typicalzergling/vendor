@@ -4,6 +4,11 @@ local Vendor = Addon.Features.Vendor
 local RuleType = Addon.RuleType
 local RulesTab = {}
 
+function RulesTab:OnLoad()
+	self.ruleFeature = Addon:GetFeature("Rules")
+	self.ruleItems = {}
+end
+
 --[[ Retreive the categories for the rules ]]
 function RulesTab:GetCategories()
 	print("--> get categories")
@@ -30,25 +35,43 @@ function RulesTab:OnActivate()
 	if (not self.ruleType:GetSelected()) then
 		self.ruleType:Select(1)
 	end
+	self:ShowRules()
 end
 
 function RulesTab:GetRules()
-	local rules = Addon:GetFeature("Rules")
-	return rules:GetRules()
+	return self.ruleFeature:GetRules()
 end
 
+--[[ Create an item for the specified rule ]]
 function RulesTab:CreateRuleItem(model)
-	local frame =CreateFrame("CheckButton", nil, self, "RuleItem")
-	Addon.AttachImplementation(frame, Vendor.RuleItem, true)
-	Addon.CommonUI.DialogBox.Colorize(frame)
+	local frame = self.ruleItems[model.Id]
+	if (not frame) then
+		frame = CreateFrame("CheckButton", nil, self, "RuleItem")
+		Addon.AttachImplementation(frame, Vendor.RuleItem, true)
+		Addon.CommonUI.DialogBox.Colorize(frame)
+		self.ruleItems[model.Id] = frame
+	end
 	return frame
 end
 
 function RulesTab:ShowRules()
-	print("--> show rules")
 	local selected = self.ruleType:GetSelected()
 	if (selected) then
+		self.activeConfig = self.ruleFeature:GetConfig(selected.Type)
 		self.rules:Filter(self:CreateFilter(selected.Type, true))
+	end
+end
+
+function RulesTab:UpdateConfig(view)
+	if (self.activeConfig) then
+		local config = self.activeConfig
+		for _, model in ipairs(view) do
+			local item = self:CreateRuleItem(model)
+			item:SetActive(config:Contains(model.Id))
+			if (type(model.Params) == "table") then
+				item:SetParameters(config:Get(model.Id))
+			end
+		end
 	end
 end
 

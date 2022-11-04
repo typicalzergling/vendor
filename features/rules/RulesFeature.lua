@@ -68,6 +68,10 @@ function RulesFeature:GetRules(type)
     return Addon.Rules.GetDefinitions(type)
 end
 
+function RulesFeature:GetConfig(type)
+    return Addon.RuleConfig:Get(type)
+end
+
 --[[
     Locates a rule with the specified Id, the rule is returned with
     "IsSystem" and "IsExtension" set as appropriate
