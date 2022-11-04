@@ -50,8 +50,8 @@ function HistoryItem:OnEnter()
 end
 
 function HistoryItem:OnLeave()
-    if (GametoolTip:GetOwner() == self) then
-        GametoolTip:Hide()
+    if (GameTooltip:GetOwner() == self) then
+        GameTooltip:Hide()
     end
 end
 
