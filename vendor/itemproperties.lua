@@ -169,7 +169,7 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- If the item is empty it doesn't exist so we've got no properties to make
     if (itemObj:IsItemEmpty()) then
-        Addon:Debug("itemerrors", "Properties were asked for on an empty item")
+        Addon:Debug("itemerrors", "Empty Item Object")
         return nil
     end
     
@@ -192,7 +192,7 @@ function Addon:DoGetItemProperties(itemObj)
     local count = 1
     if location:IsBagAndSlot() then
         local bag, slot = location:GetBagAndSlot()
-        count = select(2, C_Container.GetContainerItemInfo(bag, slot))
+        count = (C_Container.GetContainerItemInfo(bag, slot)).stackCount
     end
 
     -- Item properties may already be cached
@@ -252,7 +252,7 @@ function Addon:DoGetItemProperties(itemObj)
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
     item.StackCount = 1
-    item.UnitValue = getItemInfo[11] or  0
+    item.UnitValue = getItemInfo[11] or 0
     item.IsCraftingReagent = getItemInfo[17] or false
     item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated

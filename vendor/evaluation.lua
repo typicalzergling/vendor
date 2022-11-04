@@ -30,7 +30,7 @@ function Addon:EvaluateItem(item)
     -- See if this item is already in the cache.
     local retval, ruleid, rule, ruletype, id = Addon:GetCachedResult(item.GUID)
     if retval and type(retval) == "number" then
-        self:Debug("items", "Retrieved %s from cache with result: %s - [%s] %s", item.Link, retval, ruletype, rule)
+        self:Debug("items", "Retrieved %s from cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
         return retval, ruleid, rule, ruletype
     end
 
@@ -48,7 +48,7 @@ function Addon:EvaluateItem(item)
                 rule = nil
                 ruletype = nil
                 retval = 0
-                self:Debug("items", "Item %s is unsellable, changing result to no action.", item.Link)
+                self:Debug("items", "Item %s is unsellable, changing result to no action.", tostring(item.Link))
             else
                 retval = 1
             end
@@ -62,7 +62,7 @@ function Addon:EvaluateItem(item)
     end
 
     -- Add item to cache
-    self:Debug("items", "Adding %s to cache with result: %s - [%s] %s", item.Link, retval, ruletype, rule)
+    self:Debug("items", "Adding %s to cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
     Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype, item.Id)
     
     return retval, ruleid, rule, ruletype
@@ -134,7 +134,7 @@ function Addon:GetEvaluationStatus()
     local sellitems = {}
     local destroyitems = {}
     for bag=0, NUM_BAG_SLOTS do
-        for slot=1, GetContainerNumSlots(bag) do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
             local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
             local result = Addon:EvaluateItem(item)
             
@@ -158,7 +158,7 @@ end
 function Addon:GetEvaluationDetails()
     local results = {}
     for bag=0, NUM_BAG_SLOTS do
-        for slot=1, GetContainerNumSlots(bag) do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
             local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
             if item then
                 local result, ruleid, rule, ruletype = Addon:EvaluateItem(item)

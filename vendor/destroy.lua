@@ -16,7 +16,7 @@ local currentDestroyedItem = nil
 -- the side of safety rather than performance.
 function Addon:DestroyNextItem()
     for bag=0, NUM_BAG_SLOTS do
-        for slot=1, GetContainerNumSlots(bag) do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
 
             -- If the cursor is holding anything then we can't pick it up to delete. Yield and check again next cycle.
             if GetCursorInfo() then

@@ -132,7 +132,7 @@ function Addon:AddEntryToHistory(link, action, rule, ruleid, count, value)
     entry.Profile = getOrCreateProfileId()
     entry.Rule = getOrCreateRuleId(ruleid, rule)
 
-    debugp("Adding entry: [%s] %s (%s)", action, link, rule)
+    debugp("Adding entry: [%s] %s (%s)", tostring(action), tostring(link), tostring(rule))
     local charHistory = getOrCreateCharacterHistory()
     table.insert(charHistory.Entries, entry)
     Addon.Invoke(Addon, "HistoryUpdated")

@@ -136,7 +136,7 @@ end
 function Addon:Withdraw_Cmd()
     local function findBagWithSpace()
         for i=0,NUM_BAG_SLOTS do
-            if GetContainerNumFreeSlots(i) ~= 0 then
+            if C_Container.GetContainerNumFreeSlots(i) ~= 0 then
                 return i;
             end
         end

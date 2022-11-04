@@ -6,7 +6,6 @@ function History:OnInitialize()
     Addon:GeneratesEvents(EVENTS)
 
     Addon.OnHistoryChanged:Add(function(...)
-        print("history has changed", ...)
         Addon:RaiseEvent("OnHistoryChanged", ...)
     end)
 end
@@ -69,7 +68,6 @@ function History:CreateFilter(filters)
     end
 
     local handler = function(item)
-        print("-> handle", item.Id)
         return engine:Evaluate(item)
     end
 

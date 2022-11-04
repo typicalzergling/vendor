@@ -119,7 +119,7 @@ local function lifetimeEventHandler(frame, event, ...)
         isTerminated = true
         onInitializeActions = {}
 
-        invokeActions(onTerminateActions, "Terminate")
+        invokeActions("Terminate", onTerminateActions)
         addonLifetimeFrame:UnregisterEvent("PLAYER_LOGOUT")
     else
         -- We should never have any other events here. See "event.lua" for that.

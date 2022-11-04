@@ -68,7 +68,7 @@ local function CountEmptySlots()
     local free = {}
     local count = 0
     for bag=0,NUM_BAG_SLOTS do 
-        GetContainerFreeSlots(bag, free);
+        C_Container.GetContainerFreeSlots(bag, free);
         count = count + #free
     end
     return count

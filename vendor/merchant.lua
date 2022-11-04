@@ -127,8 +127,9 @@ function Addon:AutoSell()
         end
 
         -- Loop through every bag slot once.
+        self:Debug("autosell", "Starting bag scan...")
         for bag=0, NUM_BAG_SLOTS do
-            for slot=1, GetContainerNumSlots(bag) do                
+            for slot=1, C_Container.GetContainerNumSlots(bag) do                
 
 
                 -- If the cursor is holding anything then we cant' sell. Yield and check again next cycle.
@@ -146,7 +147,7 @@ function Addon:AutoSell()
                 end
 
                 -- Get Item properties and evaluate
-                local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)                
+                local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
                 local result, ruleid, rule = Addon:EvaluateItem(item)
 
                 -- Determine if it is to be sold
@@ -163,7 +164,7 @@ function Addon:AutoSell()
 
                     -- Still open, so OK to sell it.
                     if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
-                        UseContainerItem(bag, slot)
+                        C_Container.UseContainerItem(bag, slot)
                         Addon:RaiseEvent(AUTO_SELL_ITEM, item.Link, numSold, sellLimitMaxItems)
                     else
                         self:Print("Simulating selling of: %s", tostring(item.Link))
