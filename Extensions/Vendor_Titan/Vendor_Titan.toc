@@ -1,5 +1,5 @@
 #@retail@
-## Interface: 10000
+## Interface: 100000
 ## Dependencies: Vendor, Titan
 #@end-retail@
 #@non-retail@

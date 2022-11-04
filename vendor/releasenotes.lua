@@ -30,6 +30,8 @@ We thought about keeping the other one for compatibility but we didn't want to c
 <h1>Several New Properties</h1>
 <p>We've added item counts into the properties</p>
 <p>StackCount - Number of current items in this stack. In other words, the current stack size.</p>
+<p>Bag - The current bag number of the item in your inventory (or -1 if it isn't)</p>
+<p>Slot - The current slot number of the item in your inventory (or -1 if it isn't)</p>
 <p>IsCollectable - Is this a collectable appearance?</p>
 <p>IsCollected - Have you collected this appearance?</p>
 <p>The intent here is that you can decide to keep any collectable appearance if you so desire so as not to miss out on. Do note that this is CHARACTER based, so if your character cannot equip an item then the appearance will show as not collectable. This is a Blizzard limitation, and we can't do much about it without book keeping every one of your other characters. We feel the best solution here is to add an extension to a popular Transmog addon and leverage their tracking of transmog data for rules. That will come at some point but for now just know that transmog equipment is a bit wonky.</p>
