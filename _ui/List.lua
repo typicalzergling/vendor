@@ -47,7 +47,6 @@ end
 
 local function _invokeHandler(list, handler, ...)
     local func = list[handler]
-    debug("invoke", handler, func)
     if (type(func) == "string") then
         local parent = list:GetParent()
         func = parent[func]
@@ -146,6 +145,8 @@ local function _createItem(list, state, model)
     if not frame then
         local template = list.FrameType or list.ItemType or list.ItemTemplate
         local itemClass = list.ItemClass
+
+        print("Create:", template, itemClass)
     
         -- Determine if we have an implementation to attach	
         if (not state.itemclass) then
@@ -161,6 +162,7 @@ local function _createItem(list, state, model)
 
         frame = CreateFrame("Button", nil, state.scroller:GetScrollChild(), template)
         Addon.AttachImplementation(frame, state.itemclass, true)
+        table.forEach(frame, print, "item")
     end
     
     -- Create the actual item, and attach our implementaition
@@ -186,7 +188,7 @@ end
     |   Given a list state, create the view which is the sorted filtered 
     |   models we are going to use display the actual view
     ========================================================================--]]
-local function _buildView(state)
+local function _buildView(list, state)
     if (not state.view) then
         local view = {}
         local filter = state.filter
@@ -213,6 +215,7 @@ local function _buildView(state)
         end
 
         state.view = view
+        _invokeHandler(list, "OnViewCreated", view)
     end
 end
 
@@ -394,7 +397,7 @@ function List:Select(item)
         end
 
         if (not state.view) then
-            _buildView(state)
+            _buildView(self, state)
         end
 
         local model = state.view[item];
@@ -548,11 +551,12 @@ function List:Update()
 
         -- Populate the view
         if (not state.view) then
-            _buildView(state)
+            _buildView(self, state)
         end
 
         if not state.view or table.getn(state.view) == 0 then
             _showEmpty(self, true)
+            _invokeHandler(self, "OnViewCreated", STATE_KEY)
         else
             _showEmpty(self, false)
             local vh = _layoutView(self, container, state, width)

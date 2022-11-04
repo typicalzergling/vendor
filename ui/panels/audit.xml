@@ -56,13 +56,13 @@
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" parentKey="Help">
-					<Size x="1" y="28"/>
+					<Size x="1" y="24"/>
 					<KeyValues>
 						<KeyValue key="LocKey" value="OPTIONS_AUDIT_INTRO_TEXT" type="string"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="10" y="-10"/>
-						<Anchor point="TOPRIGHT" x="-10" y="-10"/>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
 					</Anchors>
 				</FontString>
 				<FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="SearchLabel">

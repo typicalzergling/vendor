@@ -48,6 +48,9 @@ Addon.CommonUI.Colors =
     BUTTON_DISABLED_BACK = TRANSPARENT,
     BUTTON_DISABLED_BORDER = CreateColor(0.5, 0.5, 0.5, .5),
     BUTTON_DISABLED_TEXT = CreateColor(0.5, 0.5, 0.5, .5),
+    BUTTON_CHECKED_BACK = CreateColor(1, 1, 0, 0.125),
+    BUTTON_CHECKED_BORDER = CreateColor(1, 1, 0, 0.4),
+    BUTTON_CHECKED_TEXT = YELLOW_FONT_COLOR,
 
     LIST_BORDER = CreateColor(1, 1, 1, .5),
     LIST_BACK = TRANSPARENT,

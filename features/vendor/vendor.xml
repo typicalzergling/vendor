@@ -4,6 +4,8 @@
     <Script file="features/vendor/RulesTab.lua"/>
     <Script file="features/vendor/SettingsTab.lua"/>
     <Script file="features/vendor/HelpTab.lua"/>
+    <Script file="features/vendor/HistoryTab.lua"/>
+    <Script file="features/vendor/HistoryItem.lua"/>
 
     <Include file="features/vendor/MainDialog.xml"/>
 </Ui>

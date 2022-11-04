@@ -17,4 +17,24 @@
     </Button>
 
     <Button virtual="true" name="CommonUI_CommandButton" inherits="CommandButton"/>
+
+    <CheckButton name="CommonUI_Chip" virtual="true">
+        <Size x="120" y="24"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" inherits="GameFontNormal" justifyH="CENTER" maxLines="1" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Chip")</OnLoad></Scripts>
+    </CheckButton>
+
+    <Frame virtual="true" name="CommonUI_ChipList">
+        <Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "ChipList")</OnLoad></Scripts>
+    </Frame>
+
 </Ui>

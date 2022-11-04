@@ -7,4 +7,5 @@
     <Include file="import/import.xml"/>
     <Include file="settings/settings.xml"/>
     <Include file="vendor/vendor.xml"/>
+    <Include file="history/history.xml"/>
 </Ui>

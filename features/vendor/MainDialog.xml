@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    
+
     <Frame name="Vendor_RulesTab" virtual="true" hidden="true">
         <Layers>
             <Layer level="ARTWORK">
@@ -23,7 +23,7 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT"/>
-                </Anchors>				
+                </Anchors>
             </Button>
             <Frame parentKey="ruleType" inherits="CommonUI_CategoryList">
                 <Size x="224" y="1"/>
@@ -46,7 +46,7 @@
         </Frames>
     </Frame>
 
-<Frame name="Vendor_ListsTab" virtual="true" hidden="true">
+    <Frame name="Vendor_ListsTab" virtual="true" hidden="true">
         <Layers>
             <Layer level="ARTWORK">
                 <FontString inherits="GameFontNormal" parentKey="help" justifyH="LEFT">
@@ -69,7 +69,7 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT"/>
-                </Anchors>				
+                </Anchors>
             </Button>
             <Frame parentKey="ruleType" inherits="CommonUI_List">
                 <Size x="224" y="1"/>
@@ -94,7 +94,7 @@
                 </Anchors>
             </Frame>
         </Frames>
-    </Frame>	
+    </Frame>
 
     <Frame name="Vendor_SettingsTab" virtual="true" hidden="true">
         <Frames>
@@ -116,6 +116,141 @@
             </Frame>
         </Frames>
     </Frame>
+
+	<Button name="HistoryItem" virtual="true" mixin="ItemMixin">
+		<Size x="20" y="18"/>
+		<Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="hilite">
+					<KeyValues>
+						<KeyValue key="Color" value="HOVER_BACKGROUND"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="date" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="RIGHT">
+					<Size x="110" y="1"/>
+					<KeyValues>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="type" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="LEFT" text="xx">
+					<Size x="32" y="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8"/>
+						<Anchor point="BOTTOMLEFT" x="8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="value" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="RIGHT">
+					<Size x="110" y="1"/>
+					<KeyValues>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.date" relativePoint="TOPLEFT" x="-8"/>
+						<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.date" relativePoint="BOTTOMLEFT" x="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="item" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.type" relativePoint="TOPRIGHT" x="8"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.value" relativePoint="BOTTOMLEFT" x="-8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+    <Frame name="Vendor_HistoryTab" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" parentKey="help">
+					<!--<Size x="1" y="28"/>-->
+					<KeyValues>
+						<KeyValue key="Color" value="SECONDARY_TEXT"/>
+						<KeyValue key="LocKey" value="OPTIONS_AUDIT_INTRO_TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+                <FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontHighlight" parentKey="labelSearch">
+					<Size x="64" y="24"/>
+					<KeyValues>
+						<KeyValue key="Color" value="TEXT"/>
+						<KeyValue key="LocKey" value="OPTIONS_AUDIT_SEARCH_LABEL"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+					</Anchors>
+				</FontString>
+                <FontString justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" parentKey="labelFilter">
+					<Size x="64"/>
+					<KeyValues>
+						<KeyValue key="Color" value="TEXT"/>
+						<KeyValue key="LocKey" value="OPTIONS_AUDIT_FILTER_LABEL"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.labelSearch" relativePoint="BOTTOMLEFT" y="-12"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="total" inherits="GameFontNormalSmall" justifyV="MIDDLE" justifyH="RIGHT">
+					<Size x="96" y="1"/>
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="search" inherits="CommonUI_Edit">
+				<KeyValues>
+					<KeyValue key="Placeholder" value="OPTIONS_AUDIT_SEARCH_PLACEHOLDER"/>
+					<KeyValue key="Handler" value="ApplyFilter"/>
+				</KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelSearch" relativePoint="TOPRIGHT"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.labelSearch" relativePoint="BOTTOMRIGHT"/>
+                    <Anchor point="RIGHT"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="filters" inherits="CommonUI_ChipList">
+                <KeyValues>
+                    <KeyValue key="Handler" value="ApplyFilter"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelFilter" relativePoint="TOPRIGHT"/>
+                    <Anchor point="RIGHT"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="items" inherits="CommonUI_List">
+                <KeyValues>
+                    <KeyValue key="ItemSource" value="GetHistory"/>
+                    <KeyValue key="ItemTemplate" value="HistoryItem"/>
+                    <KeyValue key="ItemClass" value="Features.Vendor.HistoryItem"/>
+                    <KeyValue key="OnViewCreated" value="CalculateTotal"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOP" relativeKey="$parent.filters" relativePoint="BOTTOM" y="-12"/>
+                    <Anchor point="LEFT"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.total" relativePoint="TOPRIGHT" y="12"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+    </Frame>
+
 
     <Frame name="Vendor_HelpTab" virtual="true" hidden="true">
         <Layers>
@@ -152,7 +287,7 @@
                         <Anchor point="RIGHT" relativeKey="$parent.labelUrl"/>
                     </Anchors>
                 </FontString>
-            </Layer>			
+            </Layer>
         </Layers>
         <Frames>
             <EditBox inherits="CommonUI_Url" parentKey="url">
@@ -204,7 +339,7 @@
                 </Anchors>
             </Frame>
         </Frames>
-    </Frame>		
+    </Frame>
 
     <Frame name="Vendor_MainDialog" virtual="true" hidden="true">
         <Size x="796" y="550"/>
