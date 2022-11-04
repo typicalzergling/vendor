@@ -90,7 +90,7 @@ local Chip = Mixin({}, Addon.CommonUI.Mixins.Border)
 local function _setChipColors(chip, state)
     local text = chip.text
 
-    if (not chip:IsEnabled()) then    
+    if (not chip:IsEnabled()) then
         chip:SetBackgroundColor(Colors.BUTTON_DISABLED_BACK)
         chip:SetBorderColor(Colors.BUTTON_DISABLED_BORDER)
         text:SetTextColor(Colors.BUTTON_DISABLED_TEXT:GetRGBA())
@@ -101,7 +101,7 @@ local function _setChipColors(chip, state)
     elseif (chip:IsMouseOver()) then
         chip:SetBorderColor(Colors.BUTTON_HOVER_BORDER)
         chip:SetBackgroundColor(Colors.BUTTON_HOVER_BACK)
-        text:SetTextColor(Colors.BUTTON_HOVER_TEXT:GetRGBA())        
+        text:SetTextColor(Colors.BUTTON_HOVER_TEXT:GetRGBA())
     else
         chip:SetBackgroundColor(Colors.BUTTON_BACK)
         chip:SetBorderColor(Colors.BUTTON_BORDER)
@@ -159,12 +159,14 @@ function Chip:OnEnter()
     _setChipColors(self)
 
     if (type(self.help) == "string") then
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        GameTooltip:SetOwner(self, "ANCHOR_NONE")
         GameTooltip:ClearAllPoints()
-        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 2, -2)
-        GameTooltip:SetText(self.help, Colors.BUTTON_TEXT:GetRGBA())
+        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+        GameTooltip:SetText(self.text:GetText())
+        local color = Colors.BUTTON_TEXT
+        GameTooltip:AddLine(self.help, color.r, color.g, color.b, true)
         GameTooltip:Show()
-    end    
+    end
 end
 
 --[[ Mouse off the chip ]]

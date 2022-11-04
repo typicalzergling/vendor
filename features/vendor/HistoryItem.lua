@@ -20,7 +20,7 @@ end
 function HistoryItem:OnEnter()
     local model = self:GetModel()
     local text = Colors.TEXT
-    local secondary = GRAY_FONT_COLOR    
+    local secondary = GRAY_FONT_COLOR
 
     local actionText = locale.OPTIONS_AUDIT_TT_SOLD
     if (model.Action == ActionType.DESTROY) then
@@ -29,8 +29,8 @@ function HistoryItem:OnEnter()
 
     GameTooltip:SetOwner(self, "ANCHOR_NONE")
     GameTooltip:ClearAllPoints()
-    GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)    
-    GameTooltip:AddLine(locale["OPTIONS_VENDOR_AUDIT"])
+    GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+
     GameTooltip:AddDoubleLine(actionText, date(locale.OPTIONS_AUDIT_TT_DATESTR, model.TimeStamp),
         text.r, text.g, text.b, secondary.r, secondary.g, secondary.b)
 
