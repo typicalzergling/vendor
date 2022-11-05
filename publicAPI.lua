@@ -55,7 +55,7 @@ Addon:MakePublic(
 
 Addon:MakePublic(
     "ShowRules",
-    function () VendorRulesDialog:Toggle() end,
+    function () Addon:GetFeature("Vendor"):ShowDialog("rules") end,
     L["API_OPENRULES_TITLE"],
     L["API_OPENRULES_DOCS"])
 

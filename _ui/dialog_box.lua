@@ -191,14 +191,12 @@ end
 
 function DialogBox:SetCaption(name)
     local addon = locale.ADDON_NAME
-    local caption = name
-    if (addon) then
-        local text = locale[name]
-        caption = string.format("%s: %s", addon, text or name)
-    else
-        local text =locale[name]
-        caption = text or name
+    local caption = locale:GetString(name) or name
+
+    if (addon and addon ~= caption) then
+        caption = string.format("%s: %s", addon, caption)
     end
+    
     self.Titlebar.text:SetText(caption)
 end
 

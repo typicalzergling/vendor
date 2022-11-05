@@ -23,7 +23,7 @@ function MatchItem:OnEnter()
     self.hilite:Show()
     if (not self:IsItemEmpty()) then        
         GameTooltip:SetOwner(self, "ANCHOR_NONE")
-        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -4)
+        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 16, -4)
         if (self:HasItemLocation()) then
             local location = self:GetItemLocation()
             assert(location:IsBagAndSlot())
