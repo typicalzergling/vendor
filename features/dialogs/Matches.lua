@@ -59,7 +59,6 @@ end
     Called to create the item for a match in the UX
 ]]
 function MatchesTab:CreateMatchItem()
-    print("get match item")
     return Mixin(CreateFrame("Frame", nil, self, "Vendor_EditRule_MatchItem"), MatchItem)
 end
 
@@ -67,7 +66,6 @@ end
     Called when the list wants the match items
 ]]
 function MatchesTab:GetMatches()
-    print("get match items")
     return self.matchItems
 end
 

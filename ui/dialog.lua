@@ -58,6 +58,10 @@ function Addon.AttachImplementation(frame, mixin, hook)
 					end)
 				end
 
+				if (Addon:RaisesEvent(name)) then
+					Addon:RegisterCallback(name, frame, handler)
+				end
+
 				-- Hook WOW events "ON_<EVENT_NAME>"
 				if (string.find(name, "ON_") == 1) then
 					events = true

@@ -258,6 +258,10 @@ function EditRule:OnInitDialog(dialog)
     self.ruleStatus:SetStatus("unhealthy")
 end
 
+function EditRule:OnHide()
+    self.matches:Call("ClearMatches")
+end
+
 --[[
     Invoked when something wants to insert text into the script control
 ]]
@@ -278,17 +282,15 @@ function EditRule:InsertText(_, text)
     end
 end
 
-function EditRule:UpdateMatches()
-    local rules = self:GetDependency("rules")
-    local matches
+--[[ Compute the current paraamters for this rule ]]
+function EditRule:GetCurrentParameters()
+    if (self.rule and type(self.rule.Params) == "table") then
+        local params = {}
+        for _, param in ipairs(self.rule.Params) do
 
-    if (self.readonly) then
-        assert(self.rule, "Expected a valid rule definition")
-        local params
-
-        if (type(self.rule.Params) == "table") then
-            params = {}
-            for _, param in ipairs(self.rule.Params) do
+            if (type(self.parameters) == "table") then
+                params[param.Key] = self.parameters[param.Key]
+            else
                 local default = param.Default
                 if (type(default) == "function") then
                     default = default()
@@ -298,18 +300,34 @@ function EditRule:UpdateMatches()
             end
         end
 
+        return params
+    end
+
+    return nil
+end
+
+function EditRule:UpdateMatches()
+    local rules = self:GetDependency("rules")
+    local matches
+
+    self:Debug("UpdateMatches :: START")
+
+    if (self.readonly) then
+        assert(self.rule, "Expected a valid rule definition")
+        local params = self:GetCurrentParameters()
+
         matches = rules:GetMatches(self.rule.Script, params)
     elseif (self.changes.scriptValid) then
-        local params
-        if (type(self.rule) == "table") then
-            params = self.rule.Params
-        end
-        local matches = rules:GetMatches(self.changes.script, params)
+        local params = self:GetCurrentParameters()
+
+        matches = rules:GetMatches(self.changes.script, params)
     end
 
     if (matches) then
+        self:Debug("UpdateMatches :: %s", table.getn(matches))
         self.matches:Call("SetMatches", matches)
     else
+        self:Debug("UpdateMatches :: no matches found")
         self.matches:Call("ClearMatches", matches)
     end
 end
@@ -355,10 +373,7 @@ function EditRule:OnScriptChanged(text)
         end
     end
 
-    self:Debounce(.75, function() 
-        self:UpdateMatches() 
-    end)
-
+    self:Debounce(.50, self.UpdateMatches)
     self:UpdateButtons()
 end
 
@@ -466,13 +481,15 @@ end
 --[[
     Sets the rule we are viewing or editing this requries a valid rule
 ]]
-function EditRule:SetRule(rule)
+function EditRule:SetRule(rule, parameters)
     assert(type(rule) == "table", "Expected the rule definition to be a table")
 
     local dialog = self:GetDialog()
     self.changes = {}
     
     self.rule = rule;
+    self.parameters = parameters
+
     self:SetRuleType(rule.Type or "sell")
     self.description:SetText(rule.Description or "")
     self.name:SetText(rule.Name or "")
@@ -497,6 +514,8 @@ function EditRule:SetRule(rule)
         self.description:Enable()
     end
 
+    --self.matches:Call("ClearMatches")
+    self:Debounce(0.15, self.UpdateMatches)
     self:UpdateButtons()
 end
 
@@ -505,6 +524,8 @@ end
 ]]
 function EditRule:NewRule()
     local dialog = self:GetDialog()
+
+    self.readonly = false
     self.changes = { newRule = true }
 
     dialog:SetCaption("EDITRULE_CAPTION")
@@ -520,38 +541,41 @@ function EditRule:NewRule()
     self.description:SetText("")
 
     self.ruleStatus:Clear()
+    self.matches:Call("ClearMatches")
     self:UpdateButtons()
 end
 
 function EditRule:SaveRule()
-    local rule = {}
-    local changes = self.changes or {}
-    local rules = self:GetDependency("Rules")
+    if (not self.readonly) then
+        local rule = {}
+        local changes = self.changes or {}
+        local rules = self:GetDependency("Rules")
 
-    -- If we have a rule, then copy it into the rule
-    if (type(self.rule) == "table") then
-        for k, v in pairs(self.rule) do
-            rule[k] = value
+        -- If we have a rule, then copy it into the rule
+        if (type(self.rule) == "table") then
+            for k, v in pairs(self.rule) do
+                rule[k] = value
+            end
         end
+
+        -- Assign the type
+        local type = self:GetRuleType()
+        if type == "SELL" then
+            rule.Type = RuleType.SELL
+        elseif (type == "KEEP") then
+            rule.Type = RuleType.KEEP
+        elseif (type == "DESTROY") then
+            rule.Type = RuleType.DESTROY
+        end
+
+        -- Merge in our changes
+        rule.Name = changes.name or rule.Name
+        rule.Description = changes.description or rule.Description
+        rule.Script = changes.script or rule.Script
+
+        -- Save the rule
+        self.rule = rules:SaveRule(rule)
     end
-
-    -- Assign the type
-    local type = self:GetRuleType()
-    if type == "SELL" then
-        rule.Type = RuleType.SELL
-    elseif (type == "KEEP") then
-        rule.Type = RuleType.KEEP
-    elseif (type == "DESTROY") then
-        rule.Type = RuleType.DESTROY
-    end
-
-    -- Merge in our changes
-    rule.Name = changes.name or rule.Name
-    rule.Description = changes.description or rule.Description
-    rule.Script = changes.script or rule.Script
-
-    -- Save the rule
-    rules:SaveRule(rule)
 end
 
 Dialogs.EditRule = EditRule

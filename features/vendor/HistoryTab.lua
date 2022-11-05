@@ -51,7 +51,6 @@ end
 
 --[[ Compute the total value of the view ]]
 function HistoryTab:CalculateTotal(view)
-    print("00 total view", view)
     local totalValue = 0
     for _, item in ipairs(view) do
         totalValue = totalValue + (item.Value or 0)

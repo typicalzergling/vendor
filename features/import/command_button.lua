@@ -25,7 +25,6 @@ local TEXTAREA_BACK = CreateColor(0.9, 0.9, 0.9, .08)
 local TextArea = 
 {
     OnLoad = function(textarea) 
-        print("$$$$$ textarea on load ")
         textarea:OnBorderLoaded(nil, TEXTAREA_BORDER, TEXTAREA_BACK)
 
         Mixin(textarea, CommonUI.Mixins.Placeholder, CommonUI.Mixins.ScrollView)

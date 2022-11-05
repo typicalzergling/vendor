@@ -82,9 +82,7 @@ function Profile:GetValue(key)
 	assert(type(key) == "string", "The profile key must be a string value");
 	--@end-debug@
 
-	local value = var[key];
-	Addon:Debug("profile", "---> getvalue  %s %s", key, tostring(value))
-	
+	local value = var[key];	
 	if (value == nil) then
 		if (type(self.defaults) == "table" and table.hasKey(key)) then
 			Addon:Debug("profile", "Value '%s' was requested but is not present but there is a default value", key)

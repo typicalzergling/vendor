@@ -5,6 +5,9 @@ local Colors = Addon.CommonUI.Colors
 
 function HelpTab:OnActivate()
     self.version:SetUrl(Addon:GetVersion())
+    if (not self.releases:GetSelected()) then
+        self.releases:Select(1)
+    end
 end
 
 --[[ Retreive the categories for the rules ]]

@@ -10,7 +10,6 @@ end
 
 --[[ Retreive the categories for the rules ]]
 function RulesTab:GetCategories()
-	print("--> get categories")
 	return {
 		{
 			Type = Addon.RuleType.KEEP,
@@ -34,6 +33,19 @@ function RulesTab:OnActivate()
 	if (not self.ruleType:GetSelected()) then
 		self.ruleType:Select(1)
 	end
+end
+
+function RulesTab:CreateRule()
+	local editRule = Addon:GetFeature("Dialogs")
+	editRule:CreateRule()
+end
+
+function RulesTab:OnRuleDefinitionCreated()
+	self.rules:Rebuild()
+end
+
+function RulesTab:OnRuleDefinitionUpdated()
+	self.rules:Rebuild()
 end
 
 function RulesTab:GetRules()

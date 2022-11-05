@@ -8,7 +8,6 @@ local MainFeature = {
 
 --[[ Called when feature is initialized ]]
 function MainFeature:OnInitialize()
-	self:ShowDialog()
 end
 
 --[[ Callback for when the feature is terminated ]]
@@ -22,9 +21,8 @@ function MainFeature:ShowDialog(tabId)
 
 	if (type(tabId) == "string") then
 		self.dialog:NavigateTo(tabId)
-	else
-		self.dialog:Show()
 	end
+	self.dialog:Show()
 end
 
 Addon.Features.Vendor = MainFeature

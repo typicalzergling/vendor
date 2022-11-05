@@ -28,7 +28,6 @@ end
 
 --[[ Called when the model is changed ]]
 function CategoryItem:OnModelChange(model)
-    print("--> changed categrory model", model)
     local loc = locale:GetString(model.Text)
     self.text:SetText(loc or model.Text)
 end
@@ -64,7 +63,6 @@ function CategoryItem:OnLeave()
 end
 
 function CategoryItem:OnSelected()
-    print("--> on selected")
     self:SetColors("selected")
 end
 

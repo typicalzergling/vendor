@@ -357,7 +357,7 @@ function List:OnLoad()
     rawset(self, STATE_KEY, state)
     self:OnBorderLoaded(nil, Colors.LIST_BORDER, Colors.LIST_BACK)
     self:SetClipsChildren(true)
-    self:SetScript("OnShow", self.Update)
+    self:SetScript("OnShow", function() state.update = true end)
     self:SetScript("OnSizeChanged", function() state.reflow = true end)
     state.scroller = _createScrollframe(self)
 end
@@ -428,8 +428,6 @@ function List:Select(item)
         end
     end
 
-    print("--> ", currentSel, sel)
-
     if (not currentSel or newSel ~= currentSel) then
         local model = nil;
         if (newSel) then
@@ -441,7 +439,6 @@ function List:Select(item)
             self:OnSelected(model, newSel)
         end
 
-        print("---> firing", model, newSel)
         _invokeHandler(self, "OnSelection", model, newSel)
     end
 end

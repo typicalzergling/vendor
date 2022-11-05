@@ -23,14 +23,14 @@ end
 --[[
     Validate the sepcified script, returns true/false and a message. 
 ]]
-function RulesFeature:ValidateRule(script, engine)
+function RulesFeature:ValidateRule(script, engine, parameters)
     self:Debug("Validating rule script (no cached values)")
 
     if (not engine and not self.validateEngine) then
         self.validateEngine = Addon:CreateRulesEngine()
     end
 
-    return Addon:ValidateRuleAgainstBags(engine or self.validateEngine, script)
+    return Addon:ValidateRuleAgainstBags(engine or self.validateEngine, script, parameters)
 end
 
 --[[
@@ -130,6 +130,8 @@ function RulesFeature:SaveRule(rule, create)
     else
         Addon:RaiseEvent("OnRuleDefinitionUpdated", rule)
     end
+
+    return self:FindRule(rule.Id)
 end
 
 --[[

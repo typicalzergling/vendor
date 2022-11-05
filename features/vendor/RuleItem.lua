@@ -28,7 +28,9 @@ local function debug(msg, ...)
 end
 
 function RuleItem:OnLoad()
+    self.active = false
     self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    self:InitTooltip()
 end
 
 function RuleItem:OnModelChange(model)
@@ -41,51 +43,91 @@ function RuleItem:OnModelChange(model)
     end
 
     self:CreateParams()
-    self:ShowParams(self:GetChecked())
+    self:ShowParams(self:IsActive())
 end
 
+--[[ When we are shown make sure out colors up to date ]]
 function RuleItem:OnShow()
     self:SetColors()
 end
 
+--[[ Handle clicks on this rule itme ]]
 function RuleItem:OnClick(button)
     if (button == "RightButton") then
-        local dialog = Addon:GetFeature("Dialogs")
-        dialog:ShowEditRule(self:GetModel().Id)
+        self:Edit()
     else
-        if (self:GetChecked()) then
-            self.backdrop:Show()
-        else
-            self.backdrop:Hide()
-        end
-
+        self.active = not self.active
         self:SetColors()
-        self:ShowParams(self:GetChecked())
+        self:ShowParams(self.active)
+        self:Save()
     end
 end
 
-function RuleItem:_OnEnter()
+function RuleItem:OnEnter()
     self:SetColors()
 end
 
-function RuleItem:_OnLeave()
+function RuleItem:OnLeave()
     self:SetColors()
 end
 
 function RuleItem:SetActive(active)
-    if (active) then
-        self:SetChecked(true)
-    else
-        self:SetChecked(false)
-    end
-
+    self.active = active == true
     self:ShowParams(active)
     self:SetColors()
 end
 
+--[[ Determine if this rule is active ]]
+function RuleItem:IsActive()
+    return self.active == true
+end
+
+--[[ Get the id for this rule ]]
+function RuleItem:GetRuleId()
+    local model = self:GetModel()
+    return model.Id
+end
+
+--[[ Sets the config for this item ]]
+function RuleItem:SetConfig(config)
+    self.ruleConfig = config
+
+    local ruleId = self:GetRuleId()
+    local ruleConfig = config:Get(ruleId)
+    if (type(ruleConfig) == "table") then
+        self:SetParameters(ruleConfig)
+        self:SetActive(true)
+    elseif (type(ruleConfig) == "string") then
+        self:SetParameters()
+        self:SetActive(true)
+    else
+        self:SetActive(false)
+    end
+end
+
+--[[ Called to save the state of this rule ]]
+function RuleItem:Save()
+    local params = self:GetParameters()
+    local ruleId = self:GetRuleId()
+
+    if self:IsActive() then
+        debug("SaveRule :: %s [%s]", ruleId, tostring(params))
+    else
+        debug("SaveRule :: %s [disabled]", ruleId)
+    end
+end
+
+--[[ Called to edit this rule, this will show the dialog with current paramters ]]
+function RuleItem:Edit()
+    local params = self:GetParameters()
+
+    local editDialog = Addon:GetFeature("Dialogs")
+    editDialog:ShowEditRule(self:GetRuleId(), params)
+end
+
 function RuleItem:SetColors()
     local showBackdrop = false
-    if (self:GetChecked()) then
+    if (self:IsActive()) then
         UI.SetColor(self.name, "SELECTED_TEXT")
         UI.SetColor(self.description, "SELECTED_SECONDARY_TEXT")
         UI.SetColor(self.backdrop, "ENABLED_RULE_BACK")
@@ -117,19 +159,27 @@ function RuleItem:OnSizeChanged()
     xpcall(Layouts.Stack, CallErrorHandler, self, self.stack, 6, 4)
 end
 
+--[[ Create the parameters for this rule ]]
 function RuleItem:CreateParams()
     local rule = self:GetModel()
+
     if (type(rule.Params) == "table") then
-        self.params = {}
+        local save = function()
+                self:Save()
+            end
+
+        self.params = {}        
         for _, param in ipairs(rule.Params) do
             local frame = Vendor.CreateRuleParameter(self, param)
             frame:SetDefault()
+            frame:SetCallback(save)
             table.insert(self.stack, frame)
             self.params[param.Key] = frame
         end
     end
 end
 
+--[[ Display the parameters for this rule ]]
 function RuleItem:ShowParams(show)
     if (self.params) then
         for _, param in pairs(self.params) do
@@ -144,6 +194,7 @@ function RuleItem:ShowParams(show)
     self:OnSizeChanged()
 end
 
+--[[ Sets the parameters for this rule ]]
 function RuleItem:SetParameters(params)
     if (self.params) then
         for key, param in pairs(self.params) do
@@ -154,6 +205,19 @@ function RuleItem:SetParameters(params)
             end
         end
     end
+end
+
+--[[ Retrive the parameters for this rule ]]
+function RuleItem:GetParameters()
+    if (self.params) then
+        local params = {}
+        for key, param in pairs(self.params) do
+            params[key] = param:GetValue()
+        end
+        return params
+    end
+
+    return nil
 end
 
 Vendor.RuleItem = RuleItem

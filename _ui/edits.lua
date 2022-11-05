@@ -89,6 +89,8 @@ function BaseEdit:GetText()
 end
 
 function BaseEdit:SetText(text)
+    self.__lastText = nil
+
     if type(text) ~= "string" then
         self.control:SetText("")
     else
@@ -126,6 +128,11 @@ function BaseEdit:Disable()
     self.control:SetTextColor(EDIT_DISABLED_COLOR:GetRGBA())
 end
 
+--[[ On hide clear the last text ]]
+function BaseEdit:OnHide()
+    self.__lastText = nil
+end
+
 function BaseEdit:_HandleTextChange()
     if (self.__timer) then
         self.__timer:Cancel()
@@ -135,8 +142,7 @@ function BaseEdit:_HandleTextChange()
     self.__timer = C_Timer.NewTimer(0.25, function() 
         self.__timer = nil
         if (self.Handler) then
-            local text = self.control:GetText()
-            print("---> text", text)
+            local text = self.control:GetText()         
             if (type(text) == "string") then
                 text = string.trim(text)
             else
@@ -161,6 +167,16 @@ function Edit:OnLoad()
     self.control:SetScript("OnTextChanged", function()
         self:_HandleTextChange()
     end)
+end
+
+--[[ Sets this edit to be number ]]
+function Edit:SetNumeric()
+    self.control:SetNumeric(true)
+end
+
+--[[ Gets the number value of the edit ]]
+function Edit:GetNumber()
+    return self.control:GetNumber()
 end
 
 --[[=========================================================================]]
