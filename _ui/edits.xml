@@ -20,7 +20,7 @@
 				</Anchors>				
 				<ScrollChild>
                     <EditBox autoFocus="false" multiline="true">
-						<Size x="200" y="100"/>
+						<Size x="300" y="100"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"/>
                         </Anchors>

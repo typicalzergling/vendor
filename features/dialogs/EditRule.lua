@@ -252,6 +252,7 @@ function EditRule:OnInitDialog(dialog)
     self.matches = tabs:AddTab("matches", "matches", "Vendor_EditRule_Matches", self.MatchesTab)
     self.items = tabs:AddTab("iteminfo", "iteminfo", "Vendor_EditRule_ItemInfo", self.ItemInfoTab)
     self.items:RegisterCallback("INSERT_TEXT", self.InsertText, self)
+    tabs:AddTab("parameters", "parameters", "Vendor_EditRule_Parameters", {})
 
     self:SetRuleType("SELL")
     tabs:ShowTab("help")

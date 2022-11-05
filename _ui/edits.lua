@@ -185,12 +185,16 @@ local TextArea = {}
 
 function TextArea:OnLoad()
     self.control = self.scrollingEdit:GetScrollChild()
-    ScrollFrame_OnLoad(self.scrollingEdit)
+    ScrollingEdit_OnLoad(self.scrollingEdit)
     self:OnEditLoaded()
 
+    self.scrollingEdit:SetScript("OnSizeChanged", function(_, width)
+            self.control:SetWidth(width)
+        end)
+
     self.control:SetScript("OnTextChanged", function(edit)
-            ScrollingEdit_OnTextChanged(edit, edit:GetParent())
             self:_HandleTextChange()
+            ScrollingEdit_OnTextChanged(edit, edit:GetParent())
         end)
 end
 

@@ -210,7 +210,24 @@
 				</Anchors>
 			</Frame>
 		</Frames>
-    </Frame>    
+    </Frame> 
+
+
+    <Frame name="Vendor_EditRule_Parameters" virtual="true" hidden="true">
+        <Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<KeyValues>
+						<KeyValue key="LocKey" value="RULE_PARAMETERS" />
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+            </Layer>
+        </Layers>
+    </Frame>
 
 </Ui>
 
