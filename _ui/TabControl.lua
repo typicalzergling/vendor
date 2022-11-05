@@ -50,6 +50,7 @@ function Tab:GetFrame()
         frame.TriggerEvent = function(_, ...) 
                 self:TriggerEvent(...) 
             end
+            
         self.frame = frame
     end
 
@@ -61,10 +62,9 @@ function Tab:Activate()
     self:SetBorderColor(TABCONTROL_BORDER)
     self.text:SetTextColor(TABCONTROL_TEXT:GetRGBA())
 
-    if (self.frame) then
-        Addon.Invoke(self.frame, "OnActivate", self.frame)
-        self.frame:Show()
-    end
+    local frame = self:GetFrame()
+    Addon.Invoke(frame, "OnActivate", frame)
+    frame:Show()
 end
 
 function Tab:Deactivate()

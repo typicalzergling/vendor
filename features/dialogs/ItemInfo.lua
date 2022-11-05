@@ -8,7 +8,6 @@ local PropertyItem = {
     end,
 
     OnModelChange = function(item, model)
-        print("--> on model change")
         item.name:SetText(model.Name)
 
         local valueText = "nil"

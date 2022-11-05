@@ -74,10 +74,10 @@ end
 
 -- This is defunct, but in case we add a hook in...
 function Addon:OpenSettings_Cmd()
-    -- Call it twice so it opens first to the Game options, then to the AddOns category.
-    InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
-    InterfaceOptionsFrame_OpenToCategory(L["ADDON_NAME"])
+    local vendor = Addon:GetFeature("Vendor")
+    vendor:ShowDialog("settings")
 end
+
 
 function Addon:OpenKeybindings_Cmd()
     -- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
@@ -110,7 +110,8 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
-    VendorRulesDialog:Toggle()
+    local vendor = Addon:GetFeature("Vendor")
+    vendor:ShowDialog("rules")
 end
 
 -- Initiates a manual Auto-Sell. This ignores the auto-sell configuration setting.

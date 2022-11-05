@@ -38,13 +38,30 @@ function RuleParameter:InvokeCallback(...)
     end
 end
 
-function RuleParameter:SetDefault()
+--[[ Get the default value for this parameter ]]
+function RuleParameter:GetDefault()
     local default = self.Parameter.Default
+
     if (type(default) == "function") then
-        self:SetValue(default())
+        return default()
+    elseif (type(default) ~= "nil") then
+        return default
     else
-        self:SetValue(default)
+        local type = self.Parameter.Type
+        if (type == "boolean") then
+            return false
+        elseif (type == "number" or type == "numeric") then
+            return 0
+        else
+            return 0
+        end
     end
+
+    error("Unable to determine the default value :: " .. self.Parameter.Key)
+end
+
+function RuleParameter:SetDefault()
+    self:SetValue(self:GetDefault())
 end
 
 --[[==== BooleanParameter =====================================================]]
@@ -66,10 +83,12 @@ function BooleanParameter:SetParam(param)
             end
             self:InvokeCallback()
         end)
+
     value:SetScript("OnEnter", function(value)
             value:SetBorderColor(Colors.CHECKBOX_HOVER_BORDER)
             value:SetBackgroundColor(Colors.CHECKBOX_HOVER_BACK)
         end)
+
     value:SetScript("OnLeave", function(value)
             value:SetBorderColor(Colors.CHECKBOX_BORDER)
             value:SetBackgroundColor(Colors.CHECKBOX_BACK)
@@ -97,6 +116,11 @@ local NumberParameter = table.copy(RuleParameter)
 
 function NumberParameter:SetParam(param)
     self.name:SetFormattedText("%s:", param.Name)
+
+    self.value:SetNumeric()
+    self.value.Handler = function()
+            self:InvokeCallback()
+        end
 end
 
 function NumberParameter:SetValue(value)
@@ -104,7 +128,13 @@ function NumberParameter:SetValue(value)
     self.value:SetText(tostring(value))
 end
 
-function NumberParameter:aGetValue()
+function NumberParameter:GetValue()
+    local text = self.value:GetNumber()
+    if (type(text) == "number") then
+        return text
+    else
+        return self:GetDefault()
+    end
 end
 
 --[[==== StringParameter ======================================================]]
@@ -119,7 +149,8 @@ function StringParameter:SetValue(value)
     self.value:SetText(tostring(value))
 end
 
-function StringParameter:aGetValue()
+function StringParameter:GetValue()
+    return ""
 end
 
 --[[ Create a new rule parameter ]]

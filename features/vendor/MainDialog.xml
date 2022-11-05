@@ -195,6 +195,7 @@
                     <KeyValue key="ItemTemplate" value="HistoryItem"/>
                     <KeyValue key="ItemClass" value="Features.Vendor.HistoryItem"/>
                     <KeyValue key="OnViewCreated" value="CalculateTotal"/>
+                    <KeyValue key="EmptyText" value="OPTIONS_AUDIT_EMPTY"/>
                 </KeyValues>
                 <Anchors>
                     <Anchor point="TOP" relativeKey="$parent.filters" relativePoint="BOTTOM" y="-12"/>

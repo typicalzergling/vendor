@@ -118,7 +118,6 @@ local function _setChipText(chip, text)
     chip.text:SetText(text)
     chip.text:SetWidth(0)
     chip:SetWidth(16 + chip.text:GetWidth())
-    print("--> chip", chip:GetWidth(), text)
 end
 
 --[[ Load the chip ]]
@@ -303,8 +302,6 @@ function ChipList:AddChip(id, text, help, checked)
             end
         end)
     chip.Handler = function()
-            print("chip state changed")
-            print("handler -> ", self.Handler)
             if (self.Handler) then
                 Addon.Invoke(self:GetParent(), self.Handler, self)
             end

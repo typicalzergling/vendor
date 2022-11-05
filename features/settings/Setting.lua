@@ -45,7 +45,6 @@ function Setting:SetValue(value)
     assert(type(value) == self:GetType())
     local current = self.getValue()
     if (value ~= current) then
-        print("setting", self:GetName(), value)
         self.setValue(value)
         for _, handler in ipairs(self.handlers) do
             handler(self)

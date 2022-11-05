@@ -6,7 +6,6 @@ local Dialogs = {
 }
 
 function Dialogs:OnInitialize(a, b, host)
-    self:Debug("---> oninitialize")
 end
 
 function Dialogs:GetEditRule()
@@ -24,7 +23,7 @@ function Dialogs:CreateRule()
     dialog:Show()
 end
 
-function Dialogs:ShowEditRule(ruleId)
+function Dialogs:ShowEditRule(ruleId, parameters)
     local rules = self:GetDependency("Rules")
 
     local rule = rules:FindRule(ruleId)
@@ -33,7 +32,7 @@ function Dialogs:ShowEditRule(ruleId)
     end
 
     local dialog = self:GetEditRule()
-    dialog:SetRule(rule)
+    dialog:SetRule(rule, parameters)
     dialog:Show()
 end
 

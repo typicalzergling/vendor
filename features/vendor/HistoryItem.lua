@@ -69,7 +69,6 @@ function HistoryItem:OnModelChange(model)
     else
         type:SetText(nil)
     end
-    print("ACTION ---> ", model.Action, type:GetText())
 
     self:SetItemID(model.Id)
 	self:ContinueOnItemLoad(function()

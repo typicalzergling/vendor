@@ -38,7 +38,6 @@ local function paragraph(parent, line, nextLine)
     local paragraph
 
     while (line and string.len(line) ~= 0) do
-        print("--> line", line)
         if (string.len(line) ~= 0) then
             if (paragraph) then
                 paragraph = paragraph .. " " .. string.trim(line)

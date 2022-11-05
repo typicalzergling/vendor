@@ -145,8 +145,6 @@ local function _createItem(list, state, model)
     if not frame then
         local template = list.FrameType or list.ItemType or list.ItemTemplate
         local itemClass = list.ItemClass
-
-        print("Create:", template, itemClass)
     
         -- Determine if we have an implementation to attach	
         if (not state.itemclass) then
@@ -197,9 +195,17 @@ local function _buildView(list, state)
         for _,  model in ipairs(state.items) do
             if (filter) then
                 if (filter(model)) then
+                    if (not state.frames[model]) then
+                        state.frames[model] = _createItem(list, state, model)
+                    end
+    
                     table.insert(view, model)
                 end
             else
+                if (not state.frames[model]) then
+                    state.frames[model] = _createItem(list, state, model)
+                end
+
                 table.insert(view, model)
             end
         end
@@ -351,7 +357,7 @@ function List:OnLoad()
     rawset(self, STATE_KEY, state)
     self:OnBorderLoaded(nil, Colors.LIST_BORDER, Colors.LIST_BACK)
     self:SetClipsChildren(true)
-    self:SetScript("OnShow", self.Update)
+    self:SetScript("OnShow", function() state.update = true end)
     self:SetScript("OnSizeChanged", function() state.reflow = true end)
     state.scroller = _createScrollframe(self)
 end
@@ -422,16 +428,15 @@ function List:Select(item)
         end
     end
 
-    if (newSel ~= currentSel) then
+    if (not currentSel or newSel ~= currentSel) then
         local model = nil;
         if (newSel) then
             model = newSel:GetModel();
         end
 
         local func = self.OnSelection
-        if (type(func) ~= "function") then
-            local parent = self:GetParent()
-            local hanler
+        if (type(func) == "function") then
+            self:OnSelected(model, newSel)
         end
 
         _invokeHandler(self, "OnSelection", model, newSel)

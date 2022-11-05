@@ -90,9 +90,12 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_OLDFOOD"],
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
-        ScriptText = "TypeId == 0 and SubTypeId == 5 and Level ~= 1 and Level <= (PlayerLevel() - 10)",
+        ScriptText = "TypeId == 0 and SubTypeId == 5 and (not EXCLUDE_LEVEL_ONE or Level ~= 1) and Level <= (PlayerLevel() - 10)",
         Script = function()
-            return (TypeId == 0) and (SubTypeId == 5) and (Level ~= 1) and (Level <= (PlayerLevel() - 10));
+            return (TypeId == 0) and 
+                    (SubTypeId == 5) and 
+                    (not EXCLUDE_LEVEL_ONE or Level ~= 1) and
+                    (Level <= (PlayerLevel() - 10));
         end,
         Order = 1100,
         Params = {
@@ -125,7 +128,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == UNCOMMON and (not IsUnsellable) and Level < {itemlevel}",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (Level < ITEMLEVEL);
             end,
         Params = 
         {
@@ -146,7 +149,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == RARE and (not IsUnsellable) and Level < {itemlevel}",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (Level < ITEMLEVEL);
             end,
         Params = 
         {
@@ -167,7 +170,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and Quality == EPIC and (not IsUnsellable) and Level < {itemlevel}",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (Level < ITEMLEVEL);
             end,
         Params = 
         {
@@ -189,7 +192,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == UNCOMMON and Level < {itemlevel}",
         Script = function()
-                return IsEquipment and (Quality == UNCOMMON) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return IsEquipment and (Quality == UNCOMMON) and (Level < ITEMLEVEL);
             end,
         Params = ITEM_LEVEL_PARAMS,
         Order = 1401,
@@ -202,7 +205,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == RARE and Level < {itemlevel}",
         Script = function()
-                return IsEquipment and (Quality == RARE) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return IsEquipment and (Quality == RARE) and (Level < ITEMLEVEL);
             end,
         Params = ITEM_LEVEL_PARAMS,
         Order = 1501,
@@ -215,7 +218,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
         ScriptText = "IsEquipment and IsSoulbound and Quality == EPIC and Level < {itemlevel}",
         Script = function()
-                return IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < RULE_PARAMS.ITEMLEVEL);
+                return IsEquipment and IsSoulbound and (Quality == EPIC) and (Level < ITEMLEVEL);
             end,
         Params = ITEM_LEVEL_PARAMS,
         Order = 1601,
@@ -329,7 +332,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 2 and (Level >= {itemlevel})",
         Script = function()
-                return IsEquipment and (Quality == 2) and (Level >= RULE_PARAMS.ITEMLEVEL);
+                return IsEquipment and (Quality == 2) and (Level >= ITEMLEVEL);
             end,
         Params = 
             {
@@ -351,7 +354,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 3 and (Level >= {itemlevel})",
         Script = function()
-                return IsEquipment and (Quality == 3) and (Level >= RULE_PARAMS.ITEMLEVEL);
+                return IsEquipment and (Quality == 3) and (Level >= ITEMLEVEL);
             end,
         Params = 
             {
@@ -373,7 +376,7 @@ Rules.SystemRules =
         Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 4 and (Level >= {itemlevel})",
         Script = function()
-                return IsEquipment and (Quality == 4) and (Level >= RULE_PARAMS.ITEMLEVEL);
+                return IsEquipment and (Quality == 4) and (Level >= ITEMLEVEL);
             end,
         Params = 
             {

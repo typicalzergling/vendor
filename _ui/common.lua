@@ -86,7 +86,6 @@ Addon.CommonUI.Mixins.ScrollView = {
     ]]
     InitializeScrollView = function(frame, scroller, offset)
         local scrollbar = scroller.ScrollBar
-        print("scrollbar:", scrollbar)
         if (scrollbar) then
             local offset = (offset or 5)
             local up = scrollbar.ScrollUpButton
@@ -268,7 +267,7 @@ Addon.CommonUI.Mixins.Debounce =
             local args = { ... }
             debounce.__dtimer = C_Timer.After(time, function()
                 debounce.__dtimer = nil
-                Addon.Invoke(debounce, handler, unpack(args))
+                xpcall(handler, CallErrorHandler, debounce, unpack(args))
             end)
         end
     end
@@ -276,12 +275,24 @@ Addon.CommonUI.Mixins.Debounce =
 
 Addon.CommonUI.Mixins.Tooltip =
 {
-    --[[ Called to see if we should show a tooltip ]]
-    OnEnter = function(self)
-        if (type(self._OnEnter) == "function") then
-            self:_OnEnter()
-        end
+    InitTooltip = function(self)
+        self:SetScript("OnEnter", function()
+            if (type(self.OnEnter) == "function") then
+                self:OnEnter()
+            end            
+            self:TooltipEnter()
+        end)
 
+        self:SetScript("OnLeave", function()
+            self:TooltipLeave()
+            if (type(self.OnLeave) == "function") then
+                self:OnLeave()
+            end
+        end)
+    end,
+
+    --[[ Called to see if we should show a tooltip ]]
+    TooltipEnter = function(self)
         -- Should we show a tooltip?
         local func = self.HasTooltip
         if (type(func) == "function") then
@@ -299,17 +310,14 @@ Addon.CommonUI.Mixins.Tooltip =
         if (type(func) == "function") then
             xpcall(self.OnTooltip, self, GameTooltip)
         end
+
         GameTooltip:Show()
     end,
 
     --[[ Called to hide the tooltip if we are showing it ]]
-    OnLeave = function(self)
+    TooltipLeave = function(self)
         if (GameTooltip:GetOwner() == self) then
             GameTooltip:Hide()
-        end
-
-        if (type(self._OnLeave) == "function") then
-            self:_OnLeave()
         end
     end
 }
