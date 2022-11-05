@@ -213,20 +213,15 @@ function Addon.RuleFunctions.TooltipContains(...)
     assert(str and type(str) == "string", "Text must be specified.")
     assert(not side or (side == "left" or side == "right"), "Side must be 'left' or 'right' if present.")
     assert(not line or type(line) == "number", "Line must be a number if present.")
-
-    local function checkSide(textSide, textTable)
-        if not side or side == textSide then
-            for lineNumber, text in ipairs(textTable) do
-                if not line or line == lineNumber then
-                    if text and string.find(text, str) then
-                        return true
-                    end
-                end
-            end
+    if side then
+        if side == "left" then
+            return Addon:IsStringInTooltipLeftText(OBJECT.TooltipData, str)
+        else
+            return Addon:IsStringInTooltipRightText(OBJECT.TooltipData, str)
         end
+    else
+        return Addon:IsStringInTooltip(OBJECT.TooltipData, str)
     end
-
-    return checkSide("left", OBJECT.TooltipLeft) or checkSide("right", OBJECT.TooltipRight)
 end
 
 --*****************************************************************************

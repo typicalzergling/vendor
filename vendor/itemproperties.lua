@@ -176,18 +176,19 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Safeguard to make sure GetItemInfo returned something. If not bail.
     -- This will happen if we get this far with a Keystone, because Keystones aren't items. Go figure.
-    if #getItemInfo == 0 then return nil end -- this should never happen now
+    if #getItemInfo == 0 then return nil end
 
-    -- Get Tooltip info
-    local tooltipData = C_TooltipInfo.GetItemByGUID(item.GUID)
-    TooltipUtil.SurfaceArgs(tooltipData)
-    for _, line in ipairs(tooltipData.lines) do
+    -- Item GUID is required for tooltip to be valid.
+    if not item.GUID then return nil end
+
+    -- Populate tooltip and surface args.
+    item.TooltipData = C_TooltipInfo.GetItemByGUID(item.GUID)
+    TooltipUtil.SurfaceArgs(item.TooltipData)
+    for _, line in ipairs(item.TooltipData.lines) do
         TooltipUtil.SurfaceArgs(line)
     end
 
-    table.forEach(tootipData, print)
-
-    -- Initialize properties to bo  for easier rule ingestion.
+    -- Initialize properties for easier rule ingestion.
     item.IsUsable = false
     item.IsEquipment = false
     item.IsSoulbound = false
@@ -254,8 +255,8 @@ function Addon:DoGetItemProperties(itemObj)
     if location and C_Item.IsBound(location) then
         item.IsSoulbound = true         -- This actually also covers account bound.
         -- TODO watch for better way. Blizzard API doesn't expose it, which means we need
-        -- to scan the tooltip, which sucks.
-        if self:IsItemAccountBoundInTooltip(item.Location) then
+        -- to scan the tooltip.
+        if self:IsItemAccountBoundInTooltip(item.TooltipData) then
             item.IsAccountBound = true
         end
     else
@@ -269,7 +270,7 @@ function Addon:DoGetItemProperties(itemObj)
     -- Determine if this item is cosmetic.
     -- This information is currently not available via API.
     item.IsCosmetic = false
-    if location and item.IsEquipment and self:IsItemCosmeticInTooltip(location) then
+    if location and item.IsEquipment and self:IsItemCosmeticInTooltip(item.TooltipData) then
         item.IsCosmetic = true
     end
 
@@ -320,7 +321,7 @@ function Addon:DoGetItemProperties(itemObj)
     -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
     item.IsToy = false
     if location and item.TypeId == 15 or item.TypeId == 0 then
-        if self:IsItemToyInTooltip(location) then
+        if self:IsItemToyInTooltip(item.TooltipData) then
             item.IsToy = true
         end
     end
@@ -328,22 +329,13 @@ function Addon:DoGetItemProperties(itemObj)
     -- Determine if this is an already-collected item, which should only be usable items.
     item.IsAlreadyKnown = false
     if location and item.IsUsable then
-        if self:IsItemAlreadyKnownInTooltip(location) then
+        if self:IsItemAlreadyKnownInTooltip(item.TooltipData) then
             item.IsAlreadyKnown = true
         end
     end
 
-    -- Import the tooltip text as item properties for custom rules.
-    item.TooltipLeft = ""
-    item.TooltipRight = ""
-    if (location) then
-        item.TooltipLeft = self:ImportTooltipTextLeft(location)
-        item.TooltipRight = self:ImportTooltipTextRight(location)
-    end
-
-    if (guid) then
-        Addon:AddItemToCache(item, guid)
-    end
+    -- Add item to cache
+    Addon:AddItemToCache(item, guid)
 
     return item, count
 end
