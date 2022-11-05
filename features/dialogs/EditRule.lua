@@ -554,7 +554,7 @@ function EditRule:SaveRule()
         -- If we have a rule, then copy it into the rule
         if (type(self.rule) == "table") then
             for k, v in pairs(self.rule) do
-                rule[k] = value
+                rule[k] = v
             end
         end
 
@@ -575,6 +575,7 @@ function EditRule:SaveRule()
 
         -- Save the rule
         self.rule = rules:SaveRule(rule)
+        self.changes = {}
     end
 end
 

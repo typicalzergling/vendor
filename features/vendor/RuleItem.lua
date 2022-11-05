@@ -107,13 +107,19 @@ end
 
 --[[ Called to save the state of this rule ]]
 function RuleItem:Save()
-    local params = self:GetParameters()
-    local ruleId = self:GetRuleId()
+    print("save:", self.ruleConfig)
+    if (self.ruleConfig) then
+        local params = self:GetParameters()
+        local ruleId = self:GetRuleId()
 
-    if self:IsActive() then
-        debug("SaveRule :: %s [%s]", ruleId, tostring(params))
-    else
-        debug("SaveRule :: %s [disabled]", ruleId)
+        if self:IsActive() then
+            debug("SaveRule :: %s [%s]", ruleId, tostring(params))
+            self.ruleConfig:Set(ruleId, params)
+        else
+            debug("SaveRule :: %s [disabled]", ruleId)
+            self.ruleConfig:Remove(ruleId)
+        end
+        self.ruleConfig:Commit()
     end
 end
 
