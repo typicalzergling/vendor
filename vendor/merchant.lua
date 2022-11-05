@@ -147,8 +147,8 @@ function Addon:AutoSell()
                 end
 
                 -- Get Item properties and evaluate
-                local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
-                local result, ruleid, rule = Addon:EvaluateItem(item)
+                local _, item, itemCount = xpcall(Addon.GetItemPropertiesFromBag, CallErrorHandler, Addon, bag, slot)
+                local _, result, ruleid, rule = xpcall(Addon.EvaluateItem, CallErrorHandler, Addon, item)
 
                 -- Determine if it is to be sold
                 -- Result of 0 is no action, 1 is sell, 2 is delete.

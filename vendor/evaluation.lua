@@ -21,7 +21,6 @@ end
 -- for rule evaluations.
 -- This method always returns a number as the first parameter, but the others may be nil.
 function Addon:EvaluateItem(item)
-
     -- Check some cases where we know we should never ever sell the item
     if not item then
         return 0, nil, nil
