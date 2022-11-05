@@ -2,6 +2,7 @@
     <Include file="common.xml"/>
     <Script file="localize.lua"/>
     <Include file="dialog.xml"/>
+    <Script file="tooltip.lua"/>
     <!--
         <Script file="controls/autoscrollbar.lua"/>
         <Script file="controls/emptylist.lua"/>
@@ -27,7 +28,6 @@
         <Include file="dialogs/createlist.xml"/>
         <Include file="rulesdialog.xml"/>
         <Include file="editruledialog.xml"/>
-        <Script file="tooltip.lua"/>
     -->
 
 </Ui>

@@ -178,7 +178,16 @@ function Addon:DoGetItemProperties(itemObj)
     -- This will happen if we get this far with a Keystone, because Keystones aren't items. Go figure.
     if #getItemInfo == 0 then return nil end -- this should never happen now
 
-    -- Initialize properties to boolean false for easier rule ingestion.
+    -- Get Tooltip info
+    local tooltipData = C_TooltipInfo.GetItemByGUID(item.GUID)
+    TooltipUtil.SurfaceArgs(tooltipData)
+    for _, line in ipairs(tooltipData.lines) do
+        TooltipUtil.SurfaceArgs(line)
+    end
+
+    table.forEach(tootipData, print)
+
+    -- Initialize properties to bo  for easier rule ingestion.
     item.IsUsable = false
     item.IsEquipment = false
     item.IsSoulbound = false
@@ -279,7 +288,6 @@ function Addon:DoGetItemProperties(itemObj)
             item.IsCollected = baseInfo.appearanceIsCollected
         end
     end
-    item.IsUncollectedAppearance = not item.IsCollected
 
     -- Treat AppearanceId of 0 as cannot-use. Appearances the player cannot use have appearanceId 0.
     -- Items that dont' have an appearance also have 0. Without tracking appearances across all characters
@@ -303,6 +311,9 @@ function Addon:DoGetItemProperties(itemObj)
     if not item.IsCollected and item.IsTransmogEquipment and (item.IsBindOnEquip or item.IsAccountBound) and not (appearanceId == 0) then
         item.IsCollectable = true
     end
+
+    -- Alias for IsUncollectedAppearance
+    item.IsUncollectedAppearance = item.IsCollectable
 
     -- Determine if this is a toy.
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
