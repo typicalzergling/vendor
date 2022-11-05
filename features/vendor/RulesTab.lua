@@ -72,11 +72,7 @@ function RulesTab:UpdateConfig(view)
 
 		for _, model in ipairs(view) do
 			local item = list:FindItem(model)
-
-			if (type(model.Params) == "table") then
-				item:SetParameters(config:Get(model.Id))
-			end
-			item:SetActive(config:Contains(model.Id))
+			item:SetConfig(self.activeConfig)
 		end
 	end
 end

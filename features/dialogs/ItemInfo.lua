@@ -152,6 +152,9 @@ local PropertyItem = {
 Addon.Features.Dialogs.EditRule.ItemInfoTab = {
 
     OnLoad = function(iteminfo)
+        iteminfo.properties:Sort(function(a, b)
+                return a.Name < b.Name
+            end)
     end,
 
     ShowItemProperties = function(iteminfo, item)
