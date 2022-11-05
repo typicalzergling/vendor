@@ -53,38 +53,6 @@ function Addon:OnGameTooltipHide(tooltip)
     clearTooltipState()
 end
 
-
-local function GetAppearanceInfo(appearanceId)
-    local appearanceCollected = false
-        --categoryID, visualID, canEnchant, icon, isCollected, itemLink, transmogLink, unknown1, itemSubTypeIndex = C_TransmogCollection.GetAppearanceSourceInfo(sourceID)
-
-
-        isCollected = select(5, C_TransmogCollection.GetAppearanceSourceInfo(appearanceSourceID))
-
-
-    local playerCanCollect = false
-    local accountCanCollect = false
-    local sources = C_TransmogCollection.GetAppearanceSources(appearanceId)
-    if sources then
-        for i, source in pairs(sources) do
-            -- If the player can collect it, then so can the account.
-            local hasData, canCollect = C_TransmogCollection.PlayerCanCollectSource(source.sourceID)
-            if canCollect then
-                playerCanCollect = true
-                --accountCanCollect = true
-                --break
-            end
-            -- If player cannot collect, see if account can.
-            hasData, canCollect =_TransmogCollection.AccountCanCollectSource(source.sourceID)
-            if canCollect then
-                accountCanCollect = true
-                -- Can't break here because other sources may be player collectable.
-            end
-        end
-    end
-    return playerCanCollect, accountCanCollect
-end
-
 -- Gets information about an item
 -- Here is the list of captured item properties.
 --     Name
@@ -156,16 +124,6 @@ end
 function Addon:DoGetItemProperties(itemObj)
     assert(type(itemObj) == "table", "Expected an ItemMixin as the argument")
     assert(type(itemObj.GetItemID) == "function", "Expected an ItemMixin as the argument")
-
-    -- If the item isn't cached then there isn't anything we can do yet so
-    -- return an empty properties object, then when it shows up evalaute and
-    -- put the items into our cache
-    --if (itemObj:IsItemEmpty() and not itemObj:IsItemDataCached()) then
-        --itemObj:ContinueOnItemLoad(function() 
-          --  Addon:GetItemProperties(itemObj)
-        --end)
-        --return nil
-    --end
 
     -- If the item is empty it doesn't exist so we've got no properties to make
     if (itemObj:IsItemEmpty()) then
@@ -253,6 +211,9 @@ function Addon:DoGetItemProperties(itemObj)
     item.StackSize = getItemInfo[8]
     item.StackCount = 1
     item.UnitValue = getItemInfo[11] or 0
+    item.TotalValue = item.UnitValue * item.Count
+    item.UnitGoldValue = math.floor(item.UnitValue / 10000)
+    item.TotalGoldValue = math.floor(item.TotalValue / 10000)
     item.IsCraftingReagent = getItemInfo[17] or false
     item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
@@ -307,7 +268,6 @@ function Addon:DoGetItemProperties(itemObj)
     -- We aren't using PlayerHasTransmog becuase item id is unreliable, better to use the actual itemloc & appearance info.
     item.IsCollected = false
     local appearanceId = 0
-
     if (location) then
         -- We do not expose appearanceId of an item, becuase it will be 0 if the player cannot use it.
         -- This could lead to trying to collect an appearance and getting false positives.
@@ -319,6 +279,7 @@ function Addon:DoGetItemProperties(itemObj)
             item.IsCollected = baseInfo.appearanceIsCollected
         end
     end
+    item.IsUncollectedAppearance = not item.IsCollected
 
     -- Treat AppearanceId of 0 as cannot-use. Appearances the player cannot use have appearanceId 0.
     -- Items that dont' have an appearance also have 0. Without tracking appearances across all characters
