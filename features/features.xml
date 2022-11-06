@@ -3,6 +3,7 @@
     <Include file="autoloot/autoloot.xml"/>
     <!--<Include file="ldb/ldb.xml"/>-->
     <Include file="rules/rules.xml"/>
+    <Include file="lists/lists.xml"/>
     <Include file="dialogs/dialogs.xml"/>
     <Include file="import/import.xml"/>
     <Include file="settings/settings.xml"/>

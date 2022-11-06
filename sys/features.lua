@@ -97,6 +97,11 @@ function Feature:Enable()
         debug("Enabling feature '%s'", name)
         Addon:RaiseEvent("OnFeatureEnabled", self)
 
+        -- Register the events which are produced
+        if (type(self.impl.EVENTS) == "table") then
+            Addon:GeneratesEvents(self.impl.EVENTS)
+        end
+
         self.enabled = true
 
         self.feature = setmetatable({}, {
@@ -198,6 +203,9 @@ function Feature:Disable()
 
         -- terminate  the feature
         self:invoke("OnTerminate")
+        if (type(self.impl.EVENTS) == "table") then
+            Addon:RemoveEvents(self.impl.EVENTS)
+        end
 
         self.enabled = false
         self.feature = false

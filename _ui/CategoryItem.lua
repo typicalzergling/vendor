@@ -2,7 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local CommonUI = Addon.CommonUI
 local Colors = Addon.CommonUI.Colors
-local CategoryItem = Mixin({}, Addon.CommonUI.Mixins.Border)
+local CategoryItem = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.Tooltip)
 
 local DEFAULT_COLOR_SCHEME = {
     BACK = Colors.TRANSPARENT,
@@ -24,42 +24,52 @@ function CategoryItem:OnLoad()
     self.colorScheme = DEFAULT_COLOR_SCHEME
     self:OnBorderLoaded("tbk")
     self:SetColors("normal")
+    self:InitTooltip()
 end
 
 --[[ Called when the model is changed ]]
 function CategoryItem:OnModelChange(model)
-    local loc = locale:GetString(model.Text)
-    self.text:SetText(loc or model.Text)
+    if (type(model.Text) == "string") then
+        local loc = locale:GetString(model.Text)
+        self.text:SetText(loc or model.Text)
+    elseif (type(model.Name) == "string") then
+        local loc = locale:GetString(model.Name)
+        self.text:SetText(loc or model.Name)
+    else
+        self.text:SetText()
+    end
 end
 
 function CategoryItem:OnEnter()
     if not self:IsSelected() then
         self:SetColors("hover")
     end
-    
-    local model = self:GetModel()
-    if (type(model.Help) == "string") then
-        local label = locale:GetString(model.Text) or model.Text
-        local help = locale:GetString(model.Help) or model.Help
+    self:TooltipEnter()
+end
 
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        GameTooltip:ClearAllPoints()
-        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -4)
-        GameTooltip:SetText(label, Colors.SELECTED_PRIMARY_TEXT:GetRGBA())
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddLine(help, Colors.TEXT:GetRGBA())
-        GameTooltip:Show()
-    end
+--[[ Check if we have a tooltop ]]
+function CategoryItem:HasTooltip()
+    local model = self:GetModel()
+    return (type(model.Help) == "string") or (type(model.Description) == "string")
+end
+
+--[[ Show a tooltip for this item ]]
+function CategoryItem:OnTooltip(tooltip)
+    local model = self:GetModel()
+    local text = model.Description or model.Help
+    local loc = locale:GetString(text)
+    local nameColor = Colors:Get("SELECTED_PRIMARY_TEXT")
+    local textColor = Colors:Get("SECONDARY_TEXT")
+
+    tooltip:SetText(self.text:GetText(), nameColor:GetRGB())
+    tooltip:AddLine(loc or text, textColor.r, textColor.g, textColor.b, true)
 end
 
 function CategoryItem:OnLeave()
     if not self:IsSelected() then
         self:SetColors("normal")
     end
-
-    if GameTooltip:GetOwner() == self then
-        GameTooltip:Hide()
-    end
+    self:TooltipLeave()
 end
 
 function CategoryItem:OnSelected()

@@ -2,6 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local Colors = Addon.CommonUI.Colors
 local CommandButton = Mixin({}, Addon.CommonUI.Mixins.Border)
+local UI = Addon.CommonUI.UI
 
 --[[===========================================================================
   |
@@ -81,6 +82,59 @@ function CommandButton:OnClick()
 end
 
 Addon.CommonUI.CommandButton = CommandButton
+
+--[[ IconButton =============================================================]]
+local IconButton = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.Tooltip)
+
+-- Call to load the icon button
+function IconButton:OnLoad()
+    self:OnBorderLoaded(nil, Colors.TRANSPARENT, Colors.TRANSPARENT)
+    if (type(self.Icon) == "string") then
+        self.icon:SetTexture(self.Icon)
+    end
+    self.icon:SetAlpha(.6)
+end
+
+function IconButton:OnEnter()
+    self:SetBackgroundColor(Colors:Get("BUTTON_HOVER_BACK"))
+    self:SetBorderColor(Colors:Get("BUTTON_HOVER_BORDER"))
+    self.icon:SetAlpha(1)
+    self:TooltipEnter()
+end
+
+function IconButton:OnLeave()
+    self:TooltipLeave()
+    self:SetBackgroundColor(Colors.TRANSPARENT)
+    self:SetBorderColor(Colors.TRANSPARENT)
+    self.icon:SetAlpha(.6)
+end
+
+function IconButton:OnEnable()
+    if (not self:IsMouseOver()) then
+        self.icon:SetAlpha(.6)
+    else
+        self.icon:SetAlpha(1)
+    end
+end
+
+function IconButton:OnDisable()
+    self.icon:SetAlpha(.25)
+end
+
+function IconButton:OnClick()
+    CommandButton.OnClick(self)
+end
+
+function IconButton:HasTooltip()
+    return type(self.Help) == "string"
+end
+
+function IconButton:OnTooltip(tooltip)
+    local help = locale:GetString(self.Help) or self.Help
+    tooltip:SetText(help)
+end
+
+Addon.CommonUI.IconButton = IconButton
 
 --][[========================================================================]]
 
