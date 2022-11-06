@@ -131,18 +131,8 @@ function Addon:DoGetItemProperties(itemObj)
         return nil
     end
     
-    local tooltip = nil
-    local location = nil
-    local item = nil
-
-    -- Get link from location
-    local link = itemObj:GetItemLink()
-    local itemId = itemObj:GetItemID()
-    if (itemObj:HasItemLocation()) then
-        location = itemObj:GetItemLocation()
-    end
-
-    -- Guid is how we uniquely identify items.
+    -- Get base information about the item.
+    local location = itemObj:GetItemLocation()
     local guid = itemObj:GetItemGUID()
     
     -- If it's bag and slot then the count can be retrieved, if it isn't
@@ -153,7 +143,8 @@ function Addon:DoGetItemProperties(itemObj)
         count = (C_Container.GetContainerItemInfo(bag, slot)).stackCount
     end
 
-    -- Item properties may already be cached
+    -- Item properties may already be cached, if so use it.
+    local item = nil
     if guid then
         item = Addon:GetItemFromCache(guid)
         if item then
@@ -167,8 +158,8 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Item may not be loaded, need to handle this in a non-hacky way.
     item.GUID = guid or false
-    item.Location = location or false
-    item.Link = link
+    item.Location = itemObj:GetItemLocation() or false
+    item.Link = itemObj:GetItemLink()
     item.Count = count
 
     -- Get more id and cache GetItemInfo, because we aren't bad.
@@ -227,10 +218,10 @@ function Addon:DoGetItemProperties(itemObj)
     item.IsCraftingReagent = getItemInfo[17] or false
     item.IsUnsellable = not item.UnitValue or item.UnitValue == 0
     item.ExpansionPackId = getItemInfo[15]  -- May be useful for a rule to vendor previous ex-pac items, but doesn't seem consistently populated
-    item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemId);
+    item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Id);
     item.InventoryType = itemObj:GetInventoryType()
     item.IsConduit = false
-    item.IsKeystone = C_Item.IsItemKeystoneByID(itemId) or false
+    item.IsKeystone = C_Item.IsItemKeystoneByID(item.Id) or false
     --IsItemSpecificToPlayerClass
 
     if (location) then 
@@ -246,8 +237,8 @@ function Addon:DoGetItemProperties(itemObj)
         item.Bag, item.Slot = location:GetBagAndSlot()
     end
 
-    item.IsUsable = IsUsableItem(itemId)
-    item.IsEquipment = IsEquippableItem(itemId)
+    item.IsUsable = IsUsableItem(item.Id)
+    item.IsEquipment = IsEquippableItem(item.Id)
     item.IsEquipped = location and item.Location:IsEquipmentSlot()
     item.IsTransmogEquipment = isTransmogEquipment(item.EquipLoc)
 
@@ -356,26 +347,31 @@ function Addon:GetItemProperties(arg1, arg2)
     return nil
 end
 
--- Both bag and slot must be numbers and both passed in.
+-- From Bag & Slot - Both bag and slot must be numbers and both passed in.
 function Addon:GetItemPropertiesFromBag(bag, slot)
     return self:DoGetItemProperties(Item:CreateFromBagAndSlot(bag, slot))
 end
 
--- If we have a tooltip we will use it for scanning.
--- Tooltip is optional
+-- From GUID - This is the best way to get an item.
+function Addon:GetItemPropertiesFromGUID(guid)
+    assert(type(guid) == "string", "GUID must be a string.")
+    return self:DoGetItemProperties(Item:CreateFromItemGUID(guid))
+end
+
+-- From Tooltip
 function Addon:GetItemPropertiesFromTooltip()
-    if (not tooltipLocation) then
-        return nil
-    end
-
-    return self:DoGetItemProperties(Item:CreateFromItemLocation(tooltipLocation))
+    local tooltipData = GameTooltip:GetTooltipData()
+    if not tooltipData or not tooltipData.guid then return nil end
+    return self:GetItemPropertiesFromGUID(tooltipData.guid)
 end
 
--- Pure location item
+-- From Location
 function Addon:GetItemPropertiesFromLocation(location)
-    return self:DiGetitemProperties(Item:CreateFromItemLocation(location))
+    if not location or not location:IsValid() then return nil end
+    return self:DoGetItemProperties(Item:CreateFromItemLocation(location))
 end
 
+-- From Link
 function Addon:GetItemPropertiesFromItemLink(itemLink)
     if (not itemLink) then
         return nil
@@ -383,10 +379,12 @@ function Addon:GetItemPropertiesFromItemLink(itemLink)
     return self:DoGetItemProperties(Item:CreateFromItemLink(itemLink));
 end
 
+-- From Equipment Slot
 function Addon:GetItemPropertiesFromEquipmentSlot(equip)
     return self:DoGetItemProperties(Item:CreateFromEquipmentSlot(equip))
 end
 
+-- From Item object
 function Addon:GetItemPropertiesFromItem(item)
     if (not item) then
         return nil
