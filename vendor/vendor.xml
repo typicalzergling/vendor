@@ -7,7 +7,6 @@
     <Script file="itemproperties.lua"/>
     <Script file="itemcache.lua"/>	
     <Script file="evaluation.lua"/>
-    <Include file="merchantbutton.xml"/>
     <Script file="merchant.lua"/>
     <Script file="destroy.lua"/>
     <Script file="releasenotes.lua"/>

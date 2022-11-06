@@ -51,9 +51,6 @@ function Addon:OnInitialize()
     self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
     self:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
 
-    -- Merchant Button
-    self.MerchantButton.Initialize()
-
     -- Publish our LDB Data Objects
     self:SetupLDBPlugin()
 
