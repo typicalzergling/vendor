@@ -75,7 +75,8 @@ function Addon:GetItemFromCache(arg)
 end
 
 -- Fires when equipping items. This can change their properties, so both caches must be cleared.
-function Addon:OnItemLockChanged(arg1, arg2)
+function Addon:OnBagContainerUpdate(arg1, arg2)
+    print("in Bag Container update: "..tostring(arg1).." - "..tostring(arg2))
     local location = nil
     if not arg2 then
         location = ItemLocation:CreateFromEquipmentSlot(arg1)

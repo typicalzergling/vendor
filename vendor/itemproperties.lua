@@ -130,20 +130,22 @@ function Addon:DoGetItemProperties(itemObj)
         Addon:Debug("itemerrors", "Empty Item Object")
         return nil
     end
-    
+
     -- Get base information about the item.
-    local location = itemObj:GetItemLocation()
+    local location = itemObj:GetItemLocation() or false
     local guid = itemObj:GetItemGUID()
-    
+
     -- If it's bag and slot then the count can be retrieved, if it isn't
     -- then it must be an inventory slot, which means 1.
     local count = 1
-    if location:IsBagAndSlot() then
+    if location and location:IsBagAndSlot() then
         local bag, slot = location:GetBagAndSlot()
         count = (C_Container.GetContainerItemInfo(bag, slot)).stackCount
     end
 
     -- Item properties may already be cached, if so use it.
+    -- Note that while the item guid will have the same properties,
+    -- some properties can and will change, like the location and the stack count.
     local item = nil
     if guid then
         item = Addon:GetItemFromCache(guid)

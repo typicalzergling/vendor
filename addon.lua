@@ -39,17 +39,8 @@ function Addon:OnInitialize()
     -- Set up events
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
-    self:RegisterEvent("ITEM_LOCK_CHANGED", "OnItemLockChanged")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
-    --self:RegisterEvent("USE_NO_REFUND_CONFIRM", function() Addon:Debug("events", "Handling USE_NO_REFUND_CONFIRM") end)
-    --self:RegisterEvent("DELETE_ITEM_CONFIRM", function() Addon:Debug("events", "Handling DELETE_ITEM_CONFIRM") end)
-
-    -- Tooltip hooks
-    --self:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
-    --self:PreHookWidget(ItemRefTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
-    self:PreHookFunction(GameTooltip, "SetBagItem", "OnGameTooltipSetBagItem")
-    self:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
-    self:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
+    self:RegisterEvent("BAG_CONTAINER_UPDATE", "OnBagContainerUpdate")
 
     -- Merchant Button
     self.MerchantButton.Initialize()
