@@ -8,7 +8,7 @@ local MainFeature = {
 
 --[[ Called when feature is initialized ]]
 function MainFeature:OnInitialize()
-	self:ShowDialog("profiles")
+	--self:ShowDialog("profiles")
 end
 
 --[[ Callback for when the feature is terminated ]]

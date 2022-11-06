@@ -292,35 +292,18 @@ end
 --[[===========================================================================
    | Retrieves the features object used to manage features
    ==========================================================================]]
-function Feature:Create(feature, account, character)
+function Feature:Create(feature)
     assert(type(feature) == "table", "A feature should be a table")
     if (type(feature.NAME) ~= "string") then
         error("A feature implementation needs to provide a 'NAME' property")
     end
-
-    -- Create account wide data for this feature
-    local accountData = account:Get(feature.NAME)
-    if (not accountData) then
-        accountData = {}
-        account:Set(feature.NAME, accountData)
-    end
-
-    -- Create chracter specific data for this feature
-    local characterData = character:Get(feature.NAME)
-    if (not characterData) then
-        characterData = {}
-        character:Set(feature.NAME, characterData)
-    end
-
-
+    
     local instance = {
         impl = feature,
         feature = false,
         enabled = false,
         frame = false,
         depends = {},
-        account = accountData,
-        character = characterData,
         dialogs = false,
         host = false,
         ready = {},
@@ -450,31 +433,31 @@ end
 --[[===========================================================================
    | Called to initialize the the addons features
    ==========================================================================]]
-function Features:Initialize() 
+function Features:Initialize()
     Addon:GeneratesEvents({ "OnFeatureEnabled", "OnFeatureDisabled", "OnFeatureReady" })
 
     -- After 10 seconds create all the feature objects and then start initialziing 
     -- all of our feastures
+    Addon:Debug("%s loaded - checking for features", AddonName)
+    if (type(Addon.Features) ~= "table") then
+        Addon:Debug("features", "There are no features to register")
+        return
+    end
+
+    -- TODO: here is where would fiter beta va not
+
+    for feature, impl in pairs(Addon.Features) do
+        local featureObj =  Feature:Create(impl)
+        self.features[featureObj:GetName()] = featureObj
+        Addon:Debug("features", "Registered feature '%s' (v%s)", featureObj:GetName(), featureObj:GetVersion())
+    end
+
+    -- Register a terminate handler
+    Addon:AddTerminateAction(function()
+        self:Terminate()
+    end)
+
     C_Timer.After(10, function()
-            Addon:Debug("%s loaded - checking for features", AddonName)
-            if (type(Addon.Features) ~= "table") then
-                Addon:Debug("features", "There are no features to register")
-                return
-            end
-
-            -- TODO: here is where would fiter beta va not
-
-            for feature, impl in pairs(Addon.Features) do
-                local featureObj =  Feature:Create(impl, self.account, self.chracter)
-                self.features[featureObj:GetName()] = featureObj
-                Addon:Debug("features", "Registered feature '%s' (v%s)", featureObj:GetName(), featureObj:GetVersion())
-            end
-
-            -- Register a terminate handler
-            Addon:AddTerminateAction(function()
-                self:Terminate()
-            end)
-
             self:EnableOneFeature()
         end)
 end
