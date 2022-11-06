@@ -74,8 +74,9 @@ end
 
 -- This is defunct, but in case we add a hook in...
 function Addon:OpenSettings_Cmd()
-    local vendor = Addon:GetFeature("Vendor")
-    vendor:ShowDialog("settings")
+    Addon:WithFeature("Vendor", function(vendor)
+        vendor:ShowDialog("settings")
+    end)
 end
 
 
@@ -110,8 +111,9 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
-    local vendor = Addon:GetFeature("Vendor")
-    vendor:ShowDialog("rules")
+    Addon:WithFeature("Vendor", function(vendor)
+        vendor:ShowDialog("rules")
+    end)
 end
 
 -- Initiates a manual Auto-Sell. This ignores the auto-sell configuration setting.

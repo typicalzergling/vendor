@@ -172,6 +172,12 @@ function Feature:Enable()
 
         debug("Feature '%s' is ready (%d events connected)", name, events)
         Addon:RaiseEvent("OnFeatureReady", self)
+
+        -- Notify anything waiting
+        for _, ready in ipairs(self.ready) do
+            ready()
+        end
+
         return true
     end
 end
@@ -268,6 +274,21 @@ function Feature:GetInstance()
     return self.feature
 end
 
+--[[ When the feature is ready invoke the handler ]]
+function Feature:WhenReady(callback)
+    if (type(callback) ~= "function") then
+        error("Usage: Feature.WhenReady( function )")
+    end
+
+    if (self.feature) then
+        xpcall(callback, CallErrorHandler, self.feature)
+    else
+        table.insert(self.ready, function()
+            xpcall(callback, CallErrorHandler, self.feature)
+        end)
+    end
+end
+
 --[[===========================================================================
    | Retrieves the features object used to manage features
    ==========================================================================]]
@@ -302,6 +323,7 @@ function Feature:Create(feature, account, character)
         character = characterData,
         dialogs = false,
         host = false,
+        ready = {},
 
         invoke = function(this, what, ...)
             -- If we were not given a function then trt to resolve it
@@ -578,6 +600,10 @@ function Features:GetFeature(name)
     return featureObj:GetInstance()
 end
 
+function Features:Find(name)
+    return self.features[name]
+end
+
 local FEATURES = {}
 
 --[[===========================================================================
@@ -604,6 +630,25 @@ end
    ==========================================================================]]
 function Addon:IsFeatureEnabled(feature)
     return Addon:GetFeatures():IsFeatureEnabled(feature)
+end
+
+function Addon:WithFeature(name, callback, ...)
+    local features = self:GetFeatures()
+    local feature = features:Find(name)
+
+    if (type(callback) ~= "function") then
+        error("Expected callback to be a valid function")
+    end
+
+    if (not feature) then
+        error("Unable to locate feature: " .. name)
+    end
+
+    -- Queue or execute the callback
+    local args = { ... }
+    feature:WhenReady(function(instance)
+            callback(instance, table.unpack(args))
+        end)
 end
 
 --[[

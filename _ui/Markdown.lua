@@ -5,6 +5,7 @@ local FRAMES_KEY = {}
 local Colors = Addon.CommonUI.Colors
 local PARA_MARGINS = { left = 16, top = 2, bottom = 6 }
 local HEADER_MARGINS = { top = 6, bottom = 0 }
+local UI = Addon.CommonUI.UI
 
 --[[ Iterate the lines provided string ]]
 local function lines(str)
@@ -158,37 +159,41 @@ end
 
 --[[ Set the markdown on the control ]]
 function Markdown:SetMarkdown(markdown)
-    local frames = {}
-    
-    if type(markdown) == "string" then
-        local getLine = lines(markdown)
-        local line = getLine()
-
-        while (type(line) == "string") do
-            local first = line:sub(1,1)
-            local frame
-
-            if first == "#" then
-                frame = header(self, line, getLine)
-            elseif (isListChar(first)) then
-                frame = list(self, line, getLine)
-            else
-                frame = paragraph(self, line, getLine)
-            end
-
-            if (frame) then
-                Addon.CommonUI.DialogBox.Colorize(frame)
-                Addon.AttachImplementation(frame, MarkdownFrame, true)
-                table.insert(frames, frame)
-            end
-
-            line = getLine()
-        end
-    else
-    end
-
+    local frames = Addon.CommonUI.CreateMarkdownFrames(self, markdown)
     rawset(self, FRAMES_KEY, frames)
     self:Rebuild()
+end
+
+function Addon.CommonUI.CreateMarkdownFrames(parent, markdown)
+    if (type(markdown) ~= "string") then
+        error("Usage: CreateMarkdown( frame, string )")
+    end
+    
+    local frames = {}
+    local getLine = lines(markdown)
+    local line = getLine()
+    
+    while (type(line) == "string") do
+        local first = line:sub(1,1)
+        local frame
+
+        if first == "#" then
+            frame = header(parent, line, getLine)
+        elseif (isListChar(first)) then
+            frame = list(parent, line, getLine)
+        else
+            frame = paragraph(parent, line, getLine)
+        end
+
+        if (frame) then
+            UI.Attach(frame, MarkdownFrame)
+            table.insert(frames, frame)
+        end
+
+        line = getLine()
+    end
+
+    return frames
 end
 
 Addon.CommonUI.Markdown = Markdown

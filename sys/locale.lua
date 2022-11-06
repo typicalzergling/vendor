@@ -118,6 +118,19 @@ local function setLocale()
         -- Retrieves the string if exists, otherwise it returns nil
         GetString  = function(t, k)
             return localizedStrings[k]
+        end,
+
+        -- Retrieves a formatted string (converting the arguments to strings)
+        FormatString = function(t, k, ...)
+            local fmt = localizedStrings[k]
+            assert(fmt, "Expected a valid string to format :: " .. tostring(k))
+
+            local args = {}
+            for _, arg in ipairs({...}) do
+                table.insert(args, tostring(arg))
+            end
+
+            return string.format(fmt, unpack(args))
         end
     }
 

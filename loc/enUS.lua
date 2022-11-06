@@ -162,10 +162,23 @@ OPTIONS_PROFILE_HELPTEXT = "All rules settings, addon settings, and Sell / Keep 
     "Profiles are stored globally across all servers and characters, and selected per-character.",
 OPTIONS_PROFILE_COPY = "Copy",
 OPTIONS_PROFILE_CREATE = "New",
+OPTIONS_PROFILE_RENAME = "Rename",
 OPTIONS_PROFILE_SET = "Set",
 OPTIONS_PROFILE_NAME_PLACEHOLDER = "type the name of the profile to create or copy here",
 OPTIONS_PROFILE_CREATETEXT = "You can create a new profile from scratch (starts with the vendor defaults) or you can copy an existing profile in the list. A blank name defaults to 'PlayerName - Realm'",
-OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = "Are you sure you want to delete profile '%s'?",
+OPTIONS_CONFIRM_PROFILE_DELETE_CAPTION = "Delete Profile",
+OPTIONS_CONFIRM_PROFILE_DELETE_CONFIRM = "Confirm",
+OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = [[
+# Delete Profile
+
+Are you sure you want to delete profile '%s'?"
+]],
+OPTIONS_PROFILE_DUPLICATE_NAME_CAPTION = "Duplicate Name",
+OPTIONS_PROFILE_DUPLICATE_NAME_FMT1 = [[
+# Duplicate Profile Name
+
+A profile already exists with the name '%s' please choose another.
+]],
 OPTIONS_PROFILE_CREATE_LABEL = "Create Profile",
 OPTIONS_PROFILE_DEFAULT_COPY_NAME = "%s (Copy)",
 

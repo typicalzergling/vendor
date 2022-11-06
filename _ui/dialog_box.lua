@@ -3,6 +3,7 @@ local locale = Addon:GetLocale()
 local DialogBox = Mixin({}, Addon.CommonUI.Mixins.Border)
 local Colors = Addon.CommonUI.Colors
 local AddonColors = Addon.Colors or  {}
+local UI = Addon.CommonUI.UI
 
 local DIALOG_BUTTON_GAP = 8
 local DIALOG_BUTTON_WIDTH = 124
@@ -99,38 +100,16 @@ local function layout(dialog)
 end
 
 function DialogBox:OnLoad()
-    self:OnBorderLoaded(nil, Colors.DIALOG_BORDER_COLOR, Colors.DIALOG_BACK_COLOR)
+    self:OnBorderLoaded()
 
     -- Setup our host
     local host = self.Host
     Mixin(host, Addon.CommonUI.Mixins.Border)
     host:OnBorderLoaded()
-    host:SetBackgroundColor(Colors.DIALOG_CONTENT_BACKGROUND_COLOR)
-    host:SetBorderColor(Colors.DIALOG_CONTENT_BORDER_COLOR)
 
     -- Setup te title bar
-    local titlebar = self.Titlebar
-    titlebar.back:SetColorTexture(Colors.DIALOG_CAPTION_BACK_COLOR:GetRGBA())
-    titlebar.text:SetTextColor(Colors.DIALOG_CAPTION_COLOR:GetRGBA())
-    titlebar.divider:SetColorTexture(Colors.DIALOG_BORDER_COLOR:GetRGBA())
-
-    -- Setup our closed button
-    local close = titlebar.close
-    close.text:SetTextColor(Colors.BUTTON_TEXT:GetRGBA())
-    Mixin(close, Addon.CommonUI.Mixins.Border)
-    close:OnBorderLoaded(nil, Colors.TRANSPARENT, Colors.TRANSPARENT)
-    close:SetScript("OnClick", function(close)
-            self:Hide()
-        end)
-    close:SetScript("OnEnter", function(frame)
-            frame.text:SetTextColor(Colors.BUTTON_HOVER_TEXT:GetRGBA())
-            frame:SetBackgroundColor(Colors.BUTTON_HOVER_BACK)
-            frame:SetBorderColor(Colors.BUTTON_HOVER_BORDER)
-        end)
-    titlebar.close:SetScript("OnLeave", function(frame)
-            frame:SetBackgroundColor(Colors.TRANSPARENT)
-            frame:SetBorderColor(Colors.TRANSPARENT)
-        end)
+    UI.Attach(self.Titlebar.close, Addon.CommonUI.CloseButton)
+    UI.Prepare(self.Titlebar)
 
     self:SetClampedToScreen(true)
     self:RegisterForDrag("LeftButton")

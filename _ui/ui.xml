@@ -1,11 +1,13 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <!-- Code -->
     <Script file="colors.lua"/>
+    <Script file="UI.lua"/>
     <Script file="common.lua"/>
     <Script file="buttons.lua"/>
     <Script file="edits.lua"/>
     <Script file="dialog_box.lua"/>
-    <Script file="textarea.lua"/>
+    <Script file="MessageBox.lua"/>
+    <Script file="CloseButton.lua"/>
     <Script file="TabControl.lua"/>
     <Script file="List.lua"/>
     <Script file="Url.lua"/>

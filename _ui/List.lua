@@ -34,6 +34,10 @@
     |
     ==========================================================================]]
 
+-- TODO: Set a time on hide, to clear out the table of frames after 60 seconds, we dont'
+-- need to keep them aorund
+--TODO: save selection across rebuilds
+
 local _, Addon = ...
 local locale = Addon:GetLocale()
 local List = Mixin({}, Addon.CommonUI.Mixins.Border)

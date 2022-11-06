@@ -1,24 +1,21 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
+local UI = Addon.CommonUI.UI
+local Colors = Addon.CommonUI.Colors
 local TabControl = {}
 local Tab = Mixin({}, Addon.CommonUI.Mixins.Border, CallbackRegistryMixin)
-
-local TABCONTROL_BORDER = CreateColor(1, 1, 1, .60)
-local TABCONROL_BACK = { r = 0, g = 0, b = 0, a = 0 }
-local TABCONTROL_TEXT = YELLOW_FONT_COLOR
-local TABCONTROL_INACTIVE_BORDER = CreateColor(1, 1, 1, .40)
-local TABCONTROL_INACTIVE_TEXT = CreateColor(1, 1, 1, 0.6)
-local TABCONTROL_INACTIVE_BACK = { r = 0, g = 0, b = 0, a = 0 }
 local TAB_PADDING_X = 10
+local CONTENT_PADDING_X = 12
+local CONTENT_PADDING_Y = 12
 
 function Tab:OnLoad()
-    self:OnBorderLoaded("lrtk", TABCONTROL_INACTIVE_BORDER, TABCONTROL_INACTIVE_BACK)
-    self.text:SetTextColor(TABCONTROL_INACTIVE_TEXT:GetRGBA())
+    self.active = false
+    self:OnBorderLoaded("lrtk", Colors:Get("TABCONTROL_INACTIVE_BORDER"), Colors:Get("TABCONTROL_INACTIVE_BACK"))
+    UI.SetColor(self.text,  "TABCONTROL_INACTIVE_TEXT")
 end
 
 function Tab:SetName(name)
-    local loc = locale[name]
-    self.text:SetText(loc or name)
+    UI.SetText(self.text, name)
     self.text:SetWidth(0)
     self:SetWidth((TAB_PADDING_X * 2) + self.text:GetWidth())
 end
@@ -58,35 +55,40 @@ function Tab:GetFrame()
 end
 
 function Tab:Activate()
-    self:SetBackgroundColor(TABCONROL_BACK)
-    self:SetBorderColor(TABCONTROL_BORDER)
-    self.text:SetTextColor(TABCONTROL_TEXT:GetRGBA())
+    if (not self.active) then
+        self.active = true
 
-    local frame = self:GetFrame()
-    Addon.Invoke(frame, "OnActivate", frame)
-    frame:Show()
+        self:SetBackgroundColor(Colors:Get("TABCONROL_BACK"))
+        self:SetBorderColor(Colors:Get("TABCONTROL_BORDER"))
+        UI.SetColor(self.text, "TABCONTROL_TEXT")
+
+        local frame = self:GetFrame()
+        if (type(frame.OnActivate) == "function") then
+            frame:OnActivate()
+        end
+
+        frame:Show()
+    end
 end
 
 function Tab:Deactivate()
-    self:SetBackgroundColor(TABCONTROL_INACTIVE_BACK)
-    self:SetBorderColor(TABCONTROL_INACTIVE_BORDER)
-    self.text:SetTextColor(TABCONTROL_INACTIVE_TEXT:GetRGBA())
-
-    if (self.frame) then
-        Addon.Invoke(self.frame, "OnDeactivate", self.frame)
-        self.frame:Hide()
-    end
-end
-
-function Tab:OnHide()
     if (self.active) then
-        self:Deactive()
-    end
-end
+        self.active = false
 
-function Tab:GetSize()
-    local frame = self.text
-    return (2 * TAB_PADDING_X) + frame:GetWidth(), frame:GetHeight()
+        self:SetBackgroundColor(Colors:Get("TABCONTROL_INACTIVE_BACK"))
+        self:SetBorderColor(Colors:Get("TABCONTROL_INACTIVE_BORDER"))
+        UI.SetColor(self.text, "TABCONTROL_INACTIVE_TEXT")
+
+
+        local frame = self.frame
+        if (frame) then
+            if (type(frame.OnDeactivate) == "function") then
+                frame:OnDeactivate()
+            end
+
+            frame:Hide()
+        end
+    end
 end
 
 function Tab:OnEnter()
@@ -113,12 +115,16 @@ end
 
 --[[static]] function Tab.Create(parent, id, name, template, class)
     local tab = CreateFrame("Button", nil, parent, "CommonUI_Tab")
-    Addon.CommonUI.DialogBox.Colorize(tab)
+    UI.Prepare(tab)
+
+    tab.id = id
     tab.template = template
     tab.class = class
-    tab.id = id
+    if (type(tab.class) == "string") then
+        tab.class = UI.Resolve(class)
+    end
 
-    Addon.AttachImplementation(tab, Tab, 1)
+    UI.Attach(tab, Tab)
     if (type(name) == "string") then
         tab:SetName(name)
     end
@@ -131,25 +137,27 @@ end
 
 --[[=========================================================================]]
 
-local CONTENT_PADDING_X = 12
-local CONTENT_PADDING_Y = 12
-
 function TabControl:OnLoad()
     Mixin(self.frames, Addon.CommonUI.Mixins.Border)
-    self.frames:OnBorderLoaded("rlbk", TABCONTROL_BORDER, TABCONROL_BACK)
+    self.frames:OnBorderLoaded("rlbk", Colors:Get("TABCONTROL_BORDER"), Colors:Get("TABCONROL_BACK"))
     self.__tabs = {}
 
-    self.tabsNear = self:CreateTexture(nil, "BORDER")
-    self.tabsNear:SetColorTexture(TABCONTROL_BORDER:GetRGBA())
-    self.tabsNear:SetHeight(1)
-    self.tabsNear:SetPoint("TOPLEFT", self.frames)
+    self.tabsNear = self:CreateLine("BORDER")
+    UI.SetColor(self.tabsNear, "TABCONTROL_BORDER")
+    self.tabsNear:SetThickness(1)
+    self.tabsNear:SetStartPoint("TOPLEFT", self.frames, 0, -1)
     self.tabsNear:Show()
 
-    self.tabsFar = self:CreateTexture(nul, "BORDER")
-    self.tabsFar:SetColorTexture(TABCONTROL_BORDER:GetRGBA())
-    self.tabsFar:SetHeight(1)
-    self.tabsFar:SetPoint("TOPRIGHT", self.frames)
+    self.tabsFar = self:CreateLine("BORDER")
+    UI.SetColor(self.tabsFar, "TABCONTROL_BORDER")
+    self.tabsFar:SetThickness(1)
+    self.tabsFar:SetEndPoint("TOPRIGHT", self.frames, 0, -1)
     self.tabsFar:Show()
+
+    self.tabsMiddle = self:CreateLine("BORDER")
+    UI.SetColor(self.tabsFar, "TABCONTROL_BORDER")
+    self.tabsMiddle:SetThickness(1)
+    self.tabsMiddle:Hide()
 end
 
 --[[ Find a tab with the specified id ]]
@@ -188,8 +196,11 @@ end
 
 function TabControl:ActivateTab(tab)
     local frame = tab:GetFrame()
+    local host = self.frames
 
     frame:ClearAllPoints()
+    --frame:SetWidth(host:GetWidth() - (2 * CONTENT_PADDING_X))
+    --frame:SetHeight(host:GetHeight() - ( 2 * CONTENT_PADDING_Y))
     frame:SetPoint("TOPLEFT", self.frames, CONTENT_PADDING_X, -CONTENT_PADDING_Y)
     frame:SetPoint("BOTTOMRIGHT", self.frames, -CONTENT_PADDING_X, CONTENT_PADDING_Y)
     
@@ -202,8 +213,8 @@ function TabControl:ActivateTab(tab)
     tab:Activate()
     self.__active = tab;
 
-    self.tabsNear:SetPoint("RIGHT", tab, "LEFT", 1, 0)
-    self.tabsFar:SetPoint("LEFT", tab, "RIGHT", -1, 0)
+    self.tabsNear:SetEndPoint("BOTTOMLEFT", tab, 0, 0)
+    self.tabsFar:SetStartPoint("BOTTOMRIGHT", tab, -1, 0)
 
     return tab
 end

@@ -4,6 +4,8 @@
     <Script file="features/vendor/RulesTab.lua"/>
     <Script file="features/vendor/SettingsTab.lua"/>
     <Script file="features/vendor/HelpTab.lua"/>
+    <Script file="features/vendor/ProfilesTab.lua"/>
+    <Script file="features/vendor/ProfileItem.lua"/>
     <Script file="features/vendor/HistoryTab.lua"/>
     <Script file="features/vendor/HistoryItem.lua"/>
     <Script file="features/vendor/RuleItem.lua"/>
@@ -11,4 +13,6 @@
 
     <Include file="features/vendor/MainDialog.xml"/>
     <Include file="features/vendor/Rules.xml"/>
+    <Include file="features/vendor/Profiles.xml"/>
+
 </Ui>

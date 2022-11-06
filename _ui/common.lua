@@ -129,8 +129,15 @@ Addon.CommonUI.Mixins.ScrollView = {
 }
 
 local Border = {}
-local DEFAULT_BORDER = { r = 1, g = 1, b = 1, a = 0.5 }
-local DEFAULT_BACKGROUND = { r = 0, b = 0, g = 0, a = 0.25 }
+
+--[[ Get a color defined in the XML ]]
+local function borderGetColor(border, key, default)
+    if (type(border[key]) == "string") then
+        return Colors:Get(border[key])
+    end
+
+    return Colors:Get(default)
+end
 
 function Border:OnBorderLoaded(parts, borderColor, backColor)
     self.borders = {}
@@ -138,6 +145,7 @@ function Border:OnBorderLoaded(parts, borderColor, backColor)
     local border = self:CreateTexture(nil, "BORDER")
     border:SetPoint("TOPLEFT")
     border:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, -1)
+    border:SetHeight(1)
     self.borderTop = border
 
     border = self:CreateTexture(nil, "BORDER")
@@ -159,15 +167,21 @@ function Border:OnBorderLoaded(parts, borderColor, backColor)
     self.borderRight = border
 
     border = self:CreateTexture(nil, "BACKGROUND")
-    border:SetPoint("LEFT", 1, 0)
-    border:SetPoint("RIGHT", -1, 0)
-    border:SetPoint("TOP", 0, -1)
-    border:SetPoint("BOTTOM", 0, 1)
     self.background = border
 
     self:SetBorderParts(parts or "lrtbk")
-    self:SetBackgroundColor(backColor or self.backgroundColor or DEFAULT_BACKGROUND)
-    self:SetBorderColor(borderColor or self.borderColor or DEFAULT_BORDER)
+
+    -- Set the background color 
+    if (not backColor) then
+        backColor = borderGetColor(self, "BackgroundColor", "DEFAULT_BACKGROUND")
+    end
+    self:SetBackgroundColor(backColor)
+
+    -- Set the border
+    if (not borderColor) then
+        borderColor = borderGetColor(self, "BorderColor", "DEFAULT_BORDER")
+    end
+    self:SetBorderColor(borderColor)
 end
 
 function Border:CreateBorderTexture(horiz)
@@ -183,18 +197,21 @@ end
 
 function Border:SetBorderParts(parts)
     parts = parts or ""
+    local background = self.background
 
     -- top
     if (string.find(parts, "t")) then
         self.borderTop:Show()
+        background:SetPoint("TOP", self.borderTop, "BOTTOM")
     else
         self.borderTop:Hide()
+        background:SetPoint("TOP")
     end
 
     -- bottom 
     if (string.find(parts, "b")) then
         self.borderBottom:Show()
-        self.background:SetPoint("BOTTOM", 0, 1)
+        self.background:SetPoint("BOTTOM", self.borderBottom, "TOP")
     else
         self.borderBottom:Hide()
         self.background:SetPoint("BOTTOM")
@@ -202,16 +219,20 @@ function Border:SetBorderParts(parts)
 
     -- left
     if (string.find(parts, "l")) then
+        self.background:SetPoint("LEFT", self.borderLeft, "RIGHT")
         self.borderLeft:Show()
     else
         self.borderLeft:Hide()
+        self.background:SetPoint("LEFT")
     end
 
     -- right
     if string.find(parts, "r") then
+        self.background:SetPoint("RIGHT", self.borderRight, "LEFT")
         self.borderRight:Show()
     else
         self.borderRight:Hide()
+        self.background:SetPoint("RIGHT")
     end
 
     -- background
@@ -298,17 +319,18 @@ Addon.CommonUI.Mixins.Tooltip =
         if (type(func) == "function") then
             local success, show = xpcall(self.HasTooltip, self)
             if (not success or not show) then
-                return 
+                return
             end
         end
 
         -- Invoke the tooltip
         GameTooltip:SetOwner(self, "ANCHOR_NONE")
         GameTooltip:ClearAllPoints()
-        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 2, -2)
+
         func = self.OnTooltip
         if (type(func) == "function") then
-            xpcall(self.OnTooltip, self, GameTooltip)
+            xpcall(self.OnTooltip, CallErrorHandler, self, GameTooltip)
         end
 
         GameTooltip:Show()

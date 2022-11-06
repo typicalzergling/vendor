@@ -8,6 +8,8 @@ local AddonColors = Addon.Colors
 Addon.CommonUI.Colors =
 {
     TRANSPARENT = TRANSPARENT,
+    DEFAULT_BORDER = CreateColor(1, 1,1, 0.5),
+    DEFAULT_BACKGROUND = CreateColor(0, 0, 0, 0.25),
 
     TEXT = WHITE_FONT_COLOR,
     HOVER_TEXT = YELLOW_FONT_COLOR,
@@ -26,7 +28,6 @@ Addon.CommonUI.Colors =
 
     HOVER_BACKGROUND = CreateColor(1, 1, 1, 0.125),
     HOVER_BORDER = CreateColor(1, 1, 0, 0.125),
-
 
     -- Dialog Colors
     DIALOG_BACK_COLOR = CreateColor(0.4, 0.45, 0.4, 0.5),
@@ -70,6 +71,20 @@ Addon.CommonUI.Colors =
     CHECKBOX_HOVER_BACK = CreateColor(1, 1, 1, 0.05),
     CHECKBOX_CHECK = CreateColor(1, 1, 0, 0.6),
     CHECKBOX_DISABLED = CreateColor(1, 1, 1, .5),
+
+    -- Tab Controls
+    TABCONTROL_BORDER = CreateColor(1, 1, 1, .60),
+    TABCONROL_BACK = { r = 0, g = 0, b = 0, a = 0 },
+    TABCONTROL_TEXT = YELLOW_FONT_COLOR,
+
+    TABCONTROL_INACTIVE_BORDER = CreateColor(1, 1, 1, .40),
+    TABCONTROL_INACTIVE_TEXT = CreateColor(1, 1, 1, 0.6),
+    TABCONTROL_INACTIVE_BACK = TRANSPARENT,
+
+    TABCONTROL_ACTIVE_BORDER = CreateColor(1, 1, 1, .60),
+    TABCONTROL_ACTIVE_TEXT = YELLOW_FONT_COLOR,
+    TABCONTROL_ACTIVE_BACK = CreateColor(.4, .4, .4, .1),
+    
 
     --[[ Retrieves the specified color or RED to indicate error ]]
     Get = function(self, key, defaultColor)

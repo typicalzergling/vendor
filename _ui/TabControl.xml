@@ -6,9 +6,8 @@
             <Layer level="ARTWORK">
                 <FontString parentKey="text" inherits="GameFontNormal" justifyH="CENTER" maxLines="1" justifyV="MIDDLE">
                     <Anchors>
-                        <Anchor point="LEFT" x="10"/>
-                        <Anchor point="TOP"/>
-                        <Anchor point="BOTTOM"/>
+                        <Anchor point="TOPLEFT" x="10"/>
+                        <Anchor point="BOTTOMLEFT" x="10"/>
                     </Anchors>
                 </FontString>
             </Layer>

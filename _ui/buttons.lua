@@ -236,12 +236,13 @@ function Layouts.Flow(frame, marginX, marginY)
     frame:SetHeight(height)
 end
 
-function Layouts.Stack(panel, children, padding, spacing)
+function Layouts.Stack(panel, children, padding, spacing, panelWidth)
     local paddingTop = 0
     local paddingBottom = 0
     local paddingLeft = 0
     local paddingRight = 0
     local space = 0
+    local width = panelWidth or panel:GetWidth()
 
     if (type(spacing) == "number") then
         space = spacing
@@ -260,13 +261,15 @@ function Layouts.Stack(panel, children, padding, spacing)
     end
 
     local height = paddingTop
+    width = width - (paddingLeft + paddingRight)
     for i, child in ipairs(children) do
         if (child:IsShown()) then
             local objectType = child:GetObjectType()
 
             child:ClearAllPoints()
+            child:SetWidth(width)
             child:SetPoint("TOPLEFT", panel, "TOPLEFT", paddingLeft, -height)
-            child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -paddingRight, -height)
+            --child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -paddingRight, -height)
 
             if (objectType == "FontString") then
                 child:SetHeight(0)
@@ -281,7 +284,9 @@ function Layouts.Stack(panel, children, padding, spacing)
         end
     end
 
-    panel:SetHeight(height + paddingBottom)
+    height = height + paddingBottom
+    panel:SetHeight(height)
+    return height
 end
 
 local ChipList = {}

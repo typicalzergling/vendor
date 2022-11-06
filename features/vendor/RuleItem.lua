@@ -4,23 +4,11 @@ local locale = Addon:GetLocale()
 local Colors = Addon.CommonUI.Colors
 local Layouts = Addon.CommonUI.Layouts
 local RuleItem = Mixin({}, Addon.CommonUI.Mixins.Tooltip)
+local UI = Addon.CommonUI.UI
 
 local AddonColors = Addon.Colors
 AddonColors.ENABLED_RULE_BACK = CreateColor(0, 1, 0, .125)
 AddonColors.HOVER_RULE_BACK = CreateColor(1, 1, 0, .10)
-
-local UI = {
-    SetColor = function(item, name)
-        local color = Colors:Get(name)
-        local type = item:GetObjectType()
-
-        if (type == "FontString") then
-            item:SetTextColor(color:GetRGBA())
-        elseif (type == "Texture" or type == "Line") then
-            item:SetColorTexture(color:GetRGBA())
-        end
-    end
-}
 
 -- Helper for debugging
 local function debug(msg, ...)

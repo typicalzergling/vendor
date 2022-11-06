@@ -18,6 +18,14 @@ function Profile:IsActive()
 	return (self.active == true);
 end
 
+--[[ Check equallity ]]
+function Profile:Equals(other)
+	if (other) then
+		return self.profileId == other:GetId()
+	end
+	return false
+end
+
 --[[===========================================================================
    | Changes the active state of this profile.
    ==========================================================================]]
@@ -34,7 +42,7 @@ end
    | collesing duplictes.
    ==========================================================================]]
 function Profile:RaiseOnChanged()
-	if (self.active) then
+	--if (self.active) then
 		if (self.timer) then
 			self.timer:Cancel();
 			self.timer = false;
@@ -43,10 +51,10 @@ function Profile:RaiseOnChanged()
 		self.timer = C_Timer.NewTimer(0.15, 
 			function() 
 				self.timer = false;
+				Addon:Debug("profile", "Profile[%s] raising onChanged", self.profileId);
 				self:TriggerEvent("OnChanged", self);
-				Addon:RaiseEvent(PROFILE_CHANGED, self)
 			end);
-	end	
+	--end	
 end
 
 --[[===========================================================================
