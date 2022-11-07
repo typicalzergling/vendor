@@ -298,6 +298,7 @@ ALWAYS_DESTROY_LIST_NAME = "Destroy",
 ALWAYS_DESTROY_LIST_TOOLTIP = "Items that will be destroyed whenever the Destroy is run, provided they are not also matching a Sell or Keep rule.",
 RULES_DIALOG_HELP_TAB = "Help",
 RULES_DIALOG_EMPTY_LIST = "There are no items in this list. Drag an item onto this area to add it to this list.",
+CONFIG_DIALOG_CREATE_LIST = "Create",
 
 RULES_DIALOG_RULES_TAB = "Rules",
 RULES_TAB_HELPTEXT = "Rules are processed in the following order: Keep -> Sell -> Destroy|n"..

@@ -13,7 +13,13 @@ function MainDialog:OnInitDialog(dialog)
 
 	local tabs = self.tabs
 	tabs:AddTab("rules", "CONFIG_DIALOG_RULES_TAB", "Vendor_RulesTab", self.RulesTab)
-	tabs:AddTab("lists", "CONFIG_DIALOG_LISTS_TAB", "Vendor_ListsTab", {})
+
+	-- If the lists feature is enabled add the tab
+	if (Addon:IsFeatureEnabled("Lists")) then
+		local lists = Addon:GetFeature("Lists")
+		tabs:AddTab(lists:GetTab())
+	end
+
 	tabs:AddTab("audit", "CONFIG_DIALOG_AUDIT_TAB", "Vendor_HistoryTab", self.HistoryTab, 1)
 	tabs:AddTab("profiles", "OPTIONS_PROFILE_TITLE", "Vendor_ProfilesTab", "Features.Vendor.ProfilesTab", 1)
 	tabs:AddTab("settings", "RULES_DIALOG_CONFIG_TAB", "Vendor_SettingsTab", self.SettingsTab, 1)

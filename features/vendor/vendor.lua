@@ -3,12 +3,12 @@ local locale = Addon:GetLocale()
 local MainFeature = {
     NAME = "Vendor", 
     VERSION = 1,
-	DEPENDENCIES = { "Rules",  "Settings" }
+	DEPENDENCIES = { "Rules",  "Settings", "Lists" }
 }
 
 --[[ Called when feature is initialized ]]
 function MainFeature:OnInitialize()
-	--self:ShowDialog("profiles")
+	self:ShowDialog("lists")
 end
 
 --[[ Callback for when the feature is terminated ]]

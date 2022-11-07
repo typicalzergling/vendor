@@ -37,4 +37,20 @@
         <Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "ChipList")</OnLoad></Scripts>
     </Frame>
 
+    <Button name="CommonUI_IconButton" virtual="true">
+        <Scripts>        
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "IconButton")</OnLoad>
+        </Scripts>
+        <Size x="120" y="28"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="icon">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-2"/>
+                        <Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Button>
 </Ui>

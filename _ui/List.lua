@@ -163,7 +163,9 @@ local function _createItem(list, state, model)
         end
 
         frame = CreateFrame("Button", nil, state.scroller:GetScrollChild(), template)
-        Addon.AttachImplementation(frame, state.itemclass, true)
+        --Addon.AttachImplementation(frame, state.itemclass, true)
+        Addon.CommonUI.UI.Prepare(frame)
+        Addon.CommonUI.UI.Attach(frame, state.itemclass)
     end
     
     -- Create the actual item, and attach our implementaition
@@ -395,11 +397,12 @@ end
 ]]
 function List:Select(item)
     local state = rawget(self, STATE_KEY)
-    local sel = nil;
+    local sel = self:FindItem(item)
 
     local currentSel = self:GetSelected();
     local newSel = nil;
 
+    if (not sel) then
     if (type(item) == "number") then
         if (not state.items) then
             state.items = _getItems(self)
@@ -421,6 +424,7 @@ function List:Select(item)
         end
     elseif (type(item) == "table") then
         sel = self:FindItem(item);
+    end
     end
 
     for _, frame in pairs(state.frames) do

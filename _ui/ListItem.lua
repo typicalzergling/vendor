@@ -144,6 +144,14 @@ function ListItem:GetList()
     return state.list
 end
 
+--[[ Select this item ]]
+function ListItem:Select()
+    local state = rawget(self, STATE_KEY)
+    if (state.list) then
+        state.list:Select(state.model)
+    end
+end
+
 --[[===========================================================================
 	| Attach the list item
 	========================================================================--]]
@@ -191,6 +199,8 @@ function ListItem:Notify(event, ...)
             if (type(target) == "function") then
                 pcall(target, parent, self, ...)
             end
+        elseif (type(handler) == "function") then
+            pcall(handler, state.list, ...)
         end
     end
 end

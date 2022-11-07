@@ -297,19 +297,22 @@ Addon.CommonUI.Mixins.Debounce =
 Addon.CommonUI.Mixins.Tooltip =
 {
     InitTooltip = function(self)
-        self:SetScript("OnEnter", function()
-            if (type(self.OnEnter) == "function") then
-                self:OnEnter()
-            end            
-            self:TooltipEnter()
-        end)
+        self:SetScript("OnEnter",
+            function(frame)
+                print("--> tip")
+                if (type(frame.OnEnter) == "function") then
+                    frame:OnEnter()
+                end            
+                frame:TooltipEnter()
+            end)
 
-        self:SetScript("OnLeave", function()
-            self:TooltipLeave()
-            if (type(self.OnLeave) == "function") then
-                self:OnLeave()
-            end
-        end)
+        self:SetScript("OnLeave",
+            function(frame)
+                frame:TooltipLeave()
+                if (type(frame.OnLeave) == "function") then
+                    frame:OnLeave()
+                end
+            end)
     end,
 
     --[[ Called to see if we should show a tooltip ]]
@@ -317,16 +320,27 @@ Addon.CommonUI.Mixins.Tooltip =
         -- Should we show a tooltip?
         local func = self.HasTooltip
         if (type(func) == "function") then
-            local success, show = xpcall(self.HasTooltip, self)
+            local success, show = xpcall(self.HasTooltip, CallErrorHandler, self)
             if (not success or not show) then
                 return
             end
         end
 
+        local offsetX = 2
+        local offsetY = -2
+
+        if (type(self.TooltipOffsetX) == "number") then
+            offsetX = self.TooltipOffsetX
+        end
+
+        if (type(self.TooltipOffsetY) == "number") then
+            offsetY = self.TooltipOffsetY
+        end
+
         -- Invoke the tooltip
         GameTooltip:SetOwner(self, "ANCHOR_NONE")
         GameTooltip:ClearAllPoints()
-        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 2, -2)
+        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", offsetX, -offsetY)
 
         func = self.OnTooltip
         if (type(func) == "function") then
