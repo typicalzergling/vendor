@@ -90,9 +90,8 @@ function Addon:DoGetItemProperties(itemObj)
     -- If it's bag and slot then the count can be retrieved, if it isn't
     -- then it must be an inventory slot, which means 1.
     local count = 1
-    if location and location:IsBagAndSlot() then
-        local bag, slot = location:GetBagAndSlot()
-        count = (C_Container.GetContainerItemInfo(bag, slot)).stackCount
+    if location then
+        count = C_Item.GetStackCount(location) or 1
     end
 
     -- Item properties may already be cached, if so use it.
@@ -164,7 +163,7 @@ function Addon:DoGetItemProperties(itemObj)
     item.SubTypeId = getItemInfo[13]
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
-    item.StackCount = 1
+    item.StackCount = item.Count
     item.UnitValue = getItemInfo[11] or 0
     item.TotalValue = item.UnitValue * item.Count
     item.UnitGoldValue = math.floor(item.UnitValue / 10000)
@@ -179,7 +178,6 @@ function Addon:DoGetItemProperties(itemObj)
     --IsItemSpecificToPlayerClass
 
     if (location) then 
-        item.StackCount = C_Item.GetStackCount(location) or 1
         item.IsConduit = C_Item.IsItemConduit(location) or false
     end
 

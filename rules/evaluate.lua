@@ -41,7 +41,11 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
             function(item, bag, slot)
                 local result = rulesEngine:Evaluate(item);
                 if (result) then
-                    table.insert(results, ItemLocation:CreateFromBagAndSlot(bag, slot));
+                    -- TODO: Change this to use item GUID for results and populate making item from GUID
+                    -- Can also set tooltip by GUID now.
+                    -- Do deep copy so that location doesn't potentially get tainted.
+                    local locationCopy = Addon.DeepTableCopy(ItemLocation:CreateFromBagAndSlot(bag, slot))
+                    table.insert(results, locationCopy);
                 end
                 return true;
            end, 0, NUM_BAG_SLOTS);
