@@ -125,7 +125,7 @@ function ListsPanel:OnLoad()
 
     self.Lists.GetItems = function()
         if (not self.lists) then
-            local lists = table.copy(SYSTEM_LISTS)
+            local lists = Addon.DeepTableCopy(SYSTEM_LISTS)
             
             for _, customList in ipairs(Addon:GetListManager():GetLists()) do
                 table.insert(lists, {

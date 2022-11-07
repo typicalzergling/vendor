@@ -17,7 +17,7 @@ function RulesDialog:Open(tab)
         tabIndex = tab;
     elseif (type(tab) == "string") then
         tab = string.lower(tab)
-        local frame = assert(table.find(self.Tabs, function(t) 
+        local frame = assert(Addon.TableFind(self.Tabs, function(t) 
             return (t.TabName == tab)
         end), string.format("The tab name '%s' is not valid", tab))
         tabIndex = frame:GetID()

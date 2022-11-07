@@ -356,9 +356,9 @@ function EditRule:OnScriptChanged(text)
                 print(string.match(msg, "(%[.*%]:%d:)(.*)"))
                 local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
                 if (err) then
-                    errorMessage = string.trim(err)
+                    errorMessage = Addon.StringTrim(err)
                 else
-                    errorMessage = string.trim(msg)
+                    errorMessage = Addon.StringTrim(msg)
                 end
             end
         end
@@ -425,7 +425,7 @@ end
 ]]
 local function validateString(str)    
     if (type(str) == "string") then
-        str = string.trim(str)
+        str = Addon.StringTrim(str)
         return string.len(str) ~= 0
     end
 

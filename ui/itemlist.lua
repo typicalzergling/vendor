@@ -33,7 +33,7 @@ end
 -- Sets the list of items to display, this is either an array of ItemLocations,
 -- a list of item links, or numeric list of item ids.
 function ItemList:SetContents(itemList)
-	self.contents = table.copy(itemList or {});
+	self.contents = Addon.DeepTableCopy(itemList or {});
 	self.List.ItemTemplate = "Vendor_ListItem_Item";
 	if (self:IsReadOnly()) then
 		self.List.ItemTemplate = "Vendor_ListItem_Item_ReadOnly";

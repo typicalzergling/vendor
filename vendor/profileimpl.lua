@@ -182,7 +182,7 @@ function Addon:OnCreateDefaultProfile(profile)
 		if (Vendor_Settings) then
 			for setting, value in pairs(Vendor_Settings) do
 				if ((setting ~= "version") and (setting ~= "interfaceversion")) then
-					if (table.hasKey(Addon.DefaultConfig.Settings, setting)) then
+					if (Addon.TableHasKey(Addon.DefaultConfig.Settings, setting)) then
 						defaultProfile:SetValue(setting, value);
 					end
 				end
@@ -243,7 +243,7 @@ function Addon:OnInitializeProfile(profile)
 	profile:SetValue(PROFILE_DESTROY_RULES, Addon.DefaultConfig.Rules.destroy or {});
 
 	-- Copy the default settings into the new profile.
-	table.forEach(Addon.DefaultConfig.Settings, 
+	Addon.TableForEach(Addon.DefaultConfig.Settings, 
 		function(value, name)
 			profile:SetValue(name, value);
 		end);

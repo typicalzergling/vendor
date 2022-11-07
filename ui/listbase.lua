@@ -153,7 +153,7 @@ end
     ========================================================================--]]
 function ListBase:FindItem(model)
     if (self.items) then
-        return table.find(self.items, 
+        return Addon.TableFind(self.items, 
             function(item) 
                 return ListBase.IsModel, item, model;
             end);

@@ -71,13 +71,13 @@ end
 -- Loads / Populates this object with the contentes of the saved variable.
 function RuleConfigObject:Load(saved)
 	debug("Loading rule configuration");
-	self.rules = table.copy(saved or {});
+	self.rules = Addon.DeepTableCopy(saved or {});
 end
 
 -- Saves our current configuration
 function RuleConfigObject:Save()
 	debug("Saving rule configuration");
-	return table.copy(self.rules or  {});
+	return Addon.DeepTableCopy(self.rules or  {});
 end
 
 local function CreateConfig(rule)
@@ -85,7 +85,7 @@ local function CreateConfig(rule)
 	if (t == "string") then
 		return t;
 	elseif (t == "table") then
-		return table.copy(rule);
+		return Addon.DeepTableCopy(rule);
 	end
 
 	error("Unknown rule configuration option");
@@ -95,7 +95,7 @@ end
 function RuleConfigObject:Set(ruleId, parameters)
 	local rule = ruleId; 
 	if (type(parameters) == "table") then
-		rule = table.copy(parameters);
+		rule = Addon.DeepTableCopy(parameters);
 		rule.rule = ruleId;
 	end
 

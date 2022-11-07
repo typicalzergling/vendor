@@ -41,9 +41,9 @@ local function paragraph(parent, line, nextLine)
     while (line and string.len(line) ~= 0) do
         if (string.len(line) ~= 0) then
             if (paragraph) then
-                paragraph = paragraph .. " " .. string.trim(line)
+                paragraph = paragraph .. " " .. Addon.StringTrim(line)
             else
-                paragraph = string.trim(line)
+                paragraph = Addon.StringTrim(line)
             end
         end
 
@@ -70,7 +70,7 @@ local function header(parent, line, nextLine)
     end
 
     local frame = CreateFrame("Frame", nil, parent, "Markdown_Header_One")
-    frame.content:SetText(string.trim(line:sub(s)))
+    frame.content:SetText(Addon.StringTrim(line:sub(s)))
     frame.content:SetTextColor(Colors.TEXT:GetRGBA())
     frame.Margins = HEADER_MARGINS
 
@@ -100,9 +100,9 @@ local function list(parent, line, nextLine)
         makeItem(itemText)
       end
 
-      itemText = string.trim(line:sub(2))
+      itemText = Addon.StringTrim(line:sub(2))
     else
-      itemText = (itemText .. " " .. string.trim(line))
+      itemText = (itemText .. " " .. Addon.StringTrim(line))
     end
 
     line = nextLine()

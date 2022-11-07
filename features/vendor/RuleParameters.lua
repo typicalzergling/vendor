@@ -65,7 +65,7 @@ function RuleParameter:SetDefault()
 end
 
 --[[==== BooleanParameter =====================================================]]
-local BooleanParameter = table.copy(RuleParameter)
+local BooleanParameter = Addon.DeepTableCopy(RuleParameter)
 
 --[[ Initializes a boolean param ]]
 function BooleanParameter:SetParam(param)
@@ -112,7 +112,7 @@ function BooleanParameter:GetValue()
 end
 
 --[[==== NumberParameter ======================================================]]
-local NumberParameter = table.copy(RuleParameter)
+local NumberParameter = Addon.DeepTableCopy(RuleParameter)
 
 function NumberParameter:SetParam(param)
     self.name:SetFormattedText("%s:", param.Name)
@@ -138,7 +138,7 @@ function NumberParameter:GetValue()
 end
 
 --[[==== StringParameter ======================================================]]
-local StringParameter = table.copy(RuleParameter)
+local StringParameter = Addon.DeepTableCopy(RuleParameter)
 
 function StringParameter:SetParam(param)
     self.name:SetFormattedText("%s:", param.Name)

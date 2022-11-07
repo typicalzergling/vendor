@@ -73,7 +73,7 @@ end
 function BaseEdit:HasText()
     local text = self.control:GetText()
     if (type(text) == "string") then
-        text = string.trim(text)
+        text = Addon.StringTrim(text)
     end
 
     return (type(text) == "string") and (string.len(text) ~= 0)
@@ -85,7 +85,7 @@ function BaseEdit:GetText()
         return nil
     end
 
-    return string.trim(text)
+    return Addon.StringTrim(text)
 end
 
 function BaseEdit:SetText(text)
@@ -94,7 +94,7 @@ function BaseEdit:SetText(text)
     if type(text) ~= "string" then
         self.control:SetText("")
     else
-        self.control:SetText(string.trim(text))
+        self.control:SetText(Addon.StringTrim(text))
     end
 
     if (not self.control:HasFocus()) then
@@ -144,7 +144,7 @@ function BaseEdit:_HandleTextChange()
         if (self.Handler) then
             local text = self.control:GetText()         
             if (type(text) == "string") then
-                text = string.trim(text)
+                text = Addon.StringTrim(text)
             else
                 text = nil
             end

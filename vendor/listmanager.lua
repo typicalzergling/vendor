@@ -46,7 +46,7 @@ function CustomListManager:UpdateListContents(listId, items)
 		return false
 	end
 
-	list.Items = table.copy(items or EMPTY)
+	list.Items = Addon.DeepTableCopy(items or EMPTY)
 	savedLists:Set(listId, list)	
 	Addon:Debug("test", "firing event %s", listId)
 	self:TriggerEvent("OnListChanged", listId, "UPDATED")
@@ -85,7 +85,7 @@ function CustomListManager:GetList(search)
 			Id = resultId,
 			Name = result.Name,
 			Description = result.Description,
-			Items = table.copy(result.Items or EMPTY)
+			Items = Addon.DeepTableCopy(result.Items or EMPTY)
 		}
 	end
 

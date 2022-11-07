@@ -20,7 +20,7 @@ function TabFrameMixin:InitializeTabs(tabs, panels, active)
     
     self.tfTabs = tabs or {};
     self.tfPanels = panels or {}; 
-    --table.forEach(self.tfTabs, PanelTemplates_TabResize, 0);
+    --Addon.TableForEach(self.tfTabs, PanelTemplates_TabResize, 0);
     self.selectedTab = math.min(#self.Tabs, selectedTab or 0);
     PanelTemplates_SetNumTabs(self, table.getn(self.Tabs));
     pcall(function() PanelTemplates_UpdateTabs(self) end);
@@ -41,7 +41,7 @@ function TabFrameMixin:SetActiveTab(tabId, quiet)
         local tab = assert(self:GetTab(tabId), string.format("Expected %d tab to be valid", tabId));
         --PanelTemplates_Tab_OnClick(tab, self);
         
-        table.forEach(self.tfPanels, 
+        Addon.TableForEach(self.tfPanels, 
             function(panel)
                 if (panel:GetID() == tabId) then
                     panel:Show();
@@ -65,14 +65,14 @@ end
     | Retrieve the tab with associated id
     ========================================================================--]]
 function TabFrameMixin:GetTab(tabId)
-    return table.find(self.tfTabs, idPredicate, tabId);
+    return Addon.TableFind(self.tfTabs, idPredicate, tabId);
 end
 
 --[[===========================================================================
     | Gets the panel associated with te specified tab.
     ========================================================================--]]
 function TabFrameMixin:GetTabPanel(tabId)
-    return table.find(self.tfPanels, idPredicate, tabId);
+    return Addon.TableFind(self.tfPanels, idPredicate, tabId);
 end
 
 Addon.Controls = Addon.Controls or {}

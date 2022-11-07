@@ -4,7 +4,7 @@
 
 local AddonName, Addon = ...
 local ListItem = Addon.Controls.ListItem
-local SimpleList = table.copy(Addon.Controls.List);
+local SimpleList = Addon.DeepTableCopy(Addon.Controls.List);
 
 --[[===========================================================================
 	| OnLoad handler for the list base, sets some defaults and hooks up

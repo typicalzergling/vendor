@@ -93,7 +93,7 @@ local function lifetimeEventHandler(frame, event, ...)
     if event == "PLAYER_LOGIN" then
 
         -- Safe call all initialization functions.
-        local initActions = table.copy(onInitializeActions)
+        local initActions = Addon.DeepTableCopy(onInitializeActions)
         onInitializeActions = {}
         isInitialized = true
 

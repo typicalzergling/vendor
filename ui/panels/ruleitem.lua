@@ -371,13 +371,13 @@ function RuleItem:OnContextMenu()
             func = function()
                 local editRule = Addon:GetFeature("Dialogs")
                 print("=== editRule:", editRule)
-                table.forEach(ediRule, print)
+                Addon.TableForEach(ediRule, print)
                 editRule:ShowEditRule(self:GetModel().Rule.Id)
             end
         })		
     end
 
-    table.insert(menu, table.copy(MENU_DIVIDER))
+    table.insert(menu, Addon.DeepTableCopy(MENU_DIVIDER))
 
     if (not model.Enabled) then
         table.insert(menu, {
@@ -420,7 +420,7 @@ function RuleItem:OnContextMenu()
     end
 
     if (model.Rule.Custom) then    
-        table.insert(menu, table.copy(MENU_DIVIDER))
+        table.insert(menu, Addon.DeepTableCopy(MENU_DIVIDER))
         
         table.insert(menu, {
             isNotRadio = true,
@@ -434,7 +434,7 @@ function RuleItem:OnContextMenu()
         })		
     end
 
-    table.insert(menu, table.copy(MENU_DIVIDER))
+    table.insert(menu, Addon.DeepTableCopy(MENU_DIVIDER))
     table.insert(menu, {
         isNotRadio = true,
         notCheckable = true,

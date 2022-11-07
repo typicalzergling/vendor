@@ -251,7 +251,7 @@ end
         end,
     }
 
-    return Addon.object("SystemBlockList", instance, table.merge(BlockList, SystemBlockList))
+    return Addon.object("SystemBlockList", instance, Addon.TableMerge(BlockList, SystemBlockList))
 end
 
 local CustomBlockList = {}
@@ -277,7 +277,7 @@ end
         end
     }
 
-    return Addon.object("CustomBlockList", instance, table.merge(BlockList, CustomBlockList))
+    return Addon.object("CustomBlockList", instance, Addon.TableMerge(BlockList, CustomBlockList))
 end
 
 local ExtensionList = {}
@@ -323,7 +323,7 @@ end
         end
     }
 
-    return Addon.object("ExtensionList", instance, table.merge(BlockList, ExtensionList))
+    return Addon.object("ExtensionList", instance, Addon.TableMerge(BlockList, ExtensionList))
 end
 
 

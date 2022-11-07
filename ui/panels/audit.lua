@@ -155,7 +155,7 @@ function Audit:GetItems()
 	local items = {}
 
 	local search = self.Search:GetText();
-	if (string.len(string.trim(search)) == 0) then
+	if (string.len(Addon.StringTrim(search)) == 0) then
 		search = nil
 	else
 		search = string.lower(search)

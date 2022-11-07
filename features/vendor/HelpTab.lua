@@ -72,7 +72,7 @@ function HelpTab:CreateNoteItem(model)
     end
 
     frame.content = text
-    text:SetText(string.trim(content or (RED_FONT_COLOR_CODE .. "<error>|r")))
+    text:SetText(Addon.StringTrim(content or (RED_FONT_COLOR_CODE .. "<error>|r")))
     text:SetHeight(2)
     text:SetPoint("TOPLEFT", frame, 6, 0)
     text:SetPoint("TOPRIGHT", frame, -6, 0)

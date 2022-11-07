@@ -32,7 +32,7 @@ end
 
 function RadioButton:SetSelected(selected)
     local peers = self:GetParent().RadioButtons or {}
-    table.forEach(peers,
+    Addon.TableForEach(peers,
         function(button)
             button.Check:SetChecked(button.Value == selected);
         end);
@@ -40,7 +40,7 @@ end
 
 function RadioButton:GetSelected()
     local peers = self:GetParent().RadioButtons or {};
-    local selected = table.find(peers, 
+    local selected = Addon.TableFind(peers, 
         function(button)
             return button.Check:GetChecked();
         end);

@@ -78,7 +78,7 @@ end
 
 function CreateListDialog:OnSave()
 	--if (self.changes) then
-	--	table.forEach(self.changes, print)
+	--	Addon.TableForEach(self.changes, print)
 	--end
 end
 

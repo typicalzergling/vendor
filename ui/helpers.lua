@@ -6,8 +6,8 @@ local function isspace(c)
 end
 
 -- Trim the front of a string
-if (type(string.ltrim) ~= "function") then
-	string.ltrim = function(str)
+if (type(Addon.StringLTrim) ~= "function") then
+	Addon.StringLTrim = function(str)
 		local s = 1;
 		local l = string.len(str);
 
@@ -20,8 +20,8 @@ if (type(string.ltrim) ~= "function") then
 end
 
 -- Trim the end of a string
-if (type(string.rtrim) ~= "function") then
-	string.rtrim = function(str)
+if (type(Addon.StringRTrim) ~= "function") then
+	Addon.StringRTrim = function(str)
 		local e = string.len(str);
 		while (isspace(string.sub(str, e, e)) and (e >= 1)) do
 			e = e - 1;
@@ -31,16 +31,16 @@ if (type(string.rtrim) ~= "function") then
 end
 
 -- Trim both the front and end of a string.
-if (type(string.trim) ~= "function") then
-	string.trim = function(str) 
-		return string.ltrim(string.rtrim(str));
+if (type(Addon.StringTrim) ~= "function") then
+	Addon.StringTrim = function(str) 
+		return Addon.StringLTrim(Addon.StringRTrim(str));
 	end
 end
 
 
--- Add table.forEach
-if (type(table.forEach) ~= "function") then
-	table.forEach = function(t, c, ...) 
+-- Add Addon.TableForEach
+if (type(Addon.TableForEach) ~= "function") then
+	Addon.TableForEach = function(t, c, ...) 
 		assert(type(t) == "table");
         assert(type(c) == "function");
         if (t and table.getn(t)) then
@@ -51,16 +51,16 @@ if (type(table.forEach) ~= "function") then
     end;
 end
 
--- Add table.hasKey
-if (type(table.hasKey) ~= "function") then
-	table.hasKey = function(t, k)
+-- Add Addon.TableHasKey
+if (type(Addon.TableHasKey) ~= "function") then
+	Addon.TableHasKey = function(t, k)
 		return (t[k] ~= nil);
 	end
 end
 
--- Add table.find
-if (type(table.find) ~= "function") then
-	table.find = function(t, p, ...)
+-- Add Addon.TableFind
+if (type(Addon.TableFind) ~= "function") then
+	Addon.TableFind = function(t, p, ...)
 		if (not t) then
 			return nil;
 		end
@@ -77,9 +77,9 @@ if (type(table.find) ~= "function") then
 	end
 end
 
--- Add table.filter
-if (type(table.filter) ~= "function") then
-	table.filter = function(t, p, ...)
+-- Add Addon.TableFilter
+if (type(Addon.TableFilter) ~= "function") then
+	Addon.TableFilter = function(t, p, ...)
 		local f = {};
 		if (not t) then
 			return f;
@@ -97,9 +97,9 @@ if (type(table.filter) ~= "function") then
 	end
 end
 
--- Add table.copy
-if (type(table.copy) ~= "function") then
-	table.copy = function(t)
+-- Add Addon.DeepTableCopy
+if (type(Addon.DeepTableCopy) ~= "function") then
+	Addon.DeepTableCopy = function(t)
 		assert(type(t) == "table");
 		return Addon.DeepTableCopy(t);
 	end

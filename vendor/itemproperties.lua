@@ -84,7 +84,7 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Get base information about the item.
     -- Do a deep copy of location in case this is exposing taint opportunities.
-    local location = table.copy(itemObj:GetItemLocation()) or false
+    local location = Addon.DeepTableCopy(itemObj:GetItemLocation()) or false
     local guid = itemObj:GetItemGUID()
 
     -- If it's bag and slot then the count can be retrieved, if it isn't
@@ -128,7 +128,7 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Populate tooltip and surface args.
     -- Deep copy to avoid tainting blizzard's internal data.
-    item.TooltipData = table.copy(C_TooltipInfo.GetItemByGUID(item.GUID))
+    item.TooltipData = Addon.DeepTableCopy(C_TooltipInfo.GetItemByGUID(item.GUID))
     TooltipUtil.SurfaceArgs(item.TooltipData)
     for _, line in ipairs(item.TooltipData.lines) do
         TooltipUtil.SurfaceArgs(line)

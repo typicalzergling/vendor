@@ -117,7 +117,7 @@ end
 local function CreateModel(name, help)
     local model = { Name = name, Frame = false }
     if (type(help) == "table") then
-        model = table.merge(model, help)
+        model = Addon.TableMerge(model, help)
     elseif (type(help) == "string") then
         model.Text = help
     else
@@ -168,7 +168,7 @@ end
    ===========================================================================]]
 function RuleHelp:CreateItems(filter)
     if (type(filter) == "string") then
-        filter = string.trim(filter)
+        filter = Addon.StringTrim(filter)
         if (string.len(filter) == 0) then
             filter = nil
         else
@@ -196,7 +196,7 @@ end
 function RuleHelp:Filter()	
     if (not self.ignoreUpdate) then
         self.ignoreUpdate = false
-        local text = string.trim(self.FilterText:GetText() or  "");
+        local text = Addon.StringTrim(self.FilterText:GetText() or  "");
         self:CreateItems(text);
         self.View:Update()
     end

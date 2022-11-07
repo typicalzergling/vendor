@@ -107,7 +107,7 @@ function EditRuleDialog:OnLoad()
         end
         
         local current = self.Script:GetText();
-        local empty = not current or (string.len(string.trim(current)) == 0)
+        local empty = not current or (string.len(Addon.StringTrim(current)) == 0)
         local insertText = nil
 
         if (IsControlKeyDown()) then
@@ -207,7 +207,7 @@ function EditRuleDialog:UpdateMatches()
     local matches = {};
 
     if (not self:IsReadOnly()) then
-        if (not ruleDef.Script or (string.len(string.trim(ruleDef.Script)) == 0)) then
+        if (not ruleDef.Script or (string.len(Addon.StringTrim(ruleDef.Script)) == 0)) then
             ruleDef = nil;
         end
     end
@@ -273,7 +273,7 @@ local function isValidString(str)
         return false;
     end
 
-    if (string.len(string.trim(str)) == 0) then
+    if (string.len(Addon.StringTrim(str)) == 0) then
         return false;
     end
 
@@ -540,9 +540,9 @@ function EditRuleDialog:GetRule()
         assert(self.ruleId, "Expected to have a valid rule id if we are editing a rule");
 
         local ruleDef = { Id = self.ruleId };
-        ruleDef.Script = string.trim(self.Script:GetText() or "");
-        ruleDef.Name = string.trim(self.Name:GetText() or "");
-        ruleDef.Description = string.trim(self.Description:GetText() or "");
+        ruleDef.Script = Addon.StringTrim(self.Script:GetText() or "");
+        ruleDef.Name = Addon.StringTrim(self.Name:GetText() or "");
+        ruleDef.Description = Addon.StringTrim(self.Description:GetText() or "");
         ruleDef.SupportsClassic = Addon.IsClassic;
 
         local ruleType = self.RuleTypeSell:GetSelected();

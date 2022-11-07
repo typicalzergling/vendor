@@ -70,7 +70,7 @@ function Profile:SetValue(key, value)
 		if (type(value) ~= "table") then		
 			var[key] = value;
 		else
-			var[key] = table.copy(value);
+			var[key] = Addon.DeepTableCopy(value);
 		end
 
 		Addon:Debug("profile", "Profile[%s] has had '%s' changed", self.profileId, key);
@@ -92,7 +92,7 @@ function Profile:GetValue(key)
 
 	local value = var[key];	
 	if (value == nil) then
-		if (type(self.defaults) == "table" and table.hasKey(key)) then
+		if (type(self.defaults) == "table" and Addon.TableHasKey(key)) then
 			Addon:Debug("profile", "Value '%s' was requested but is not present but there is a default value", key)
 			local default = self.default[key]
 			self:SetValue(key, default)
@@ -101,7 +101,7 @@ function Profile:GetValue(key)
 	end
 	
 	if (type(value) == "table") then
-		return table.copy(value);
+		return Addon.DeepTableCopy(value);
 	end
 
 	return value
@@ -137,7 +137,7 @@ local function CreateProfile(id)
 	};
 	
 	-- Create our object and return it
-	return Addon.object("Profile", instance, table.merge(Addon.Profile or {}, Profile), { "OnChanged" });
+	return Addon.object("Profile", instance, Addon.TableMerge(Addon.Profile or {}, Profile), { "OnChanged" });
 end
 
 Addon.CreateProfile = CreateProfile;

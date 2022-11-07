@@ -219,7 +219,7 @@ function ListBase:CreateItem()
 	local class = self.ItemClass;
 	if ((type(class) == "string") and (string.len(class) ~= 0)) then
 		local scope = Addon;
-		for _, t in ipairs(string.split(class, ".")) do
+		for _, t in ipairs(Addon.StringSplit(class, ".")) do
 			if (scope) then
 				subclass = scope[t];
 				scope = scope[t];

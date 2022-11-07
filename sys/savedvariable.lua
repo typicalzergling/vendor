@@ -23,7 +23,7 @@ Addon.SavedVariable = {
 		if (not var) then
 			if (defaultValue ~= nil) then
 				if (type(defaultValue) == "table") then
-					var = table.copy(defaultValue);
+					var = Addon.DeepTableCopy(defaultValue);
 				else 
 					var = defaultValue;
 				end
@@ -37,7 +37,7 @@ Addon.SavedVariable = {
 
 	Replace = function(self, value)
 		if (type(value) == "table") then
-			_G[self.savedVar] = table.copy(value);
+			_G[self.savedVar] = Addon.DeepTableCopy(value);
 		else
 			_G[self.savedVar] = value;
 		end
@@ -47,7 +47,7 @@ Addon.SavedVariable = {
 		local var = self:GetOrCreate();
 		local value = var[key];
 		if (type(value) == "table") then
-			return table.copy(value);
+			return Addon.DeepTableCopy(value);
 		end
 		return value;
 	end,
@@ -55,7 +55,7 @@ Addon.SavedVariable = {
 	Set = function(self, key, value)
 		local var = self:GetOrCreate();
 		if (type(value) == "table") then
-			var[key] = table.copy(value);
+			var[key] = Addon.DeepTableCopy(value);
 		else
 			var[key] = value;
 		end

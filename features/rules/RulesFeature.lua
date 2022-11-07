@@ -79,7 +79,7 @@ end
 function RulesFeature:FindRule(ruleId)
     local rule, type = Addon.Rules.GetDefinition(ruleId, nil, true)
     if (rule) then
-        rule = table.copy(rule)
+        rule = Addon.DeepTableCopy(rule)
         if (type == "SYSTEM") then
             rule.IsSystem = true
         end
