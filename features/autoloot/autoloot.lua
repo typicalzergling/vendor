@@ -341,7 +341,7 @@ function AutolootFeature:FinishLooting()
     self.lootTable = nil
     self.passed = nil
     self.looted = nil
-    LootFrame_Close()
+    CloseLoot()
 end
 
 function AutolootFeature:CreateLootedString(item)

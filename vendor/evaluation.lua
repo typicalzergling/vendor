@@ -61,7 +61,7 @@ function Addon:EvaluateItem(item)
     end
 
     -- Add item to cache
-    self:Debug("items", "Adding %s to cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
+    self:Debug("resultcache", "Adding %s to cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
     Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype, item.Id)
     
     return retval, ruleid, rule, ruletype
@@ -103,11 +103,10 @@ end
 function Addon:ClearResultCache(arg)
     if not arg then
         resultCache = {}
-        self:Debug("items", "Result Cache cleared.")
+        self:Debug("resultcache", "Result Cache cleared.")
     else
         resultCache[arg] = nil
     end
-    self:ClearTooltipResultCache()
 end
 
 function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
@@ -121,7 +120,7 @@ function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
     cacheEntry.Id = id
 
     assert(guid ~= "")
-    self:Debug("items", "Cached result: %s = %s", guid, result)
+    self:Debug("resultcache", "Cached result: %s = %s", guid, result)
     resultCache[guid] = cacheEntry
 end
 

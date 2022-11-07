@@ -3,7 +3,7 @@ local History = { NAME = "History", VERSION = 1, DEPENDENCIES = { "Rules" } }
 local EVENTS = { "OnHistoryChanged" }
 
 function History:OnInitialize()
-    Addon:GeneratesEvents(EVENTS)
+    Addon:GenerateEvents(EVENTS)
 
     Addon.OnHistoryChanged:Add(function(...)
         Addon:RaiseEvent("OnHistoryChanged", ...)

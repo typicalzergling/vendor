@@ -2,57 +2,6 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
 
--- We are tracking the location to which the tooltip is currently set. This is because blizzard does not expose
--- a way to get the item location of the tooltip item. So we track the state and the location by hooking SetBagItem
--- and SetInventoryItem to squirrel away that data and clear it whenever the tooltip is hidden. This allows us to
--- know whether a tooltip is referring to an item in the player's bags and then get that item information.
-local tooltipLocation = nil
-
-function Addon:GetTooltipItemLocation()
-    return tooltipLocation
-end
-
-local function clearTooltipState()
-    tooltipLocation = nil
-end
-
--- Hook for tooltip SetBagItem
--- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
--- TODO: Move this into skeleton, since this should be what you do for every insecure hook
-function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
-    local status, err = xpcall(
-        function(b, s)
-            tooltipLocation = ItemLocation:CreateFromBagAndSlot(b, s)
-        end,
-        CallErrorHandler, bag, slot)
-    if not status then
-        Addon:Debug("itemerrors", "Error executing OnGameTooltipSetBagItem: ", tostring(err))
-    end
-end
-
--- Hook for SetInventoryItem
--- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
-function Addon:OnGameTooltipSetInventoryItem(tooltip, unit, slot)
-    local status, err = xpcall(
-        function(u, s)
-            if u == "player" then
-                tooltipLocation = ItemLocation:CreateFromEquipmentSlot(s)
-            else
-                clearTooltipState()
-            end
-        end,
-        CallErrorHandler, unit, slot)
-    if not status then
-        Addon:Debug("itemerrors", "Error executing OnGameTooltipSetInventoryItem: ", tostring(err))
-    end
-end
-
--- Hook for Hide
--- This is a secure hook.
-function Addon:OnGameTooltipHide(tooltip)
-    clearTooltipState()
-end
-
 -- Gets information about an item
 -- Here is the list of captured item properties.
 --     Name
@@ -335,28 +284,34 @@ end
 
 -- Existing functionality which uses what we had before
 function Addon:GetItemProperties(arg1, arg2)
+    -- Item GUID passed in
+    if type(arg1) == "string" then
+        return self:GetItemPropertiesFromGUID(arg1)
+    end
+
     -- Location directly passed in
     if type(arg1) == "table" then
-        return self:DoGetItemProperties(Item:CreateFromItemLocation(location))
+        return self:GetItemPropertiesFromLocation(arg1)
     end
 
     -- Bag and Slot passed in
     if type(arg1) == "number" and type(arg2) == "number" then
-        return self:DoGetItemProperties(Item:CreateFromBagAndSlot(arg1, arg2))
+        return self:GetItemPropertiesFromBagAndSlot(arg1, arg2)
     end
-        
+
     assert("Invalid arguments to GetItemProperties")
     return nil
 end
 
 -- From Bag & Slot - Both bag and slot must be numbers and both passed in.
-function Addon:GetItemPropertiesFromBag(bag, slot)
+function Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
+    if not bag or not slot then return nil end
     return self:DoGetItemProperties(Item:CreateFromBagAndSlot(bag, slot))
 end
 
 -- From GUID - This is the best way to get an item.
 function Addon:GetItemPropertiesFromGUID(guid)
-    assert(type(guid) == "string", "GUID must be a string.")
+    if not guid then return nil end
     return self:DoGetItemProperties(Item:CreateFromItemGUID(guid))
 end
 
@@ -373,24 +328,20 @@ function Addon:GetItemPropertiesFromLocation(location)
     return self:DoGetItemProperties(Item:CreateFromItemLocation(location))
 end
 
--- From Link
+-- From Link - Not a great choice, GUID is best.
 function Addon:GetItemPropertiesFromItemLink(itemLink)
-    if (not itemLink) then
-        return nil
-    end
+    if not itemLink then return nil end
     return self:DoGetItemProperties(Item:CreateFromItemLink(itemLink));
 end
 
 -- From Equipment Slot
 function Addon:GetItemPropertiesFromEquipmentSlot(equip)
+    if not equip then return nil end
     return self:DoGetItemProperties(Item:CreateFromEquipmentSlot(equip))
 end
 
--- From Item object
+-- From Item object directly
 function Addon:GetItemPropertiesFromItem(item)
-    if (not item) then
-        return nil
-    end
-
+    if not item then return nil end
     return self:DoGetItemProperties(item)
 end

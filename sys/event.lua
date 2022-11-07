@@ -134,7 +134,7 @@ end
 
 -- Register events which can be raised this is enumeration table 
 -- example: { MY_EVENT = "event" }
-function Addon:GeneratesEvents(events)
+function Addon:GenerateEvents(events)
     assert(events and type(events) == "table", "The events argument must be a table")
     
     local e = {}

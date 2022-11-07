@@ -31,11 +31,13 @@ function Addon:SetupDebugConsoleCommands()
     Addon:RegisterDebugChannel("historystats")
     Addon:RegisterDebugChannel("itemerrors")
     Addon:RegisterDebugChannel("items")
+    Addon:RegisterDebugChannel("itemcache")
     Addon:RegisterDebugChannel("itemproperties")
     Addon:RegisterDebugChannel("profile")
     Addon:RegisterDebugChannel("rules")
     Addon:RegisterDebugChannel("rulesdialog")
     Addon:RegisterDebugChannel("rulesengine")
+    Addon:RegisterDebugChannel("resultcache")
     Addon:RegisterDebugChannel("test")
     Addon:RegisterDebugChannel("threads")
     Addon:RegisterDebugChannel("tooltip")
@@ -65,7 +67,6 @@ end
 
 function Addon:ClearCache_Cmd()
     Addon:ClearItemCache()
-    Addon:ClearResultCache()
     Addon:Print("Item cache and result cache cleared.")
 end
 

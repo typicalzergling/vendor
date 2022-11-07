@@ -9,7 +9,7 @@ local RuleType = Addon.RuleType
 
 function RulesFeature:OnInitialize()
     self:Debug("Initialize Rules Feature")
-    Addon:GeneratesEvents(EVENTS)
+    Addon:GenerateEvents(EVENTS)
 
     return
         -- Internal API

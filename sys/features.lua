@@ -434,7 +434,7 @@ end
    | Called to initialize the the addons features
    ==========================================================================]]
 function Features:Initialize()
-    Addon:GeneratesEvents({ "OnFeatureEnabled", "OnFeatureDisabled", "OnFeatureReady" })
+    Addon:GenerateEvents({ "OnFeatureEnabled", "OnFeatureDisabled", "OnFeatureReady" })
 
     -- After 10 seconds create all the feature objects and then start initialziing 
     -- all of our feastures
@@ -489,7 +489,7 @@ end
     Checks if all the dependecies of the specified featrure eare enabled (ready)
     if they are then 
 ]]
-function Features:CheckDepdencies(feature)
+function Features:CheckDependencies(feature)
     local deps = feature:GetDependencies()
     if (not deps or table.getn(deps) == 0) then
         return true
@@ -518,7 +518,7 @@ function Features:EnableOneFeature()
     -- Enable addons that should be enabled
     for _, feature in pairs(self.features) do
         if not feature:IsEnabled() then
-            if (self:CheckDepdencies(feature)) then
+            if (self:CheckDependencies(feature)) then
                 feature:Enable()
                 C_Timer.After(1,
                     function()

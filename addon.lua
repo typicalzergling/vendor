@@ -21,7 +21,7 @@ BINDING_DESC_VENDORRULES = L["BINDING_DESC_VENDORRULES"]
 -- This is the first event fired after Addon is completely ready to be loaded.
 -- This is one-time initialization and setup.
 function Addon:OnInitialize()
-    self:GeneratesEvents(self.Events)
+    self:GenerateEvents(self.Events)
 
     -- Setup Console Commands
     self:SetupConsoleCommands()
@@ -40,7 +40,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
-    self:RegisterEvent("BAG_CONTAINER_UPDATE", "OnBagContainerUpdate")
+    self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
 
     -- Merchant Button
     self.MerchantButton.Initialize()
@@ -54,4 +54,3 @@ function Addon:OnInitialize()
     -- Setting this on a timer so it doesn't cause lag during resource intensive addon loading.
     C_Timer.After(Addon.c_PruneHistoryDelay, function() Addon:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
 end
-

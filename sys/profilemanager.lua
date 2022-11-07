@@ -296,4 +296,4 @@ function Addon:GetCurrentProfile()
     return ""
 end
 
-Addon:GeneratesEvents({"OnProfileChanged", "OnProfileCreated", "OnProfileDeleted"})
+Addon:GenerateEvents({"OnProfileChanged", "OnProfileCreated", "OnProfileDeleted"})

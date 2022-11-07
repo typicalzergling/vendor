@@ -75,7 +75,6 @@ local function setIsAutoSelling(isSelling, limit)
             Addon:RaiseEvent(AUTO_SELL_START, limit)
         else
             Addon:Debug("autosell", "firing ending event")
-            Addon:ClearResultCache()
             Addon:RaiseEvent(AUTO_SELL_COMPLETE)
         end
     end
@@ -147,7 +146,7 @@ function Addon:AutoSell()
                 end
 
                 -- Get Item properties and evaluate
-                local _, item, itemCount = xpcall(Addon.GetItemPropertiesFromBag, CallErrorHandler, Addon, bag, slot)
+                local _, item, itemCount = xpcall(Addon.GetItemPropertiesFromBagAndSlot, CallErrorHandler, Addon, bag, slot)
                 local _, result, ruleid, rule = xpcall(Addon.EvaluateItem, CallErrorHandler, Addon, item)
 
                 -- Determine if it is to be sold

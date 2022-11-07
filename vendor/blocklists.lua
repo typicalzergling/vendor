@@ -5,6 +5,12 @@ local SystemListId = Addon.SystemListId
 local customListDefintions = Addon.SavedVariable:new("CustomLists")
 local EMPTY = {}
 
+-- TODO: Clear result cache anytime any block list changes
+-- Since that can alter the result of one or more rules.
+-- Addon:ClearResultCache()
+-- Since block lists are part of the profile, we can simplify this further to...
+-- Anytime the active profile changes or the profile changes, clear the result cache.
+
 local function isValidListType(listType)
     return (listType == ListType.CUSTOM) or
         (listType == ListType.EXTENSION) or
@@ -402,7 +408,6 @@ end
 function Addon:ClearBlocklist(list)
     if (isSystemListType(list)) then
         SystemBlockList:New(listType):Clear()
-        self:ClearTooltipResultCache()
         return
     end
 
