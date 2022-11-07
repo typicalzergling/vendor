@@ -99,7 +99,7 @@ function Feature:Enable()
 
         -- Register the events which are produced
         if (type(self.impl.EVENTS) == "table") then
-            Addon:GeneratesEvents(self.impl.EVENTS)
+            Addon:GenerateEvents(self.impl.EVENTS)
         end
 
         self.enabled = true

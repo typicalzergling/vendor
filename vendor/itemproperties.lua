@@ -74,6 +74,8 @@ function Addon:DoGetItemProperties(itemObj)
     assert(type(itemObj) == "table", "Expected an ItemMixin as the argument")
     assert(type(itemObj.GetItemID) == "function", "Expected an ItemMixin as the argument")
 
+    
+
     -- If the item is empty it doesn't exist so we've got no properties to make
     if (itemObj:IsItemEmpty()) then
         Addon:Debug("itemerrors", "Empty Item Object")
@@ -81,7 +83,8 @@ function Addon:DoGetItemProperties(itemObj)
     end
 
     -- Get base information about the item.
-    local location = itemObj:GetItemLocation() or false
+    -- Do a deep copy of location in case this is exposing taint opportunities.
+    local location = table.copy(itemObj:GetItemLocation()) or false
     local guid = itemObj:GetItemGUID()
 
     -- If it's bag and slot then the count can be retrieved, if it isn't
@@ -109,7 +112,7 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Item may not be loaded, need to handle this in a non-hacky way.
     item.GUID = guid or false
-    item.Location = itemObj:GetItemLocation() or false
+    item.Location = location or false
     item.Link = itemObj:GetItemLink()
     item.Count = count
 
@@ -124,7 +127,8 @@ function Addon:DoGetItemProperties(itemObj)
     if not item.GUID then return nil end
 
     -- Populate tooltip and surface args.
-    item.TooltipData = C_TooltipInfo.GetItemByGUID(item.GUID)
+    -- Deep copy to avoid tainting blizzard's internal data.
+    item.TooltipData = table.copy(C_TooltipInfo.GetItemByGUID(item.GUID))
     TooltipUtil.SurfaceArgs(item.TooltipData)
     for _, line in ipairs(item.TooltipData.lines) do
         TooltipUtil.SurfaceArgs(line)
@@ -152,8 +156,7 @@ function Addon:DoGetItemProperties(itemObj)
     item.Name = getItemInfo[1]
     item.Quality = getItemInfo[3]
     item.EquipLoc = getItemInfo[9]          -- This is a non-localized string identifier. Wrap in _G[""] to localize.
-    item.EquipLocName = _G[item.EquipLoc]
-    item.EquipLocName = item.EquipLocName or "" -- Make sure its populated
+    item.EquipLocName = _G[item.EquipLoc] or ""
     item.Type = getItemInfo[6]              -- Note: This is localized, TypeId better to use for rules.
     item.MinLevel = getItemInfo[5]
     item.TypeId = getItemInfo[12]
