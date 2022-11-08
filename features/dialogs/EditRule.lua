@@ -353,7 +353,6 @@ function EditRule:OnScriptChanged(text)
                 self.changes.script = text
                 self.ruleStatus:SetStatus("ok")
             else
-                print(string.match(msg, "(%[.*%]:%d:)(.*)"))
                 local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
                 if (err) then
                     errorMessage = Addon.StringTrim(err)

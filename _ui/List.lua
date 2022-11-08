@@ -46,7 +46,7 @@ local SCROLLFRAME_TEMPLATE = "UIPanelScrollFrameTemplate"
 local Colors = Addon.CommonUI.Colors
 
 local function debug(...)
-    print(YELLOW_FONT_COLOR_CODE, "####LIST###:|r", ...)
+    --print(YELLOW_FONT_COLOR_CODE, "####LIST###:|r", ...)
 end
 
 local function _invokeHandler(list, handler, ...)
@@ -164,7 +164,6 @@ local function _createItem(list, state, model)
 
         frame = CreateFrame("Button", nil, state.scroller:GetScrollChild(), template)
         --Addon.AttachImplementation(frame, state.itemclass, true)
-        Addon.CommonUI.UI.Prepare(frame)
         Addon.CommonUI.UI.Attach(frame, state.itemclass)
     end
     
@@ -195,23 +194,28 @@ local function _buildView(list, state)
     if (not state.view) then
         local view = {}
         local filter = state.filter
+        local frames = {}
+
+        local createFrame = function(_model)
+            local frame = state.frames[_model]
+            if (not frame) then
+                frames[_model] = _createItem(list, state, _model)
+            else
+                frames[_model] = frame
+            end
+            state.frames[_model] = nil
+        end
 
         -- Traverse the models, exluding things which don't match 
         -- our filter if one was provided.
         for _,  model in ipairs(state.items) do
             if (filter) then
                 if (filter(model)) then
-                    if (not state.frames[model]) then
-                        state.frames[model] = _createItem(list, state, model)
-                    end
-    
+                    createFrame(model)   
                     table.insert(view, model)
                 end
             else
-                if (not state.frames[model]) then
-                    state.frames[model] = _createItem(list, state, model)
-                end
-
+                createFrame(model)
                 table.insert(view, model)
             end
         end
@@ -225,7 +229,15 @@ local function _buildView(list, state)
             end)
         end
 
+        -- Anything left it state cache of frames should be hidden
+        for _, frame in pairs(state.frames) do
+            frame:ClearAllPoints()
+            frame:Hide()
+        end
+
+        -- Save the view and the frame
         state.view = view
+        state.frames = frames
         _invokeHandler(list, "OnViewCreated", view)
     end
 end
@@ -273,23 +285,21 @@ end
 
 local function _reflow(list)
     local state = rawget(list, STATE_KEY)
-    if (state.reflow) then
-        state.reflow = false
-        local space = tonumber(list.ItemSpacing) or 0
-        local height = space
+        
+    local space = tonumber(list.ItemSpacing) or 0
+    local height = space
 
-        for pos, model in ipairs(state.view) do            
-            local frame = state.frames[model]
-            local margins = frame.Margins or NO_MARGINS
+    for pos, model in ipairs(state.view) do            
+        local frame = state.frames[model]
+        local margins = frame.Margins or NO_MARGINS
 
-            height = height + (margins.top or 0)
-            frame:SetPoint("TOPLEFT", (margins.left or 0), -height)
-            height = height + frame:GetHeight() + space + (margins.bottom or 0)
-        end
-
-        height = height + space
-        state.scroller:GetScrollChild():SetHeight(height)
+        height = height + (margins.top or 0)
+        frame:SetPoint("TOPLEFT", (margins.left or 0), -height)
+        height = height + frame:GetHeight() + space + (margins.bottom or 0)
     end
+
+    height = height + space
+    state.scroller:GetScrollChild():SetHeight(height)
 end
 
 local function _showEmpty(list, show)
@@ -391,13 +401,21 @@ function List:FindIndexOfItem(item)
     return nil
 end
 
+--[[ Called ensre there is a selection ]]
+function List:EnsureSelection()
+    local state = rawget(self, STATE_KEY)
+    state.ensureSelection = true
+end
+
 --[[
     Selects the specified item, called from the list items, will invoke
     OnSelection only if the selection has changed.
 ]]
 function List:Select(item)
     local state = rawget(self, STATE_KEY)
-    local sel = self:FindItem(item)
+    state.pendingSelection = item
+
+    --[[local sel = self:FindItem(item)
 
     local currentSel = self:GetSelected();
     local newSel = nil;
@@ -448,7 +466,7 @@ function List:Select(item)
         end
 
         _invokeHandler(self, "OnSelection", model, newSel)
-    end
+    end]]
 end
 
 --[[
@@ -456,33 +474,70 @@ end
 ]]
 function List:GetSelected()
     local state = rawget(self, STATE_KEY)
-    for _, frame in pairs(state.frames) do
-        if (frame:IsVisible() and frame:IsSelected()) then
-            return frame:GetModel();
-        end
-    end
 
+    if (state.pendingSelection) then
+        return state.pendingSelection
+    elseif (state.selection) then
+        return state.selection
+    end
+    
     return nil;
+end
+
+--[[ Handle a pending selection ]]
+local function list_ProcessSelection(self, state)
+    if (state.pendingSelection) then
+        local selection = state.selection
+        if (selection ~= state.pendingSelection) then
+            local item = self:FindItem(selection)
+            if (item) then
+                item:SetSelected(false)
+            end
+
+            item = self:FindItem(state.pendingSelection)
+            if (item) then
+                item:SetSelected(true)
+            end
+
+            state.selection = state.pendingSelection
+            state.pendingSelection = nil
+            _invokeHandler(self, "OnSelection", state.selection, item)
+        end
+    elseif (state.ensureSelection) then
+        if (not state.selection and table.getn(state.view)) then
+            state.pendingSelection = state.view[1]
+        end
+        state.ensureSelection = nil
+    end
 end
 
 --[[
     Update handler, delegates to each of the frames (if they are visible)
 ]]
 function List:OnUpdate()
-    local state = rawget(self, STATE_KEY)
-    if (state.update) then
-        self:Update()
-    elseif (state.reflow) then
-        _reflow(self)
-    end
-
-    for _, frame in ipairs(state.frames) do
-        if (frame:IsVisible()) then
-            local func = frame.OnUpdate
-            if (type(func) == "function") then
-                pcall(func, frame)
-            end
+    if (self:IsVisible()) then
+        local state = rawget(self, STATE_KEY)
+        if (state.update) then
+            state.update = false
+            xpcall(self.Update, CallErrorHandler, self)
+        elseif (state.reflow) then
+            state.reflow = false
+            xpcall(_reflow, CallErrorHandler, self)
         end
+
+        list_ProcessSelection(self, state)
+
+        --[[for _, model in ipairs(state.view) do
+            local frame = state.frames[model]
+            if (frame and frame:IsVisible() and ) then
+
+            if (frame:IsVisible()) then
+                local func = frame.OnUpdate
+                if (type(func) == "function") then
+                    pcall(func, frame)
+                end
+            end
+        end]]
     end
 end
 -- Sets the filter for the item list
@@ -530,13 +585,13 @@ function List:Rebuild()
     state.items = nil
     state.view = nil
 
-    if (state.frames) then
-        for _, f in pairs(state.frames) do
-            f:Hide()
-        end
-    end
+    --if (state.frames) then
+        --for _, f in pairs(state.frames) do
+            --f:Hide()
+        --end
+    --end
 
-    state.frames = {}
+    --state.frames = {}
 end
 
 function List:Reflow()
@@ -550,32 +605,30 @@ end
 ]]
 function List:Update()
     local state = rawget(self, STATE_KEY)
-    if (state.update) then
-        state.update = false        
-        local scroller = state.scroller
-        local container = scroller:GetScrollChild()
-        local width = scroller:GetWidth() - scroller.ScrollBar:GetWidth()
+    state.update = false        
+    local scroller = state.scroller
+    local container = scroller:GetScrollChild()
+    local width = scroller:GetWidth() - scroller.ScrollBar:GetWidth()
 
-        -- Populate the items
-        if (not state.items) then
-            state.items = _getItems(self)
-        end
+    -- Populate the items
+    if (not state.items) then
+        state.items = _getItems(self)
+    end
 
-        -- Populate the view
-        if (not state.view) then
-            _buildView(self, state)
-        end
+    -- Populate the view
+    if (not state.view) then
+        _buildView(self, state)
+    end
 
-        if not state.view or table.getn(state.view) == 0 then
-            _showEmpty(self, true)
-            _invokeHandler(self, "OnViewCreated", STATE_KEY)
-        else
-            _showEmpty(self, false)
-            local vh = _layoutView(self, container, state, width)
-            container:SetWidth(width)
-            container:SetHeight(vh)
-            state.reflow = true
-        end
+    if not state.view or table.getn(state.view) == 0 then
+        _showEmpty(self, true)
+        _invokeHandler(self, "OnViewCreated", STATE_KEY)
+    else
+        _showEmpty(self, false)
+        local vh = _layoutView(self, container, state, width)
+        container:SetWidth(width)
+        container:SetHeight(vh)
+        state.reflow = true
     end
 end
 

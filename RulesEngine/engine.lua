@@ -519,6 +519,7 @@ local engine_API =
     AddRule = engine_AddRule,
     ImportGlobals = engine_ImportGlobals,
     AddFunctions = engine_AddFunctions,
+    AddFunction = engine_AddFunction,
     AddConstants = engine_AddConstants,
     CreateCategory = engine_CreateCategory,
     RemoveCategory = engine_RemoveCategory,

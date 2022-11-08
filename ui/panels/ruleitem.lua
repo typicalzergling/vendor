@@ -370,8 +370,6 @@ function RuleItem:OnContextMenu()
             text = L.RULE_CMENU_EDIT,
             func = function()
                 local editRule = Addon:GetFeature("Dialogs")
-                print("=== editRule:", editRule)
-                Addon.TableForEach(ediRule, print)
                 editRule:ShowEditRule(self:GetModel().Rule.Id)
             end
         })		

@@ -14,7 +14,6 @@ function ProfileItem:OnModelChange(profile)
     end
 
     profile:RegisterCallback("OnChanged", function()
-            print("profile changed")
             self.name:SetText(profile:GetName())
         end, self)
 end

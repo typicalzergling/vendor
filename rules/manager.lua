@@ -34,6 +34,9 @@ local ITEM_CONSTANTS =
     "INVSLOT_LAST_EQUIPPED",
 };
 
+local ruleFunctions = {}
+local ruleDocumenation = {}
+
 --[[===========================================================================
     | CreateRulesEngine:
     |   Create and initialize a RulesEngine object.
@@ -43,6 +46,7 @@ function Addon:CreateRulesEngine(verbose)
 
     -- Import constants
     rulesEngine:ImportGlobals(unpack(ITEM_CONSTANTS));
+    rulesEngine:AddFunctions(ruleFunctions)
 
     -- Check for extension functions
     if (Package.Extensions) then
@@ -253,4 +257,27 @@ end
 function RuleManager.CreateCustomRuleId()
     local player, realm = UnitFullName("player");
     return string.format("cr.%s.%s.%d", player, realm, time());
+end
+
+function RuleManager:RegisterFunctions(functions)
+    assert(type(functions) == "table")
+
+    for _, func in ipairs(functions) do
+        --@debug@
+        assert(type(func) == "table", "The rule function definition must be a function")
+        assert(type(func.Name) == "string", "The rule function name must be a string")
+        assert(type(func.Function) == "function", "The rule function itself must be a function")
+        --@end-debug@
+
+        ruleFunctions[func.Name] = func.Function
+
+        if (type(func.Documentation) == "string") then
+            ruleDocumenation[func.Name] = func.Documentation
+        end
+    end
+
+    self.rulesEngine:AddFunctions(ruleFunctions)
+end
+
+function RuleManager:UnregisterFunctions(functions)
 end

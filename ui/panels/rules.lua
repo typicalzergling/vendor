@@ -276,9 +276,7 @@ end
    ==========================================================================]]
 function RulesConfig:OnShow()
 	self.Types:Update();
-	if (not self.Types:GetSelected()) then
-		self.Types:Select(1);
-	end
+	self.Types:EnsureSelection()
 	self:Refresh();
 end
 

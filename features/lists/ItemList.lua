@@ -6,7 +6,6 @@ local ItemItem = Addon.Features.Lists.ItemItem
 
 --[[ Handle load ]]
 function ItemList:OnLoad()
-    print("itemlist on load")
     Addon.CommonUI.List.OnLoad(self)
 end
 

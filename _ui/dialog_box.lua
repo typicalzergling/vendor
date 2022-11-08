@@ -125,20 +125,32 @@ function DialogBox:OnShow()
     end
 
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
+    self:SetScript("OnKeyUp", function(_, key)
+            if (key == "ESCAPE") then
+                self:Hide()
+                self:SetPropagateKeyboardInput(false)
+                return
+            end
+            
+            self:SetPropagateKeyboardInput(true)
+        end)
 end
 
 function DialogBox:OnHide()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
+    self:SetScript("OnKeyUp", nil)
 
     if (self.__content) then
         self.__content:Hide()
     end
 end
 
+--[[ Handle drag start ]]
 function DialogBox:OnDragStart()
     self:StartMoving()
 end
 
+--[[ Handle drag stop ]]
 function DialogBox:OnDragStop()
     self:StopMovingOrSizing()
 end

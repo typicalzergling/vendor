@@ -60,7 +60,6 @@ end
 
 --[[ Retrieve the history item ]]
 function HistoryTab:GetHistory()
-    print("get history")
     return self.history:GetCharacterHistory()
 end
 

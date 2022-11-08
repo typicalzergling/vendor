@@ -19,7 +19,7 @@
             <Button inherits="CommonUI_CommandButton" parentKey="createList">
                 <KeyValues>
                     <KeyValue key="Label" value="CONFIG_DIALOG_CREATE_LIST"/>
-                    <KeyValue key="Handler" value="OnCreateList"/>
+                    <KeyValue key="Handler" value="CreateList"/>
                 </KeyValues>
                 <Anchors>
                     <Anchor point="BOTTOMLEFT"/>
@@ -79,6 +79,110 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="RIGHT" x="-8"/>
+                </Anchors>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <Frame name="Lists_Editor" virtual="true" hidden="true">
+        <Size x="600" y="400"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString inherits="GameFontNormal" parentKey="labelName" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_NAME_LABEL"/>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="254"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="labelContents" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_CONTENTS_LABEL"/>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="TOPRIGHT" x="12"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="labelDescr" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_DESCR_LABEL"/>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-50"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-50"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="labelItemId" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_ADDBYID_LABEL"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMLEFT" y="-110"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-110"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="items" inherits="CommonUI_List">
+                <KeyValues>
+                    <KeyValue key="EmptyText" value="ITEMLIST_EMPTY"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelContents" relativePoint="BOTTOMLEFT" y="-4"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "_ItemList")</OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame inherits="CommonUI_Edit" parentKey="name">
+                <Size x="1" y="32"/>
+                <KeyValues>
+                    <KeyValue key="Handler" value="OnNameChanged"/>
+                    <KeyValue key="Placeholder" value="LISTDIALOG_NAME_HELPTEXT"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-4"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-4"/>
+                </Anchors>
+            </Frame>
+            <Frame inherits="CommonUI_TextArea" parentKey="description">
+                <Size x="1" y="72"/>
+                <KeyValues>
+                    <KeyValue key="Handler" value="OnDescriptionChanged"/>
+                    <KeyValue key="Placeholder" value="LISTDIALOG_DESCR_HELPTEXT"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMLEFT" y="-4"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-4"/>
+                </Anchors>
+            </Frame>
+            <Frame inherits="CommonUI_Edit" parentKey="itemId">
+                <KeyValues>
+                    <KeyValue key="Numeric" value="true" type="boolean"/>
+                    <KeyValue key="Handler" value="OnItemIdChanged"/>
+                    <KeyValue key="Placeholder" value="LISTDIALOG_ADDBYID_HELP"/>                    
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT"  relativePoint="BOTTOMLEFT" relativeKey="$parent.labelItemId" y="-4"/>
+                    <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelItemId" y="-4"/>
+                </Anchors>
+            </Frame>
+            <Button inherits="CommonUI_CommandButton" parentKey="addId">
+                <KeyValues>
+                    <KeyValue key="Handler" value="InsertById"/>
+                    <KeyValue key="Label" value="LISTDIALOG_ADDBYID"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.itemId" relativePoint="BOTTOMRIGHT" y="-6"/>
                 </Anchors>
             </Button>
         </Frames>

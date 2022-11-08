@@ -10,27 +10,18 @@ local Lists = {
     EVENTS = { "OnListAdded", "OnListChanged", "OnListDeleted" },
 }
 
+Lists.ListType = {
+    SYSTEM = "system-list",
+    CUSTOM = "custom-list",
+    EXTENSION = "extension-list"
+}
+
 --[[ Initialize the list feature ]]
 function Lists:OnInitialize()
-    self.listManager = Addon:GetListManager()
+    self.customLists = self.GetCustomLists()
     self.lists = {}
-    self.cache = {}
-
-    self.listManager:RegisterCallback("OnListChanged",
-        function(id, action)
-            local list = self.listManager:GetList(id)
-            self.lists[id] = list
-            
-            if (action == "ADDED") then
-                Addon:RaisesEvent("OnListAdded", list)
-            elseif (action == "UPDATED") then
-                Addon:RaisesEvent("OnListUpdated", list)
-            elseif (action == "DELETED") then
-                Addon:RaisesEvent("OnListDeleted", list)
-            end
-        end, self)
-
     self:BuildSystemLists()
+    self:RegisterFuncstions()
 end
 
 --[[ 
@@ -43,21 +34,21 @@ function Lists:BuildSystemLists()
             Id = SystemListId.NEVER,
             Name  = locale["NEVER_SELL_LIST_NAME"],
             Description = locale["NEVER_SELL_LIST_TOOLTIP"],
-            Type = 1,
+            Type = self.ListType.SYSTEM,
             Key = "list:keep",
         },
         {
             Id = SystemListId.ALWAYS,
             Name  = locale["ALWAYS_SELL_LIST_NAME"],
             Description = locale["ALWAYS_SELL_LIST_TOOLTIP"],
-            Type = 1,
+            Type = self.ListType.SYSTEM,
             Key = "list:sell"
         },
         {
             Id = SystemListId.DESTROY,
             Name  = locale["ALWAYS_DESTROY_LIST_NAME"],
             Description = locale["ALWAYS_DESTROY_LIST_TOOLTIP"],
-            Type = 1,
+            Type = self.ListType.SYSTEM,
             Key = "list:destroy"
         }
     }
@@ -65,7 +56,7 @@ function Lists:BuildSystemLists()
     for _, list in ipairs(self.systemLists) do
         local systemList = self.CreateProfileList(list)
         systemList:RegisterCallback("OnChanged", self.UpdateSystemLists, self)
-        self.cache[list.Id] = systemList
+        self.lists[list.Id] = systemList
     end
 end
 
@@ -95,35 +86,35 @@ end
 
 --[[ Teminate the lists feature ]]
 function Lists:OnTerminate()
-    if (self.listManager) then        
-        local manager = self.listManager
-
-        self.listManager = nil
-        manager:UnregisterCallback("OnListChanged", self)
-    end
 end
 
 --[[ Get the specfied list ]]
 function Lists:GetList(listId)
-    -- The system lists are ALWAYS in the cache
-    if (self.cache[listId]) then
-        return self.cache[listId]
-    end
-
     -- Check if we already have an instance of this list
     if (self.lists[listId]) then
         return self.lists[listId]
     end
 
     -- Resovle a custom list
-    local list = self.listManager:GetList(listId)
+    local list = self.customLists:Get(listId)
     if (list) then
-        local obj = self.CreateVariableList(list)
-        self.lists[listId] = obj
-        return obj
+        return self.CreateVariableList(list)
     end
 
     return nil
+end
+
+-- todo move to helpers
+local function merge(t, ...)
+    t = t or {}
+    for _, o in ipairs({...}) do
+        if (type(o) == "table") then
+            for k,v in pairs(o) do
+                t[k] = v
+            end
+        end
+    end
+    return t
 end
 
 --[[ Get all of the lists ]]
@@ -134,9 +125,8 @@ function Lists:GetLists()
         table.insert(lists, list)
     end
 
-    for _, list in ipairs(self.listManager:GetLists()) do
-        list.Type = 2
-        table.insert(lists, list)
+    for _, list in ipairs(self.customLists:GetLists()) do
+        table.insert(lists, merge(nil, list, { Type = ListType.CUSTOM }))
     end
 
     return lists

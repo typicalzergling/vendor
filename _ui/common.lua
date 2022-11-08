@@ -299,7 +299,6 @@ Addon.CommonUI.Mixins.Tooltip =
     InitTooltip = function(self)
         self:SetScript("OnEnter",
             function(frame)
-                print("--> tip")
                 if (type(frame.OnEnter) == "function") then
                     frame:OnEnter()
                 end            
