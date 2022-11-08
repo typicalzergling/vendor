@@ -125,7 +125,6 @@ function Addon:DoGetItemProperties(itemObj)
     if not item.GUID then return nil end
 
     -- Populate tooltip and surface args.
-    -- Deep copy to avoid tainting blizzard's internal data.
     local tooltipdata = C_TooltipInfo.GetItemByGUID(item.GUID)
     TooltipUtil.SurfaceArgs(tooltipdata)
     for _, line in ipairs(tooltipdata.lines) do

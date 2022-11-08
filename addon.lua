@@ -46,7 +46,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("BAG_UPDATE_DELAYED", "OnBagUpdate")
 
     -- Merchant Button
-    self.MerchantButton.Initialize()
+    --self.MerchantButton.Initialize()
 
     local features = self:GetFeatures()
     features:Initialize()
