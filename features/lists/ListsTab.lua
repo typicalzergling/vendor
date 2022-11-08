@@ -13,16 +13,20 @@ local function debug(...)
     Addon:Debug("liststab", message)
 end
 
+--[[ Handle loading the list ]]
 function ListsTab:OnLoad()
     self.feature = Addon:GetFeature("Lists")
 end
 
+--[[ Called when the lists tab is activated ]]
 function ListsTab:OnActivate()
+    self.lists:EnsureSelection()
 end
 
 function ListsTab:OnDeactivate()
 end
 
+--[[ Retrieve the currently defined lists ]]
 function ListsTab:GetCategories()
     return self.feature:GetLists()
 end
@@ -33,6 +37,10 @@ function ListsTab:ShowList()
     if (selected) then
         self.items:SetList(self.feature:GetList(selected.Id))
     end
+end
+
+function ListsTab:CreateList()
+    Addon.Features.Lists.ShowEditDialog()
 end
 
 Addon.Features.Lists.ListsTab = ListsTab

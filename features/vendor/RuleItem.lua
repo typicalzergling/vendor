@@ -95,7 +95,6 @@ end
 
 --[[ Called to save the state of this rule ]]
 function RuleItem:Save()
-    print("save:", self.ruleConfig)
     if (self.ruleConfig) then
         local params = self:GetParameters()
         local ruleId = self:GetRuleId()

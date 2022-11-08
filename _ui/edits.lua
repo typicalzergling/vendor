@@ -89,12 +89,13 @@ function BaseEdit:GetText()
 end
 
 function BaseEdit:SetText(text)
-    self.__lastText = nil
-
     if type(text) ~= "string" then
         self.control:SetText("")
+        self.__lastText = ""
     else
-        self.control:SetText(Addon.StringTrim(text))
+        text = Addon.StringTrim(text)
+        self.control:SetText(text)
+        self.__lastText = text
     end
 
     if (not self.control:HasFocus()) then
@@ -163,6 +164,10 @@ local Edit = {}
 
 function Edit:OnLoad()
     self:OnEditLoaded()
+
+    if (type(self.Numeric) == "boolean") then
+        self.control:SetNumeric(self.Numeric)
+    end
 
     self.control:SetScript("OnTextChanged", function()
         self:_HandleTextChange()

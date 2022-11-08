@@ -177,4 +177,87 @@ function UI.MessageBox(title, markdown, buttons)
     messagebox:Raise()
 end
 
+local DialogContent = {}
+
+--[[ Retrieve the dialog ]]
+function DialogContent:GetDialog()
+    return rawget(self, DialogContent)
+end
+
+--[[ Update the button state ]]
+function DialogContent:SetButtonState(buttons)
+    local dialog = rawget(self, DialogContent)
+    dialog:SetButtonState(buttons)
+end
+
+--[[ Enable/Disable the specified button ]]
+function DialogContent:EnableButton(button, enabled)
+    local dialog = rawget(self, DialogContent)
+    dialog:SetButtonEnabled(button, enabled)
+end
+
+--[[ Show/Hide the speciifed button ]]
+function DialogContent:ShowButton(button, show)
+    local dialog = rawget(self, DialogContent)
+    dialog:SetButtonVisiblity(button, show)
+end
+
+--[[ Sets the dialogs caption ]]
+function DialogContent:SetCaption(caption)
+    local dialog = rawget(self, DialogContent)
+    dialog:SetCaption(caption)
+end
+
+--[[ Close the dialog ]]
+function DialogContent:Close()
+    local dialog = rawget(self, DialogContent)
+    dialog:Hide()
+end
+
+--[[ Helper to retrieve the feature ]]
+function DialogContent:GetFeature(feature)
+    return Addon:GetFeature(feature)
+end
+
+--[[ Helper for debug output ]]
+function DialogContent:Debug(debugMessage, ...)
+    local args = {}
+    for i, arg in ipairs({...}) do
+        args[i] = tostring(arg)
+    end
+    Addon:Debug("dialog", debugMessage, unpack(args))
+end
+
+--[[ 
+    Create a new dialog from the specified paramaters
+]]
+function UI.Dialog(caption, template, implementation, buttons)
+    local dialog = CreateFrame("Frame", nil, UIParent, "DialogBox_Base")
+    local content = CreateFrame("Frame", nil, dialog, template)
+
+    -- Initialize the dialog
+    UI.Prepare(dialog)
+    UI.Attach(content, implementation or {})
+    rawset(content, DialogContent, dialog)
+    Mixin(content, DialogContent)
+    dialog:SetContent(content)
+    if (type(buttons) == "table") then
+        dialog:SetButtons(buttons)
+    end
+
+    -- Any non-event handler on the content should be promoted to the dialog
+    -- to provide the API to caller
+    if (type(implementation) == "table") then
+        for name, value in pairs(implementation) do
+            if type(value) == "function" then
+                if (not content:HasScript(name) and not Addon:RaisesEvent(name)) then
+                    dialog[name] = function(_, ...) value(content, ...) end
+                end
+            end
+        end
+    end
+
+    return dialog
+end
+
 Addon.CommonUI.UI = UI

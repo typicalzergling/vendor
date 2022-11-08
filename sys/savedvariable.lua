@@ -8,7 +8,11 @@ Addon.SavedVariable = {
 
 		setmetatable(instance, self);
 		self.__index = self;
-		Addon:AddInitializeAction(self.onVariablesLoaded, instance);
+		if (name ~= "CustomLists") then
+			Addon:AddInitializeAction(self.onVariablesLoaded, instance);
+		else
+			instance.loaded = true
+		end
 
 		return instance;
 	end,

@@ -3,6 +3,7 @@ local ItemItem = Mixin({}, Addon.CommonUI.Mixins.Tooltip, Addon.CommonUI.Mixins.
 local Colors = Addon.CommonUI.Colors
 local UI = Addon.CommonUI.UI
 
+--[[ Called when the model is set ]]
 function ItemItem:OnModelChange(itemId)
     self:OnBorderLoaded("tbk", Colors.TRANSPARENT, Colors.TRANSPARENT)
     self:SetItemID(itemId)
@@ -14,6 +15,7 @@ function ItemItem:OnModelChange(itemId)
     end)
 end
 
+--[[ Called when the item is selected ]]
 function ItemItem:OnSelected()
     if (self.delete) then
         self.delete:Show()
@@ -23,25 +25,7 @@ function ItemItem:OnSelected()
     self:SetBorderColor(Colors:Get("SELECTED_BORDER"))
 end
 
-function ItemItem:OnEnter()
-    if (not self:IsSelected()) then
-        self:SetBackgroundColor(Colors:Get("HOVER_BACKGROUND"))
-    end
-    self:TooltipEnter()
-end
-
---[[ Handle deleting this item ]]
-function ItemItem:OnDelete()
-    self:Notify("OnDelete", self:GetModel())
-end
-
-function ItemItem:OnLeave()
-    self:TooltipLeave()
-    if (not self:IsSelected()) then
-        self:SetBackgroundColor(Colors.TRANSPARENT)
-    end
-end
-
+--[[ Handle item de-selection ]]
 function ItemItem:OnUnselected()
     if (self.delete) then
         self.delete:Hide()
@@ -55,11 +39,33 @@ function ItemItem:OnUnselected()
     end
 end
 
+--[[ Handle the mouse entering ]]
+function ItemItem:OnEnter()
+    if (not self:IsSelected()) then
+        self:SetBackgroundColor(Colors:Get("HOVER_BACKGROUND"))
+    end
+    self:TooltipEnter()
+end
+
+--[[ Hanle the mouse leaving ]]
+function ItemItem:OnLeave()
+    self:TooltipLeave()
+    if (not self:IsSelected()) then
+        self:SetBackgroundColor(Colors.TRANSPARENT)
+    end
+end
+
+--[[ Handle deleting this item ]]
+function ItemItem:OnDelete()
+    self:Notify("OnDelete", self:GetModel())
+end
+
 --[[ Check of we have a tooltop to show ]]
 function ItemItem:HasTooltip()
     return not self:IsItemEmpty()
 end
 
+--[[ Called to show the tooltip for this item ]]
 function ItemItem:OnTooltip(tooltip)
     tooltip:SetHyperlink(self:GetItemLink())
 end

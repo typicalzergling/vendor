@@ -30,9 +30,7 @@ function RulesTab:GetCategories()
 end
 
 function RulesTab:OnActivate()
-	if (not self.ruleType:GetSelected()) then
-		self.ruleType:Select(1)
-	end
+	self.ruleType:EnsureSelection()
 end
 
 function RulesTab:CreateRule()

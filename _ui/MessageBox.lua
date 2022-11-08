@@ -145,7 +145,7 @@ local function mbGetBorderThickness(messagebox)
     return thicknessX, thicknessY
 end
 
-function MessageBox:OnSizeChanged(_, _, height)
+function MessageBox:OnSizeChanged(_, height)
     local _, borderY = mbGetBorderThickness(self)
     local _, paddingY = mbGetContentPadding(self)
     local captionHeight = self.titlebar:GetHeight()

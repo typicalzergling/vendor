@@ -15,21 +15,42 @@ local function GetListId(source)
 	return nil
 end
 
+--[[ Creates a custom list ]]
 function CustomListManager:CreateList(listName, listDescription, listItems)
 	local id = Addon:GetExtensionManger():CreateUniqueId()
-	local list = 
-	{
+	local list = {
 		Name = listName,
+		Id = id,
 		Description = listDescription,
 		Items = listItems or EMPTY,
+		Timestamp = time(),
+		CreatedBy = Addon:GetCharacterFullName()
 	}
 
 	savedLists:Set(id, list)
 	list.Id = id
 	self:TriggerEvent("OnListChanged", id, "ADDED")
+	Addon:Debug("customlists", "Created List '%s' [%s]", listName, id)
 	return list
 end
 
+--[[ Updates a custom list ]]
+function CustomListManager:UpdateList(id, name, description, items)
+	--@debug@
+	assert(type(savedLists:Get(id)) == "table", "There is no custom list with the specified ID :: " .. tostring(id))
+	--@end-debug@
+
+	savedLists:Set(id, {
+			Name = name, 
+			Description = description,
+			Id = id,
+			Items = items or {},
+			Timestamp = time(),
+			ModifiedBy = Addon:GetCharacterFullName()
+		})
+end
+
+--[[ Gets the contents of a custom list ]]
 function CustomListManager:GetListContents(listId)
 	local list = savedLists:Get(GetListId(listId))
 	if (not list) then
@@ -38,6 +59,7 @@ function CustomListManager:GetListContents(listId)
 	return (list.Items or EMPTY), true
 end
 
+--[[ Updates the contents of a custom list ]]
 function CustomListManager:UpdateListContents(listId, items)
 	Addon:Debug("test", "updaing list contents %s", listId)
 	listId = GetListId(listId)	
@@ -47,24 +69,30 @@ function CustomListManager:UpdateListContents(listId, items)
 	end
 
 	list.Items = Addon.DeepTableCopy(items or EMPTY)
-	savedLists:Set(listId, list)	
-	Addon:Debug("test", "firing event %s", listId)
+	savedLists:Set(listId, list)
 	self:TriggerEvent("OnListChanged", listId, "UPDATED")
 end
 
+--[[ Retrieves all of the custom lists ]]
 function CustomListManager:GetLists()
 	local results = {}
 	savedLists:ForEach(function(list, id)
+		--@debug@
+		assert(id == list.Id, "Expected the list ID to match the key")
+		--@end-debug@
+
 		table.insert(results, {
 			Id = id,
 			Name = list.Name,
-			Description = list.Description
+			Description = list.Description,
+			Items = list.items
 		})
 	end)
 
 	return results
 end
 
+--[[ Gets a specific list ]]
 function CustomListManager:GetList(search)
 	local result = nil
 	local resultId = nil

@@ -426,6 +426,13 @@ LISTDIALOG_CREATE_CAPTION = "New List",
 LISTDIALOG_EDIT_CAPTION = "Edit List",
 LISTDIALOG_NAME_LABEL = "Name:",
 LISTDIALOG_DESCR_LABEL = "Description:",
+LISTDIALOG_CONTENTS_LABEL = "Items:",
+LISTDIALOG_NAME_HELPTEXT = "type the name of your list here",
+LISTDIALOG_DESCR_HELPTEXT = "type the description of your list here",
+LISTDIALOG_ADDBYID_LABEL = "[re-visit]  You can add an item using it's id by typing the id in the box below and clicking add",
+LISTDIALOG_ADDBYID = "Add",
+LISTDIALOG_ADDBYID_HELP = "Type the ID an item",
+
 
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",
@@ -436,6 +443,7 @@ ITEMLIST_EMPTY_SELL_LIST = "Your always sell list is current empty you can drag 
 ITEMLIST_EMPTY_KEEP_LIST = "Your never sell list is current empty you can drag and drop items into this list to add them.",
 ITEMLIST_REMOVE_TOOLTIP = "Remove from list",
 ITEMLIST_UNSELLABLE = "%s is unsellable, adding to Destroy list instead.",
+ITEMLIST_EMPTY = "[re-visit] There are no items in this list, you can drag and drop items here to populate the list",
 
 -- LDB Object
 LDB_BUTTON_BUTTON_LABEL = "Vendor: ",

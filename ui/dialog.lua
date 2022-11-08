@@ -96,7 +96,7 @@ function Addon.AttachImplementation(frame, mixin, hook)
 		-- A wrapepr around invoke
 		frame.Invoke = function(target, handler, ...)
 			if (type(handler) == "string") or (type(handler) == "function") then
-				Addon.Invoke(target, handler, target, ...)
+				Addon.Invoke(target, handler, ...)
 			else
 				error("The handler argument to 'Invoke' must be a string or a table")	
 			end
