@@ -100,6 +100,7 @@ local function layout(dialog)
 end
 
 function DialogBox:OnLoad()
+    self.hideOnEscape = 1
     self:OnBorderLoaded()
 
     -- Setup our host
@@ -125,15 +126,17 @@ function DialogBox:OnShow()
     end
 
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-    self:SetScript("OnKeyUp", function(_, key)
+    self:SetScript("OnKeyDown", function(_, key)
             if (key == "ESCAPE") then
                 self:Hide()
+                self:Lower()
                 self:SetPropagateKeyboardInput(false)
                 return
             end
-            
             self:SetPropagateKeyboardInput(true)
         end)
+
+    self:Raise()
 end
 
 function DialogBox:OnHide()

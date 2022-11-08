@@ -46,19 +46,7 @@ function GeneralSettings:CreateSell(list)
 	local setting = list:AddSetting(autosell, "OPTIONS_SETTINGNAME_AUTOSELL", "OPTIONS_SETTINGDESC_AUTOSELL")
 	setting.Margins = INDENT
 
-	local buyback = Settings.CreateSetting(Addon.c_Config_MaxSellItems, true,
-		function()
-			return self:GetProfileValue(Addon.c_Config_MaxSellItems) ~= 0
-		end,
-		function(value)
-			local items = Addon.c_BuybackLimit
-			if (not value) then
-				items = 0
-			end
-
-			self:SetProfileValue(Addon.c_Config_MaxSellItems, items)
-		end)
-
+	local buyback = Settings.CreateSetting(Addon.c_Config_MaxSellItems, true)
 	setting = list:AddSetting(buyback, "OPTIONS_SETTINGNAME_BUYBACK", "OPTIONS_SETTINGDESC_BUYBACK", autosell)
 	setting.Margins = INDENT
 

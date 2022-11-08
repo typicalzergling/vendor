@@ -24,7 +24,7 @@ end
 --[[ Checks if auto-sell is enabled ]]
 local function isAutoSellEnabled(self)
     local autosell, buyback = self:GetProfileValues(Addon.c_Config_AutoSell, Addon.c_Config_SellLimit)
-    return autosell and (buyback ~= 0)
+    return autosell and buyback
 end
 
 --[[ Checks if the auto-repair quick setting should be enabled ]]
@@ -42,7 +42,7 @@ function QuickSettings:CreateList(parent)
         function() return isAutoSellEnabled(self) end,
         function(value)
             if value then
-                self:SetProfileValue(Addon.c_Config_SellLimit, Addon.c_BuybackLimit)
+                self:SetProfileValue(Addon.c_Config_SellLimit, true)
                 self:SetProfileValue(Addon.c_Config_AutoSell, true)
             else
                 self:SetProfileValue(Addon.c_Config_AutoSell, false)
