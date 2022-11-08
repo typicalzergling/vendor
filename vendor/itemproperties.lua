@@ -84,7 +84,7 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Get base information about the item.
     -- Do a deep copy of location in case this is exposing taint opportunities.
-    local location = Addon.DeepTableCopy(itemObj:GetItemLocation()) or false
+    local location = itemObj:GetItemLocation() or false
     local guid = itemObj:GetItemGUID()
 
     -- If it's bag and slot then the count can be retrieved, if it isn't
@@ -111,7 +111,6 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Item may not be loaded, need to handle this in a non-hacky way.
     item.GUID = guid or false
-    item.Location = location or false
     item.Link = itemObj:GetItemLink()
     item.Count = count
 
@@ -127,9 +126,9 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Populate tooltip and surface args.
     -- Deep copy to avoid tainting blizzard's internal data.
-    item.TooltipData = Addon.DeepTableCopy(C_TooltipInfo.GetItemByGUID(item.GUID))
-    TooltipUtil.SurfaceArgs(item.TooltipData)
-    for _, line in ipairs(item.TooltipData.lines) do
+    local tooltipdata = C_TooltipInfo.GetItemByGUID(item.GUID)
+    TooltipUtil.SurfaceArgs(tooltipdata)
+    for _, line in ipairs(tooltipdata.lines) do
         TooltipUtil.SurfaceArgs(line)
     end
 
@@ -184,14 +183,14 @@ function Addon:DoGetItemProperties(itemObj)
     -- Add Bag and Slot information. Initialize to -1 so rule writers can identify them.
     item.Bag = -1
     item.Slot = -1
-    item.IsBagAndSlot = location and item.Location:IsBagAndSlot()
+    item.IsBagAndSlot = location and location:IsBagAndSlot()
     if item.IsBagAndSlot then
         item.Bag, item.Slot = location:GetBagAndSlot()
     end
 
     item.IsUsable = IsUsableItem(item.Id)
     item.IsEquipment = IsEquippableItem(item.Id)
-    item.IsEquipped = location and item.Location:IsEquipmentSlot()
+    item.IsEquipped = location and location:IsEquipmentSlot()
     item.IsTransmogEquipment = isTransmogEquipment(item.EquipLoc)
 
     -- Get soulbound information
@@ -199,7 +198,7 @@ function Addon:DoGetItemProperties(itemObj)
         item.IsSoulbound = true         -- This actually also covers account bound.
         -- TODO watch for better way. Blizzard API doesn't expose it, which means we need
         -- to scan the tooltip.
-        if self:IsItemAccountBoundInTooltip(item.TooltipData) then
+        if self:IsItemAccountBoundInTooltip(tooltipdata) then
             item.IsAccountBound = true
         end
     else
@@ -213,7 +212,7 @@ function Addon:DoGetItemProperties(itemObj)
     -- Determine if this item is cosmetic.
     -- This information is currently not available via API.
     item.IsCosmetic = false
-    if location and item.IsEquipment and self:IsItemCosmeticInTooltip(item.TooltipData) then
+    if tooltipdata and item.IsEquipment and self:IsItemCosmeticInTooltip(tooltipdata) then
         item.IsCosmetic = true
     end
 
@@ -263,16 +262,16 @@ function Addon:DoGetItemProperties(itemObj)
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
     -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
     item.IsToy = false
-    if location and item.TypeId == 15 or item.TypeId == 0 then
-        if self:IsItemToyInTooltip(item.TooltipData) then
+    if tooltipdata and item.TypeId == 15 or item.TypeId == 0 then
+        if self:IsItemToyInTooltip(tooltipdata) then
             item.IsToy = true
         end
     end
 
     -- Determine if this is an already-collected item, which should only be usable items.
     item.IsAlreadyKnown = false
-    if location and item.IsUsable then
-        if self:IsItemAlreadyKnownInTooltip(item.TooltipData) then
+    if tooltipdata and item.IsUsable then
+        if self:IsItemAlreadyKnownInTooltip(tooltipdata) then
             item.IsAlreadyKnown = true
         end
     end

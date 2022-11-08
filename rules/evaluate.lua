@@ -48,7 +48,7 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
                     table.insert(results, locationCopy);
                 end
                 return true;
-           end, 0, NUM_BAG_SLOTS);
+           end, 0, NUM_TOTAL_EQUIPPED_BAG_SLOTS );
     else
         Addon:Debug("rules", "The rule '%s' failed to parse: %s", ruleId, message);
     end
@@ -72,7 +72,7 @@ function Addon:ValidateRuleAgainstBags(engine, script)
             local r, m = engine:ValidateScript(item, script);
             if (not r) then message = m end;
             return r;
-        end, 0, NUM_BAG_SLOTS);
+        end, 0, NUM_TOTAL_EQUIPPED_BAG_SLOTS );
 
     return valid, message;
 end
@@ -111,7 +111,7 @@ function Addon:LookForItemsInBank()
             end
             return true;
         end,
-        (NUM_BAG_SLOTS + 1),  (NUM_BAG_SLOTS + GetNumBankSlots()));
+        (NUM_TOTAL_EQUIPPED_BAG_SLOTS  + 1),  (NUM_TOTAL_EQUIPPED_BAG_SLOTS  + GetNumBankSlots()));
     return items;
 end
 
