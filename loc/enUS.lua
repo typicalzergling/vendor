@@ -31,17 +31,17 @@ RULE_TYPE_DELETE_DESCR = "Anything you add to the 'Keep' list or rules or 'Sell'
 
 -- Bindings
 BINDING_HEADER_VENDORQUICKLIST = "Quick Add/Remove items from the sell lists when mousing over the item",
-BINDING_NAME_VENDORALWAYSSELL = "Toggle Sell Item",
+BINDING_NAME_VENDORALWAYSSELL = "Vendor: Toggle Sell Item",
 BINDING_DESC_VENDORALWAYSSELL = "Adds the item currently in the game tooltip to the Sell list. Removes it if it is already in the list.",
-BINDING_NAME_VENDORNEVERSELL = "Toggle Keep Item",
+BINDING_NAME_VENDORNEVERSELL = "Vendor: Toggle Keep Item",
 BINDING_DESC_VENDORNEVERSELL = "Adds the item currently in the game tooltip to the Keep list. Removes it if it is already in the list.",
-BINDING_NAME_VENDORTOGGLEDESTROY = "Toggle Destroy Item",
+BINDING_NAME_VENDORTOGGLEDESTROY = "Vendor: Toggle Destroy Item",
 BINDING_DESC_VENDORTOGGLEDESTROY = "Adds the item currently in the game tooltip to the Destroy list. Removes it if it is already in the list.",
-BINDING_NAME_VENDORRUNAUTOSELL = "Autosell at Merchant",
+BINDING_NAME_VENDORRUNAUTOSELL = "Vendor: Autosell at Merchant",
 BINDING_DESC_VENDORRUNAUTOSELL = "Manually trigger an autoselling run while at a merchant.",
-BINDING_NAME_VENDORRUNDESTROY = "Run Destroy Items",
-BINDING_DESC_VENDORRUNDESTROY = "Destroy items vendor has identified for destruction. This must be done via hardware event due to a Blizzard restriction.",
-BINDING_NAME_VENDORRULES = "Toggle the Vendor Rules menu",
+BINDING_NAME_VENDORRUNDESTROY = "Vendor: Destroy Next Item",
+BINDING_DESC_VENDORRUNDESTROY = "Destroy the next item vendor has identified for destruction. This must be done via hardware event due to a Blizzard restriction, and one press per destroy.",
+BINDING_NAME_VENDORRULES = "Vendor: Open Menu",
 BINDING_DESC_VENDORRULES = "Toggles the visibility of the main Vendor Rules menu.",
 
 -- Merchant

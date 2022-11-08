@@ -1,38 +1,38 @@
 <Bindings>
     <Binding
         name="VENDORALWAYSSELL"
-        description="BINDING_DESC_VENDORALWAYSSELL" header="VENDORQUICKLIST" category="BINDING_CATEGORY_VENDOR">
+        description="BINDING_DESC_VENDORALWAYSSELL" header="VENDORQUICKLIST" category="ADDONS">
         Vendor.AddTooltipItemToSellList()
     </Binding>
     <Binding
         name="VENDORNEVERSELL"
-        description="BINDING_DESC_VENDORNEVERSELL" category="BINDING_CATEGORY_VENDOR">
+        description="BINDING_DESC_VENDORNEVERSELL" category="ADDONS">
         Vendor.AddTooltipItemToKeepList()
     </Binding>
     <Binding
         name="VENDORTOGGLEDESTROY"
-        description="BINDING_DESC_VENDORTOGGLEDESTROY" category="BINDING_CATEGORY_VENDOR">
+        description="BINDING_DESC_VENDORTOGGLEDESTROY" category="ADDONS">
         Vendor.AddTooltipItemToDestroyList()
     </Binding>
     <Binding
         name="VENDORRUNDESTROY"
-        description="BINDING_DESC_VENDORRUNDESTROY" category="BINDING_CATEGORY_VENDOR">
+        description="BINDING_DESC_VENDORRUNDESTROY" category="ADDONS">
         Vendor.DestroyItems()
     </Binding>
     <Binding
         name="VENDORRUNAUTOSELL"
-        description="BINDING_DESC_VENDORRUNAUTOSELL" category="BINDING_CATEGORY_VENDOR">
+        description="BINDING_DESC_VENDORRUNAUTOSELL" category="ADDONS">
         Vendor.AutoSell()
     </Binding>
     <Binding
         name="VENDORRULES"
-        description="BINDING_DESC_VENDORRULES" category="BINDING_CATEGORY_VENDOR">
+        description="BINDING_DESC_VENDORRULES" category="ADDONS">
         VendorRulesDialog:Toggle()
     </Binding>
     <!--@do-not-package@-->
     <Binding 
         name="Vendor Item Properties Debug Dump" 
-        description="Dump item properties to console" category="BINDING_CATEGORY_VENDOR">
+        description="Dump item properties to console" category="ADDONS">
         Vendor:DumpItemPropertiesFromTooltip()
     </Binding>
     <!--@end-do-not-package@-->
