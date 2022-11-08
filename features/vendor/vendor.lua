@@ -26,4 +26,11 @@ function MainFeature:ShowDialog(tabId)
 	self.dialog:Show()
 end
 
+function MainFeature:ToggleDialog()
+	if (not self.dialog) then
+		self.dialog = self:CreateDialog("VendorMainDialog", "Vendor_MainDialog", self.MainDialog)
+	end
+	self.dialog:Toggle()	
+end
+
 Addon.Features.Vendor = MainFeature

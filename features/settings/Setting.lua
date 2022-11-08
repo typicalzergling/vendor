@@ -5,7 +5,7 @@ local Setting = {}
 --[[ Initialize a setting ]]
 function Setting:Init(name, defaultValue, getValue, setValue)
     CallbackRegistryMixin.OnLoad(self)
-    --self:GenerateCallbackEvents("OnChanged")
+    self:GenerateCallbackEvents({"OnChanged"})
 
     self.name = name
     self.default = defaultValue
