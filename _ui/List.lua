@@ -44,6 +44,7 @@ local List = Mixin({}, Addon.CommonUI.Mixins.Border)
 local STATE_KEY = {}
 local SCROLLFRAME_TEMPLATE = "UIPanelScrollFrameTemplate"
 local Colors = Addon.CommonUI.Colors
+local UI = Addon.CommonUI.UI
 
 local function debug(...)
     --print(YELLOW_FONT_COLOR_CODE, "####LIST###:|r", ...)
@@ -117,7 +118,6 @@ end
 ]]
 local function _createItem(list, state, model)
     local frame = nil
-    local success = false
 
     -- Does the list or parent handle the creation?
     local creator = list.ItemCreator
@@ -127,13 +127,12 @@ local function _createItem(list, state, model)
             local parent = list:GetParent()
             func = parent[creator]
             if (func) then
-                success, frame = xpcall(func, CallErrorHandler, parent, model)
+                frame = func(parent, model)
             end
         else
-            success, frame = xpcall(func, CallErrorHandler,  list, model)
+            frame = func(list, model)
         end
 
-        assert(success, "failed to create the frame for the model")
         assert(frame, "Expected the item creator to create a frame")
         frame:SetParent(state.scroller:GetScrollChild())
     end
@@ -163,8 +162,7 @@ local function _createItem(list, state, model)
         end
 
         frame = CreateFrame("Button", nil, state.scroller:GetScrollChild(), template)
-        --Addon.AttachImplementation(frame, state.itemclass, true)
-        Addon.CommonUI.UI.Attach(frame, state.itemclass)
+        UI.Attach(frame, state.itemclass)
     end
     
     -- Create the actual item, and attach our implementaition
@@ -203,6 +201,7 @@ local function _buildView(list, state)
             else
                 frames[_model] = frame
             end
+
             state.frames[_model] = nil
         end
 
@@ -211,7 +210,7 @@ local function _buildView(list, state)
         for _,  model in ipairs(state.items) do
             if (filter) then
                 if (filter(model)) then
-                    createFrame(model)   
+                    createFrame(model)
                     table.insert(view, model)
                 end
             else
@@ -230,9 +229,10 @@ local function _buildView(list, state)
         end
 
         -- Anything left it state cache of frames should be hidden
-        for _, frame in pairs(state.frames) do
+        for model, frame in pairs(state.frames) do
             frame:ClearAllPoints()
             frame:Hide()
+            frames[model] = frame
         end
 
         -- Save the view and the frame
@@ -250,16 +250,13 @@ local NO_MARGINS = { left = 0, right = 0 }
 local function _layoutView(list, container, state, cx, cy)
     local top = 0
 
-    for _, frame in pairs(state.frames) do
-        frame:ClearAllPoints()
-        frame:Hide()
-    end
-
     local last = table.getn(state.view)
     cx = cx - 1
+
     for index, model in ipairs(state.view) do
         local litem = state.frames[model]
         if (not litem) then
+            debug("Do we not have a frame when we layout?")
             litem = _createItem(list, state, model)
             state.frames[model] = litem
         end
@@ -275,7 +272,9 @@ local function _layoutView(list, container, state, cx, cy)
             litem:SetPosition("none")
         end
     
+        litem:ClearAllPoints()
         litem:Show()
+
         top = top + litem:GetHeight() + (margins.top or 0) + (margins.bottom or 0)
         state.reflow  = true
     end
@@ -288,11 +287,15 @@ local function _reflow(list)
         
     local space = tonumber(list.ItemSpacing) or 0
     local height = space
+    local width = state.scroller:GetScrollChild():GetWidth()
 
-    for pos, model in ipairs(state.view) do            
+    debug("self.view =>", state.view)
+
+    for _, model in ipairs(state.view) do
         local frame = state.frames[model]
         local margins = frame.Margins or NO_MARGINS
 
+        frame:SetWidth(width - (margins.left or 0) - (margins.right or 0))
         height = height + (margins.top or 0)
         frame:SetPoint("TOPLEFT", (margins.left or 0), -height)
         height = height + frame:GetHeight() + space + (margins.bottom or 0)

@@ -12,7 +12,6 @@ function MainDialog:OnInitDialog(dialog)
 	-- If the lists feature is enabled add the tab
 	if (Addon:IsFeatureEnabled("lists")) then
 		local lists = Addon:GetFeature("lists")
-		print("ists:", lists)
 		tabs:AddTab(lists:GetTab())
 	end
 

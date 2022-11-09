@@ -172,7 +172,7 @@ local HelpTab = {
         end)
     end,
 
-    CreateHelpItem = function(self)
+    CreateHelpItem = function(self, model)
         local frame = CreateFrame("Frame", nil, self, "Vendor_EditRule_HelpItem")
         Addon.AttachImplementation(frame, HelpItem, true)
         return frame

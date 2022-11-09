@@ -11,6 +11,14 @@ local SettingsFeature = {
 ]]
 function SettingsFeature:OnInitialize()
     Addon:Debug("settings", "Initialize settings")
+
+    local profile = Addon:GetProfile()
+	local buyback = profile:GetValue(Addon.c_Config_SellLimit)
+    if (buyback) then
+        profile:SetValue(Addon.c_Config_SellLimit, true)
+    else
+        profile:SetValue(Addon.c_Config_SellLimit, false)
+    end
 end
 
 

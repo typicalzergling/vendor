@@ -24,6 +24,10 @@ end
 --[[ Checks if auto-sell is enabled ]]
 local function isAutoSellEnabled(self)
     local autosell, buyback = self:GetProfileValues(Addon.c_Config_AutoSell, Addon.c_Config_SellLimit)
+    if (type(buyback) == "number") then
+        buyback = (buyback ~= 0)
+    end
+
     return autosell and buyback
 end
 
@@ -63,7 +67,7 @@ function QuickSettings:CreateList(parent)
                 profile:SetValue(Addon.c_Config_AutoRepair, false)
             end
         end)
-    setting = list:AddSetting(sell, "QUICK_REPAIR_SETTING", "QUICK_REPAIR_SETTING_HELP")
+    setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "QUICK_REPAIR_SETTING_HELP")
     setting.isNew = true
 
     -- Quick setting for LDB/Minimap

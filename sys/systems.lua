@@ -265,6 +265,17 @@ function Systems:InitTarget(system, complete)
     complete(true)
 end
 
+--[[ Called when a dependency is ready ]]
+function Systems:DependencyReady(system, depend, success)
+    Addon:Debug("systems", "The dependency '%s' for system '%s' has finished [success=%s]", depend, system.name, success)
+    if (success) then
+        local dependSystem = self.systems[string.lower(depend)]
+        if (dependSystem and dependSystem.instance) then
+            rawset(system.source, dependSystem.name, dependSystem.instance)
+        end
+    end
+end
+
 function Systems:EndInit(success)
     Addon:Debug("systems", "Systems startup complete [success=%s]", success)
     self.complete = true

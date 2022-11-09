@@ -18,7 +18,7 @@ function SettingsTab:ShowSettings(settings)
         settings.frame = settings.CreateList(self)
         frame = settings.frame
         self.frames = self.frames or {}
-        table.insert(self.frames, frame)    
+        table.insert(self.frames, frame) 
     end
 
     -- Hide the other frames
