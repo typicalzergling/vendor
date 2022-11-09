@@ -109,6 +109,9 @@ function Addon:ClearResultCache(arg)
     end
     -- Anytime the Result Cache gets cleared, the Tooltip Result Cache also needs clearing.
     Addon:ClearTooltipResultCache()
+
+    -- The result status is now also now invalid, clear it
+    Addon:ClearEvaluationStatusCache()
 end
 
 function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
@@ -126,40 +129,62 @@ function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
     resultCache[guid] = cacheEntry
 end
 
-function Addon:GetEvaluationStatus()
-    local count = 0
-    local value = 0
-    local tosell = 0
-    local todestroy = 0
-    local sellitems = {}
-    local destroyitems = {}
-    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
-            local result = Addon:EvaluateItem(item)
-            
-            if result > 0 then
-                count = count + 1
-            end
 
-            if result == 1 then
-                value = value + item.UnitValue * itemCount
-                tosell = tosell + 1
-                table.insert(sellitems, item.Link)
-            elseif result == 2 then
-                todestroy = todestroy + 1
-                table.insert(destroyitems, item.Link)
+
+local escache = {}
+local escachestale = true
+function Addon:ClearEvaluationStatusCache()
+    escache = {}
+    escachestale = true
+end
+
+function Addon:GetEvaluationStatus()
+
+    if escachestale then
+        -- No cache, generate the status.
+        local count = 0
+        local value = 0
+        local tosell = 0
+        local todestroy = 0
+        local sellitems = {}
+        local destroyitems = {}
+        for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local item, itemCount = Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
+                --[[local result = Addon:EvaluateItem(item)
+                
+                if result > 0 then
+                    count = count + 1
+                end
+
+                if result == 1 then
+                    value = value + item.TotalValue
+                    tosell = tosell + 1
+                    table.insert(sellitems, item.Link)
+                elseif result == 2 then
+                    todestroy = todestroy + 1
+                    table.insert(destroyitems, item.Link)
+                end]]
             end
         end
+        escache = {}
+        escache.count = count
+        escache.value = value
+        escache.tosell = tosell
+        escache.todestroy = todestroy
+        escache.sellitems = sellitems
+        escache.destroyitems = destroyitems
+        escachestale = false
     end
-    return count, value, tosell, todestroy, sellitems, destroyitems
+
+    return escache.count, escache.value, escache.tosell, escache.todestroy, escache.sellitems, escache.destroyitems
 end
 
 function Addon:GetEvaluationDetails()
     local results = {}
     for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
+            local item, itemCount = Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
             if item then
                 local result, ruleid, rule, ruletype = Addon:EvaluateItem(item)
                 local entry = {}
@@ -180,7 +205,7 @@ end
 -- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
 function Addon:LoadAllBagItemLinks()
     for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
-        for slot=1, ContainerFrame_GetContainerNumSlots(bag) do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
             C_Container.GetContainerItemInfo(bag, slot)
         end
     end

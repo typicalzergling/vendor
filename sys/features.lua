@@ -209,9 +209,10 @@ function Features:OnAllSystemsReady()
         self:AddTarget(feature, feature.name, depenencies)
     end
 
-    C_Timer.After(10, function()
+    -- TODO: Add delay load for features that don't need to be in right away.
+    --C_Timer.After(10, function()
             self:BeginInit()
-        end)
+    --    end)
 end
 
 Addon.Features = {}

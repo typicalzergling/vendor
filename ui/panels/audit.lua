@@ -38,9 +38,9 @@ local FILTER_RULES =
 		Script = function() return Quality == RARE end
 	},
 	{
-		Id = "legandandbetter",
+		Id = "legendandbetter",
 		Name = L.OPTIONS_AUDIT_FILTER_LEGENDARY,
-		Script = function() return Quality >= LEGANDARY end
+		Script = function() return Quality >= LEGENDARY end
 	},	
 	{
 		Id = "extension",

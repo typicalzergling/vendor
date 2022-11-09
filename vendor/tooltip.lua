@@ -56,7 +56,23 @@ function Addon:ClearTooltipResultCache()
 end
 
 local function addItemTooltipLines(tooltip, tooltipData)
-    if not tooltip or tooltip:IsForbidden() or not tooltipData or not tooltipData.guid then return end
+    if not tooltip or tooltip:IsForbidden() or not tooltipData or not tooltipData.guid then 
+        -- No guid or forbidden or tooltip is a silent fail out.
+        return nil
+    end
+
+    if not tooltip:IsShown() then return nil end
+
+    -- Due to blizzard weirdness with locations not controlled by the player, we need to
+    -- skip over any locations not owned by the player or the DoesItemExist() method will
+    -- fail because it isn't in control of the player. Probably a blizzard bug, but alas
+    -- we must work around it. Our workaround logic here ist hat we will only put tooltips
+    -- on items that have a bag and slot or inventory id (i.e. equipped or in player bags).
+    local location = C_Item.GetItemLocation(tooltipData.guid)
+    if not location or not location:HasAnyLocation() then
+        return nil
+    end
+
 
     local profile = Addon:GetProfile();
 

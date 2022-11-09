@@ -69,11 +69,11 @@ Addon.Features.History.FILTERS = {
         end
 	},
 	{
-		Id = "legandandbetter",
+		Id = "legendandbetter",
 		Name = "OPTIONS_AUDIT_FILTER_LEGENDARY",
 		Description = "OPTIONS_AUDIT_FILTER_LEGENDARY_DESC",
 		Script = function()
-            return Quality >= LEGANDARY
+            return Quality >= LEGENDARY
         end
 	},
 	{

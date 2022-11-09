@@ -25,7 +25,7 @@ function Addon:DestroyNextItem()
             end
 
             -- Get Item properties and run sell rules.
-            local item, itemCount = self:GetItemPropertiesFromBag(bag, slot)
+            local item, itemCount = self:GetItemPropertiesFromBagAndSlot(bag, slot)
             local result, ruleid, rule = self:EvaluateItem(item)
 
             -- Result of 0 is no action, 1 is sell, 2 is must be deleted.

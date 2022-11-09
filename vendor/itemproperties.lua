@@ -74,23 +74,24 @@ function Addon:DoGetItemProperties(itemObj)
     assert(type(itemObj) == "table", "Expected an ItemMixin as the argument")
     assert(type(itemObj.GetItemID) == "function", "Expected an ItemMixin as the argument")
 
-    
-
-    -- If the item is empty it doesn't exist so we've got no properties to make
-    if (itemObj:IsItemEmpty()) then
-        Addon:Debug("itemerrors", "Empty Item Object")
+    -- Empty item detection. Have to do this since there's very strange behavior for determining
+    -- this with the API for items we don't own.
+    if itemObj:IsItemEmpty() then
+        Addon:Debug("itemerrors", "Item is empty")
         return nil
     end
 
-    -- Get base information about the item.
-    -- Do a deep copy of location in case this is exposing taint opportunities.
     local location = itemObj:GetItemLocation() or false
-    local guid = itemObj:GetItemGUID()
+    local guid = itemObj:GetItemGUID() or false
+    if not guid then
+        Addon:Debug("itemerro rs", "Item has no GUID")
+        return nil
+    end
 
     -- If it's bag and slot then the count can be retrieved, if it isn't
     -- then it must be an inventory slot, which means 1.
     local count = 1
-    if location then
+    if location and location:HasAnyLocation() then
         count = C_Item.GetStackCount(location) or 1
     end
 
@@ -161,7 +162,6 @@ function Addon:DoGetItemProperties(itemObj)
     item.SubTypeId = getItemInfo[13]
     item.BindType = getItemInfo[14]
     item.StackSize = getItemInfo[8]
-    item.StackCount = item.Count
     item.UnitValue = getItemInfo[11] or 0
     item.TotalValue = item.UnitValue * item.Count
     item.UnitGoldValue = math.floor(item.UnitValue / 10000)
@@ -175,7 +175,9 @@ function Addon:DoGetItemProperties(itemObj)
     item.IsKeystone = C_Item.IsItemKeystoneByID(item.Id) or false
     --IsItemSpecificToPlayerClass
 
-    if (location) then 
+    -- We may not care about conduits anymore?
+    -- TODO: Maybe gut this one?
+    if location and location:HasAnyLocation() then
         item.IsConduit = C_Item.IsItemConduit(location) or false
     end
 
@@ -317,8 +319,13 @@ end
 -- From Tooltip
 function Addon:GetItemPropertiesFromTooltip()
     local tooltipData = GameTooltip:GetTooltipData()
-    if not tooltipData or not tooltipData.guid then return nil end
-    return self:GetItemPropertiesFromGUID(tooltipData.guid)
+    if not tooltipData then return nil end
+    if tooltipData.guid then
+        return self:GetItemPropertiesFromGUID(tooltipData.guid)
+    elseif tooltipData.hyperlink then
+        return self:GetItemPropertiesFromItemLink(tooltipData.hyperlink)
+    end
+    return nil
 end
 
 -- From Location
