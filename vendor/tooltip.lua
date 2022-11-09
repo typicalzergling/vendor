@@ -32,22 +32,6 @@ function Addon:AddTooltipItemToDestroyList()
     self:AddTooltipItemToList(self.ListType.DESTROY)
 end
 
--- Hooks for item tooltips
-function Addon:OnTooltipSetItem(tooltip, ...)
-    -- Insecure hook, so wrap what we call in xpcall to prevent taint.
-    local status, err = xpcall(
-        function(t, ...)
-            local name = t:GetItem()
-            if name then
-                Addon:AddItemTooltipLines(t)
-            end
-        end,
-        CallErrorHandler, tooltip)
-    if not status then
-        Addon:Debug("tooltiperrors", "Error executing OnTooltipSetItem: ", tostring(err))
-    end
-end
-
 -- Result cache
 local itemGUID = nil
 local result = 0
@@ -71,49 +55,25 @@ function Addon:ClearTooltipResultCache()
     Addon:Debug("tooltip", "TooltipResultCache cleared.")
 end
 
-function Addon:AddItemTooltipLines(tooltip)
-    local profile = self:GetProfile();
+local function addItemTooltipLines(tooltip, tooltipData)
+    if not tooltip or tooltip:IsForbidden() or not tooltipData or not tooltipData.guid then return end
 
-    local location = Addon:GetTooltipItemLocation()
-    if not location or not C_Item.DoesItemExist(location) then
-        -- This is expected for anything that isn't in our inventory.
-        return
-    end
+    local profile = Addon:GetProfile();
 
-    local guid = C_Item.GetItemGUID(location)
-    if not (itemGUID == guid) then
-        -- Evaluate the item
-        local item = self:GetItemPropertiesFromTooltip()
-        if not item then
-            Addon:Debug("tooltip", "Valid location but invalid item properties.")
-            return
-        end
-        result, ruleId, ruleName, ruleType  = self:EvaluateItem(item)
+    -- We have a simple cache here for performance and so we don't constantly re-evaluate the same item repeatedly.
+    -- Tooltips execute many times per second. If you hold your mouse over an item, it will keep generating a new
+    -- tooltip, which will call this code over and over again, even when the item is the same item. Therefore,
+    -- we will cache the result as you mouse over each item and only re-update a tooltip when the item changes
+    -- or if rules change (which would clear the tooltip result cache).
+    if itemGUID ~= tooltipData.guid then
+        local item = Addon:GetItemPropertiesFromGUID(tooltipData.guid)
+        result, ruleId, ruleName, ruleType  = Addon:EvaluateItem(item)
 
         -- Check if the item is in the Always or Never sell lists
         -- TODO: Change this to return a table of lists to which this item belongs.
-        blocklist = self:GetBlocklistForItem(item.Link)
-
-        -- This is for suppressing every other call due to recipe items calling this for the embedded tooltip item also.
-        callCount = 0
-        if item and item.TypeId == 9 then
-            recipe = true
-        else
-            recipe = false
-        end
-
+        blocklist = Addon:GetBlocklistForItem(item.Link)
         itemGUID = guid
-        -- Mark it as the current cached item.
-        self:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
-    end
-
-    -- Check for recipe item, which means this will be called twice
-    -- We want to skip the first call, which is the embedded tooltip item.
-    callCount = callCount + 1
-    if recipe then
-        if callCount % 2 == 1 then
-            return
-        end
+        Addon:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
     end
 
     -- Add lines to the tooltip we are scanning after we've scanned it.
@@ -122,11 +82,11 @@ function Addon:AddItemTooltipLines(tooltip)
         -- Add Addon state to the tooltip.
         -- TODO: After blocklist is changed to a table, iterate over each list to which the item belongs and add to
         -- the tooltip.
-        if blocklist == self.ListType.SELL then
+        if blocklist == Addon.ListType.SELL then
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_ALWAYS_SELL_LIST"])
-        elseif blocklist == self.ListType.KEEP then
+        elseif blocklist == Addon.ListType.KEEP then
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_NEVER_SELL_LIST"])
-        elseif blocklist == self.ListType.DESTROY then
+        elseif blocklist == Addon.ListType.DESTROY then
             tooltip:AddLine(L["TOOLTIP_ITEM_IN_DESTROY_LIST"])
         end
 
@@ -163,3 +123,8 @@ function Addon:AddItemTooltipLines(tooltip)
     --@end-debug@
 end
 
+-- Amazing new tooltip functinality replacing nasty hooks and jankiness.
+function Addon:InitializeItemTooltips()
+    Addon:Debug("tooltip", "Adding tooltip processing for items.")
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
+end

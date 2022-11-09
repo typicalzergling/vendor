@@ -13,4 +13,5 @@
     <Script file="releasenotes.lua"/>
     <Script file="extensionmanager.lua"/>
     <Script file="listmanager.lua"/>
+    <Script file="tooltip.lua"/>
 </Ui>

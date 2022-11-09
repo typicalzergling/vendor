@@ -115,6 +115,7 @@ function BlockList:Add(itemId)
         self.commit(list)
     end
 
+    Addon:ClearResultCache()
     return false;
 end
 
@@ -125,6 +126,7 @@ function BlockList:Remove(itemId)
         self.commit(list)
         return true
     end
+    Addon:ClearResultCache()
     return false;
 end
 
@@ -408,6 +410,7 @@ end
 function Addon:ClearBlocklist(list)
     if (isSystemListType(list)) then
         SystemBlockList:New(listType):Clear()
+        Addon:ClearResultCache()
         return
     end
 

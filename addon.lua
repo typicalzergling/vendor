@@ -48,6 +48,9 @@ function Addon:OnInitialize()
     -- Merchant Button
     --self.MerchantButton.Initialize()
 
+    -- Tooltip
+    self:InitializeItemTooltips()
+
     local features = self:GetFeatures()
     features:Initialize()
 

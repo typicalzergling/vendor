@@ -107,6 +107,8 @@ function Addon:ClearResultCache(arg)
     else
         resultCache[arg] = nil
     end
+    -- Anytime the Result Cache gets cleared, the Tooltip Result Cache also needs clearing.
+    Addon:ClearTooltipResultCache()
 end
 
 function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
