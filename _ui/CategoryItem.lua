@@ -82,7 +82,7 @@ end
 
 function CategoryItem:OnClick()
     if not self:IsSelected() then
-        self:GetList():Select(self:GetModel())
+        self:Select()
     end
 end
 

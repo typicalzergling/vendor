@@ -229,6 +229,8 @@ end
 function EditRule:OnInitDialog(dialog)
     local tabs = self.tabs
 
+    Addon:DebugForEach("list", Dialogs.MatchesTab)
+
     dialog:SetCaption("EDITRULE_CAPTION")
     Addon.AttachImplementation(self.ruleStatus, Dialogs.RuleStatus)
 
@@ -240,8 +242,8 @@ function EditRule:OnInitDialog(dialog)
     end
 
     self.help = tabs:AddTab("help", "help", "Vendor_EditRule_Help", HelpTab)
-    self.matches = tabs:AddTab("matches", "matches", "Vendor_EditRule_Matches", self.MatchesTab)
-    self.items = tabs:AddTab("iteminfo", "iteminfo", "Vendor_EditRule_ItemInfo", self.ItemInfoTab)
+    self.matches = tabs:AddTab("matches", "matches", "Vendor_EditRule_Matches", Dialogs.MatchesTab)
+    self.items = tabs:AddTab("iteminfo", "iteminfo", "Vendor_EditRule_ItemInfo", Dialogs.ItemInfoTab)
     self.items:RegisterCallback("INSERT_TEXT", self.InsertText, self)
     tabs:AddTab("parameters", "parameters", "Vendor_EditRule_Parameters", {})
 

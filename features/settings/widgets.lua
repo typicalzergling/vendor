@@ -116,10 +116,14 @@ end
 
 --[[ Called when the size is changed to compute a new size for the control ]]
 function Checkbox:OnSizeChanged()
+    self:Layout()
+end
+
+function Checkbox:Layout()
     local height = self.label:GetHeight()
     if (self.help:IsShown()) then
         self.help:SetHeight(0)
-        height = height + self.help:GetHeight()
+        height = height + self.help:GetHeight() + 2
     end
 
     if (height > self:GetHeight()) then
@@ -184,9 +188,13 @@ function Header:SetHelp(help)
 end
 
 function Header:OnSizeChanged()
+    self:Layout()
+end
+
+function Header:Layout()
     local height = self.header:GetHeight()
     if (self.help:IsShown()) then
-        height = height + self.help:GetHeight()
+        height = height + self.help:GetHeight() + 2
     end
 
     self:SetHeight(height)
@@ -206,8 +214,10 @@ local SettingsList = {}
 
 --[[ Handle laoding the settign list ]]
 function SettingsList:OnLoad()
+    Addon.CommonUI.List.OnLoad(self)
     self.settings = {}
     self.ItemSpacing = 12
+    self.Padding = 12
 end
 
 --[[ Create an item for the setting list ]]
@@ -247,7 +257,7 @@ function SettingsList:OnCreateItem(model)
     end
 
     if (setting and model.isNew == true) then
-        _showNewTag(setting, "TOPRIGHT", -24, 0)
+        _showNewTag(setting, "TOPRIGHT", -24, -8)
     end
 
     return setting
@@ -281,8 +291,6 @@ end
 --[[ Create a new settings list ]]
 function Settings.CreateList(parent)
     local frame = CreateFrame("Frame", nil, (parent or UIParent), "CommonUI_List")
-    Mixin(frame, SettingsList)
-    SettingsList.OnLoad(frame)
-    frame:Rebuild()
+    Addon.CommonUI.UI.Attach(frame, SettingsList)
     return frame
 end

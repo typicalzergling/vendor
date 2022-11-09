@@ -5,38 +5,8 @@
     |   This mixin provides the support for a scrolling list of items (model)
     |   this handles all of the basic functionality but abstracts the parts
 	|   which are list specific. 
-	| 
-	| Required:
-	|	ItemTemplate: The name of the item template to use when creating 
-	|                 or items. They all need to be the same neight.
-	|	ItemHeight: The height each item in the list.
-	|	ItemClass: The name of the class to attach to the item when
-	|			   it is created.
-    |   
-    |   Subclasses can provided:
-    |       OnUpdateItem(item, first, last) - Called when an item is laid out in 
-    |           the view.  This is given the item and two bools to indicate it
-    |           it's position in the view.
-    |       OnViewBuilt() - Called after all of the items have been created.
-    |       CompareItems(a, b) - Used for sorting the list, if not defined
-    |           then the list will not be sorted. Receives two items as 
-    |           arguments, returns true if a is before b.
-    |       CreateItem(model)  - Called to create new entry in the list,
-    |           given the data, returns a frame.
-    |
-    | ListItem:
-    |   This is mixed into the item when it is created and provides 
-    |   the following functionality which can be used by consumers/subclasses.
-    |
-    |       GetModel() - Returns the data/model item for this visual.
-    |       GetIndex() - Returns the raw index into view
-    |       GetModelIndex() - Returns the index into the model collection.
-    |
+	|
     ==========================================================================]]
-
--- TODO: Set a time on hide, to clear out the table of frames after 60 seconds, we dont'
--- need to keep them aorund
---TODO: save selection across rebuilds
 
 local _, Addon = ...
 local locale = Addon:GetLocale()
@@ -45,12 +15,11 @@ local STATE_KEY = {}
 local SCROLLFRAME_TEMPLATE = "UIPanelScrollFrameTemplate"
 local Colors = Addon.CommonUI.Colors
 local UI = Addon.CommonUI.UI
+local Layouts = Addon.CommonUI.Layouts
+local DISCARD_TIME = 60.0
 
-local function debug(...)
-    --print(YELLOW_FONT_COLOR_CODE, "####LIST###:|r", ...)
-end
-
-local function _invokeHandler(list, handler, ...)
+--[[ Calls a hanlder on the list or it's parent ]]
+local function list_callHandler(list, handler, ...)
     local func = list[handler]
     if (type(func) == "string") then
         local parent = list:GetParent()
@@ -91,239 +60,258 @@ local function _createScrollframe(list)
     return scroller
 end
 
--- Simple helper that resolve "a.b.c" from the addon
-local function _resolve(root, path)
-    local function split(str)
-        local result = {};
-        for match in string.gmatch(str .. ".", "(.-)" .. "[.]" ) do
-            table.insert(result, match)
-        end
-        return result
-    end
-
-    local c = root
-    for _, part in ipairs(split(path)) do
-        if (not c) then
-            return nil
+--[[ Discards any frames which are not currently in the view from the framses cache ]]
+local function list_DiscardFrames(self, state)
+    state = state or rawget(self, STATE_KEY)
+    if (not self:IsVisible() and state.viewFrames) then
+        
+        local frames = {}
+        for _, litem in ipairs(state.viewFrames) do
+            frames[litem:GetModel()] = litem
         end
 
-        c = c[part]
+        state.frames = frames
+        Addon:Debug("list", "Discarded unused frames for list '%s'", self:GetParentKey() or "<unknown>")
     end
-
-    return c
 end
 
---[[ 
-    Creates a new item for the specified model in the list (this will overwrite any item in the list)
-]]
-local function _createItem(list, state, model)
-    local frame = nil
+--[[ Create an error item if something goes badly ]]
+local function list_ErrorItemCreator(parent, model)
+    local frame = CreateFrame("Frame", nil, parent)
+    frame:SetHeight(22)
+    local text = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    text:SetText("Error: " .. tostring(model))
+    text:SetTextColor(RED_FONT_COLOR:GetRGBA())
+    text:SetAllPoints(frame)
+    return frame
+end
 
-    -- Does the list or parent handle the creation?
-    local creator = list.ItemCreator
-    if (type(creator) == "string") then
-        local func = list[creator]
-        if (not func) then
-            local parent = list:GetParent()
-            func = parent[creator]
-            if (func) then
-                frame = func(parent, model)
-            end
+--[[ Build a function in our state to create an item (compute it once) ]]
+local function list_EnsureCreateItem(self, state)
+    state = state or rawget(self, STATE_KEY)
+    local parent  = self:GetParent()
+
+    -- The parent/list takes care of creating the item
+    if (type(self.ItemCreator)) == "string" then
+        local creator = parent[self.ItemCreator]
+        local target = parent
+        if (type(creator) ~= "function") then
+            creator = self[self.ItemCreator]
+            target = self
+        end
+
+        if (type(creator) ~= "function") then
+            Addon:Debug("list", "The provided function '%s' is invalid", self.ItemCreator)
+            Addon:DebugForEach("list", parent)
+            state.itemCreator = list_ErrorItemCreator
         else
-            frame = func(list, model)
+            Addon:Debug("list", "Using '%s' as the item creator provided by '%s'", self.ItemCreator, target:GetParentKey() or "<unknown>")
+            state.itemCreator = function(parent, model)
+                    return creator(target,model)
+                end
+        end    
+    elseif (type(self.OnCreateItem) == "function") then
+        Addon:Debug("list", "Using self.OnCreateItem as the item creator for '%s'", self:GetParentKey() or "<unknown>")
+        state.itemCreator = self.OnCreateItem
+    elseif (type(self.ItemTemplate) == "string") then
+        local template = self.ItemTemplate
+
+        local frameType = "Button"
+        if (type(self.ItemFrameType) == "string") then
+            frameType = self.ItemFrameType
         end
 
-        assert(frame, "Expected the item creator to create a frame")
-        frame:SetParent(state.scroller:GetScrollChild())
-    end
-
-    if (not frame and type(list.OnCreateItem) == "function") then
-        frame = list:OnCreateItem(model)
-
-        assert(frame, "Expected the item creator to create a frame")
-        frame:SetParent(state.scroller:GetScrollChild())
-    end
-
-    -- Create it ourselves with the keys
-    if not frame then
-        local template = list.FrameType or list.ItemType or list.ItemTemplate
-        local itemClass = list.ItemClass
-    
-        -- Determine if we have an implementation to attach	
-        if (not state.itemclass) then
-            local class = itemClass or list.ItemClass;
-            if ((type(class) == "string") and (string.len(class) ~= 0)) then
-                class = _resolve(Addon, class)
-            elseif (type(class) ~= "table") then
-                class = nil
+        local class
+        if (type(self.ItemClass) == "string") then
+            class = UI.Resolve(self.ItemClass)
+            if (not class) then
+                Addon:Debug("list", "The list '%s' specified an invalid item class : %s", self:GetParentKey() or "<unknown>", self.ItemClass)
             end
-    
-            state.itemclass = class or {}
+        elseif (type(self.ItemClass) == "table") then
+            class = self.ItemClass
+        else
+            class = {}
         end
 
-        frame = CreateFrame("Button", nil, state.scroller:GetScrollChild(), template)
-        UI.Attach(frame, state.itemclass)
+        Addon:Debug("list", "Using type=%s, template=%s to create items for '%s'", frameType, template, self:GetParentKey() or "<unknown>")
+        state.itemCreator = function(parent, model)
+                local frame = CreateFrame(frameType, nil, parent, template)
+                UI.Attach(frame, class)
+                return frame
+            end
     end
-    
-    -- Create the actual item, and attach our implementaition
-    Mixin(frame, list.ListItem)
-    frame:Attach(list);
-    frame:SetModel(model)
-    Addon.Invoke(frame, "OnCreated", frame)
-    Addon.Invoke(list, "OnItemCreated", frame, model)
 
-    frame:SetScript("OnSizeChanged", function(_item, ...)
-        state.reflow = true
-        local func = _item.OnSizeChanged
-        if type(func) == "function" then
-            pcall(func, _item, ...)
-        end
-    end)
-
-    return frame;
+    if (not state.itemCreator) then
+        Addon:Debug("list", "Unable to determine how to create items for lsit '%s'", self:GetParentKey() or "<unknown>")
+        state.itemCreator = list_ErrorItemCreator
+    end
 end
 
---[[===========================================================================
-    | _buildView
-    |   Given a list state, create the view which is the sorted filtered 
-    |   models we are going to use display the actual view
-    ========================================================================--]]
-local function _buildView(list, state)
+--[[ Create an item for the specified model ]]
+local function list_CreateItem(self, state, model)
+    state = state or rawget(self, STATE_KEY)
+
+    --@debug@
+    assert(type(state.itemCreator) == "function", "We should have a resovled item creator by this point")
+    --@end-debug@
+
+    local litem = Mixin(state.itemCreator(self, model), List.ListItem)
+    litem:Attach(self);
+    litem:SetModel(model)
+    litem:SetParent(state.scroller:GetScrollChild())
+    
+    litem:SetScript("OnSizeChanged", function(_item, ...)
+            state.layout = true
+            if (type(_item.OnSizeChanged) == "function") then
+                _item:OnSizeChanged(...)
+            end
+        end)
+
+    return litem
+end
+
+--[[ Using the current view, create a mirror of the item in the view, this will pull
+     items from the caches and put them back into the cache if need ]]
+local function list_PopulateItems(self, state)
+    state = state or rawget(self, STATE_KEY)
+
+    assert(type(state.view) == "table")
+    
+    local viewFrames = {}
+    local cache = state.frames
+    local misses = 0
+
+    -- Push the current view back into the cache
+    if (state.viewFrames) then
+        for _, litem in ipairs(state.viewFrames) do
+            cache[litem:GetModel()] = litem
+        end
+    end
+
+    for _, model in ipairs(state.view) do
+        local litem = cache[model]
+        if (not litem) then
+            -- We haven't created an item for this frame yet
+            litem = list_CreateItem(self, state, model)
+            misses = misses + 1
+
+            --@debug@
+            local modelName = tostring(model)
+            if (type(model) == "table") then
+                if (model.GetName) then
+                    modelName = "" --model:GetName()
+                else
+                    modelName = model.Name or model.Text or modelName
+                end
+            end
+
+            Addon:Debug("listitems", "Created frame for item '%s' on list '%s'", modelName, self:GetParentKey() or "<unknown>")
+            --@end-debug@
+        else
+            -- This frame  can live in the view frames
+            cache[model] = nil
+        end
+        
+        table.insert(viewFrames, litem)
+        litem:ClearAllPoints()
+        litem:SetWidth(0)
+        litem:Show()
+    end
+
+    -- Move any frames we were using into the cache
+    for model, litem in pairs(cache) do
+        litem:ClearAllPoints()
+        litem:Hide()
+        cache[model] = litem
+    end
+
+    state.viewFrames = viewFrames
+    state.pendingSelection = state.selection
+
+    Addon:Debug("list", "Created %s frames for '%s' (new=%d)", table.getn(state.viewFrames), self:GetParentKey() or "<unknown>", misses)
+end
+
+--[[ Construct the view for this list ]]
+local function list_BuildView(self, state)
+    state = state or rawget(self, STATE_KEY)
+
     if (not state.view) then
         local view = {}
         local filter = state.filter
-        local frames = {}
+        local sort = state.sort
 
-        local createFrame = function(_model)
-            local frame = state.frames[_model]
-            if (not frame) then
-                frames[_model] = _createItem(list, state, _model)
-            else
-                frames[_model] = frame
-            end
+        --@debug@
+        --assert(type(state.items) == "table" and table.getn(state.items) ~= 0)
+        --@end-debug@
 
-            state.frames[_model] = nil
-        end
 
         -- Traverse the models, exluding things which don't match 
         -- our filter if one was provided.
         for _,  model in ipairs(state.items) do
             if (filter) then
                 if (filter(model)) then
-                    createFrame(model)
                     table.insert(view, model)
                 end
             else
-                createFrame(model)
                 table.insert(view, model)
             end
         end
 
         -- If we have sort, then sort the resulting view
-        if (type(state.sort) == "function") then
-            local sortFunc = state.sort
-            table.sort(view, function(a, b)
-                local success, less = pcall(sortFunc, a, b)
-                return (success and (less == true))
-            end)
+        if (type(sort) == "function") then
+            table.sort(view, sort)
         end
 
-        -- Anything left it state cache of frames should be hidden
-        for model, frame in pairs(state.frames) do
-            frame:ClearAllPoints()
-            frame:Hide()
-            frames[model] = frame
-        end
-
-        -- Save the view and the frame
         state.view = view
-        state.frames = frames
-        _invokeHandler(list, "OnViewCreated", view)
+        Addon:Debug("list", "Created view %s/%s items for '%s'", table.getn(state.view or {}), table.getn(state.items or {}), self:GetParentKey() or "<unknown>")
+
+        list_PopulateItems(self, state)        
+        list_callHandler(self, "OnViewCreated", view)
+        state.layout = true
     end
 end
 
-local NO_MARGINS = { left = 0, right = 0 }
-
--- Layout he view relative relative to the specified frame, if they are outside of the
--- current view bounds the frame is hidden, returns the total width/height of the resulting
--- view
-local function _layoutView(list, container, state, cx, cy)
-    local top = 0
-
-    local last = table.getn(state.view)
-    cx = cx - 1
-
-    for index, model in ipairs(state.view) do
-        local litem = state.frames[model]
-        if (not litem) then
-            debug("Do we not have a frame when we layout?")
-            litem = _createItem(list, state, model)
-            state.frames[model] = litem
-        end
-
-        local margins = litem.Margins or NO_MARGINS
-        litem:SetWidth(cx -  (margins.left or 0) - (margins.right or 0))
-
-        if (index == 1) then
-            litem:SetPosition("first")
-        elseif (index == last) then
-            litem:SetPosition("last")
-        else
-            litem:SetPosition("none")
-        end
-    
-        litem:ClearAllPoints()
-        litem:Show()
-
-        top = top + litem:GetHeight() + (margins.top or 0) + (margins.bottom or 0)
-        state.reflow  = true
+--[[ Layout the list ]]
+local function list_Layout(self, state)
+    local spacing = 0
+    if (type(self.ItemSpacing) == "number") then
+        spacing = self.ItemSpacing
     end
 
-    return top
-end
-
-local function _reflow(list)
-    local state = rawget(list, STATE_KEY)
-        
-    local space = tonumber(list.ItemSpacing) or 0
-    local height = space
-    local width = state.scroller:GetScrollChild():GetWidth()
-
-    debug("self.view =>", state.view)
-
-    for _, model in ipairs(state.view) do
-        local frame = state.frames[model]
-        local margins = frame.Margins or NO_MARGINS
-
-        frame:SetWidth(width - (margins.left or 0) - (margins.right or 0))
-        height = height + (margins.top or 0)
-        frame:SetPoint("TOPLEFT", (margins.left or 0), -height)
-        height = height + frame:GetHeight() + space + (margins.bottom or 0)
+    local padding = 0
+    if (type(self.Padding) == "number") then
+        padding = self.Padding
     end
 
-    height = height + space
-    state.scroller:GetScrollChild():SetHeight(height)
+    local scroller = state.scroller:GetScrollChild()
+    local width = scroller:GetWidth()
+    if (not state.viewFrames) then
+        Addon:Debug("list", "List '%s' has no frames (%s)", self:GetParentKey() or "<unknown>", table.getn(state.view or {}))
+    else
+        Layouts.Stack(scroller, state.viewFrames, padding, spacing, width)
+        Addon:Debug("list", "List '%s' has finshed layout %s x %s (%s frames)", self:GetParentKey() or "<unknown>", width, scroller:GetHeight(), table.getn(state.viewFrames or {}))    
+    end
 end
 
-local function _showEmpty(list, show)
+--[[ Display the empty list ]]
+local function list_showEmpty(list, show)
     local text = list.EmptyText
     local state = rawget(list, STATE_KEY)
     local scroller = state.scroller
     local empty = list.empty
 
     if (not text or not show) then
-        empty:Hide()
+        empty:SetText("")
     elseif show and not empty:IsShown() then
+        UI.SetText(empty, text)
+        UI.SetColor(empty, "LIST_EMPTY_TEXT")
         empty:SetText(locale[text] or text)
-        empty:Show()
         empty:SetTextColor(Colors.LIST_EMPTY_TEXT:GetRGBA())
     end
 
-    if (show and scroller:IsShown()) then
-        scroller:Hide()
-    elseif (not show and not scroller:IsShown()) then
-        scroller:Show()
-    end
+    Addon:Debug("list", "Showing empty text '%s' for list '%s'", text or "", list:GetParentKey() or "<unknown>")
+    UI.Show(scroller, not show)
+    UI.Show(empty, show)
 end
     
 --[[===========================================================================
@@ -331,7 +319,12 @@ end
     |   Handle retrieves the items (models) for the list, these will get mapped
     |   1-to-1 to into the view
     ========================================================================--]]
-local function _getItems(list)
+local function list_GetItems(list)
+    local state = rawget(list, STATE_KEY)
+    if (not state.itemCreator) then
+        list_EnsureCreateItem(list, state)
+    end
+
     local func = list.GetItems
     if (not func) then
         func = list.OnGetItems
@@ -339,20 +332,23 @@ local function _getItems(list)
 
     if (type(func) == "function") then
         -- List handles the fetch
-        local success, items = xpcall(func, CallErrorHandler, list)        
-        if (success) then 
-            return items or {}
-        end
+        local items = func(list)
+        return items or {}
     else
         -- If we didn't find a handler ask he parent
         local parent = list:GetParent()
-        local target = list.ItemSource or "GetItems"
+        local target = list.ItemSource
 
-        func = parent[target]
-        if (func) then
-            local success, items = xpcall(func, CallErrorHandler, parent, list)
-            if (success) then
-                return items or {}
+        if (type(target) == "string") then
+            Addon:Debug("list", "Getting items from parent using '%s' for list '%s'", list.ItemSource or "<error>", list:GetParentKey() or "<unknown>")
+            func = parent[target]
+            if (func) then
+                local success, items = xpcall(func, CallErrorHandler, parent, list)
+                if (success) then
+                    return items or {}
+                else
+                    Addon:Debug("list", "Failed to retrieve the items for list '%s'", self:GetParentKey() or "<unknown>")
+                end
             end
         end
     end
@@ -366,7 +362,6 @@ end
     some scripts.
 ]]
 function List:OnLoad()
-    debug("OnLoad")
     local state = {
         frames = {},
         models = {},
@@ -376,9 +371,41 @@ function List:OnLoad()
     rawset(self, STATE_KEY, state)
     self:OnBorderLoaded(nil, Colors.LIST_BORDER, Colors.LIST_BACK)
     self:SetClipsChildren(true)
-    self:SetScript("OnShow", function() state.update = true end)
-    self:SetScript("OnSizeChanged", function() state.reflow = true end)
     state.scroller = _createScrollframe(self)
+end
+
+--[[ Handler for show ]]
+function List:OnShow()
+    local state = rawget(self, STATE_KEY)
+
+    if (state.discardTimer) then
+        state.discardTimer:Cancel()
+        state.discardTimer = nil
+    end
+
+    self:Update()
+end
+
+--[[ Handler for hide ]]
+function List:OnHide()
+    local state = rawget(self, STATE_KEY)
+
+    if (state.discardTimer) then
+        state.discardTimer:Cancel()
+        state.discardTimer = nil
+    end    
+
+    state.discardTimer = C_Timer.After(DISCARD_TIME, function()
+            state.discardTimer = nil
+            list_DiscardFrames(self, state)
+        end)
+end
+
+--[[ Handler for size changed ]]
+function List:OnSizeChanged(width, height)
+    local state = rawget(self, STATE_KEY)
+    Addon:Debug("List '%s' size has changed %d x %d", self:GetParentKey() or "<unknown>", width, height)
+    state.layout = true
 end
 
 --[[
@@ -386,21 +413,16 @@ end
 ]]
 function List:FindItem(model)
     local state = rawget(self, STATE_KEY)
-    return state.frames[model]
-end
 
---[[
-    Retrieves the view index for the specified item.
-]]
-function List:FindIndexOfItem(item)
-    local state = rawget(self, STATE_KEY)
-    local model = item:Getmodel();
-    for index, item in ipairs(state.view) do
-        if (item == model) then
-            return index
+    if (state.viewFrames) then
+        for _, litem in ipairs(state.viewFrames) do
+            if (litem:GetModel() == model) then
+                return litem
+            end
         end
     end
 
+    -- Itm isn't in the view
     return nil
 end
 
@@ -417,59 +439,6 @@ end
 function List:Select(item)
     local state = rawget(self, STATE_KEY)
     state.pendingSelection = item
-
-    --[[local sel = self:FindItem(item)
-
-    local currentSel = self:GetSelected();
-    local newSel = nil;
-
-    if (not sel) then
-    if (type(item) == "number") then
-        if (not state.items) then
-            state.items = _getItems(self)
-        end
-
-        if (not state.view) then
-            _buildView(self, state)
-        end
-
-        local model = state.view[item];
-        if (not model) then
-            return
-        end
-
-        sel = self:FindItem(model)
-        if (not sel) then
-            sel = _createItem(self, state, model)
-            state.frames[model] = sel
-        end
-    elseif (type(item) == "table") then
-        sel = self:FindItem(item);
-    end
-    end
-
-    for _, frame in pairs(state.frames) do
-        if (frame == sel) then
-            newSel = frame;
-            frame:SetSelected(true);
-        else
-            frame:SetSelected(false);
-        end
-    end
-
-    if (not currentSel or newSel ~= currentSel) then
-        local model = nil;
-        if (newSel) then
-            model = newSel:GetModel();
-        end
-
-        local func = self.OnSelection
-        if (type(func) == "function") then
-            self:OnSelected(model, newSel)
-        end
-
-        _invokeHandler(self, "OnSelection", model, newSel)
-    end]]
 end
 
 --[[
@@ -491,25 +460,26 @@ end
 local function list_ProcessSelection(self, state)
     if (state.pendingSelection) then
         local selection = state.selection
-        if (selection ~= state.pendingSelection) then
-            local item = self:FindItem(selection)
-            if (item) then
-                item:SetSelected(false)
+        if (selection ~= state.pendingSelection and state.viewFrames) then
+            local newSelection
+
+            for _, litem in ipairs(state.viewFrames) do
+                local model = litem:GetModel()
+                litem:SetSelected(model == state.pendingSelection)
+                if (model == state.pendingSelection) then
+                    newSelection = model
+                end
             end
 
-            item = self:FindItem(state.pendingSelection)
-            if (item) then
-                item:SetSelected(true)
-            end
-
-            state.selection = state.pendingSelection
+            state.selection = newSelection
             state.pendingSelection = nil
-            _invokeHandler(self, "OnSelection", state.selection, item)
+            list_callHandler(self, "OnSelection", state.selection, item)
         end
     elseif (state.ensureSelection) then
-        if (not state.selection and table.getn(state.view)) then
+        if (not state.selection and state.view and table.getn(state.view)) then
             state.pendingSelection = state.view[1]
         end
+
         state.ensureSelection = nil
     end
 end
@@ -523,24 +493,12 @@ function List:OnUpdate()
         if (state.update) then
             state.update = false
             xpcall(self.Update, CallErrorHandler, self)
-        elseif (state.reflow) then
-            state.reflow = false
-            xpcall(_reflow, CallErrorHandler, self)
+        elseif (state.layout) then
+            state.layout = false
+            xpcall(list_Layout, CallErrorHandler, self, state)
+        elseif (state.ensureSelection or state.pendingSelection) then
+            xpcall(list_ProcessSelection, CallErrorHandler, self, state)
         end
-
-        list_ProcessSelection(self, state)
-
-        --[[for _, model in ipairs(state.view) do
-            local frame = state.frames[model]
-            if (frame and frame:IsVisible() and ) then
-
-            if (frame:IsVisible()) then
-                local func = frame.OnUpdate
-                if (type(func) == "function") then
-                    pcall(func, frame)
-                end
-            end
-        end]]
     end
 end
 -- Sets the filter for the item list
@@ -582,24 +540,11 @@ end
 function List:Rebuild()
     local state = rawget(self, STATE_KEY)
 
-    debug("Rebuiid")
-
     state.update = true
     state.items = nil
     state.view = nil
-
-    --if (state.frames) then
-        --for _, f in pairs(state.frames) do
-            --f:Hide()
-        --end
-    --end
-
-    --state.frames = {}
-end
-
-function List:Reflow()
-    local state = rawget(self, STATE_KEY)
-    state.reflow = true
+    Addon:Debug("list", "Issuing a rebuild for list '%s'", self:GetParentKey() or "<unknown")
+    self:Update()
 end
 
 --[[
@@ -611,27 +556,32 @@ function List:Update()
     state.update = false        
     local scroller = state.scroller
     local container = scroller:GetScrollChild()
-    local width = scroller:GetWidth() - scroller.ScrollBar:GetWidth()
+    local width = self:GetWidth() - scroller.ScrollBar:GetWidth() - 6
+
+    Addon:Debug("lise", "Performing update for list '%s'", self:GetParentKey() or "<unknown>")
 
     -- Populate the items
     if (not state.items) then
-        state.items = _getItems(self)
+        state.items = list_GetItems(self)
     end
 
     -- Populate the view
     if (not state.view) then
-        _buildView(self, state)
+        list_BuildView(self, state)
     end
 
     if not state.view or table.getn(state.view) == 0 then
-        _showEmpty(self, true)
-        _invokeHandler(self, "OnViewCreated", STATE_KEY)
+        list_showEmpty(self, true)
+        list_callHandler(self, "OnViewCreated", STATE_KEY)
     else
-        _showEmpty(self, false)
-        local vh = _layoutView(self, container, state, width)
-        container:SetWidth(width)
-        container:SetHeight(vh)
-        state.reflow = true
+        list_showEmpty(self, false)
+        
+        if (container:GetWidth() ~= width) then
+            container:SetWidth(width)
+        end
+
+        list_Layout(self, state)
+        self.layout = false
     end
 end
 

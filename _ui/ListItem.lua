@@ -122,9 +122,9 @@ end
 --[[===========================================================================
 	| Modifies the selected state of this item
 	========================================================================--]]
-function ListItem:SetSelected(selected)
+function ListItem:SetSelected(selected, force)
     local state = rawget(self, STATE_KEY)
-	if (state.selected ~= selected) then
+	if (force or (state.selected ~= selected)) then
 		state.selected = selected;
 
         if (selected and type(self.OnSelected) == "function") then

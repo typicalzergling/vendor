@@ -3,9 +3,14 @@ local MarkdownFrame = {}
 local Markdown = Mixin({}, Addon.CommonUI.List)
 local FRAMES_KEY = {}
 local Colors = Addon.CommonUI.Colors
-local PARA_MARGINS = { left = 16, top = 2, bottom = 6 }
-local HEADER_MARGINS = { top = 6, bottom = 0 }
 local UI = Addon.CommonUI.UI
+local Layouts = Addon.CommonUI.Layouts
+
+local MARGINS = {
+    header = { top = 4, bottom = 2 },
+    list = { left = 16,  top = 4, bottom = 4 },
+    paragraph = { left = 16, top = 4, bottom = 4 }
+}
 
 --[[ Iterate the lines provided string ]]
 local function lines(str)
@@ -47,15 +52,17 @@ local function paragraph(parent, line, nextLine)
             end
         end
 
-        line = nextLine()
+        line = nextLine()       
+        if (line) then
+            line  = Addon.StringTrim(line)
+        end
     end
 
     local frame = CreateFrame("Frame", nil, parent, "Markdown_Paragraph")
     frame.content:SetWordWrap(true)
     frame.content:SetText(paragraph or "")
     frame.content:SetTextColor(Colors.SECONDARY_TEXT:GetRGBA())
-    frame.Margins = PARA_MARGINS
-
+    
     return frame
 end
 
@@ -72,8 +79,7 @@ local function header(parent, line, nextLine)
     local frame = CreateFrame("Frame", nil, parent, "Markdown_Header_One")
     frame.content:SetText(Addon.StringTrim(line:sub(s)))
     frame.content:SetTextColor(Colors.TEXT:GetRGBA())
-    frame.Margins = HEADER_MARGINS
-
+    
     return frame
 end
 
@@ -87,57 +93,60 @@ local function list(parent, line, nextLine)
 
     local makeItem = function(text)
         local item = CreateFrame("Frame", nil, frame, "Markdown_ListItem")
-        --Addon.AttachImplementation(frame, MarkdownFrame, true)
         item.content:SetText(text)
         item:SetPoint("TOPLEFT")
         item:SetPoint("TOPRIGHT")
+        UI.Attach(item, MarkdownFrame)
     end
 
     local itemText = ""
-  while (line and string.len(line) ~= 0) do
-    if isListChar(line:sub(1,1)) then
-      if (string.len(itemText) ~= 0) then
-        makeItem(itemText)
-      end
+    while (line and string.len(line) ~= 0) do
+        if isListChar(line:sub(1, 1)) then
+            if (string.len(itemText) ~= 0) then
+                makeItem(itemText)
+            end
 
-      itemText = Addon.StringTrim(line:sub(2))
-    else
-      itemText = (itemText .. " " .. Addon.StringTrim(line))
+            itemText = Addon.StringTrim(line:sub(2))
+        else
+            itemText = (itemText .. " " .. Addon.StringTrim(line))
+        end
+
+        line = nextLine()
     end
 
-    line = nextLine()
-  end
+    if (string.len(itemText) ~= 0) then
+        makeItem(itemText)
+    end
 
-  if (string.len(itemText) ~= 0) then
-    makeItem(itemText)
-  end
-
-  frame.Margins = PARA_MARGINS
-  return frame
+    return frame
 end
 
 --[[ When the size changes we want to recompute our height based on total height
      of each region. ]]
-function MarkdownFrame:OnSizeChanged()
+function MarkdownFrame:OnSizeChanged(width, height)
+    self:Layout(width)
+end
+
+function MarkdownFrame:Layout(width, height)
     if (self.content) then
         self.content:SetHeight(0)
         self:SetHeight(self.content:GetHeight())
-    elseif (self.contents) then
-        local height = 0
-        local num = table.getn(self.contents)
+    elseif (type(self.contents) == "table") then
+        width = width or self:GetWidth()        
 
-        for i, content in ipairs(self.contents) do
-            content:SetPoint("TOPLEFT", 0, -height)
-            content:SetPoint("TOPRIGHT", 0, -height)
-            MarkdownFrame.OnSizeChanged(content)
-            height = height + content:GetHeight()
-            
-            if (i ~= num) then
-                height = height + 4
-            end
+        local padding = 0
+        if (type(self.Padding) == "number") then
+            padding = self.Padding
         end
-        
-        self:SetHeight(height)
+
+        local spacing = 0
+        if (type(self.Spacing) == "number") then
+            spacing = self.Spacing
+        end
+    
+        Layouts.Stack(self, self.contents, padding, spacing, width)
+    else
+        self:SetHeight(0)
     end
 end
 
@@ -159,12 +168,16 @@ end
 
 --[[ Set the markdown on the control ]]
 function Markdown:SetMarkdown(markdown)
-    local frames = Addon.CommonUI.CreateMarkdownFrames(self, markdown)
+    local frames = Addon.CommonUI.CreateMarkdownFrames(self, markdown, function(type, frame)
+            if (MARGINS[type]) then
+                frame.margins = MARGINS[type]
+            end
+        end)
     rawset(self, FRAMES_KEY, frames)
     self:Rebuild()
 end
 
-function Addon.CommonUI.CreateMarkdownFrames(parent, markdown)
+function Addon.CommonUI.CreateMarkdownFrames(parent, markdown, callback)
     if (type(markdown) ~= "string") then
         error("Usage: CreateMarkdown( frame, string )")
     end
@@ -179,10 +192,22 @@ function Addon.CommonUI.CreateMarkdownFrames(parent, markdown)
 
         if first == "#" then
             frame = header(parent, line, getLine)
+            if (type(callback) == "function") then
+                callback("header", frame)
+            end
         elseif (isListChar(first)) then
             frame = list(parent, line, getLine)
+            if (type(callback) == "function") then
+                callback("list", frame)
+            end
         else
-            frame = paragraph(parent, line, getLine)
+            line = Addon.StringTrim(line)
+            if (string.len(line) ~= 0) then
+                frame = paragraph(parent, line, getLine)
+                if (type(callback) == "function") then
+                    callback("paragraph", frame)
+                end
+            end
         end
 
         if (frame) then

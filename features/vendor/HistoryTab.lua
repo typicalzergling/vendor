@@ -37,9 +37,12 @@ end
 function HistoryTab:ApplyFilter()
     local filter = self.history:CreateFilter(self.filters:GetSelected())
     local keyword = self.search:GetText()
+    if (type(keyword) == "string") and (string.len(keyword) ~= 0) then
+        keyword = string.lower(keyword)
+    end
 
     self.items:Filter(function(item)
-            if (string.len(keyword)) then
+            if (string.len(keyword) ~= 0) then
                 if (not string.find(item.Keywords, keyword)) then
                     return false
                 end

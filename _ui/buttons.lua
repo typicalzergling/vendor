@@ -290,39 +290,55 @@ function Layouts.Flow(frame, marginX, marginY)
     frame:SetHeight(height)
 end
 
+local function numberOrZero(value)
+    if (type(value) == "number") then
+        return value
+    end
+    return 0
+end
+
+local function getPadding(padding)
+    if (type(padding) == "number") then
+        return padding, padding, padding, padding
+    elseif (type(padding) == "table") then
+        return numberOrZero(padding.left), numberOrZero(padding.top), 
+                numberOrZero(padding.right), numberOrZero(padding.bottom)
+    end
+
+    return 0, 0, 0, 0
+end
+
 function Layouts.Stack(panel, children, padding, spacing, panelWidth)
-    local paddingTop = 0
-    local paddingBottom = 0
-    local paddingLeft = 0
-    local paddingRight = 0
     local space = 0
     local width = panelWidth or panel:GetWidth()
+    children = children or {}
 
+    local paddingLeft, paddingTop, paddingRight, paddingBottom = getPadding(padding)
     if (type(spacing) == "number") then
         space = spacing
     end
-
-    if (type(padding) == "number") then
-        paddingTop = padding
-        paddingLeft = padding
-        paddingRight = padding
-        paddingBottom = padding
-    elseif (type(padding) == "table") then
-        paddingTop = padding.top or 0
-        paddingBottom = padding.bottom or 0
-        paddingLeft = padding.left or 0
-        paddingRight = padding.right or 0
-    end
-
+    
     local height = paddingTop
     width = width - (paddingLeft + paddingRight)
+    local num = table.getn(children)
+
+    Addon:Debug("layouts", "Stack + num=%s, width=%s, spacing=%s, padding=[%s, %s, %s, %s]", 
+        num, width, spacing, paddingLeft, paddingTop, paddingRight, paddingBottom)
+
     for i, child in ipairs(children) do
         if (child:IsShown()) then
             local objectType = child:GetObjectType()
+            local ml, mt, mr, mb = getPadding(child.margins or child.Margins)
+            Addon:Debug("layouts", "Stack | child margins=[%s, %s, %s, %s]", ml, mt, mr, mb)
+
+            height = height
+            if (i ~= 1) then
+                height = height + mt
+            end
 
             child:ClearAllPoints()
-            child:SetWidth(width)
-            child:SetPoint("TOPLEFT", panel, "TOPLEFT", paddingLeft, -height)
+            child:SetWidth(width - (mr + ml))
+            child:SetPoint("TOPLEFT", panel, "TOPLEFT", ml + paddingLeft, -height)
             --child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -paddingRight, -height)
 
             if (objectType == "FontString") then
@@ -330,15 +346,21 @@ function Layouts.Stack(panel, children, padding, spacing, panelWidth)
             elseif (objectType ~= "Texture" and objectType ~= "Line") then
                 -- If the child has a layout handler then invoke it
                 if (type(child.Layout) == "function") then
-                    xpcall(child.Layout, CallErrorHandler, child)
+                    xpcall(child.Layout, CallErrorHandler, child, width - (mr + ml))
                 end
             end
             
              height = height + child:GetHeight() + space
+             if (i ~= num) then
+                height = height + mb
+             end
+
+             Addon:Debug("layouts", "Stack | %s = %s x %s [%s]", i, child:GetWidth(), child:GetHeight(), height)
         end
     end
 
     height = height + paddingBottom
+    Addon:Debug("layouts", "Stack + final height=%s", height)
     panel:SetHeight(height)
     return height
 end

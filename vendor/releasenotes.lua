@@ -1,6 +1,6 @@
 local AddonName, Addon = ...
 
-Addon.ReleaseNotes ={
+Addon.ReleaseNotes = {
 {
 Release ="6.0 (November ?, 2022)",
 Notes = [[

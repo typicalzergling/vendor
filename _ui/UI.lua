@@ -129,6 +129,15 @@ function UI.Enable(item, enable)
     end
 end
 
+--[[ Helper for visiblity ]]
+function UI.Show(item, show)
+    if (show and not item:IsShown()) then
+        item:Show()
+    elseif (not show and item:IsShown()) then
+        item:Hide()
+    end
+end
+
 --[[ 
     Shows a message box with the speciifed contents:
     
@@ -165,9 +174,11 @@ function UI.MessageBox(title, markdown, buttons)
     local frame = CreateFrame("frame")
     local markdownFrames = Addon.CommonUI.CreateMarkdownFrames(frame, markdown)
     frame.Layout = function()
-            Addon.CommonUI.Layouts.Stack(frame, markdownFrames, 0, 6)
+            Addon.CommonUI.Layouts.Stack(frame, markdownFrames, 0, 10)
         end
-    frame:SetScript("OnSizeChanged", function() frame:Layout() end)
+    frame:SetScript("OnSizeChanged", 
+            function() frame:Layout() 
+        end)
 
     -- Compute the location
 

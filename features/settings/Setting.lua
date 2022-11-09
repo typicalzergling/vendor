@@ -33,6 +33,8 @@ function Setting:Init(name, defaultValue, getValue, setValue)
     else
         self.setValue = setValue
     end
+
+    Addon:RegisterCallback("OnProfileChanged", self, self.OnProfileChanged)
 end
 
 --[[ Gets the value of this setting ]]
@@ -51,6 +53,12 @@ function Setting:SetValue(value)
         end
         self:TriggerEvent("OnChanged", value)
     end
+end
+
+--[[ Handle profile changed ]]
+function Setting:OnProfileChanged()
+    local value = self:GetValue()
+    self:SetValue(value)
 end
 
 --[[ Gets the default value for this setting ]]

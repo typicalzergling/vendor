@@ -2,7 +2,7 @@
 
     <!-- Checkbox (boolen setting) -->
     <Frame name="Vendor_Settings_Checkbox" virtual="true">
-        <Size x="1" y="22"/>
+        <Size x="1" y="20"/>
         <KeyValues>
             <KeyValue key="Indent" value="24" type="number"/>
         </KeyValues>
@@ -23,8 +23,8 @@
                         <KeyValue key="Color" value="SECONDARY_TEXT"/>
                     </KeyValues>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.label"/>
-                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.label" x="-2"/>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.label" y="-2"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.label" y="-2"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -38,9 +38,9 @@
                 <Layers>
                     <Layer level="OVERLAY">
                         <Texture parentKey="checked" hidden="true">
+                            <Size x="12" y="12"/>
                             <Anchors>
-                                <Anchor point="TOPLEFT" x="2" y="-2"/>
-                                <Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+                                <Anchor point="CENTER"/>
                             </Anchors>
                         </Texture>
                     </Layer>
@@ -63,8 +63,8 @@
                 </FontString>
                 <FontString parentKey="help" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" hidden="true"  wordwrap="true">
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.header"/>
-                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.header" x="-2"/>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.header" y="-2"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.header" y="-2"/>
                     </Anchors>
                 </FontString>
             </Layer>

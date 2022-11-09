@@ -82,4 +82,4 @@ function MatchesTab:ClearMatches()
     self.matches:Rebuild()
 end
 
-Addon.Features.Dialogs.EditRule.MatchesTab = MatchesTab
+Addon.Features.Dialogs.MatchesTab = MatchesTab
