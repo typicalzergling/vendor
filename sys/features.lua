@@ -59,7 +59,7 @@ end
 
 --[[ Called to start a single system ]]
 function Features:InitTarget(feature, complete)
-    C_Timer.After(1, function()
+    C_Timer.After(.25, function()
             Addon:Debug("feature", "Iniitaling feature '%s'", feature.name)
             self:EnableFeature(feature.name)
             complete(feature.enabled)
@@ -67,6 +67,7 @@ function Features:InitTarget(feature, complete)
 end
 
 function Features:EndInit(success)
+    Addon:Debug("feature", "All features initialized")
 end
 
 function Features:GetFeature(feature)
@@ -181,7 +182,7 @@ function Features:OnAllSystemsReady()
         assert(type(feature) == "table", "Expected the feature to be a table")
 
         --@debug@
-        local success, systems = callFeature(feature, "GetSystems")
+        local success, systems = callFeature(feature.instance, "GetSystems")
         if (not success) then
             error("Failed to get the systems feature '" .. name .. "' depends on")
         end
@@ -195,14 +196,14 @@ function Features:OnAllSystemsReady()
         end
         --@end-debug@
 
-        local success, depenencies = callFeature(feature, "GetDependencies")
+        local success, depenencies = callFeature(feature.instance, "GetDependencies")
         if (not success) then 
             error("Failed to resolve dependencies fsor feature '" .. name .. "'")
         end
 
         -- TEMP
-        if (not depenencies and feature.DEPENDENCIES) then
-            depenencies = feature.DEPENDENCIES
+        if (not depenencies and feature.instance.DEPENDENCIES) then
+            depenencies = feature.instance.DEPENDENCIES
         end
 
         self:AddTarget(feature, feature.name, depenencies)
@@ -213,4 +214,5 @@ function Features:OnAllSystemsReady()
         end)
 end
 
+Addon.Features = {}
 Addon.Systems.Features = Features

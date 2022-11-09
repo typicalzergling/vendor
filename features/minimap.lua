@@ -1,9 +1,9 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local function debugp(...) Addon:Debug("databroker", ...) end
+local Minimap = {}
 
 local ldbplugin = nil
-
 local totalCount = 0
 local sellValue = 0
 local sellCount = 0
@@ -49,23 +49,33 @@ local ldb_plugin_definition = {
     end,
 }
 
-function Addon:GetOrCreateLDBPlugin()
+function Minimap:GetOrCreateLDBPlugin()    
     if ldbplugin then return ldbplugin end
-    if not Addon:IsLDBAvailable() then return nil end
-    ldbplugin = Addon:CreateLDBDataObject(DATAOBJECT_NAME, ldb_plugin_definition)
+
+    local ldb = Addon:GetFeature("LibDataBroker")
+    if (not ldb:IsLDBAvailable()) then
+        return
+    end
+
+    ldbplugin = ldb:CreateLDBDataObject(DATAOBJECT_NAME, ldb_plugin_definition)
 end
 
-function Addon:UpdateLDBPlugin()
+function Minimap:UpdateLDBPlugin()
     updateStats()
 end
 
 -- Sets up all LDB plugins
-function Addon:SetupLDBPlugin()
-    Addon:GetOrCreateLDBPlugin()
-    Addon:GetOrCreateMinimapButton()
+function Minimap:SetupLDBPlugin()
+    local ldb = Addon:GetFeature("libdatabroker")
+
+    self:GetOrCreateLDBPlugin()
+    self:GetOrCreateMinimapButton()
     Addon:RegisterEvent("BAG_UPDATE", "UpdateLDBPlugin")
     Addon:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateLDBPlugin")
-    Addon:GetProfileManager():RegisterCallback("OnProfileChanged", Addon.UpdateLDBPlugin, self);
+end
+
+function Minimap:OnProfileChanged()
+    self:UpdateLDBPlugin()
 end
 
 -- Hacky way to do minimap icon. Should move this someplace else and clean it up.
@@ -74,9 +84,21 @@ local testmap = {}
 testmap.hide = false
 
 local minimapButton = nil
-function Addon:GetOrCreateMinimapButton()
-    if not Addon:IsLDBIconAvailable() then return nil end
+function Minimap:GetOrCreateMinimapButton()
+    local ldb = Addon:GetFeature("libdatabroker")
+    if not ldb:IsLDBIconAvailable() then return nil end
     if minimapButton then return minimapButton end
-    Addon:CreateLDBIcon(DATAOBJECT_NAME, testmap)
-    minimapButton = Addon:GetLDBIconMinimapButton(DATAOBJECT_NAME)
+    ldb:CreateLDBIcon(DATAOBJECT_NAME, testmap)
+    minimapButton = ldb:GetLDBIconMinimapButton(DATAOBJECT_NAME)
 end
+
+
+function Minimap:OnInitialize()
+    self:SetupLDBPlugin()
+end
+
+function Minimap:GetDependencies()
+    return { "libdatabroker" }
+end
+
+Addon.Features.Minimap = Minimap

@@ -58,22 +58,25 @@ function DependencyInit:Next()
         local target = self.targets[next]
         if (not target.complete and target.pending == 0) then
             pending = true
-                self:InitTarget(target.target, function(success)
-                        target.success = success
-                        target.complete = true
+            if (target.target == nil) then
+                Addon:DebugForEach("systems", target)
+            end
+            self:InitTarget(target.target, function(success)
+                    target.success = success
+                    target.complete = true
 
-                        for _, notify in ipairs(self.targets) do
-                            if (notify ~= target) then
-                                if (notify.deps and notify.deps[target.name]) then
-                                    notify.pending = notify.pending - 1
-                                    self:DependencyReady(notify.target, target.name, success)
-                                end
+                    for _, notify in ipairs(self.targets) do
+                        if (notify ~= target) then
+                            if (notify.deps and notify.deps[target.name]) then
+                                notify.pending = notify.pending - 1
+                                self:DependencyReady(notify.target, target.name, success)
                             end
                         end
+                    end
 
-                        self:InitComplete(target.target, success)
-                        self:Next()
-                    end)
+                    self:InitComplete(target.target, success)
+                    self:Next()
+                end)
             break
         elseif (target.complete and not target.success) then
             errors = errors + 1
