@@ -78,7 +78,9 @@ end
     -- It uses a 'hide' member variable to control state, but adds other members for positioning.
     -- This may cause problems depending on how it is stored.
 function LibDataBroker:CreateLDBIcon(name, minimaptable)
-    if not Addon:IsLDBIconAvailable() then return end
+    if (not self.ldbi) then
+        return
+    end
     assert(type(name) == "string" and type(minimaptable) == "table", "Invalid arguments to CreateLDBIcon.")
     if not self.ldbObjects[name] then error("Data object not defined") end
 

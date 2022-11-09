@@ -70,8 +70,8 @@ function Minimap:SetupLDBPlugin()
 
     self:GetOrCreateLDBPlugin()
     self:GetOrCreateMinimapButton()
-    Addon:RegisterEvent("BAG_UPDATE", "UpdateLDBPlugin")
-    Addon:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateLDBPlugin")
+    Addon:RegisterEvent("BAG_UPDATE", function() self:UpdateLDBPlugin() end)
+    Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function() self:UpdateLDBPlugin() end)
 end
 
 function Minimap:OnProfileChanged()
