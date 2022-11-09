@@ -65,14 +65,14 @@ end
     one list, so when it is added we need to remove it from the other lists
 ]]
 function Lists:UpdateSystemLists(list, operation, id)
-    self:Debug("System list '%s' has changed [%s, %s]", list:GetId(), operation, tostring(id))
+    Addon:Debug("lists", "System list '%s' has changed [%s, %s]", list:GetId(), operation, tostring(id))
 
     if (operation == "ADDED") then
         for _, systemList in ipairs(self.systemLists) do
             if (systemList.Id ~= list:GetId()) then
                 local toCheck = self:GetList(systemList.Id)
                 if (toCheck and toCheck:Contains(id)) then
-                    self:Debug("Removing %s from '%s' because it was added to '%s'", tostring(id), systemList.Id, list:GetId())
+                    Addon:Debug("lists", "Removing %s from '%s' because it was added to '%s'", tostring(id), systemList.Id, list:GetId())
                     toCheck:Remove(id)
                 end
             end

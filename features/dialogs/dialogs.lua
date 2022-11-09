@@ -1,4 +1,5 @@
 local _, Addon = ...
+local UI = Addon.CommonUI.UI
 local Dialogs = { 
     NAME = "Dialogs", 
     VERSION = 1,
@@ -8,9 +9,16 @@ local Dialogs = {
 function Dialogs:OnInitialize(a, b, host)
 end
 
-function Dialogs:GetEditRule()
+function Dialogs:GetEditRule()    
     if (not self.editRule) then
-        self.editRule = self:CreateDialog("VendorEditRuleDialog2", "Vendor_Dialogs_EditRule", self.EditRule)
+        local BUTTONS = {
+            cancel = { label = CANCEL, handler = "Toggle"  },
+            save = { label = SAVE, handler = "SaveRule" },
+            delete = { label = DELETE, handler = "DeleteRule" },
+            close = { label = CLOSE, handler = "Toggle" }
+        }
+    
+        self.editRule = UI.Dialog(nil, "Vendor_Dialogs_EditRule", self.EditRule, BUTTONS)
     end
 
     return self.editRule
@@ -24,7 +32,7 @@ function Dialogs:CreateRule()
 end
 
 function Dialogs:ShowEditRule(ruleId, parameters)
-    local rules = self:GetDependency("Rules")
+    local rules = Addon:GetFeature("Rules")
 
     local rule = rules:FindRule(ruleId)
     if (not rule) then

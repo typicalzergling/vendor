@@ -10,7 +10,7 @@ local SettingsFeature = {
     Called when feature is initialized
 ]]
 function SettingsFeature:OnInitialize()
-    self:Debug("Initialize settings")
+    Addon:Debug("settings", "Initialize settings")
 end
 
 
@@ -40,7 +40,7 @@ function SettingsFeature:GetSettings()
         end)
 
 
-    self:Debug("There are %d active setting categories", table.getn(settings))
+    Addon:Debug("settings", "There are %d active setting categories", table.getn(settings))
     return settings
 end
 

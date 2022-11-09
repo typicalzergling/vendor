@@ -3,20 +3,16 @@ local locale = Addon:GetLocale()
 local Vendor = Addon.Features.Vendor
 local MainDialog = {}
 
-local BUTTONS = {
-    close = { label = CLOSE, handler = "Hide" }
-}
-
 function MainDialog:OnInitDialog(dialog)
 	dialog:SetCaption("ADDON_NAME")
-	dialog:SetButtons(BUTTONS)
 
 	local tabs = self.tabs
 	tabs:AddTab("rules", "CONFIG_DIALOG_RULES_TAB", "Vendor_RulesTab", self.RulesTab)
 
 	-- If the lists feature is enabled add the tab
-	if (Addon:IsFeatureEnabled("Lists")) then
-		local lists = Addon:GetFeature("Lists")
+	if (Addon:IsFeatureEnabled("lists")) then
+		local lists = Addon:GetFeature("lists")
+		print("ists:", lists)
 		tabs:AddTab(lists:GetTab())
 	end
 

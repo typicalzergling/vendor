@@ -1,5 +1,6 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
+local UI = Addon.CommonUI.UI
 local MainFeature = {
     NAME = "Vendor", 
     VERSION = 1,
@@ -8,29 +9,35 @@ local MainFeature = {
 
 --[[ Called when feature is initialized ]]
 function MainFeature:OnInitialize()
-	self:ShowDialog("lists")
+	--self:ShowDialog("lists")
 end
 
 --[[ Callback for when the feature is terminated ]]
 function MainFeature:OnTerminate()
 end
 
-function MainFeature:ShowDialog(tabId)
+function MainFeature:GetDialog()
 	if (not self.dialog) then
-		self.dialog = self:CreateDialog("VendorMainDialog", "Vendor_MainDialog", self.MainDialog)
+		local BUTTONS = {
+			close = { label = CLOSE, handler = "Hide" }
+		}	
+		self.dialog = UI.Dialog(nil, "Vendor_MainDialog", self.MainDialog, BUTTONS)
 	end
 
+	return self.dialog
+end
+
+function MainFeature:ShowDialog(tabId)
+	local dialog = self:GetDialog()
 	if (type(tabId) == "string") then
-		self.dialog:NavigateTo(tabId)
+		dialog:NavigateTo(tabId)
 	end
-	self.dialog:Show()
+
+	dialog:Show()
 end
 
 function MainFeature:ToggleDialog()
-	if (not self.dialog) then
-		self.dialog = self:CreateDialog("VendorMainDialog", "Vendor_MainDialog", self.MainDialog)
-	end
-	self.dialog:Toggle()	
+	self:GetDialog():Toggle()
 end
 
 Addon.Features.Vendor = MainFeature

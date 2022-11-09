@@ -34,7 +34,8 @@ vendor\vendor.xml
 _ui\ui.xml
 ui\ui.xml
 
-# Features
+# Features/Systems
+systems\systems.xml
 features\features.xml
 
 # public API export should be last

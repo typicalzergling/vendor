@@ -8,7 +8,7 @@ local EVENTS = { "OnRuleDefinitionCreated", "OnRuleDefinitionUpdated", "OnRuleDe
 local RuleType = Addon.RuleType
 
 function RulesFeature:OnInitialize()
-    self:Debug("Initialize Rules Feature")
+    Addon:Debug("rules", "Initialize Rules Feature")
     Addon:GenerateEvents(EVENTS)
 
     return
@@ -24,7 +24,7 @@ end
     Validate the sepcified script, returns true/false and a message. 
 ]]
 function RulesFeature:ValidateRule(script, engine, parameters)
-    self:Debug("Validating rule script (no cached values)")
+    Addon:Debug("rules", "Validating rule script (no cached values)")
 
     if (not engine and not self.validateEngine) then
         self.validateEngine = Addon:CreateRulesEngine()
@@ -116,7 +116,7 @@ end
 function RulesFeature:SaveRule(rule, create)
     local ruleId = rule.Id or "NEW"
     local new = false
-    self:Debug("Saving rule '%s'", ruleId)
+    Addon:Debug("rules", "Saving rule '%s'", ruleId)
 
     -- Create a new rule if we need to
     if (not rule.Id or create) then

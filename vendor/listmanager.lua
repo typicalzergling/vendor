@@ -2,7 +2,7 @@ local _, Addon = ...
 local LIST_MGR_KEY = {}
 local EMPTY = {}
 local CustomListManager = {}
-local savedLists = Addon.SavedVariable:new("CustomLists")
+local savedLists = {}
 
 local function GetListId(source)
 	if ((type(source) == "table") and (type(source.Id) == "string")) then

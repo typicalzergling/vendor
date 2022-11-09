@@ -15,7 +15,7 @@ function History:OnTerminate()
 end
 
 function History:GetCharacterHistory()
-    local rules = self:GetDependency("rules")
+    local rules = Addon:GetFeature("rules")
     local items = {}
 
     for _, item in pairs(Addon:GetCharacterHistory()) do
@@ -55,7 +55,7 @@ end
 --[[ Create a fiilter function with the specified filters enabled ]]
 function History:CreateFilter(filters)
     assert(not filters or type(filters) == "table")
-    local rules = self:GetDependency("Rules")
+    local rules = Addon:GetFeature("Rules")
 
     local engine = rules:CreateRulesEngine()
     engine:CreateCategory(1, "-matched-")

@@ -14,16 +14,16 @@ Addon.eventBroker = eventBroker
 local events = {}
 local function dispatchEvent(handler, ...)
     if type(handler) == "function" then
-        handler(...)
+        xpcall(handler, CallErrorHandler, ...)
     else
         if Addon[handler] then
             -- Assume self parameter must be passed
-            Addon[handler](Addon, ...)
+            xpcall(Addon[handler], CallErrorHandler, Addon, ...)
         else
             assert(false, "Function named "..handler.." not found in "..AddonName)
         end
     end
-end 
+end
 
 -- We support multiple handlers for the same event.
 local function eventDispatcher(frame, event, ...)

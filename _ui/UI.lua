@@ -245,6 +245,10 @@ function UI.Dialog(caption, template, implementation, buttons)
         dialog:SetButtons(buttons)
     end
 
+    if (type(content.OnInitDialog) == "function") then
+        content:OnInitDialog(dialog)
+    end
+
     -- Any non-event handler on the content should be promoted to the dialog
     -- to provide the API to caller
     if (type(implementation) == "table") then

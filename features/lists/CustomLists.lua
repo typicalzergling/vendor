@@ -16,7 +16,7 @@ end
 
 --[[ Initialize the custom lists ]]
 function CustomLists:Init()
-    self.variable = Addon.SavedVariable:new("CustomLists")
+    self.variable = Addon:CreateSavedVariable("CustomLists")
 end
 
 --[[ Creates a custom list ]]

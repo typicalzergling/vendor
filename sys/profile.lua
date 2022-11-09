@@ -1,5 +1,4 @@
 local AddonName, Addon = ...;
-local profilesVariable = Addon.SavedVariable:new("Profiles");
 local Profile = {};
 local PROFILE_CHANGED = Addon.Events.PROFILE_CHANGED
 
@@ -61,7 +60,7 @@ end
    | Retrieves the specified value from the profile.
    ==========================================================================]]
 function Profile:SetValue(key, value)
-	local var = profilesVariable:Get(self.profileId) or {};
+	local var = self.profilesVariable:Get(self.profileId) or {};
 	--@debug@
 	assert(type(key) == "string", "The profile key must be a string value: " .. tostring(key));
 	--@end-debug@
@@ -75,7 +74,7 @@ function Profile:SetValue(key, value)
 
 		Addon:Debug("profile", "Profile[%s] has had '%s' changed", self.profileId, key);
 		var["profile:timestamp"] = time();
-		profilesVariable:Set(self.profileId, var);
+		self.profilesVariable:Set(self.profileId, var);
 		self:RaiseOnChanged();
 	end	
 end
@@ -84,7 +83,7 @@ end
    | Sets the sepcified value ini the profile.
    ==========================================================================]]
 function Profile:GetValue(key)
-	local var = profilesVariable:Get(self.profileId) or {};
+	local var = self.profilesVariable:Get(self.profileId) or {};
 
 	--@debug@--
 	assert(type(key) == "string", "The profile key must be a string value");
@@ -134,6 +133,7 @@ local function CreateProfile(id)
 		active = false,
 		timer = false,
 		defaults = false,
+		profilesVariable = Addon:CreateSavedVariable("Profiles")
 	};
 	
 	-- Create our object and return it
@@ -141,4 +141,3 @@ local function CreateProfile(id)
 end
 
 Addon.CreateProfile = CreateProfile;
-Addon.ProfilesVariable = profilesVariable;

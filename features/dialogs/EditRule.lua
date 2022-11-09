@@ -2,14 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local Dialogs = Addon.Features.Dialogs
 local EditRule = Mixin({}, Addon.CommonUI.Mixins.Debounce)
-local RuleType = Addon.RuleType.SELL
-
-local BUTTONS = {
-    cancel = { label = CANCEL, handler = "Toggle"  },
-    save = { label = SAVE, handler = "SaveRule" },
-    delete = { label = DELETE, handler = "DeleteRule" },
-    close = { label = CLOSE, handler = "Toggle" }
-}
+local RuleType = Addon.RuleType
 
 local RuleType = Mixin({}, Addon.CommonUI.Mixins.Border)
 local RULETYPE_BORDER = CreateColor(.5, .5, .5, .5)
@@ -234,10 +227,8 @@ end
     Initialize the edit rule dialog
 ]]
 function EditRule:OnInitDialog(dialog)
-    local feature = self:GetFeature()
     local tabs = self.tabs
 
-    dialog:SetButtons(BUTTONS)
     dialog:SetCaption("EDITRULE_CAPTION")
     Addon.AttachImplementation(self.ruleStatus, Dialogs.RuleStatus)
 
@@ -308,10 +299,10 @@ function EditRule:GetCurrentParameters()
 end
 
 function EditRule:UpdateMatches()
-    local rules = self:GetDependency("rules")
+    local rules = Addon:GetFeature("rules")
     local matches
 
-    self:Debug("UpdateMatches :: START")
+    Addon:Debug("editrule", "UpdateMatches :: START")
 
     if (self.readonly) then
         assert(self.rule, "Expected a valid rule definition")
@@ -325,10 +316,10 @@ function EditRule:UpdateMatches()
     end
 
     if (matches) then
-        self:Debug("UpdateMatches :: %s", table.getn(matches))
+        Addon:Debug("editrule", "UpdateMatches :: %s", table.getn(matches))
         self.matches:Call("SetMatches", matches)
     else
-        self:Debug("UpdateMatches :: no matches found")
+        Addon:Debug("editrule", "UpdateMatches :: no matches found")
         self.matches:Call("ClearMatches", matches)
     end
 end
@@ -337,7 +328,7 @@ end
     Called when the script changes
 ]]
 function EditRule:OnScriptChanged(text)
-    local rules = self:GetDependency("Rules")
+    local rules = Addon:GetFeature("Rules")
 
     if (not self.readonly) then
         local errorMessage = nil
@@ -345,7 +336,7 @@ function EditRule:OnScriptChanged(text)
 
         if (text and string.len(text) ~= 0) then
             local valid, msg = rules:ValidateRule(text)
-            self:Debug("Validate script '%s' [%s, %s]", text, valid, msg or "")
+            Addon:Debug("editrule", "Validate script '%s' [%s, %s]", text, valid, msg or "")
 
             if (valid) then
                 scriptValid = true
@@ -465,12 +456,12 @@ function EditRule:UpdateButtons()
         buttons.save = { show = true, enabled = true }
 
         if not validateString(changes.name) then
-            self:Debug("Cannot save rule because name is invalid")
+            Addon:Debug("editrule", "Cannot save rule because name is invalid")
             buttons.save.enabled = false
         end
 
         if not validateString(changes.script) or not changes.scriptValid then
-            self:Debug("cannot save rule because script is invalid")
+            Addon:Debug("editrule", "cannot save rule because script is invalid")
             buttons.save.enabled = false
         end
     end
@@ -549,7 +540,7 @@ function EditRule:SaveRule()
     if (not self.readonly) then
         local rule = {}
         local changes = self.changes or {}
-        local rules = self:GetDependency("Rules")
+        local rules = Addon:GetFeature("Rules")
 
         -- If we have a rule, then copy it into the rule
         if (type(self.rule) == "table") then

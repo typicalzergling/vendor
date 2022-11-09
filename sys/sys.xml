@@ -8,13 +8,14 @@
     <Script file="console.lua"/>
     <Script file="thread.lua"/>
     <Script file="helpers.lua"/>
+    <Script file="systems.lua"/>
     <Script file="savedvariable.lua"/>
     <Script file="profile.lua"/>
     <Script file="profilemanager.lua"/>
     <Script file="useprofile.lua"/>
     <Script file="libdatabroker.lua"/>
     <Script file="features.lua"/>
-
+    
     <!--@do-not-package@-->
     <Script file="debug.lua"/>
     <Script file="test.lua"/>

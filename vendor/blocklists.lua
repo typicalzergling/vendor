@@ -2,7 +2,6 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local ListType = Addon.ListType
 local SystemListId = Addon.SystemListId
-local customListDefintions = Addon.SavedVariable:new("CustomLists")
 local EMPTY = {}
 
 -- TODO: Clear result cache anytime any block list changes

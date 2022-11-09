@@ -43,10 +43,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("BAG_UPDATE", "OnBagUpdate")
 
     -- Merchant Button
-    self.MerchantButton.Initialize()
-
-    local features = self:GetFeatures()
-    features:Initialize()
+    --self.MerchantButton.Initialize()
 
     -- Do Pruning of History across all characters.
     -- TODO: Make this a setting
