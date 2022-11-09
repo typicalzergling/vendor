@@ -127,9 +127,8 @@ function Addon:AutoSell()
 
         -- Loop through every bag slot once.
         self:Debug("autosell", "Starting bag scan...")
-        for bag=0, NUM_BAG_SLOTS do
+        for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
             for slot=1, C_Container.GetContainerNumSlots(bag) do                
-
 
                 -- If the cursor is holding anything then we cant' sell. Yield and check again next cycle.
                 -- We must do this before we get the item info, since the user may have changed what item is in this slot.

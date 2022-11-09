@@ -21,7 +21,7 @@ end
 function Addon:ClearItemCacheForBag(bag)
     if not bagItemMap[bag] then return end
     assert(type(bagItemMap[bag]) == "table")
-    for i, v in ipairs(bagItemMap[bag]) do
+    for k, v in pairs(bagItemMap[bag]) do
         Addon:ClearItemCache(v)
     end
     bagItemMap[bag] = {}
@@ -75,6 +75,10 @@ function Addon:ClearItemCache(arg)
         itemCache = {}
         Addon:ClearResultCache()
         Addon:Debug("itemcache", "Item Cache cleared.")
+        return
+    elseif type(arg) == "number" then
+        Addon:ClearItemCacheForBag(arg)
+        return
     elseif type(arg) == "string" then
         -- GUID
         guid = arg
@@ -106,5 +110,5 @@ end
 function Addon:OnBagUpdate(bagID)
     -- When a bag changes some items inside it have changed, but we don't know which ones.
     -- To err on the side of safety we will clear the cache for all items in that bag.
-    Addon:ClearItemCacheForBag(bagID)
+    Addon:ClearItemCache()
 end

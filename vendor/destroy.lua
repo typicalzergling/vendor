@@ -15,7 +15,7 @@ local currentDestroyedItem = nil
 -- to destroying it. This is not as performant as it could be, but lets be real, destruction is a rare thing, so lets err on
 -- the side of safety rather than performance.
 function Addon:DestroyNextItem()
-    for bag=0, NUM_BAG_SLOTS do
+    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
 
             -- If the cursor is holding anything then we can't pick it up to delete. Yield and check again next cycle.

@@ -107,6 +107,8 @@ function Addon:ClearResultCache(arg)
     else
         resultCache[arg] = nil
     end
+    -- Anytime the Result Cache gets cleared, the Tooltip Result Cache also needs clearing.
+    Addon:ClearTooltipResultCache()
 end
 
 function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
@@ -131,7 +133,7 @@ function Addon:GetEvaluationStatus()
     local todestroy = 0
     local sellitems = {}
     local destroyitems = {}
-    for bag=0, NUM_BAG_SLOTS do
+    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
             local result = Addon:EvaluateItem(item)
@@ -155,7 +157,7 @@ end
 
 function Addon:GetEvaluationDetails()
     local results = {}
-    for bag=0, NUM_BAG_SLOTS do
+    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local item, itemCount = Addon:GetItemPropertiesFromBag(bag, slot)
             if item then
@@ -177,7 +179,7 @@ end
 
 -- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
 function Addon:LoadAllBagItemLinks()
-    for bag=0, NUM_BAG_SLOTS do
+    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
         for slot=1, ContainerFrame_GetContainerNumSlots(bag) do
             C_Container.GetContainerItemInfo(bag, slot)
         end
