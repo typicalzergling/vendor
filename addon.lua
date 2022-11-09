@@ -51,9 +51,6 @@ function Addon:OnInitialize()
     -- Tooltip
     self:InitializeItemTooltips()
 
-    local features = self:GetFeatures()
-    features:Initialize()
-
     -- Do Pruning of History across all characters.
     -- TODO: Make this a setting
     -- Consider dynamic history pruning when it gets to a certain size, auto-prune it.
