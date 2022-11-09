@@ -151,7 +151,7 @@ function Addon:GetEvaluationStatus()
         for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local item, itemCount = Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
-                --[[local result = Addon:EvaluateItem(item)
+                local result = Addon:EvaluateItem(item)
                 
                 if result > 0 then
                     count = count + 1
@@ -164,7 +164,7 @@ function Addon:GetEvaluationStatus()
                 elseif result == 2 then
                     todestroy = todestroy + 1
                     table.insert(destroyitems, item.Link)
-                end]]
+                end
             end
         end
         escache = {}
