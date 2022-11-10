@@ -6,14 +6,15 @@ local AddonName, Addon = ...
 Addon.c_DefaultLocale = "enUS"
 Addon.c_PrintColorCode = ORANGE_FONT_COLOR_CODE
 Addon.c_APIMethodColorCode = YELLOW_FONT_COLOR_CODE
-Addon.c_ThrottleTime = .15
-Addon.c_PruneHistoryDelay = 30  -- Time in seconds after intializing addon before prune history is run
-Addon.c_HoursToKeepHistory = 30*24 -- 30*24 = max blizzard item restoration window
+Addon.c_ThrottleTime = .15  -- Default Throttle Time
 
 -- Addon Constants
+Addon.c_RefreshThrottleTime = .03
+Addon.c_PruneHistoryDelay = 30  -- Time in seconds after intializing addon before prune history is run
+Addon.c_HoursToKeepHistory = 30*24 -- 30*24 = max blizzard item restoration window
 Addon.c_BuybackLimit = 12
-Addon.c_DeleteThottle = 3
 Addon.c_ItemSellerThreadName = "ItemSeller"
+Addon.c_RefreshThreadName = "ItemRefresh"
 
 -- Config Constants
 Addon.c_Config_AutoSell = "autosell"
@@ -22,6 +23,7 @@ Addon.c_Config_Tooltip_Rule = "tooltip_addrule"
 Addon.c_Config_SellLimit = "autosell_limit"
 Addon.c_Config_MaxSellItems = "max_items_to_sell"
 Addon.c_Config_SellThrottle = "sell_throttle"
+Addon.c_Config_RefreshThrottle = "refresh_throttle"
 Addon.c_Config_ThrottleTime = "throttle_time"
 Addon.c_Config_AutoRepair = "autorepair"
 Addon.c_Config_GuildRepair = "guildrepair"
@@ -68,6 +70,11 @@ Addon.Events = {
     AUTO_SELL_COMPLETE = "auto-sell-end",
     AUTO_SELL_ITEM = "auto-sell-item",
     PROFILE_CHANGED = "profile-changed",
+    REFRESH_NEEDED = "refresh-needed",
+    REFRESH_START = "refresh-start",
+    REFRESH_STOP = "refresh-stop",
+    REFRESH_COMPLETE = "refresh-complete",
+    REFRESH_ITEM_UPDATED = "refresh-item-updated",
 }
 
 -- Blizzard Color Codes that are not in all versions

@@ -54,7 +54,7 @@ end
 Addon.DefaultConfig.Settings =
 {
     -- Current version of the settings config
-    version = 2,
+    version = 3,
 
     -- Default values of our settings
     [Addon.c_Config_ThrottleTime] = 0.2,
@@ -62,6 +62,7 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_AutoRepair] = true,
     [Addon.c_Config_GuildRepair] = true,
     [Addon.c_Config_SellThrottle] = 1,
+    [Addon.c_Config_RefreshThrottle] = 1,
     [Addon.c_Config_Tooltip] = true,
     [Addon.c_Config_SellLimit] = true,
     [Addon.c_Config_Tooltip_Rule] = true,

@@ -1,6 +1,5 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 local EditRuleDialog = {};
 local RuleManager = Addon.RuleManager;
 local RuleType = Addon.RuleType;
