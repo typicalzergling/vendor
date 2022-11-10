@@ -107,7 +107,7 @@ function Addon.Features.Settings.CreateFeatureSetting(name)
         if (value) then
             Addon:EnableFeature(name)
         else
-            Addon:DiableFeature(name)
+            Addon:DisableFeature(name)
         end
     end
 

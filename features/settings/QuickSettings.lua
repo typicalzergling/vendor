@@ -67,12 +67,12 @@ function QuickSettings:CreateList(parent)
                 profile:SetValue(Addon.c_Config_AutoRepair, false)
             end
         end)
-    setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "QUICK_REPAIR_SETTING_HELP")
+    setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "")
     setting.isNew = true
 
     -- Quick setting for LDB/Minimap
-    local ldb = Settings.CreateFeatureSetting("LDB")
-    setting = list:AddSetting(ldb, "QUICK_LDB_SETTING", "QUICK_SELL_LDB_HELP")
+    local minimap = Settings.CreateFeatureSetting("minimap")
+    setting = list:AddSetting(minimap, "OPTIONS_SETTINGNAME_MINIMAP", "QUICK_REPAIR_SETTING_HELP")
     setting.isNew = true
 
 	return list;
