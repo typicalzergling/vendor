@@ -103,7 +103,7 @@
         </Anchors>
     </Frame>
 
-    <Frame name="CommonUI_MessageBox" virtual="true" frameStrata="DIALOG" hidden="true" toplevel="true">
+    <Frame name="CommonUI_MessageBox" virtual="true" movable="true" enableMouse="true" frameStrata="DIALOG" hidden="true" toplevel="true">
         <KeyValues>
             <KeyValue key="BorderColor" value="DIALOG_BORDER_COLOR"/>
             <KeyValue key="BackgroundColor" value="DIALOG_BACK_COLOR"/>

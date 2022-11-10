@@ -95,10 +95,14 @@ function ProfilesTab:DeleteProfile()
                 {
                     text = "OPTIONS_CONFIRM_PROFILE_DELETE_CONFIRM",
                     handler = function()
-                        self.profileManager:DeleteProfile(selected)
+                        local profileManager = Addon:GetProfileManager()
+                        profileManager:DeleteProfile(selected)
                     end
                 },
-                CANCEL
+                {
+                    text = CANCEL,
+                    default = true,
+                }
             })
     end
 end

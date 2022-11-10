@@ -89,10 +89,6 @@ function ListSystem:CreateList(name, description)
     return list
 end
 
-function ListSystem:OnProfileChanged()
-    --print("====> list system changed")
-end
-
 --[[ Called when a system list has changed, allows us to force mutual exclusion ]]
 function ListSystem:OnSystemListChange(list, changeType, itemId)
     if (changeType ~= ListSystem.ChangeType.ADDED) then

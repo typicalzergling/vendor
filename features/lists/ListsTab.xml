@@ -18,11 +18,31 @@
         <Frames>
             <Button inherits="CommonUI_CommandButton" parentKey="createList">
                 <KeyValues>
-                    <KeyValue key="Label" value="CONFIG_DIALOG_CREATE_LIST"/>
+                    <KeyValue key="Label" value="NEW_LIST"/>
                     <KeyValue key="Handler" value="CreateList"/>
                 </KeyValues>
                 <Anchors>
-                    <Anchor point="BOTTOMLEFT"/>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="224"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_CommandButton" parentKey="copyList">
+                <KeyValues>
+                    <KeyValue key="Label" value="COPY_LIST"/>
+                    <KeyValue key="Handler" value="CopyList"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.createList" relativePoint="TOPLEFT" y="6"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.createList" relativePoint="TOPRIGHT" y="6"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_CommandButton" parentKey="editList">
+                <KeyValues>
+                    <KeyValue key="Label" value="EDIT_LIST"/>
+                    <KeyValue key="Handler" value="EditList"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.copyList" relativePoint="TOPLEFT" y="6"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.copyList" relativePoint="TOPRIGHT" y="6"/>
                 </Anchors>
             </Button>
             <Frame parentKey="lists" inherits="CommonUI_CategoryList">
@@ -30,10 +50,10 @@
                     <KeyValue key="OnSelection" value="ShowList"/>
                     <KeyValue key="ItemClass" value="Features.Lists.ListItem"/>
                 </KeyValues>
-                <Size x="224" y="1"/>
+                <Size x="2" y="1"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
-                    <Anchor point="BOTTOMLEFT" y="12" relativePoint="TOPLEFT" relativeKey="$parent.createList"/>
+                    <Anchor point="BOTTOMRIGHT" y="12" relativePoint="TOPRIGHT" relativeKey="$parent.editList"/>
                 </Anchors>
             </Frame>
             <Frame parentKey="items" inherits="CommonUI_List">
@@ -127,6 +147,16 @@
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMLEFT" y="-110"/>
                         <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-110"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="systemInfo" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_SYSTEM_INFO"/>
+                        <KeyValue key="Color" value="WARNING_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT"/>
+                        <Anchor point="RIGHT" relativeKey="$parent.labelName" relativePoint="RIGHT"/>
                     </Anchors>
                 </FontString>
             </Layer>

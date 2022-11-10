@@ -11,6 +11,7 @@ local Lists = Addon.Systems.Lists
 local ListEvents = Lists.ListEvents
 local SystemListId = Addon.SystemListId
 local ChangeType = Lists.ChangeType
+local locale = Addon:GetLocale()
 
 local LIST_INFO  = {
     [SystemListId.NEVER] = {
@@ -53,12 +54,12 @@ end
 
 --[[ Gets the name for this list ]]
 function SystemList:GetName()
-    return self.info.Name
+    return locale[self.info.Name]
 end
 
 --[[ Gets the description for this list ]]
 function SystemList:GetDescription()
-    return self.info.Description
+    return locale[self.info.Description]
 end
 
 --[[ Retrieves the contents of this list ]]

@@ -421,7 +421,9 @@ RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
 -- List Pane / Dialog
 EDIT_LIST = "Edit",
-NEW_LIST = "New",
+NEW_LIST = "Create",
+COPY_LIST = "Cppy",
+COPY_LIST_FMT1 = "%s (Copy)",
 LISTOOLTIP_LISTTYPE = "Type:",
 TOOLTIP_SYTEMLIST = "Built-In (profile specific)",
 TOOLTIP_CUSTOMLIST = "Custom",
@@ -434,6 +436,7 @@ LISTDIALOG_NAME_HELPTEXT = "type the name of your list here",
 LISTDIALOG_DESCR_HELPTEXT = "type the description of your list here",
 LISTDIALOG_ADDBYID_LABEL = "[re-visit]  You can add an item using it's id by typing the id in the box below and clicking add",
 LISTDIALOG_ADDBYID = "Add",
+LISTDIALOG_SYSTEM_INFO = "[rv] This is a built-in list and saved in your profile, you can add and remove items bit you cannot modify the name or description",
 LISTDIALOG_ADDBYID_HELP = "Type the ID an item",
 EDITLIST_DUPLICATE_NAME_CAPTION = "[rv] Duplicate List",
 EDITLIST_DUPLICATE_NAME_FMT1 = [[
