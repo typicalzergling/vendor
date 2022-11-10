@@ -42,7 +42,6 @@ local function ListEditor_Init(self, list, copy)
         self.description = list:GetDescription()
         self.contents = list:GetContents()
 
-        print("copy->", copy)
         if (copy ~= true) then
             self.list = list
         else

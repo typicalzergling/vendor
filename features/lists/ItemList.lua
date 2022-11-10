@@ -71,11 +71,9 @@ function ItemList:OnMouseDown()
 end
 
 function ItemList:OnDropItem()
-    print("list", self.list, self.list:IsReadOnly())
     if (self.list and not self.list:IsReadOnly()) then
         local item = Addon.CommonUI.ItemLink.GetCursorItem()
         if (item ~= nil) then
-            print("item", item, self.list)
             local itemId = C_Item.GetItemID(item)
             self.list:Add(itemId)
             ClearCursor()
