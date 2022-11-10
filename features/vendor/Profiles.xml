@@ -119,9 +119,6 @@
     <Button name="ProfileItem" virtual="true">
         <Size x="1" y="22"/>
         <Layers>
-            <Layer level="BAKGROUND">
-                <Texture setAllPoints="true" parentKey="backdrop" hidden="true"/>
-            </Layer>
 			<Layer level="ARTWORK">
                 <Texture parentKey="check" file="Interface\Addons\Vendor\assets\Check">
                     <Size x="20" y="20"/>

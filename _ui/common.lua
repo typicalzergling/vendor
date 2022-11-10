@@ -139,6 +139,7 @@ local function borderGetColor(border, key, default)
     return Colors:Get(default)
 end
 
+-- todo only create the parts we are using
 function Border:OnBorderLoaded(parts, borderColor, backColor)
     self.borders = {}
 
@@ -249,6 +250,12 @@ function Border:SetBorderColor(r, g, b, a)
         b = r.b
         a = r.a or 1
         r = r.r
+    elseif (type(r) == "string") then
+        local clr = Colors:Get(r)
+        r = clr.r
+        b = clr.b
+        g = clr.g
+        a = clr.a or 1
     end
 
     self.borderLeft:SetColorTexture(r, g, b, a)
@@ -263,6 +270,12 @@ function Border:SetBackgroundColor(r, g, b, a)
         g = r.g
         a = r.a or 1
         r = r.r
+    elseif (type(r) == "string") then
+        local clr = Colors:Get(r)
+        r = clr.r
+        b = clr.b
+        g = clr.g
+        a = clr.a or 1
     end
 
     self.background:SetColorTexture(r, g, b, a)

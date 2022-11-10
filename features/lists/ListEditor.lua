@@ -11,6 +11,7 @@ local ListEditor = {}
 local Lists = Addon.Features.Lists
 local ListType = Addon.Systems.Lists.ListType
 local ChangeType = Addon.Systems.Lists.ChangeType
+local locale  = Addon:GetLocale()
 
 --[[ Called to mark the list as dirty (internal)]]
 local function ListEditor_SetDirty(self)
@@ -37,16 +38,33 @@ local function ListEditor_Init(self, list, copy)
     self.changes = {}
 
     if (list) then
-        if (not copy) then
-            self.list = list
-        end
-
         self.name = list:GetName()
         self.description = list:GetDescription()
         self.contents = list:GetContents()
+
+        print("copy->", copy)
+        if (copy ~= true) then
+            self.list = list
+        else
+            self.name = locale:FormatString("COPY_LIST_FMT1", list:GetName())
+            ListEditor_SetDirty(self)
+        end
     else
         self.contents = {}
     end
+
+    -- System list change when the profile is updated
+    Addon:RegisterCallback("OnProfileChanged", self, function()
+            if (list and list:GetType() == ListType.SYSTEM) then
+                self.contents = list:GetContents()
+                self:TriggerEvent("OnChanged")
+            end
+        end)
+end
+
+--[[ Called the cleanup any edit state ]]
+function ListEditor:Cleanup()
+    Addon:UnregisterCallback("OnProfileChanged", self)
 end
 
 --[[ You can modify the system lists ]]

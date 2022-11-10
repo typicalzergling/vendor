@@ -4,15 +4,16 @@ local UI = Addon.CommonUI.UI
 local EditListDialog = {}
 local Lists = Addon.Features.Lists
 local locale = Addon:GetLocale()
+local ListType = Addon.Systems.Lists.ListType
 
 --[[ Sets the list we are editing ]]
-function EditListDialog:SetList(list)
+function EditListDialog:SetList(list, copy)
     if (self.editor) then
         self.editor:UnregisterCallback("OnDirty", self)
         self.editor:UnregisterCallback("OnChanged", self)
         end
 
-    self.editor = Lists.CreateEditor(list)
+    self.editor = Lists.CreateEditor(list, copy)
     self.editor:RegisterCallback("OnDirty", self.OnListDirty, self)
     self.editor:RegisterCallback("OnChanged", self.Update, self)
 
@@ -119,6 +120,8 @@ function EditListDialog:Update()
     UI.Enable(self.itemId, canModifyItems)
     self:EnableAddById()
 
+    UI.Show(self.systemInfo, editor:GetType() == ListType.SYSTEM)
+
     self:SetButtonState(buttons)
     self.items:Rebuild()
 end
@@ -139,15 +142,16 @@ function EditListDialog:EnableAddById()
 end
 
 --[[ Show an edit list dialog ]]
-function Addon.Features.Lists.ShowEditDialog(list)
+function Addon.Features.Lists.ShowEditDialog(list, copy)
+    print("--> list", copy)
     local dialog = UI.Dialog("EditList", "Lists_Editor", EditListDialog, {
             save = { label = SAVE, handler = "OnSave" },
-            cancel = { label = CANCEL, handler = "Hide" },
+            cancel = { label = CANCEL, handler = "Hide", default = true },
             delete = { label = DELETE, handler = "OnDelete" },
             export = { label = "Export", handler = "OnExport" },
         })
 
-    dialog:SetList(list)
+    dialog:SetList(list, copy)
     dialog:Show()
     return dialog
 end

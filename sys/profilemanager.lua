@@ -142,7 +142,7 @@ end
    ==========================================================================]]
 function ProfileManager:DeleteProfile(profile)
     local profileId = getProfileId(profile);
-    local data = profilesVariable:Get(profileId);
+    local data = self.profilesVariable:Get(profileId);
     if (data) then
         self.profilesVariable:Set(profileId, nil);
         Addon:Debug("profile", "Deleted profile '%s'", profileId);

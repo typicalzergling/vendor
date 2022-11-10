@@ -14,6 +14,7 @@ Addon.CommonUI.Colors =
     TEXT = WHITE_FONT_COLOR,
     HOVER_TEXT = YELLOW_FONT_COLOR,
     SELECTED_TEXT = YELLOW_FONT_COLOR,
+    WARNING_TEXT = CreateColor(1.0,		0.50196,	0.0),
 
     SECONDARY_TEXT = CreateColor(1, 1, 1, .6),
     SELECTED_SECONDARY_TEXT = CreateColor(1, 1, 0, .6),

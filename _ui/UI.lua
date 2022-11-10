@@ -30,9 +30,15 @@ end
 
 --[[ Sets the color of the item, using a color nmae ]]
 function UI.SetColor(item, name)
-    local color = Colors:Get(name)
-    local type = item:GetObjectType()
 
+    local color = name
+    if (type(name) == "string") then
+        color = Colors:Get(name)
+    elseif (type(name) ~= "table") then
+        color = RED_FONT_COLOR
+    end
+    
+    local type = item:GetObjectType()
     if (type == "FontString") then
         item:SetTextColor(color:GetRGBA())
     elseif (type == "Texture" or type == "Line") then
@@ -151,41 +157,42 @@ end
       a table with text/handler
 ]]
 function UI.MessageBox(title, markdown, buttons)
-    local messagebox = CreateFrame("Frame", nil, UIParent, "CommonUI_MessageBox")
-    UI.Attach(messagebox, Addon.CommonUI.MessageBox)
-    messagebox:SetCaption(title)
-
     -- Setup the buttons
+
+    local btns = {}
     if (type(buttons) == "nil") then
-        messagebox:AddButton(CLOSE)
+        table.insert(btns, {
+            id = "close",
+            text = CLOSE,
+            default = true
+        })
     elseif (type(buttons) == "string") then
-        messagebox:AddButton(buttons)
+        table.insert(btns, {
+            id = buttons,
+            text = buttons,
+            default = true,
+        })
     elseif (type(buttons) == "table") then
-        for _, button in ipairs(buttons) do
+        for i, button in ipairs(buttons) do
             if (type(button) == "string") then
-                messagebox:AddButton(button)
+                table.insert(buttons, {
+                    id = i,
+                    text = button
+                })
             elseif (type(button) == "table") then
-                messagebox:AddButton(button.text, button.handler)
+                table.insert(btns, button)
             end
         end
     end
+    
+    local params = {
+        caption = title,
+        parent = UIParent, 
+        content = markdown,
+        buttons = btns
+    }
 
-    -- Create the markdown
-    local frame = CreateFrame("frame")
-    local markdownFrames = Addon.CommonUI.CreateMarkdownFrames(frame, markdown)
-    frame.Layout = function()
-            Addon.CommonUI.Layouts.Stack(frame, markdownFrames, 0, 10)
-        end
-    frame:SetScript("OnSizeChanged", 
-            function() frame:Layout() 
-        end)
-
-    -- Compute the location
-
-    messagebox:SetContent(frame)
-    messagebox:SetFrameStrata("TOOLTIP")
-    messagebox:Show()
-    messagebox:Raise()
+    return Addon.CommonUI.MessageBox.Create(params)
 end
 
 local DialogContent = {}
@@ -228,6 +235,14 @@ end
 --[[ Helper to retrieve the feature ]]
 function DialogContent:GetFeature(feature)
     return Addon:GetFeature(feature)
+end
+
+--[[
+    Impltement a message box on the dialog, this disables all of the 
+    buttons and centers it on the dialog (parents it to the dialog) 
+    when it's closed it return the button state.
+]]
+function DialogContent:MessageBox(...)
 end
 
 --[[ Helper for debug output ]]
