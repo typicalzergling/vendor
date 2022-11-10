@@ -36,7 +36,7 @@ local function event_Call(self, ...)
         end
         local status, msg = xpcall(handler.fn, CallErrorHandler, unpack(args));
         if (not status) then
-            print(string.format("Failed to invoke handler for '%s': %s", rawget(self, EVENT_NAME_KEY), msg));
+            Addon:Debug("events", "Failed to invoke handler for '%s': %s", rawget(self, EVENT_NAME_KEY), msg);
         end
     end
 end

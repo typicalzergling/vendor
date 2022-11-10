@@ -10,42 +10,30 @@ local L = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("refresh", ...) end
 
 -- Refresh Events
-local REFRESH_START = Addon.Events.REFRESH_START
-local REFRESH_STOP = Addon.Events.REFRESH_STOP
-local REFRESH_COMPLETE = Addon.Events.REFRESH_COMPLETE
-local REFRESH_ITEM_UPDATED = Addon.Events.REFRESH_ITEM_UPDATED
+local ITEMRESULT_REFRESH_TRIGGERED = Addon.Events.ITEMRESULT_REFRESH_TRIGGERED
+local ITEMRESULT_REFRESH_START = Addon.Events.ITEMRESULT_REFRESH_START
+local ITEMRESULT_REFRESH_STOP = Addon.Events.ITEMRESULT_REFRESH_STOP
+local ITEMRESULT_REFRESH_COMPLETE = Addon.Events.ITEMRESULT_REFRESH_COMPLETE
 
 -- Refresh data initialization
 local refresh = {}
 refresh.threadName = Addon.c_RefreshThreadName
 refresh.delayTimer = nil
 
-function Addon:IsRefreshInProgress()
+function Addon:IsItemResultRefreshInProgress()
     -- We are refreshing if we have a thread active.
     return not not Addon:GetThread(refresh.threadName)
 end
 
-function Addon:StopRefresh()
-    if Addon:IsRefreshInProgress() then
+function Addon:StopItemResultRefresh()
+    if Addon:IsItemResultRefreshInProgress() then
         debugp("Stopping the refresh thread.")
         Addon:RemoveThread(refresh.threadName)
-        Addon:RaiseEvent(REFRESH_STOP)
+        Addon:RaiseEvent(ITEMRESULT_REFRESH_STOP)
     end
 end
 
-function Addon:StartRefreshDelayed(delayInSeconds)
-    assert(type(delayInSeconds) == "number")
-
-    -- If we are already pending a delay, push it back again.
-    if refresh.delayTimer then
-        debugp("Refresh already delayed, delaying again...")
-        refresh.delayTimer:Cancel()
-    end
-    debugp("Starting a %ss delayed Refresh", delayInSeconds)
-    refresh.delayTimer = C_Timer.NewTimer(delayInSeconds, Addon.StartRefresh)
-end
-
-function Addon:StartRefresh()
+local function doStartItemRefresh()
     -- Clear the delay timer
     if refresh.delayTimer then
         refresh.delayTimer:Cancel()
@@ -53,15 +41,15 @@ function Addon:StartRefresh()
     end
 
     -- Check if we are already in progress
-    if Addon:IsRefreshInProgress() then
+    if Addon:IsItemResultRefreshInProgress() then
         -- If already in progress then stop it so we can restart from beginning.
-        Addon:StopRefresh()
+        Addon:StopItemResultRefresh()
     end
 
     -- begin refresh thread
     local thread = function()   -- Coroutine Begin
         debugp("Refresh Started")
-        Addon:RaiseEvent(REFRESH_START)
+        Addon:RaiseEvent(ITEMRESULT_REFRESH_START)
         local profile = Addon:GetProfile()
         local refreshThrottle = profile:GetValue(Addon.c_Config_RefreshThrottle) or 1
         debugp("Starting bag scan")
@@ -69,7 +57,7 @@ function Addon:StartRefresh()
         for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
 
-                if Addon:BagAndSlotNeedsRefresh(bag, slot) then
+                if Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
                     Addon:RefreshBagAndSlot(bag, slot, true)
                     numProcessed = numProcessed + 1
                 end
@@ -83,9 +71,32 @@ function Addon:StartRefresh()
         end
 
         debugp("Refresh Completed")
-        Addon:RaiseEvent(REFRESH_COMPLETE)
+        Addon:RaiseEvent(ITEMRESULT_REFRESH_COMPLETE)
     end -- Coroutine End
 
     -- Add thread to the thread list and start it.
     Addon:AddThread(thread, refresh.threadName, Addon.c_RefreshThrottleTime)
 end
+
+-- ItemResultRefresh has optional argument for delay in seconds.
+function Addon:StartItemResultRefresh(delayInSeconds)
+    assert(not delayInSeconds or type(delayInSeconds) == "number")
+
+    -- If we are already pending a delay, this call will overwrite that delay.
+    -- Note that immediate call with no delay will always be immediate.
+    if refresh.delayTimer then
+        debugp("Refresh already delayed, delaying again...")
+        refresh.delayTimer:Cancel()
+    end
+
+    -- If passed with a delay, we will schedule it to start in that time.
+    if delayInSeconds then
+        debugp("Starting a %ss delayed ItemResult Refresh", delayInSeconds)
+        refresh.delayTimer = C_Timer.NewTimer(delayInSeconds, doStartItemRefresh)
+        Addon:RaiseEvent(ITEMRESULT_REFRESH_TRIGGERED, delayInSeconds)
+    else
+        debugp("Starting immediate ItemResult Refresh")
+        doStartItemRefresh()
+    end
+end
+

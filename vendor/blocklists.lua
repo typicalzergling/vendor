@@ -6,7 +6,7 @@ local EMPTY = {}
 
 -- TODO: Clear result cache anytime any block list changes
 -- Since that can alter the result of one or more rules.
--- Addon:ClearItemCache()
+-- Addon:ClearItemResultCache()
 -- Since block lists are part of the profile, we can simplify this further to...
 -- Anytime the active profile changes or the profile changes, clear the result cache.
 
@@ -115,7 +115,7 @@ function BlockList:Add(itemId)
     end
 
     -- Remove cached items with this id so they refresh.
-    Addon:ClearItemCacheByItemId(itemId)
+    Addon:ClearItemResultCacheByItemId(itemId)
     return false;
 end
 
@@ -128,7 +128,7 @@ function BlockList:Remove(itemId)
     end
 
     -- Remove cached items with this id so they refresh.
-    Addon:ClearItemCacheByItemId(itemId)
+    Addon:ClearItemResultCacheByItemId(itemId)
     return false;
 end
 
@@ -358,11 +358,11 @@ function Addon:ToggleItemInBlocklist(list, item)
     -- If it already existed, remove it from that list.
     if list == existinglist then
         Addon:GetList(list):Remove(id)
-        Addon:ClearItemCacheByItemId(id)
+        Addon:ClearItemResultCacheByItemId(id)
         return 2
     else
         Addon:GetList(list):Add(id)
-        Addon:ClearItemCacheByItemId(id)
+        Addon:ClearItemResultCacheByItemId(id)
         return 1
     end
 end
@@ -415,7 +415,7 @@ function Addon:ClearBlocklist(list)
     if (isSystemListType(list)) then
         SystemBlockList:New(listType):Clear()
         -- Clear the entire cache in this case.
-        Addon:ClearItemCache()
+        Addon:ClearItemResultCache()
         return
     end
 

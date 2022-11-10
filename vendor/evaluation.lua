@@ -40,7 +40,7 @@ function Addon:EvaluateItem(item, ignoreCache)
 
     -- Check the Cache for the result if we aren't ignoring it.
     if not ignoreCache then
-        local cachedEntry = Addon:GetItemFromCache(item.GUID)
+        local cachedEntry = Addon:GetItemResultFromItemResultCacheByGUID(item.GUID)
         if cachedEntry then
             debugp("Retrieved %s from cache with result: %s - [%s] %s",
                 tostring(item.Link),

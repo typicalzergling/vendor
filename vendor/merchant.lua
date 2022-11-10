@@ -146,7 +146,7 @@ function Addon:AutoSell()
                 end
 
                 -- Refresh and get the data entry for this slot.
-                local _, entry =  xpcall(Addon.GetItemForBagAndSlot, CallErrorHandler, Addon, bag, slot)
+                local _, entry =  xpcall(Addon.GetItemResultForBagAndSlot, CallErrorHandler, Addon, bag, slot)
 
                 -- Determine if it is to be sold
                 -- Result of 0 is no action, 1 is sell, 2 is delete.
