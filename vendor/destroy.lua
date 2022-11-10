@@ -1,7 +1,6 @@
 -- Merchant event handling.
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local Config = Addon:GetConfig()
 
 -- This will hold the item link of whatever item we are trying to delete.
 -- This is so when we do the delete confirmation, we only confirm deletion

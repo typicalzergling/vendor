@@ -110,7 +110,7 @@ function Addon:AutoSell()
         local profile = Addon:GetProfile();
         local sellLimitEnabled = profile:GetValue(Addon.c_Config_SellLimit)
         local sellLimitMaxItems = Addon.c_BuybackLimit
-        local sellThrottle = profile:GetValue(Addon.c_Config_SellThrottle)
+        local sellThrottle = profile:GetValue(Addon.c_Config_SellThrottle) or 1
 
         if (sellLimitEnabled) then
             setIsAutoSelling(true, sellLimitMaxItems)
