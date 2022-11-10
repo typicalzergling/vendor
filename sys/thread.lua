@@ -93,28 +93,31 @@ function Addon:GetThread(name)
     return nil
 end
 
+
+
 -- Accessor for removing a thread from the processor.
 -- Will remove all that match the name.
 -- When a coroutine has no references it is killed after its last yield.
 -- LUA is not really multi-threaded so we don't need to worry about synchronization.
 function Addon:RemoveThread(name)
-    -- search thread list
+    thread = Addon:GetThread(name)
+
+    -- Stop the ticker for this thread.
+    if thread.timer and thread.timer.Cancel and type(thread.timer.Cancel) == "function" then
+        debugp("Stopping thread timer for %s", tostring(name))
+        thread.timer:Cancel()
+    end
+
+    -- Clear callbacks for this thread
+    threadCallbacks[name] = {}
+
+    -- Remove table entry for this thread
     for k, v in pairs(threads) do
         if v.name == name then
             table.remove(threads, k)
         end
     end
-    threadCallbacks[name] = {}
+
     debugp("Removed thread: %s", tostring(name))
 end
-
--- In df the callback completes it still doesn't stop the timer.
-function Addon:StopThread(name)
-    thread = Addon:GetThread(name)
-    if thread.timer and thread.timer.Cancel and type(thread.timer.Cancel) == "function" then
-        debugp("Stopping thread timer for %s", tostring(name))
-        thread.timer:Cancel()
-    end
-end
-
 

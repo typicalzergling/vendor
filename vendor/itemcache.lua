@@ -110,7 +110,6 @@ end
 function Addon:OnBagUpdate(bagID)
     -- When a bag changes some items inside it have changed, but we don't know which ones.
     -- To err on the side of safety we will clear the cache for all items in that bag.
-    Addon:SetRefreshNeeded()
-    Addon:StartRefreshDelayed(3)
-    --Addon:ClearItemCache()
+    Addon:ClearItemCache()
+    Addon:StartRefreshDelayed(5)
 end
