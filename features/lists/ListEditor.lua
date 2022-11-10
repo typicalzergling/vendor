@@ -81,6 +81,7 @@ function ListEditor:SetName(name)
     if (name ~= self.name) then
         self.name = name or ""
         ListEditor_SetDirty(self)
+        self:TriggerEvent("OnChanged", self, "REMOVED", item)
     end
 end
 
@@ -102,6 +103,7 @@ function ListEditor:SetDescription(description)
             self.description = description
         end
         ListEditor_SetDirty(self)
+        self:TriggerEvent("OnChanged", self, "REMOVED", item)
     end
 end
 
@@ -126,7 +128,7 @@ function ListEditor:GetContents()
     end
 
     for id, change in pairs(changes) do
-        if (change == ChangeType.Add) then
+        if (change == ChangeType.ADDED) then
             table.insert(contents, id)
         end
     end
@@ -137,9 +139,9 @@ end
 --[[ Return true if the ist contains this item ]]
 function ListEditor:Contains(item)
     local change = self.changes[item]
-    if (change == ChangeType.ADD) then
+    if (change == ChangeType.ADDED) then
         return true
-    elseif (change == ChangeType.REMOVE) then
+    elseif (change == ChangeType.REMOVED) then
         return false
     end
 
@@ -154,10 +156,10 @@ end
 
 --[[ Remove the specified item from the list ]]
 function ListEditor:Remove(item)
-    if (self.changes[item] == ChangeType.ADD) then
+    if (self.changes[item] == ChangeType.ADDED) then
         self.changes[item] = nil
     else
-        self.changes[item] = ChangeType.REMOVE
+        self.changes[item] = ChangeType.REMOVED
     end
 
     ListEditor_SetDirty(self)
@@ -166,10 +168,10 @@ end
 
 --[[ Adds an item to the list ]]
 function ListEditor:Add(item)
-    if (self.changes[item] == ChangeType.REMOVE) then
+    if (self.changes[item] == ChangeType.REMOVED) then
         self.changes[item] = nil
     else
-        self.changes[item] = ChangeType.ADD
+        self.changes[item] = ChangeType.ADDED
     end
 
     ListEditor_SetDirty(self)
@@ -189,9 +191,9 @@ function ListEditor:Commit()
     end
 
     for id, change in pairs(self.changes) do
-        if (change  == ChangeType.ADD) then
+        if (change  == ChangeType.ADDED) then
             list:Add(id)
-        elseif (change == ChangeType.REMOVE) then
+        elseif (change == ChangeType.REMOVED) then
             list:Remove(id)
         end
     end
@@ -208,7 +210,7 @@ function ListEditor:CanCommit()
         end
     end
 
-    return false
+    return true
 end
 
 --[[ True if the list can be deleted ]]

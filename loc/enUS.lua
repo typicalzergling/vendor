@@ -432,7 +432,12 @@ LISTDIALOG_DESCR_HELPTEXT = "type the description of your list here",
 LISTDIALOG_ADDBYID_LABEL = "[re-visit]  You can add an item using it's id by typing the id in the box below and clicking add",
 LISTDIALOG_ADDBYID = "Add",
 LISTDIALOG_ADDBYID_HELP = "Type the ID an item",
+EDITLIST_DUPLICATE_NAME_CAPTION = "[rv] Duplicate List",
+EDITLIST_DUPLICATE_NAME_FMT1 = [[
+# Duplicate List Name
 
+[rv] A list already exists with the name '%s' please choose another.
+]],
 
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",

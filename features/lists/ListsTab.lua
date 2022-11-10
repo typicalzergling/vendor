@@ -2,6 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local Lists = Addon.Features.Lists
 local UI = Addon.CommonUI.UI
+local ListEvents = Addon.Systems.Lists.ListEvents
 local ListsTab = {}
 
 --[[ Helper function for debugging ]]
@@ -16,6 +17,14 @@ end
 --[[ Handle loading the list ]]
 function ListsTab:OnLoad()
     self.feature = Addon:GetFeature("Lists")
+
+    Addon:RegisterCallback(ListEvents.ADDED, self, function()
+            self.lists:Rebuild()
+        end)
+        
+    Addon:RegisterCallback(ListEvents.REMOVED, self, function()
+        self.lists:Rebuild()
+    end)
 end
 
 --[[ Called when the lists tab is activated ]]
