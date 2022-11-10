@@ -72,9 +72,9 @@ function ListItem:OnTooltip(tooltip)
 
     tooltip:SetText(self.text:GetText(), nameColor:GetRGB())
     if (self:GetModel():GetType() == ListType.CUSTOM) then
-        tooltip:AddLine(locale["TOOLTIP_CUSTOMLIST"])
+        tooltip:AddDoubleLine(locale["LISTOOLTIP_LISTTYPE"], locale["TOOLTIP_CUSTOMLIST"])
     else
-        tooltip:AddLine(locale["TOOLTIP_SYTEMLIST"])
+        tooltip:AddDoubleLine(locale["LISTOOLTIP_LISTTYPE"], locale["TOOLTIP_SYTEMLIST"])
     end
 
     if (type(help) == "string" and string.len(help) ~= 0) then
