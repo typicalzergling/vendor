@@ -78,6 +78,8 @@ function Lists:UpdateSystemLists(list, operation, id)
             end
         end
     end
+    -- Clear the cache for this item id
+    Addon:ClearItemCacheByItemId(id)
 end
 
 --[[ Adds the rule functions related to lists ]]

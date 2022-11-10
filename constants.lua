@@ -47,6 +47,7 @@ Addon.RuleType = {
 
 -- Action Types
 Addon.ActionType = {
+    NONE = 0,
     SELL = 1,
     DESTROY = 2,
 }

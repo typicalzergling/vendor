@@ -57,7 +57,7 @@ function ProfileList:GetContents()
     return result
 end
 
---[[ Return true if the ist contains this item ]]
+--[[ Return true if the list contains this item ]]
 function ProfileList:Contains(item)
     item = getItemId(item)
     if (not C_Item.DoesItemExistByID(item)) then

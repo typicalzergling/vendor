@@ -1,6 +1,7 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
+local debugp = function (...) Addon:Debug("items", ...) end
 
 -- Gets information about an item
 -- Here is the list of captured item properties.
@@ -73,7 +74,6 @@ end
 function Addon:DoGetItemProperties(itemObj)
     assert(type(itemObj) == "table", "Expected an ItemMixin as the argument")
     assert(type(itemObj.GetItemID) == "function", "Expected an ItemMixin as the argument")
-
     -- Empty item detection. Have to do this since there's very strange behavior for determining
     -- this with the API for items we don't own.
     if itemObj:IsItemEmpty() then
@@ -84,7 +84,7 @@ function Addon:DoGetItemProperties(itemObj)
     local location = itemObj:GetItemLocation() or false
     local guid = itemObj:GetItemGUID() or false
     if not guid then
-        Addon:Debug("itemerro rs", "Item has no GUID")
+        Addon:Debug("itemerrors", "Item has no GUID")
         return nil
     end
 
@@ -98,6 +98,7 @@ function Addon:DoGetItemProperties(itemObj)
     -- Item properties may already be cached, if so use it.
     -- Note that while the item guid will have the same properties,
     -- some properties can and will change, like the location and the stack count.
+    --[[
     local item = nil
     if guid then
         item = Addon:GetItemFromCache(guid)
@@ -105,7 +106,7 @@ function Addon:DoGetItemProperties(itemObj)
             -- Return cached item and count
             return item, count
         end
-    end
+    end]]
     
     -- Item not cached, so we need to populate the properties.
     item = {}
@@ -278,7 +279,7 @@ function Addon:DoGetItemProperties(itemObj)
     end
 
     -- Add item to cache
-    Addon:AddItemToCache(item, guid)
+    --Addon:AddItemToCache(item, guid)
 
     return item, count
 end
@@ -322,8 +323,6 @@ function Addon:GetItemPropertiesFromTooltip()
     if not tooltipData then return nil end
     if tooltipData.guid then
         return self:GetItemPropertiesFromGUID(tooltipData.guid)
-    elseif tooltipData.hyperlink then
-        return self:GetItemPropertiesFromItemLink(tooltipData.hyperlink)
     end
     return nil
 end
@@ -348,6 +347,7 @@ end
 
 -- From Item object directly
 function Addon:GetItemPropertiesFromItem(item)
+    debugp("In item properties")
     if not item then return nil end
     return self:DoGetItemProperties(item)
 end

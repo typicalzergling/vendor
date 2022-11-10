@@ -224,8 +224,8 @@ function RuleManager:Update()
     -- Step 4: Add the sell rules from our configuration
     self:ApplyConfig(RULE_TYPE_SELL, RuleType.SELL);
 
-    -- Clear the result cache
-    Addon:ClearResultCache();
+    -- Clear the item cache
+    --Addon:ClearItemCache();
 end
 
 --*****************************************************************************
