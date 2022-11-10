@@ -11,7 +11,8 @@ Returns the state of the item in the never sell list.  A return value of true
 indicates it belongs to the list false indicates it does not.
 ]],
     Function = function()
-        return Addon:GetFeature("Lists"):GetList(SystemListId.NEVER):Contains(Id)
+        local list = Lists:GetList(SystemListId.NEVER)
+        return list:Contains(Id)
     end
 },
 
@@ -23,7 +24,8 @@ Returns the state of the item in the always sell list.  A return value of tue
 indicates it belongs to the list while false indicates it does not.
 ]],
     Function = function()
-        return Addon:GetFeature("Lists"):GetList(SystemListId.ALWAYS):Contains(Id)
+        local list = Lists:GetList(SystemListId.ALWAYS)
+        return list:Contains(Id)
     end
 },
 
@@ -34,7 +36,8 @@ indicates it belongs to the list while false indicates it does not.
 [re-visit] need to document this
 ]],
     Function = function()
-        return Addon:GetFeature("Lists"):GetList(SystemListId.DESTROY):Contains(Id)
+        local list = Lists:GetList(SystemListId.DESTROY)
+        return list:Contains(Id)
     end
 },
 
@@ -53,7 +56,6 @@ Can also be one of thse constants:
 * destroy - Same as IsDestroyItem
 ]],
     Function = function(...)
-        local lists = Addon:GetFeature("Lists")
         for _, name in ipairs({...}) do
             if (type(name) ~= "string") then
                 error("The list identifier must be a string")
@@ -62,14 +64,16 @@ Can also be one of thse constants:
             local lower = string.lower(name)
             local  list = nil
             if (lower == "sell") then
-                list = lists:GetList(SystemListId.ALWAYS)
+                list = Lists:GetList(SystemListId.ALWAYS)
             elseif (lower == "keep") then
-                list = lists:GetList(SystemListId.NEVER)
+                list = Lists:GetList(SystemListId.NEVER)
             elseif (lower == "destroy") then
                 list = Lists:GetList(SystemListId.DESTROY)
             else
-                local custom = Lists.GetCustomLists()
-                list = custom:Find(name)
+                local custom = Lists.customLists:Find(name)
+                if (custom) then
+                    list = Lists:GetList(custom.Id)
+                end
             end
 
             if (list and list:Contains(Id)) then
@@ -82,10 +86,10 @@ Can also be one of thse constants:
 
 --[[ Register functions ]]
 function Lists:RegisterFunctions()
-    Addon:GetRuleManager():RegisterFunctions(ListRuleFunctions)
+    self.Rules:RegisterFunctions(ListRuleFunctions)
 end
 
 --[[ Unregister functions ]]
-function Lists:UnregisterFuncstions()
-    Addon:GetRuleManager():UnregisterFunctions(ListRuleFunctions)
+function Lists:UnregisterFunctions()
+    self.Rules:UnregisterFunctions(ListRuleFunctions)
 end

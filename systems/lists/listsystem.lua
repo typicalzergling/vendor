@@ -21,7 +21,7 @@ ListSystem.ListType = {
 
 --[[ Retrieve our depenedencies ]]
 function ListSystem:GetDependencies()
-    return { "savedvariables", "profile" }
+    return { "rules", "savedvariables", "profile" }
 end
 
 --[[ Retrieves the events we produce ]]
@@ -32,14 +32,14 @@ end
 --[[ Startup our system ]]
 function ListSystem:Startup()
     self.customLists = ListSystem:CreateCustomListManager()
-    --self:RegisterFunctions()
+    self:RegisterFunctions()
 
     return { "GetList", "GetLists", "CreateList" }
 end
 
 --[[ Shutdown our system ]]
 function ListSystem:Shutdown()
-    --self:UnregisterFuncstions()
+    self:UnregisterFunctions()
 end
 
 --[[ Attempt to find the list with the specified id ]]

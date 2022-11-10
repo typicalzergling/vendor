@@ -5,4 +5,7 @@
     <Script file="systems/lists/systemlist.lua"/>
     <Script file="systems/lists/customlist.lua"/>
     <Script file="systems/lists/functions.lua"/>
+
+    <!-- Rules -->
+    <Script file="systems/rules/rulesystem.lua"/>
 </Ui>
