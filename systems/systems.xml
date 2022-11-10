@@ -1,4 +1,11 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <!-- Lists -->
     <Script file="systems/lists/listsystem.lua"/>
+    <Script file="systems/lists/customlists.lua"/>
+    <Script file="systems/lists/systemlist.lua"/>
+    <Script file="systems/lists/customlist.lua"/>
+    <Script file="systems/lists/functions.lua"/>
+
+    <!-- Rules -->
+    <Script file="systems/rules/rulesystem.lua"/>
 </Ui>

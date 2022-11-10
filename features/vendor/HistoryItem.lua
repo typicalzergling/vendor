@@ -73,7 +73,11 @@ function HistoryItem:OnModelChange(model)
     self:SetItemID(model.Id)
 	self:ContinueOnItemLoad(function()
 		local color = self:GetItemQualityColor() or GRAY_FONT_COLOR
-		self.item:SetText(self:GetItemName())
+        if (model.Count ~= 1) then
+		    self.item:SetFormattedText("%s (%d)", self:GetItemName(), model.Count)
+        else
+		    self.item:SetText(self:GetItemName())
+        end
 		self.item:SetTextColor(color.r, color.g, color.b)
 	end)
 end

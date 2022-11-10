@@ -48,8 +48,9 @@ function Addon:OnInitialize()
     -- Merchant Button
     --self.MerchantButton.Initialize()
 
-    -- Tooltip
-    self:InitializeItemTooltips()
+    -- Tooltip. Delay this one second so other things intializing don't move the tooltip over them and
+    -- cause unnecessary evaluations.
+    C_Timer.After(1, function() Addon:InitializeItemTooltips() end)
 
     -- Do Pruning of History across all characters.
     -- TODO: Make this a setting

@@ -69,10 +69,7 @@ function Addon:StartRefresh()
         for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
 
-                -- Check if slot needs refreshing
                 if Addon:BagAndSlotNeedsRefresh(bag, slot) then
-                    -- do the refresh
-                    debugp("Found item needs refresh")
                     Addon:RefreshBagAndSlot(bag, slot, true)
                     numProcessed = numProcessed + 1
                 end

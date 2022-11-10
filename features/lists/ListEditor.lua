@@ -9,18 +9,14 @@
 local _, Addon = ...
 local ListEditor = {}
 local Lists = Addon.Features.Lists
-
- -- What type of change has happend
-local ChangeType = {
-    Add = 1,
-    Remove = 2
-}
+local ListType = Addon.Systems.Lists.ListType
+local ChangeType = Addon.Systems.Lists.ChangeType
 
 --[[ Called to mark the list as dirty (internal)]]
 local function ListEditor_SetDirty(self)
     if (not self.dirty) then
         self.dirty = true
-        self:TriggerEvent("OnDirty", self, true)
+        self:TriggerEvent("OnDirty", true)
     end
 end
 
@@ -28,7 +24,7 @@ end
 local function ListEditor_ClearDirty(self)
     if (self.dirty) then
         self.dirty = false
-        self:TriggerEvent("OnDirty", self, false)
+        self:TriggerEvent("OnDirty",false)
     end
 end
 
@@ -81,9 +77,11 @@ function ListEditor:SetName(name)
     --@debug@
     assert(self:CanChangeProperties())
     --@end-debug@
+
     if (name ~= self.name) then
         self.name = name or ""
-        self:TriggerEvent("OnChanged", self, "NAME")
+        ListEditor_SetDirty(self)
+        self:TriggerEvent("OnChanged", self, "REMOVED", item)
     end
 end
 
@@ -104,14 +102,15 @@ function ListEditor:SetDescription(description)
         else
             self.description = description
         end
-        self:TriggerEvent("OnChanged", self, "DESCR")
+        ListEditor_SetDirty(self)
+        self:TriggerEvent("OnChanged", self, "REMOVED", item)
     end
 end
 
 --[[ Gets the type for this list ]]
 function ListEditor:GetType()
     if (not self.list) then
-        return Lists.ListType.CUSTOM
+        return ListType.CUSTOM
     end
 
     return self.list:GetType()
@@ -129,7 +128,7 @@ function ListEditor:GetContents()
     end
 
     for id, change in pairs(changes) do
-        if (change == ChangeType.Add) then
+        if (change == ChangeType.ADDED) then
             table.insert(contents, id)
         end
     end
@@ -140,9 +139,9 @@ end
 --[[ Return true if the ist contains this item ]]
 function ListEditor:Contains(item)
     local change = self.changes[item]
-    if (change == ChangeType.Add) then
+    if (change == ChangeType.ADDED) then
         return true
-    elseif (change == ChangeType.Remove) then
+    elseif (change == ChangeType.REMOVED) then
         return false
     end
 
@@ -157,10 +156,10 @@ end
 
 --[[ Remove the specified item from the list ]]
 function ListEditor:Remove(item)
-    if (self.changes[item] == ChangeType.Add) then
+    if (self.changes[item] == ChangeType.ADDED) then
         self.changes[item] = nil
     else
-        self.changes[item] = ChangeType.Remove
+        self.changes[item] = ChangeType.REMOVED
     end
 
     ListEditor_SetDirty(self)
@@ -169,18 +168,36 @@ end
 
 --[[ Adds an item to the list ]]
 function ListEditor:Add(item)
-    if (self.changes[item] == ChangeType.Remove) then
+    if (self.changes[item] == ChangeType.REMOVED) then
         self.changes[item] = nil
     else
-        self.changes[item] = ChangeType.Add
+        self.changes[item] = ChangeType.ADDED
     end
 
     ListEditor_SetDirty(self)
-    self:TriggerEvent("OnChanged", self, "ADDED", item)
+    self:TriggerEvent("OnChanged")
 end
 
 ---[[ Commits the changes to the underlying list ]]
 function ListEditor:Commit()
+    local list = self.list
+
+    if (not self.list) then
+        self.list = Addon:CreateList(self.name, self.description)
+        list = self.list
+    elseif (self:CanChangeProperties()) then
+        list:SetName(self.name)
+        list:SetDescription(self.description)
+    end
+
+    for id, change in pairs(self.changes) do
+        if (change  == ChangeType.ADDED) then
+            list:Add(id)
+        elseif (change == ChangeType.REMOVED) then
+            list:Remove(id)
+        end
+    end
+
     ListEditor_ClearDirty(self)
 end
 
@@ -193,12 +210,12 @@ function ListEditor:CanCommit()
         end
     end
 
-    return false
+    return true
 end
 
 --[[ True if the list can be deleted ]]
 function ListEditor:CanDelete()
-    return self:GetType() == Lists.ListType.CUSTOM
+    return self:GetType() == ListType.CUSTOM
 end
 
 --[[ Gets the dirty state for this list editor ]]
@@ -208,10 +225,7 @@ end
 
 --[[ Checkes if you can change the list properties name/description ]]
 function ListEditor:CanChangeProperties()
-    if (not self.list or type(self.list.SetName) == "function") then
-        return true
-    end
-    return false
+    return self:GetType() == ListType.CUSTOM
 end
 
 --[[ Checks if you can change the list by modifying the contents ]]

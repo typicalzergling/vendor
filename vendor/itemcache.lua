@@ -148,7 +148,9 @@ function Addon:RemoveItemFromCache(guid)
     -- Should be where it is in the map.
     local mapEntry = getItemFromBagMap(item.Item.Bag, item.Item.Slot)
     --assert(mapEntry and mapEntry.Item.GUID == guid, "Guid handle leak detected in the cache.")
-    removeItemFromBagMap(item.Item.Bag, item.Item.Slot)
+    if mapEntry and mapEntry.Item.GUID == guid then
+        removeItemFromBagMap(item.Item.Bag, item.Item.Slot)
+    end
     debugp("Removed %s from cache from bag %s and slot %s", tostring(item.Item.Link), tostring(item.Item.Bag), tostring(item.Item.Slot))
     itemResultCache[guid] = nil
 
@@ -210,5 +212,5 @@ function Addon:OnBagUpdate(bagID)
     -- When a bag changes some items inside it have changed, but we don't know which ones.
     -- To err on the side of safety we will clear the cache for all items in that bag.
     --Addon:ClearItemCache()
-    Addon:StartRefreshDelayed(7)
+    Addon:StartRefreshDelayed(5)
 end

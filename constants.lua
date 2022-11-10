@@ -9,7 +9,7 @@ Addon.c_APIMethodColorCode = YELLOW_FONT_COLOR_CODE
 Addon.c_ThrottleTime = .15  -- Default Throttle Time
 
 -- Addon Constants
-Addon.c_RefreshThrottleTime = .03
+Addon.c_RefreshThrottleTime = .05
 Addon.c_PruneHistoryDelay = 30  -- Time in seconds after intializing addon before prune history is run
 Addon.c_HoursToKeepHistory = 30*24 -- 30*24 = max blizzard item restoration window
 Addon.c_BuybackLimit = 12
@@ -87,3 +87,9 @@ Addon.EPIC_PURPLE_COLOR		    = CreateColor(0.78431,	0.27059,	0.98039);
 Addon.LEGENDARY_ORANGE_COLOR	= CreateColor(1.0,		0.50196,	0.0);
 Addon.ARTIFACT_GOLD_COLOR		= CreateColor(0.90196,	0.8,		0.50196);
 Addon.HEIRLOOM_BLUE_COLOR		= CreateColor(0.0,		0.8,		1);
+
+Addon.Colors = {
+    CUSTOMLIST_TEXT = CreateColor(0.0, 0.56863, 0.94902, .8),
+    CUSTOMLIST_HOVER_TEXT = CreateColor(0.0, 0.56863, 0.94902, 1),
+    CUSTOMLIST_SELECTED_TEXT = CreateColor(0.0, 0.56863, 0.94902, 1),
+}

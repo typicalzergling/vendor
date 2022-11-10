@@ -1,5 +1,7 @@
 local AddonName, Addon = ...
+local Lists = Addon.Systems.Lists
 local CustomLists = {}
+local ListEvents = Lists.ListEvents
 local CUSTOM_LIST_VERSION = 1
 
 --[[ Determine the ID ]]
@@ -17,6 +19,7 @@ end
 --[[ Initialize the custom lists ]]
 function CustomLists:Init()
     self.variable = Addon:CreateSavedVariable("CustomLists")
+    --print("variable", self.variable)
 end
 
 --[[ Creates a custom list ]]
@@ -34,31 +37,29 @@ function CustomLists:Create(name, description, items)
 
 	self.variable:Set(id, list)
 	Addon:Debug("customlists", "Created List '%s' [%s]", name, id)
-    Addon:RaiseEvent("OnListAdded", list)
 	return list
 end
 
+--[[ Checks if the list exists ]]
+function CustomLists:Exists(listId)
+    return self.variable:Get(getListId(listId)) ~= nil
+end
+
 --[[ Updates a custom list ]]
-function CustomLists:Update(listId, name, description, items)
+function CustomLists:Update(listId, updates)
     local list = self:Get(listId)
     if (not list) then
         error("Unable to locate list to update '" .. tostring(listId) .. "'")
     end
     
-    local update = {
-        Name = name, 
-        Description = description,
-        Id = list.Id,
-        Items = items or {},
-        Timestamp = time(),
-        ModifiedBy = Addon:GetCharacterFullName(),
-        Version = CUSTOM_LIST_VERSION,
-        CreatedBy = list.CreatedBy
-    }
+    if (type(updates) == "table") then
+        for key, value in pairs(updates) do
+            list[key] = value
+        end
+    end
 
-	self.variable:Set(list.Id, update)
+	self.variable:Set(list.Id, list)
     Addon:Debug("customlists", "Updated list '%s' [%s]", list.Name, list.Id)
-    Addon:RaiseEvent("OnListUpdated", list)
 end
 
 --[[ Gets the contents of a custom list ]]
@@ -79,11 +80,10 @@ function CustomLists:SetContents(listId, items)
 
     list.UpdatedBy = Addon:GetCharacterFullName()
     list.Timestamp = time
-    list.items = items or {}
+    list.Items = items or {}
 
     self.variable:Set(list.Id, list)
     Addon:Debug("customlists", "Updated list '%s' [%s]", list.Name, list.Id)
-    Addon:RaiseEvent("OnListUpdated", list)
 end
 
 --[[ Retrieves all of the custom lists ]]
@@ -130,34 +130,7 @@ function CustomLists:Find(search)
 	return result
 end
 
---[[ Retrieve the custom list manager ]]
-local LIST_MANAGER = {}
-function Addon.Features.Lists.GetCustomLists()
-    local manager = rawget(Addon, LIST_MANAGER)
-    if (not manager) then
-
-        local instance = {}
-        manager = setmetatable({}, {
-                __metatable = AddonName .. ":" .. "CustomLists",
-                __index = function(self, key)
-                    if (type(CustomLists[key]) == "function") then
-                        return function(_, ...) 
-                            return CustomLists[key](instance, ...)
-                        end
-                    else
-                        error("There is no API :: " .. key)
-                    end
-                    return nil
-                end,
-
-                __newindex = function(self, key, value)
-                    error("Attempt to modify the custom list")
-                end,
-            })
-        
-        CustomLists.Init(instance)
-        rawset(Addon, LIST_MANAGER, manager)
-    end
-
-    return manager
+--[[ Create a custom list manager ]]
+function Lists:CreateCustomListManager()
+    return CreateAndInitFromMixin(CustomLists)
 end

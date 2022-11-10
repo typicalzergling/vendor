@@ -422,6 +422,9 @@ RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 -- List Pane / Dialog
 EDIT_LIST = "Edit",
 NEW_LIST = "New",
+LISTOOLTIP_LISTTYPE = "Type:",
+TOOLTIP_SYTEMLIST = "Built-In (profile specific)",
+TOOLTIP_CUSTOMLIST = "Custom",
 LISTDIALOG_CREATE_CAPTION = "New List",
 LISTDIALOG_EDIT_CAPTION = "Edit List",
 LISTDIALOG_NAME_LABEL = "Name:",
@@ -432,7 +435,12 @@ LISTDIALOG_DESCR_HELPTEXT = "type the description of your list here",
 LISTDIALOG_ADDBYID_LABEL = "[re-visit]  You can add an item using it's id by typing the id in the box below and clicking add",
 LISTDIALOG_ADDBYID = "Add",
 LISTDIALOG_ADDBYID_HELP = "Type the ID an item",
+EDITLIST_DUPLICATE_NAME_CAPTION = "[rv] Duplicate List",
+EDITLIST_DUPLICATE_NAME_FMT1 = [[
+# Duplicate List Name
 
+[rv] A list already exists with the name '%s' please choose another.
+]],
 
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",

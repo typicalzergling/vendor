@@ -85,6 +85,13 @@ Addon.CommonUI.Colors =
     TABCONTROL_ACTIVE_TEXT = YELLOW_FONT_COLOR,
     TABCONTROL_ACTIVE_BACK = CreateColor(.4, .4, .4, .1),
     
+    COMMON_GRAY_COLOR		= CreateColor(0.65882,	0.65882,	0.65882),
+    UNCOMMON_GREEN_COLOR	= CreateColor(0.08235,	0.70196,	0.0),
+    RARE_BLUE_COLOR			= CreateColor(0.0,		0.56863,	0.94902),
+    EPIC_PURPLE_COLOR		= CreateColor(0.78431,	0.27059,	0.98039),
+    LEGENDARY_ORANGE_COLOR	= CreateColor(1.0,		0.50196,	0.0),
+    ARTIFACT_GOLD_COLOR		= CreateColor(0.90196,	0.8,		0.50196),
+    HEIRLOOM_BLUE_COLOR		= CreateColor(0.0,		0.8,		1),
 
     --[[ Retrieves the specified color or RED to indicate error ]]
     Get = function(self, key, defaultColor)

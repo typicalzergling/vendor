@@ -3,21 +3,7 @@ local Colors = Addon.CommonUI.Colors
 local UI = Addon.CommonUI.UI
 local EditListDialog = {}
 local Lists = Addon.Features.Lists
-
---[[
-
-for edit make a class which track trasnactions
-
-list:GetEditor
-    - Add/Remove/Contains
-    - SetName/SetDescription
-    - CanModifyMetadata
-    - OnChanged/OnDirty
-    - Disccard/Commit
-    - Create -- Uses the changes in the list to create a new custom
-                list returns the result
-
-]]
+local locale = Addon:GetLocale()
 
 --[[ Sets the list we are editing ]]
 function EditListDialog:SetList(list)
@@ -35,9 +21,9 @@ function EditListDialog:SetList(list)
     self.items:SetList(self.editor)
 
     if (self.editor:IsNew()) then
-        self:SetCaption("Create List")
+        self:SetCaption("LISTDIALOG_CREATE_CAPTION")
     else
-        self:SetCaption("Edit List")
+        self:SetCaption("LISTDIALOG_EDIT_CAPTION")
     end
 end
 
@@ -46,7 +32,7 @@ function EditListDialog:OnShow()
 end
 
 function EditListDialog:OnListDirty()
-    print("--> list is dirty")
+    --print("--> list is dirty")
 end
 
 --[[ Handle the name change ]]
@@ -77,18 +63,48 @@ end
 
 --[[ Handle saving the dialog ]]
 function EditListDialog:OnSave()
-    print("save list")
+    if (self:ValidateName()) then
+        self.editor:Commit()
+        self:Close()
+    end
+end
+
+--[[ Valid our name is okay ]]
+function EditListDialog:ValidateName()
+    local valid = true
+    local id = self.editor:GetId()
+    local name = string.lower(self.editor:GetName())
+
+    for _, list in ipairs(Addon:GetLists()) do
+        if (list:GetId() ~= id) then
+            if (name == string.lower(list:GetName())) then
+                valid = false
+                break
+            end
+        end
+    end
+    
+    if (not valid) then
+        UI.MessageBox("EDITLIST_DUPLICATE_NAME_CAPTION",
+            locale:FormatString("EDITLIST_DUPLICATE_NAME_FMT1", self.editor:GetName()),
+            OK)
+        return false
+    end
+
+    return true
 end
 
 --[[ Handle deleting the list ]]
 function EditListDialog:OnDelete()
-    print("delete list")
+    --print("delete list")
 end
 
 --[[ Called to update our UX state ]]
 function EditListDialog:Update()
     local buttons = {}
     local editor = self.editor
+
+    --print("update")
 
     buttons.cancel = true
     buttons.delete = { show = not editor:IsNew(), enabled = not editor:IsNew() and editor:CanDelete() }
@@ -104,13 +120,15 @@ function EditListDialog:Update()
     self:EnableAddById()
 
     self:SetButtonState(buttons)
+    self.items:Rebuild()
 end
 
 --[[ Determine if the add by id button should be enabled ]]
 function EditListDialog:EnableAddById()
     if (self.itemId:IsEnabled()) then
         local itemId = self.itemId:GetNumber()
-        UI.Enable(self.addId, 
+        --print("--> contains", self.editor:Contains(itemId))
+        UI.Enable(self.addId,
             itemId ~= 0 and 
             type(itemId) == "number" and 
             C_Item.DoesItemExistByID(itemId) and

@@ -46,7 +46,9 @@ function Addon:CreateRulesEngine(verbose)
 
     -- Import constants
     rulesEngine:ImportGlobals(unpack(ITEM_CONSTANTS));
-    rulesEngine:AddFunctions(ruleFunctions)
+
+    -- Add the functions
+    rulesEngine:AddFunctions(Addon:GetRuleFunctions())
 
     -- Check for extension functions
     if (Package.Extensions) then
