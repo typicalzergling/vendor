@@ -68,7 +68,7 @@ function Addon:ToggleSimulate_Cmd()
 end
 
 function Addon:ClearCache_Cmd()
-    Addon:ClearItemCache()
+    Addon:ClearItemResultCache()
     Addon:Print("Item cache and result cache cleared.")
 end
 

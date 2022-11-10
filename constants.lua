@@ -71,11 +71,13 @@ Addon.Events = {
     AUTO_SELL_COMPLETE = "auto-sell-end",
     AUTO_SELL_ITEM = "auto-sell-item",
     PROFILE_CHANGED = "profile-changed",
-    REFRESH_NEEDED = "refresh-needed",
-    REFRESH_START = "refresh-start",
-    REFRESH_STOP = "refresh-stop",
-    REFRESH_COMPLETE = "refresh-complete",
-    REFRESH_ITEM_UPDATED = "refresh-item-updated",
+    ITEMRESULT_REFRESH_START = "itemresult-refresh-start",
+    ITEMRESULT_REFRESH_STOP = "itemresult-refresh-stop",
+    ITEMRESULT_REFRESH_COMPLETE = "itemresult-refresh-complete",
+    ITEMRESULT_REFRESH_TRIGGERED = "itemresult-refresh-triggered",
+    ITEMRESULT_ADDED = "itemresult-added",
+    ITEMRESULT_REMOVED = "itemresult-removed",
+    ITEMRESULT_CACHE_CLEARED = "itemresult-cache-cleared",
 }
 
 -- Blizzard Color Codes that are not in all versions

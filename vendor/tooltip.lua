@@ -80,7 +80,7 @@ local function addItemTooltipLines(tooltip, tooltipData)
     -- we will cache the result as you mouse over each item and only re-update a tooltip when the item changes
     -- or if rules change (which would clear the tooltip result cache).
     if itemGUID ~= tooltipData.guid then
-        local item = Addon:GetItemForTooltip(tooltipData)
+        local item = Addon:GetItemResultForTooltip(tooltipData)
         itemGUID = item.Item.GUID
         result = item.Result.Action
         ruleId = item.Result.RuleID

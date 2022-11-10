@@ -101,7 +101,7 @@ function Addon:DoGetItemProperties(itemObj)
     --[[
     local item = nil
     if guid then
-        item = Addon:GetItemFromCache(guid)
+        item = Addon:GetItemResultFromItemResultCacheByGUID(guid)
         if item then
             -- Return cached item and count
             return item, count
@@ -279,7 +279,7 @@ function Addon:DoGetItemProperties(itemObj)
     end
 
     -- Add item to cache
-    --Addon:AddItemToCache(item, guid)
+    --Addon:AddItemResultToItemResultCache(item, guid)
 
     return item, count
 end
