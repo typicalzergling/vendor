@@ -149,7 +149,7 @@ local PropertyItem = {
     end
 }
 
-Addon.Features.Dialogs.EditRule.ItemInfoTab = {
+Addon.Features.Dialogs.ItemInfoTab = {
 
     OnLoad = function(iteminfo)
         iteminfo.properties:Sort(function(a, b)
