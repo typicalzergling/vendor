@@ -2,6 +2,8 @@
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
 
+local debugp = function (...) Addon:Debug("evaluate", ...) end
+
 -- This is a wrapper for Evaluate Item that takes GetItemProperties parameters as input.
 -- This is for use cases where you do not need the item itself and just want to know
 -- the result. This is also the public api implementaion.
@@ -12,7 +14,7 @@ end
 -- Evaluating items.
 -- This is only used for the 'real' rules evaluation, not rules evaluation in the rules editor.
 -- Rules for determining if an item should be sold.
--- Retval meanings:
+-- Action meanings:
 -- 0 = No action
 -- 1 = Item will be sold
 -- 2 = Item will be deleted
@@ -20,63 +22,76 @@ end
 -- The itemCount is returned separately since it depends on the source and is not used
 -- for rule evaluations.
 -- This method always returns a number as the first parameter, but the others may be nil.
-function Addon:EvaluateItem(item)
+function Addon:EvaluateItem(item, ignoreCache)
+
+    -- Return a table of data. These are the default "no item" values.
+    local result = {}
+    result.Action = Addon.ActionType.NONE
+    result.RuleID = nil
+    result.Rule = nil
+    result.RuleType = nil
+
     -- Check some cases where we know we should never ever sell the item
     if not item then
-        return 0, nil, nil
+        return result
     end
 
-    -- See if this item is already in the cache.
-    local retval, ruleid, rule, ruletype, id = Addon:GetCachedResult(item.GUID)
-    if retval and type(retval) == "number" then
-        self:Debug("items", "Retrieved %s from cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
-        return retval, ruleid, rule, ruletype
+    debugp("In Evaluate Item: %s", tostring(item.Link))
+
+    -- Check the Cache for the result if we aren't ignoring it.
+    if not ignoreCache then
+        local cachedEntry = Addon:GetItemFromCache(item.GUID)
+        if cachedEntry then
+            debugp("Retrieved %s from cache with result: %s - [%s] %s",
+                tostring(item.Link),
+                tostring(cachedEntry.Result.Action),
+                tostring(cachedEntry.Result.RuleType),
+                tostring(cachedEntry.Result.Rule)
+            )
+            -- Return deep copy so they don't ruin our actual data with this.
+            return Addon.DeepTableCopy(cachedEntry.Result)
+        end
     end
 
     if (not self.ruleManager) then
         self.ruleManager = Addon.RuleManager:Create();
     end
-    local result = nil
-    result, ruleid, rule, ruletype = self.ruleManager:Run(item)
-    retval = 0
-    if result then
-        if Addon.RuleType.SELL == ruletype then
+    
+    -- First return value of rules manager is a boolean on whether it matched a rule.
+    -- We must decode it into an integer Action:
+    -- 0 = No action
+    -- 1 = Item will be sold
+    -- 2 = Item will be deleted
+    local match = nil
+    match, result.RuleID, result.Rule, result.RuleType = self.ruleManager:Run(item)
+    if match then
+        if Addon.RuleType.SELL == result.RuleType then
             if item.IsUnsellable then
                 -- Items in sell list but are unsellable take no action.
-                ruleid = nil
-                rule = nil
-                ruletype = nil
-                retval = 0
-                self:Debug("items", "Item %s is unsellable, changing result to no action.", tostring(item.Link))
+                result.Action = Addon.ActionType.NONE
+                result.RuleID = nil
+                result.Rule = nil
+                result.RuleType = nil
+                debugp("Item %s is unsellable, changing result to no action.", tostring(item.Link))
             else
-                retval = 1
+                result.Action = Addon.ActionType.SELL
             end
         elseif Addon.RuleType.DESTROY == ruletype then
-            retval = 2
+            result.Action = Addon.ActionType.DESTROY
         elseif Addon.RuleType.KEEP == ruletype then
-            retval = 0
+            result.Action = Addon.ActionType.NONE
         else
             error("Unknown ruletype: "..tostring(ruletype))
         end
     end
 
-    -- Add item to cache
+    --[[
     self:Debug("resultcache", "Adding %s to cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
     Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype, item.Id)
-    
-    return retval, ruleid, rule, ruletype
-end
-
--- Results are cached by guid.
-local resultCache = {}
-function Addon:GetCachedResult(guid)
-    assert(guid)
-    result = resultCache[guid]
-    if result then
-        return result.Result, result.RuleId, result.Rule, result.RuleType
-    else
-        return nil, nil, nil, nil
-    end
+    ]]
+    -- TODO: We do not want to add the cache entry here, but for the external API wrapper, we should.
+    debugp("Result: %s - %s", tostring(result.Action), tostring(result.RuleType))
+    return result
 end
 
 -- Returns num kept, num sold, and num destroyed for a given item id.
@@ -98,20 +113,6 @@ function Addon:GetResultCountsForItemId(id)
     end
     -- Num Kept, Num Sold, Num Destroyed
     return resultCount[0], resultCount[1], resultCount[2]
-end
-
-function Addon:ClearResultCache(arg)
-    if not arg then
-        resultCache = {}
-        self:Debug("resultcache", "Result Cache cleared.")
-    else
-        resultCache[arg] = nil
-    end
-    -- Anytime the Result Cache gets cleared, the Tooltip Result Cache also needs clearing.
-    Addon:ClearTooltipResultCache()
-
-    -- The result status is now also now invalid, clear it
-    Addon:ClearEvaluationStatusCache()
 end
 
 function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
@@ -139,7 +140,7 @@ function Addon:ClearEvaluationStatusCache()
 end
 
 function Addon:GetEvaluationStatus()
-
+    print("Evaluate Status")
     if escachestale then
         -- No cache, generate the status.
         local count = 0

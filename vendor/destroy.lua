@@ -23,19 +23,15 @@ function Addon:DestroyNextItem()
                 return
             end
 
-            -- Get Item properties and run sell rules.
-            local item, itemCount = self:GetItemPropertiesFromBagAndSlot(bag, slot)
-            local result, ruleid, rule = self:EvaluateItem(item)
-
-            -- Result of 0 is no action, 1 is sell, 2 is must be deleted.
-            -- So we only try to sell if Result is exactly 1.
-            if result == 2 then
-                currentDestroyedItem = item.Link
-                self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem), tostring(rule))
+            -- Refresh and get the data entry for this slot.
+            local entry =  xpcall(Addon.RefreshBagAndSlot, CallErrorHandler, Addon, bag, slot)
+            if entry and entry.Result.Action == Addon.ActionType.DESTROY then
+                currentDestroyedItem = entry.Item.Link
+                self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem), tostring(entry.Result.Rule))
                 if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
                     C_Container.PickupContainerItem(bag, slot)
                     DeleteCursorItem()
-                    Addon:AddEntryToHistory(currentDestroyedItem, Addon.ActionType.DESTROY, rule, ruleid, itemCount, 0)
+                    Addon:AddEntryToHistory(currentDestroyedItem, Addon.ActionType.DESTROY, entry.Result.Rule, entry.Result.RuleID, entry.Item.Count, 0)
                 else
                     self:Print("Simulating deletion of: %s", tostring(currentDestroyedItem))
                 end

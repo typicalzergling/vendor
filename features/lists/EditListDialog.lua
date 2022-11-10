@@ -33,7 +33,7 @@ function EditListDialog:OnShow()
 end
 
 function EditListDialog:OnListDirty()
-    print("--> list is dirty")
+    --print("--> list is dirty")
 end
 
 --[[ Handle the name change ]]
@@ -97,7 +97,7 @@ end
 
 --[[ Handle deleting the list ]]
 function EditListDialog:OnDelete()
-    print("delete list")
+    --print("delete list")
 end
 
 --[[ Called to update our UX state ]]
@@ -105,7 +105,7 @@ function EditListDialog:Update()
     local buttons = {}
     local editor = self.editor
 
-    print("update")
+    --print("update")
 
     buttons.cancel = true
     buttons.delete = { show = not editor:IsNew(), enabled = not editor:IsNew() and editor:CanDelete() }
@@ -130,7 +130,7 @@ end
 function EditListDialog:EnableAddById()
     if (self.itemId:IsEnabled()) then
         local itemId = self.itemId:GetNumber()
-        print("--> contains", self.editor:Contains(itemId))
+        --print("--> contains", self.editor:Contains(itemId))
         UI.Enable(self.addId,
             itemId ~= 0 and 
             type(itemId) == "number" and 

@@ -60,7 +60,7 @@ end
 --[[ Called to start a single system ]]
 function Features:InitTarget(feature, complete)
     C_Timer.After(.25, function()
-            Addon:Debug("feature", "Iniitaling feature '%s'", feature.name)
+            Addon:Debug("feature", "Initialing feature '%s'", feature.name)
             self:EnableFeature(feature.name)
             complete(feature.enabled)
         end)

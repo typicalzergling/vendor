@@ -50,8 +50,6 @@ function Addon:ClearTooltipResultCache()
     ruleId = nil
     ruleName = nil
     ruleType = nil
-    callCount = 0
-    recipe = false
     Addon:Debug("tooltip", "TooltipResultCache cleared.")
 end
 
@@ -69,7 +67,7 @@ local function addItemTooltipLines(tooltip, tooltipData)
     -- we must work around it. Our workaround logic here ist hat we will only put tooltips
     -- on items that have a bag and slot or inventory id (i.e. equipped or in player bags).
     local location = C_Item.GetItemLocation(tooltipData.guid)
-    if not location or not location:HasAnyLocation() then
+    if not location or not location:IsBagAndSlot() then
         return nil
     end
 
@@ -82,14 +80,17 @@ local function addItemTooltipLines(tooltip, tooltipData)
     -- we will cache the result as you mouse over each item and only re-update a tooltip when the item changes
     -- or if rules change (which would clear the tooltip result cache).
     if itemGUID ~= tooltipData.guid then
-        local item = Addon:GetItemPropertiesFromGUID(tooltipData.guid)
-        result, ruleId, ruleName, ruleType  = Addon:EvaluateItem(item)
+        local item = Addon:GetItemForTooltip(tooltipData)
+        itemGUID = item.Item.GUID
+        result = item.Result.Action
+        ruleId = item.Result.RuleID
+        ruleName = item.Result.Rule
+        ruleType = item.Result.RuleType
 
         -- Check if the item is in the Always or Never sell lists
         -- TODO: Change this to return a table of lists to which this item belongs.
-        blocklist = Addon:GetBlocklistForItem(item.Link)
-        itemGUID = guid
-        Addon:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
+        blocklist = Addon:GetBlocklistForItem(item.Item.Link)
+        Addon:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
     end
 
     -- Add lines to the tooltip we are scanning after we've scanned it.
@@ -111,18 +112,18 @@ local function addItemTooltipLines(tooltip, tooltipData)
 
     -- Add a warning that this item will be auto-sold on next vendor trip.
     if (profile:GetValue(Addon.c_Config_Tooltip)) then
-        if result == 1 then
+        if result == Addon.ActionType.SELL then
             tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
-        elseif result == 2 then
+        elseif result == Addon.ActionType.DESTROY then
             tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_DELETED"], FONT_COLOR_CODE_CLOSE))    
         end
     end
     
     -- Add Advanced Rule information if set and available.
     if (ruleName and profile:GetValue(Addon.c_Config_Tooltip_Rule)) then
-        if result == 1 then
+        if result == Addon.ActionType.SELL then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
-        elseif result == 2 then
+        elseif result == Addon.ActionType.DESTROY then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_DESTROY"], ruleName))
         else
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_KEEP"], ruleName))

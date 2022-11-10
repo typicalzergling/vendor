@@ -558,7 +558,7 @@ function List:Update()
     local container = scroller:GetScrollChild()
     local width = self:GetWidth() - scroller.ScrollBar:GetWidth() - 6
 
-    Addon:Debug("lise", "Performing update for list '%s'", self:GetParentKey() or "<unknown>")
+    Addon:Debug("list", "Performing update for list '%s'", self:GetParentKey() or "<unknown>")
 
     -- Populate the items
     if (not state.items) then

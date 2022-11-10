@@ -184,7 +184,6 @@ function Systems:InitTarget(system, complete)
     -- If there is an initiailization handler then call it
     if (type(source.Startup) == "function") then
         local success, api = xpcall(source.Startup, CallErrorHandler, source)
-        print("Succes/API", success, api)
         if (not success) then
             complete(false)
         end

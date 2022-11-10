@@ -69,10 +69,8 @@ function Addon:StartRefresh()
         for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
 
-                -- Check if slot needs refreshing
-                if Addon:LocationNeedsRefresh(bag, slot) then
-                    -- do the refresh
-                    Addon:RefreshLocation(bag, slot)
+                if Addon:BagAndSlotNeedsRefresh(bag, slot) then
+                    Addon:RefreshBagAndSlot(bag, slot, true)
                     numProcessed = numProcessed + 1
                 end
 
@@ -90,14 +88,4 @@ function Addon:StartRefresh()
 
     -- Add thread to the thread list and start it.
     Addon:AddThread(thread, refresh.threadName, Addon.c_RefreshThrottleTime)
-end
-
-function Addon:LocationNeedsRefresh(bag, slot)
-    -- Do stuff
-    return true
-end
-
-function Addon:RefreshLocation(bag, slot)
-    -- Do stuff
-    return
 end
