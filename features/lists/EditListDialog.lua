@@ -32,6 +32,11 @@ function EditListDialog:OnShow()
     self:Update()
 end
 
+--[[ Called when the dialog box is closed ]]
+function EditListDialog:OnClose()
+    self.editor:Cleanup()
+end
+
 function EditListDialog:OnListDirty()
 end
 
@@ -87,7 +92,7 @@ function EditListDialog:ValidateName()
     if (not valid) then
         UI.MessageBox("EDITLIST_DUPLICATE_NAME_CAPTION",
             locale:FormatString("EDITLIST_DUPLICATE_NAME_FMT1", self.editor:GetName()),
-            OK)
+            OK, self)
         return false
     end
 
@@ -96,6 +101,17 @@ end
 
 --[[ Handle deleting the list ]]
 function EditListDialog:OnDelete()
+    UI.MessageBox("DELETE_LIST_CAPTION",
+        locale:FormatString("DELETE_LIST_FMT1", self.editor:GetName()), {
+            {
+                text = "CONFIRM_DELETE_LIST",
+                handler = function()
+                    Addon:DeleteList(self.editor:GetId())
+                    self:Close()
+                end,
+            },
+            "CANCEL_DELETE_LIST"
+        }, self)
 end
 
 --[[ Called to update our UX state ]]

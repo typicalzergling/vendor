@@ -34,7 +34,7 @@ function ListSystem:Startup()
     self.customLists = ListSystem:CreateCustomListManager()
     self:RegisterFunctions()
 
-    return { "GetList", "GetLists", "CreateList" }
+    return { "GetList", "GetLists", "CreateList", "DeleteList" }
 end
 
 --[[ Shutdown our system ]]
@@ -87,6 +87,22 @@ function ListSystem:CreateList(name, description)
     Addon:RaiseEvent(ListSystem.ListEvents.ADDED, list)
 
     return list
+end
+
+--[[ Handle deleting a list ]]
+function ListSystem:DeleteList(listId)
+    local list = self:GetList(listId)
+
+    if (not list) then
+        error("There is not list : " .. tostring(listId))
+    end
+
+    if (list:GetType() ~= ListSystem.ListType.CUSTOM) then
+        error("Only custom list can be deleted - " .. list:GetName())
+    end
+
+    self.customLists:Delete(list:GetId())
+    Addon:RaiseEvent(ListSystem.ListEvents.REMOVED, list)
 end
 
 --[[ Called when a system list has changed, allows us to force mutual exclusion ]]

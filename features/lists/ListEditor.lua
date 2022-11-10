@@ -46,6 +46,10 @@ local function ListEditor_Init(self, list, copy)
             self.list = list
         else
             self.name = locale:FormatString("COPY_LIST_FMT1", list:GetName())
+            for _, id in ipairs(self.contents) do
+                self.changes[id] = ChangeType.ADDED
+            end
+            self.contents = {}
             ListEditor_SetDirty(self)
         end
     else

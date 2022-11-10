@@ -156,7 +156,7 @@ end
     * If buttons is table, it can contain either a string or
       a table with text/handler
 ]]
-function UI.MessageBox(title, markdown, buttons)
+function UI.MessageBox(title, markdown, buttons, parent)
     -- Setup the buttons
 
     local btns = {}

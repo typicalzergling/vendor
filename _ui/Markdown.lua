@@ -148,6 +148,8 @@ function MarkdownFrame:Layout(width, height)
     else
         self:SetHeight(0)
     end
+
+    Addon:Debug("layouts", "*MarkdownFrame* = %d x %s", width, self:GetHeight())
 end
 
 --[[ Handle load ]]

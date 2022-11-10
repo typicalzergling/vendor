@@ -444,6 +444,16 @@ EDITLIST_DUPLICATE_NAME_FMT1 = [[
 
 [rv] A list already exists with the name '%s' please choose another.
 ]],
+DELETE_LIST_CAPTION = "Delete List",
+DELETE_LIST_FMT1 = [[
+# Delete List
+
+[rv] Are you sure you want to delete list '%s' deleting this list will remove
+it from all of your characters, and may affect any rules configured to use 
+the list
+]],
+CONFIRM_DELETE_LIST = "Confirm",
+CANCEL_DELETE_LIST = "Cancel",
 
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",

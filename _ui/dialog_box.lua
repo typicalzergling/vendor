@@ -145,6 +145,10 @@ function DialogBox:OnHide()
 
     if (self.__content) then
         self.__content:Hide()
+
+        if type(self.__content.OnClose) == "function" then
+            self.__content:OnClose(self)
+        end
     end
 end
 

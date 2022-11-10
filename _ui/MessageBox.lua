@@ -221,7 +221,7 @@ function MessageBox:Layout()
         contentWidth = buttonWidth
     end
 
-    mbLayoutContent(self, contentWidth)
+    local h = mbLayoutContent(self, contentWidth)
     
     host:SetWidth(contentWidth + (2 * paddingX))
     host:SetPoint("TOPLEFT", borderX, -(borderY + captionHeight))
@@ -262,13 +262,18 @@ function MessageBox.Create(params)
     -- Create the markdown
     local frame = CreateFrame("frame")
     local markdownFrames = Addon.CommonUI.CreateMarkdownFrames(frame, params.content or "")
-    frame.Layout = function()
-            Addon.CommonUI.Layouts.Stack(frame, markdownFrames, 0, 10)
+    frame.Layout = function(self, width)
+            Addon.CommonUI.Layouts.Stack(frame, markdownFrames, 0, 10, width)
         end
-    frame:SetScript("OnSizeChanged", 
-            function() 
-                frame:Layout() 
+    frame:SetScript("OnSizeChanged",
+            function(_, width) 
+                frame:Layout(width)
             end)
+
+    for _, mf in ipairs(markdownFrames) do
+        mf:SetScript("OnSizeChanged", function()
+        end)
+    end
 
     if (not params.parent or params.parent == UIParent) then
         -- Compute the location?
