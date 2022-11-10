@@ -28,14 +28,14 @@ end
 
 --[[ Retrieve the currently defined lists ]]
 function ListsTab:GetCategories()
-    return self.feature:GetLists()
+    return Addon:GetLists()
 end
 
 --[[ Called to display the contents of the list ]]
 function ListsTab:ShowList()
     local selected = self.lists:GetSelected()
     if (selected) then
-        self.items:SetList(self.feature:GetList(selected.Id))
+        self.items:SetList(selected)
     end
 end
 

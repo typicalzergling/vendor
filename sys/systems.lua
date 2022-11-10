@@ -184,6 +184,7 @@ function Systems:InitTarget(system, complete)
     -- If there is an initiailization handler then call it
     if (type(source.Startup) == "function") then
         local success, api = xpcall(source.Startup, CallErrorHandler, source)
+        print("Succes/API", success, api)
         if (not success) then
             complete(false)
         end
@@ -194,7 +195,7 @@ function Systems:InitTarget(system, complete)
             system.api = api
             for _, funcname in ipairs(api) do
                 --@debug@
-                assert(not Addon[funcname], "An API with the name '" .. name .. "' already exists")
+                assert(not Addon[funcname], "An API with the name '" .. funcname .. "' already exists")
                 assert(type(source[funcname]) == "function", "The API referres to an invalid functon : " .. funcname)
                 --@end-debug@
 

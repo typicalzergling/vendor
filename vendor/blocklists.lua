@@ -416,7 +416,7 @@ function Addon:ClearBlocklist(list)
     error(string.format("There is not '%s' list", list));
 end
 
--- Retrieve the specified list
+--[[
 function Addon:GetList(listType)
     -- Check for system list
     if (isSystemListType(listType)) then
@@ -456,7 +456,7 @@ end
 function Addon:RemoveInvalidEntriesFromBlocklist(listType)
     local list = self:GetList(listType)
     list:RemoveInvalid()
-end
+en]]
 
 function Addon:RemoveInvalidEntriesFromAllBlocklists()
     self:RemoveInvalidEntriesFromBlocklist(ListType.SELL)

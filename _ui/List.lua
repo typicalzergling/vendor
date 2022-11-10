@@ -347,7 +347,7 @@ local function list_GetItems(list)
                 if (success) then
                     return items or {}
                 else
-                    Addon:Debug("list", "Failed to retrieve the items for list '%s'", self:GetParentKey() or "<unknown>")
+                    Addon:Debug("list", "Failed to retrieve the items for list '%s'", list:GetParentKey() or "<unknown>")
                 end
             end
         end
@@ -382,7 +382,7 @@ function List:OnShow()
         state.discardTimer:Cancel()
         state.discardTimer = nil
     end
-
+    
     self:Update()
 end
 
@@ -393,7 +393,7 @@ function List:OnHide()
     if (state.discardTimer) then
         state.discardTimer:Cancel()
         state.discardTimer = nil
-    end    
+    end
 
     state.discardTimer = C_Timer.After(DISCARD_TIME, function()
             state.discardTimer = nil

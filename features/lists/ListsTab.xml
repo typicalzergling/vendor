@@ -28,6 +28,7 @@
             <Frame parentKey="lists" inherits="CommonUI_CategoryList">
                 <KeyValues>
                     <KeyValue key="OnSelection" value="ShowList"/>
+                    <KeyValue key="ItemClass" value="Features.Lists.ListItem"/>
                 </KeyValues>
                 <Size x="224" y="1"/>
                 <Anchors>

@@ -134,7 +134,7 @@ function Features:EnableFeature(name)
                             end
                     end
 
-                    error(string.format("Feature '%s' has not method '%s'", featire.name, tostring(key)))
+                    error(string.format("Feature '%s' has not method '%s'", feature.name, tostring(key)))
                 end,
                 __newindex = function(_, key, value)
                 end

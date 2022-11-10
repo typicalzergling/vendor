@@ -1,8 +1,8 @@
 local _, Addon = ...
-local Lists = Addon.Features.Lists
+local Lists = Addon.Systems.Lists
 local SystemListId = Addon.SystemListId
 
-local functions = {
+local ListRuleFunctions = {
 {
     Name = "IsNeverSellItem",
     Documentation =
@@ -81,11 +81,11 @@ Can also be one of thse constants:
 }}
 
 --[[ Register functions ]]
-function Lists:RegisterFuncstions()
-    Addon:GetRuleManager():RegisterFunctions(functions)
+function Lists:RegisterFunctions()
+    Addon:GetRuleManager():RegisterFunctions(ListRuleFunctions)
 end
 
 --[[ Unregister functions ]]
 function Lists:UnregisterFuncstions()
-    Addon:GetRuleManager():UnregisterFunctions(functions)
+    Addon:GetRuleManager():UnregisterFunctions(ListRuleFunctions)
 end
