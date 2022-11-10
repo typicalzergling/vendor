@@ -24,7 +24,7 @@ function GeneralSettings:CreateList(parent)
 	local list = Settings.CreateList(parent)
 
 	-- merchant and minimap button
-	local minimap = Settings.CreateSetting(Addon.c_Config_Minimap, false)
+    local minimap = Settings.CreateFeatureSetting("minimap")
 	list:AddSetting(minimap, "OPTIONS_SETTINGNAME_MINIMAP", "OPTIONS_SETTINGDESC_MINIMAP")
 
 	self:CreateSell(list)
