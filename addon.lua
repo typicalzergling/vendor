@@ -52,7 +52,8 @@ function Addon:OnInitialize()
     Addon:InitializeItemResultRefresh()
     Addon:InitializeEvaluationStatus()
     Addon:InitializeItemTooltips()
-
+    Addon:InitializeLDBPlugin()
+    
     -- Do a delayed pruning of history across all characters.
     Addon:PostInitializePruneHistory()
 end

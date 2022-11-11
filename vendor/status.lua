@@ -88,7 +88,7 @@ function Addon:GenerateEvaluationStatus()
     escache.todestroy = todestroy
     escache.sellitems = sellitems
     escache.destroyitems = destroyitems
-    Addon:RaiseEvent(EVALUATION_STATUS_UPDATED)
+    Addon:RaiseEvent(Addon.Events.EVALUATION_STATUS_UPDATED)
 end
 
 -- Attach generation of evaluation status to completion of an item refresh.
