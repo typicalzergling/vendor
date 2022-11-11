@@ -16,6 +16,10 @@ Addon.CommonUI.Colors =
     SELECTED_TEXT = YELLOW_FONT_COLOR,
     WARNING_TEXT = CreateColor(1.0,		0.50196,	0.0),
 
+    QUOTE_TEXT = CreateColor(1, 1, 1, .6),
+    QUOTE_BACK = CreateColor(.8, .8, .8, 0.05),
+    QUOTE_BORDER = CreateColor(.2, .2, .2, 0.25),
+
     SECONDARY_TEXT = CreateColor(1, 1, 1, .6),
     SELECTED_SECONDARY_TEXT = CreateColor(1, 1, 0, .6),
     HOVER_SECONDARY_TEXT = CreateColor(1, 1, 0.6),
@@ -97,6 +101,10 @@ Addon.CommonUI.Colors =
     --[[ Retrieves the specified color or RED to indicate error ]]
     Get = function(self, key, defaultColor)
         local color = AddonColors[key]
+        if (type(color) == "string") then
+            key = color
+            color = nil
+        end
         
         if (type(color) ~= "table") then
             color = self[key]

@@ -77,9 +77,32 @@
         <Layers>
             <Layer level="ARTWORK">
                 <FontString parentKey="content" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
                     <Anchors>
                         <Anchor point="TOPLEFT"/>
                         <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame virtual="true" name="Markdown_Quote">
+        <Size x="1" y="1"/>
+        <KeyValues>
+            <KeyValue key="BackgroundColor" value="QUOTE_BACK"/>
+            <KeyValue key="BorderColor" value="QUOTE_BORDER"/>
+        </KeyValues>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="content" justifyH="LEFT" justifyV="TOP" inherits="GameFontNormal">
+                    <KeyValues>
+                        <KeyValue key="Color" value="QUOTE_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="10" y="-6"/>
                     </Anchors>
                 </FontString>
             </Layer>
@@ -100,7 +123,7 @@
         </Layers>
     </Frame>
 
-    <Frame virtual="true" name="Markdown_Header">
+    <Frame virtual="true" name="Markdown_Header_Two">
         <Size x="1" y="1"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -116,6 +139,24 @@
             </Layer>
         </Layers>
     </Frame>
+
+    <Frame virtual="true" name="Markdown_Header">
+        <Size x="1" y="1"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="content" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" maxLines="1">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
 
     <Frame virtual="true" name="Markdown_List">
         <KeyValues>

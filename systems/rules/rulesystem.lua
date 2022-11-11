@@ -19,6 +19,8 @@ end
 --[[ Startup our system ]]
 function RuleSystem:Startup()
     self.functions = {}
+    print(xpcall(
+    self.RegisterSystemFunctions, CallErrorHandler, self))
 
     return { "GetRuleFunctions", "GetFunctionDocumentation", "RegisterFunctions", "UnregisterFunctions" }
 end
@@ -44,7 +46,9 @@ function RuleSystem:GetFunctionDocumentation()
 
     for name, definition in pairs(self.functions) do
         if (type(definition.Documentation) == "string") then
-            docs[name] = definition.Function
+            docs[name] = definition.Documentation
+        else
+            docs[name] = 0
         end
     end
 
@@ -82,8 +86,8 @@ function RuleSystem:RegisterFunctions(functions, source)
         Addon:Debug("rules", "Registering a new rule function '%s'", definition.Name)
     end
 
-    Addon:RaiseEvent(RuleEvents.FUNCTIONS_CHANGED)
-    Addon:RaiseEvent(RuleEvents.DOCS_CHANGED)
+    --Addon:RaiseEvent(RuleEvents.FUNCTIONS_CHANGED)
+    --Addon:RaiseEvent(RuleEvents.DOCS_CHANGED)
 end
 
 --[[ Removes the functions from our list ]]

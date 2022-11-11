@@ -166,50 +166,65 @@ local HelpItem = {
 
 local HelpTab = {
     OnLoad = function(t)
-        t.items.ItemClass = HelpItem
+        t.filters:AddChip("function", "Functions", nil, true)
+        t.filters:AddChip("property", "Properties", nil, true)
+
         t.items:Sort(function (modelA, modelB)
             return (modelA.Name < modelB.Name)
         end)
     end,
 
-    CreateHelpItem = function(self, model)
-        local frame = CreateFrame("Frame", nil, self, "Vendor_EditRule_HelpItem")
-        Addon.AttachImplementation(frame, HelpItem, true)
-        return frame
+    OnActivated = function(self)
+        self:ApplyFilters()
+    end,
+
+    ApplyFilters = function(self)
+        local types = self.filters:GetSelected()
+        
+        local term = nil
+        if self.filter:HasText() then
+            term = string.lower(self.filter:GetText())
+            if (string.len(term) == 0) then
+                term = nil
+            end
+        end
+
+        self.items:Filter(function(model)
+            print("--> filter", model.Name, table.getn(types), term)
+                if (not types[model.Type]) then
+                    return false
+                end
+
+                if (type(term) == "string") then
+                    return type(string.find(model.Keywords, term)) == "number"
+                end
+
+                return true
+            end)
     end,
 
     GetHelpItems = function()
         local models = {}
 
-        for _, section in pairs(Addon.ScriptReference) do
-            for name, help in pairs(section) do
-                local model = { Name = name, filter = string.lower(name) }
-                if (type(help) == "table") then
-                    for key, value in pairs(help) do
-                        model[key] = value
-                    end
-                elseif (type(help) == "string") then
-                    model.Text = help
-                else
-                    error("Unknown model type: " .. type(help))
-                end
+        for name, markup in pairs(Addon:GetFunctionDocumentation()) do
+            table.insert(models, {
+                    Name = name,
+                    Keywords = string.lower(name),
+                    Type = "function",
+                    Markdown = markup
+                })
+        end
 
-                table.insert(models, model)
-            end
+        for name, markup in pairs(Addon:GetPropertyDocumentation()) do
+            table.insert(models, {
+                Name = name,
+                Keywords = string.lower(name),
+                Type = "property",
+                Markdown = markup
+            })
         end
 
         return models
-    end,
-
-    FilterHelp = function(helptab, text)
-        if (not text or string.len(text) == 0) then
-            helptab.items:Filter(nil)
-        else
-            text = string.lower(text)
-            helptab.items:Filter(function(model)
-                return string.find(model.filter, text) ~= nil
-            end)
-        end
     end
 }
 

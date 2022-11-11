@@ -600,21 +600,37 @@ HELP_ITEMTYPE_TEXT = "Checks the item type against the string/number passed in w
 HELP_ISEQUIPPED_TEXT = "True if the item is currently equipped. Will never be true for items in inventory.",
 
 HELP_ISINEQUIPMENTSET_ARGS = "[setName0 .. setNameN]",
-HELP_ISINEQUIPMENTSET_TEXT = 
-               "Checks if the item is a memmber of a Blizzard equipment set and returns true if found." ..
-               " If no arguments are provied then all of the chracters equipment sets are check, otherwise" ..
-               " this checks only the specified sets.",
-HELP_ISINEQUIPMENTSET_EXAMPLES =
-               "Any: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet()" .. FONT_COLOR_CODE_CLOSE ..
-               "|nSpecific: " .. GREEN_FONT_COLOR_CODE .. "IsInEquipmentSet(\"Tank\")" .. FONT_COLOR_CODE_CLOSE,
+HELP_ISINEQUIPMENTSET_TEXT = [[
+Checks if the item is a memmber of a Blizzard equipment set and returns true if found.
+If no arguments are provied then all of the chracters equipment sets are check, otherwise
+this checks only the specified sets.
 
-HELP_TOOLTIPCONTAINS_ARGS = "text [, side, line]",
-HELP_TOOLTIPCONTAINS_TEXT = "Checks if specified text is in the item's tooltip." ..
-               " Which side of the tooltip (left or right), and a specific line to check are optional." ..
-               " If no line or side is specified, the entire tooltip will be checked.",
-HELP_TOOLTIPCONTAINS_EXAMPLES =
-               "Anywhere: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Rogue\")" .. FONT_COLOR_CODE_CLOSE ..
-               "|nCheck left side line 1: " .. GREEN_FONT_COLOR_CODE .. "TooltipContains(\"Vanq\", \"left\", 1)" .. FONT_COLOR_CODE_CLOSE,
+## Examples:
+
+>  Any:
+> IsInEquipmentSet()
+> pecific: 
+> IsInEquipmentSet("Tank")
+]],
+
+HELP_TOOLTIPCONTAINS_TEXT = [[
+Usage: TooltipContains(text [, side, line])
+
+Checks if specified text is in the item's tooltip.
+
+## Side
+
+Which side of the tooltip (left or right), and a specific line to check are optional.
+If no line or side is specified, the entire tooltip will be checked.
+
+## Examples:
+
+> Anywhere: 
+> TooltipContains("Rogue")
+> 
+> Check left side line 1:
+> TooltipContains("Vanq", "left", 1)
+]]
 
 }) -- END OF LOCALIZATION TABLE
 

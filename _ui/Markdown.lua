@@ -66,6 +66,28 @@ local function paragraph(parent, line, nextLine)
     return frame
 end
 
+--[[ Process a quote ]]
+local function quote(parent, line, nextLine)
+    local text = ""
+
+    while (line and string.len(line) ~= 0) do
+        local qc = string.sub(line, 1, 1)
+        if (qc ~= ">") then
+            break
+        end
+        
+        text = text .. "\n" .. Addon.StringTrim(line:sub(2))
+    
+        line = nextLine()
+    end
+
+    local frame = CreateFrame("Frame", nil, parent, "Markdown_Quote")
+    frame.content:SetWordWrap(true)
+    frame.content:SetText(Addon.StringTrim(text))
+    
+    return frame
+end
+
 --[[ Process a header line from the markdown ]]
 local function header(parent, line, nextLine)
     local level = 0
@@ -76,7 +98,14 @@ local function header(parent, line, nextLine)
         level = level + 1
     end
 
-    local frame = CreateFrame("Frame", nil, parent, "Markdown_Header_One")
+    local template = "Markdown_Header"
+    if (level == 1) then
+        template = "Markdown_Header_One"
+    elseif (level == 2) then
+        template = "Markdown_Header_Two"
+    end
+
+    local frame = CreateFrame("Frame", nil, parent, template)
     frame.content:SetText(Addon.StringTrim(line:sub(s)))
     frame.content:SetTextColor(Colors.TEXT:GetRGBA())
     
@@ -152,6 +181,24 @@ function MarkdownFrame:Layout(width, height)
     Addon:Debug("layouts", "*MarkdownFrame* = %d x %s", width, self:GetHeight())
 end
 
+--[[ Quote frames have borders ]]
+local QuoteMarkdownFrame = Mixin({}, MarkdownFrame)
+
+function QuoteMarkdownFrame:OnLoad()
+    Mixin(self, Addon.CommonUI.Mixins.Border):OnBorderLoaded()
+end
+
+function QuoteMarkdownFrame:Layout(width)
+    local contentWidth = (width - 20)
+    self.content:SetWidth(contentWidth)
+    self.content:SetHeight(0)
+    self:SetHeight(12 + self.content:GetHeight())
+
+    Addon:Debug("layouts", "*QuoteMarkdownFrame* = %d x %s [%s x %s]", width, self:GetHeight(),
+        self.content:GetWidth(), self.content:GetHeight())
+
+end
+
 --[[ Handle load ]]
 function Markdown:OnLoad()
     Addon.CommonUI.List.OnLoad(self)
@@ -191,6 +238,7 @@ function Addon.CommonUI.CreateMarkdownFrames(parent, markdown, callback)
     while (type(line) == "string") do
         local first = line:sub(1,1)
         local frame
+        local mixin = MarkdownFrame
 
         if first == "#" then
             frame = header(parent, line, getLine)
@@ -202,6 +250,9 @@ function Addon.CommonUI.CreateMarkdownFrames(parent, markdown, callback)
             if (type(callback) == "function") then
                 callback("list", frame)
             end
+        elseif first == ">" then
+            frame = quote(parent, line, getLine)
+            mixin = QuoteMarkdownFrame
         else
             line = Addon.StringTrim(line)
             if (string.len(line) ~= 0) then
@@ -213,7 +264,7 @@ function Addon.CommonUI.CreateMarkdownFrames(parent, markdown, callback)
         end
 
         if (frame) then
-            UI.Attach(frame, MarkdownFrame)
+            UI.Attach(frame, mixin)
             table.insert(frames, frame)
         end
 

@@ -8,4 +8,8 @@
 
     <!-- Rules -->
     <Script file="systems/rules/rulesystem.lua"/>
+    <Script file="systems/rules/builtins.lua"/>
+
+    <!-- Item Props -->
+    <Script file="systems/itemprops/itemprops.lua"/>
 </Ui>

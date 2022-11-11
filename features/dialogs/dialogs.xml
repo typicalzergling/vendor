@@ -4,6 +4,7 @@
     <Script file="features/dialogs/RuleStatus.lua"/>
 	<Script file="features/dialogs/ItemInfo.lua"/>
 	<Script file="features/dialogs/Matches.lua"/>
+	<Script file="features/dialogs/HelpItem.lua"/>
 
     <Include file="features/dialogs/EditTabs.xml"/>
     <Include file="features/dialogs/EditRule.xml"/>

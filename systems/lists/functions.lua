@@ -49,6 +49,9 @@ indicates it belongs to the list while false indicates it does not.
 
 [re-visit] document IsInList
 
+## Examples:
+> IsInList("sell") : Checks if the item is in the sell list
+> IsInList("keep") : Check if the item is in the keep list
 Can also be one of thse constants:
 
 * keep - Same as IsNeverSellItem
