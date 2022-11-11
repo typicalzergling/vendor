@@ -99,6 +99,8 @@ function RuleItem:Save()
         local params = self:GetParameters()
         local ruleId = self:GetRuleId()
 
+        Addon:DebugForEach("profile", params)
+
         if self:IsActive() then
             debug("SaveRule :: %s [%s]", ruleId, tostring(params))
             self.ruleConfig:Set(ruleId, params)

@@ -190,7 +190,6 @@ local HelpTab = {
         end
 
         self.items:Filter(function(model)
-            print("--> filter", model.Name, table.getn(types), term)
                 if (not types[model.Type]) then
                     return false
                 end

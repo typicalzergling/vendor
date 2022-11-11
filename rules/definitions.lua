@@ -90,21 +90,27 @@ Rules.SystemRules =
         Type = SELL_RULE,
         Name = L["SYSRULE_SELL_OLDFOOD"],
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
-        ScriptText = "TypeId == 0 and SubTypeId == 5 and (not EXCLUDE_LEVEL_ONE or Level ~= 1) and Level <= (PlayerLevel() - 10)",
+        ScriptText = "TypeId == 0 and SubTypeId == 5 and (not NO_LEVEL_ONE or Level ~= 1) and Level <= (PlayerLevel() - FOOD_LEVEL)",
         Script = function()
             return (TypeId == 0) and 
                     (SubTypeId == 5) and 
-                    (not EXCLUDE_LEVEL_ONE or Level ~= 1) and
-                    (Level <= (PlayerLevel() - 10));
+                    (not NO_LEVEL_ONE or (Level ~= 1)) and
+                    (Level <= (PlayerLevel() - FOOD_LEVEL));
         end,
         Order = 1100,
         Params = {
             {
+                Type = "number",
+                Name = "Level",
+                Key = "FOOD_LEVEL",
+                Default = 10,
+            },
+            {
                 Type ="boolean",
                 Name = "Exclude level 1",
-                Key = "EXCLUDE_LEVEL_ONE",
+                Key = "NO_LEVEL_ONE",
                 Default = true,
-            },           
+            },
         }
     },
 

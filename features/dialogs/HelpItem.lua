@@ -44,7 +44,6 @@ function HelpItem:OnModelChange(model)
         self.header.etype:SetText("(P)")
     end
 
-    print("---> markdown", model.Markdown)
     if (type(model.Markdown) == "string") then
         self.markdown = Addon.CommonUI.CreateMarkdownFrames(self.content, model.Markdown)
     else
