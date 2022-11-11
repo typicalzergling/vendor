@@ -67,6 +67,16 @@ Addon:MakePublic(
     L["API_OPENRULES_DOCS"])
 
 Addon:MakePublic(
+    "ShowProfiles",
+    function ()
+        Addon:WithFeature("Vendor", function(vendor)
+            vendor:ShowDialog("profiles")
+        end)
+    end,
+    L["API_OPENPROFILES_TITLE"],
+    L["API_OPENPROFILES_DOCS"])
+
+Addon:MakePublic(
     "GetEvaluationStatus",
     function () return Addon:GetEvaluationStatus() end,
     L["API_GETEVALUATIONSTATUS_TITLE"],

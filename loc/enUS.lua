@@ -257,7 +257,9 @@ API_OPENSETTINGS_DOCS = "Opens the Vendor Settings page.",
 API_OPENKEYBINDINGS_TITLE = "Open Keybindings",
 API_OPENKEYBINDINGS_DOCS = "Opens the Vendor Keybindings page.",
 API_OPENRULES_TITLE = "Open Rules",
-API_OPENRULES_DOCS = "Opens the main Vendor Rules interface.",
+API_OPENRULES_DOCS = "Opens the Vendor interface to the Rules tab.",
+API_OPENPROFILES_TITLE = "Open Profiles",
+API_OPENPROFILES_DOCS = "Opens the Vendor interface to the Profiles tab.",
 API_GETEVALUATIONSTATUS_TITLE = "Get Evaluation Status",
 API_GETEVALUATIONSTATUS_DOCS = "Returns current number of slots Vendor will take action, sell, delete, and their value.",
 API_GETPRICESTRING_TITLE = "Get Price String",
@@ -422,7 +424,7 @@ RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 -- List Pane / Dialog
 EDIT_LIST = "Edit",
 NEW_LIST = "Create",
-COPY_LIST = "Cppy",
+COPY_LIST = "Copy",
 COPY_LIST_FMT1 = "%s (Copy)",
 LISTOOLTIP_LISTTYPE = "Type:",
 TOOLTIP_SYTEMLIST = "Built-In (profile specific)",
@@ -585,18 +587,16 @@ HELP_SLOT_TEXT = [[The slot ID of the item, or -1 if it is not in a bag and slot
 
 HELP_PLAYERLEVEL = "Returns the current level of the player",
 HELP_PLAYERCLASS = "Returns the localized class name of the player. This should match any localized class names in your client, such as the tooltip.",
-HELP_ISALWAYSSELLITEM = "Returns the state of the item in the always sell list.  A return value of tue indicates it belongs to the list while false indicates it does not.",
-HELP_ISNEVERSELLITEM = "Returns the state of the item in the never sell list.  A return value of true indicates it belongs to the list false indicates it does not.",
-HELP_PLAYERITEMLEVEL = "Returns the average item level of players gear",
+HELP_PLAYERITEMLEVEL = "Returns the average item level of your gear",
 
 HELP_ITEMQUALITY_ARGS = "qual [, qual1..qualN]",
-HELP_ITEMQUALITY_TEXT = "Determines the item quality",
+HELP_ITEMQUALITY_TEXT = "[re-visit] What ist he point? This adds complexity unnecessarily. Determines the item quality.",
 
 HELP_ITEMISFROMEXPANSION_ARGS = "xpack0 [, xpack1 .. xpackN]",
-HELP_ITEMISFROMEXPANSION_TEXT = "For items which are marked with and expansion this will compare it against the argeuments, they can either be the numeric identifier or one of the strings shown below.",
+HELP_ITEMISFROMEXPANSION_TEXT = "[re-visit] Cut? For items which are marked with and expansion this will compare it against the argeuments, they can either be the numeric identifier or one of the strings shown below.",
 
 HELP_ITEMTYPE_ARGS = "type0 [, type2...typeN]",
-HELP_ITEMTYPE_TEXT = "Checks the item type against the string/number passed in which represents the item type",
+HELP_ITEMTYPE_TEXT = "[re-vist] Cut? Checks the item type against the string/number passed in which represents the item type",
 HELP_ISEQUIPPED_TEXT = "True if the item is currently equipped. Will never be true for items in inventory.",
 
 HELP_ISINEQUIPMENTSET_ARGS = "[setName0 .. setNameN]",
@@ -607,10 +607,24 @@ this checks only the specified sets.
 
 ## Examples:
 
->  Any:
+>  Any equpment set:
 > IsInEquipmentSet()
-> pecific: 
+>
+>  In your "Tank" equipment set.
 > IsInEquipmentSet("Tank")
+
+### Notes
+
+Equipment set matches by item ID, which means it can match different ilvl versions of the same item and all will be considered part of the equipment set. We use what Blizzard gives us.
+]],
+
+HELP_HASSTAT_TEXT = [[
+Checks if the item has a specific 'stat' or Attribute. These are attributes of the items specifically and not any random text.
+
+## Examples:
+
+> HasStat("Speed")
+> HasStat("Mastery")
 ]],
 
 HELP_TOOLTIPCONTAINS_TEXT = [[
@@ -618,19 +632,19 @@ Usage: TooltipContains(text [, side, line])
 
 Checks if specified text is in the item's tooltip.
 
-## Side
+## Side & Line
 
 Which side of the tooltip (left or right), and a specific line to check are optional.
 If no line or side is specified, the entire tooltip will be checked.
 
 ## Examples:
 
-> Anywhere: 
 > TooltipContains("Rogue")
+> TooltipContains("Fated Mythic")
 > 
-> Check left side line 1:
+> Check left side of tooltip, line 1 for "Vanq"
 > TooltipContains("Vanq", "left", 1)
-]]
+]],
 
 }) -- END OF LOCALIZATION TABLE
 

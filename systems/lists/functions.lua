@@ -7,8 +7,7 @@ local ListRuleFunctions = {
     Name = "IsNeverSellItem",
     Documentation =
 [[
-Returns the state of the item in the never sell list.  A return value of true 
-indicates it belongs to the list false indicates it does not.
+Returns true if the item is in the "Keep" list.
 ]],
     Function = function()
         local list = Lists:GetList(SystemListId.NEVER)
@@ -20,8 +19,7 @@ indicates it belongs to the list false indicates it does not.
     Name = "IsAlwaysSellItem",
     Documentation =
 [[
-Returns the state of the item in the always sell list.  A return value of tue 
-indicates it belongs to the list while false indicates it does not.
+Returns true if the item is in the "Sell" list.
 ]],
     Function = function()
         local list = Lists:GetList(SystemListId.ALWAYS)
@@ -33,7 +31,7 @@ indicates it belongs to the list while false indicates it does not.
     Name = "IsDestroyItem",
     Documentation =
 [[
-[re-visit] need to document this
+Returns true if the item is in the "Destroy" list.
 ]],
     Function = function()
         local list = Lists:GetList(SystemListId.DESTROY)
@@ -45,18 +43,19 @@ indicates it belongs to the list while false indicates it does not.
     Name = "IsInList",
     Documentation =
 [[
-# IsInList( list0 ... listN )
+IsInList( list1 [, list2, ... listN )
 
-[re-visit] document IsInList
-
-## Examples:
-> IsInList("sell") : Checks if the item is in the sell list
-> IsInList("keep") : Check if the item is in the keep list
-Can also be one of thse constants:
+Returns true if the item is in any of the provided lists by name. The name provided is the name identifier of the list. For Custom lists, this is the name of the list. For built-in lists it is one of the following:
 
 * keep - Same as IsNeverSellItem
 * sell - Same as IsAlwaysSellItem
 * destroy - Same as IsDestroyItem
+
+## Examples:
+> IsInList("keep")
+> IsInList("sell", "destroy")
+> IsInList("MyCustomListName")
+
 ]],
     Function = function(...)
         for _, name in ipairs({...}) do

@@ -8,14 +8,14 @@ local AddonColors = Addon.Colors
 Addon.CommonUI.Colors =
 {
     TRANSPARENT = TRANSPARENT,
-    DEFAULT_BORDER = CreateColor(1, 1,1, 0.5),
-    DEFAULT_BACKGROUND = CreateColor(0, 0, 0, 0.25),
+    DEFAULT_BORDER = CreateColor(1, 1,1, 0),
+    DEFAULT_BACKGROUND = CreateColor(0, 0, 0, 0),
 
     TEXT = WHITE_FONT_COLOR,
     HOVER_TEXT = YELLOW_FONT_COLOR,
     SELECTED_TEXT = YELLOW_FONT_COLOR,
     WARNING_TEXT = CreateColor(1.0,		0.50196,	0.0),
-    DISABLED_TEXT = CreateColor(0.5, 0.5, 0.5, .5),
+    DISABLED_TEXT = CreateColor(0.7, 0.7, 0.7, 0),
 
     QUOTE_TEXT = CreateColor(1, 1, 1, .6),
     QUOTE_BACK = CreateColor(.8, .8, .8, 0.05),
@@ -36,12 +36,12 @@ Addon.CommonUI.Colors =
     HOVER_BORDER = CreateColor(1, 1, 0, 0.125),
 
     -- Dialog Colors
-    DIALOG_BACK_COLOR = CreateColor(0.4, 0.45, 0.4, 0.5),
-    DIALOG_CONTENT_BORDER_COLOR = CreateColor(0.5, 0.5, 0.5, 0.25),
-    DIALOG_CONTENT_BACKGROUND_COLOR = CreateColor(.1, .1, .1, 1),
-    DIALOG_CAPTION_BACK_COLOR = CreateColor(0.3, 0.35, 0.35, 1),
+    DIALOG_BACK_COLOR = CreateColor(0.1, 0, 0, .97),
+    DIALOG_CONTENT_BORDER_COLOR = CreateColor(0, 0, 0, 1),
+    DIALOG_CONTENT_BACKGROUND_COLOR = CreateColor(.05, .05, .05, 1),
+    DIALOG_CAPTION_BACK_COLOR = CreateColor(0.18, 0, 0, 1),
     DIALOG_CAPTION_COLOR = CreateColor(1, 1, 0, 1),
-    DIALOG_BORDER_COLOR = CreateColor(.5, .5, .5, .8),
+    DIALOG_BORDER_COLOR = CreateColor(0, 0, 0, 1),
 
     -- Edit Colors
     EDIT_BORDER = CreateColor(1, 1, 1, .4),

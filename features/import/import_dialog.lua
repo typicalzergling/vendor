@@ -24,15 +24,15 @@ function ImportDialog:OnInitDialog(dialog)
 end
 
 function ImportDialog:OnShow()
-    print("import dialog on show")
+    --print("import dialog on show")
 end
 
 function ImportDialog:OnHide()
-    print("import diloag on hide")
+    --print("import diloag on hide")
 end
 
 function ImportDialog:ImportRules()
-    print("import rules")
+    --print("import rules")
 end
 
 Addon.Features.Import.ImportDialog = ImportDialog

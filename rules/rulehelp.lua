@@ -126,7 +126,6 @@ Addon.ScriptReference.Functions =
         IsFunction = true,
         Args = L["HELP_ISINEQUIPMENTSET_ARGS"],
         Text = L["HELP_ISINEQUIPMENTSET_TEXT"],
-        Examples = L["HELP_ISINEQUIPMENTSET_EXAMPLES"]
     },
     
     TooltipContains =
@@ -134,18 +133,13 @@ Addon.ScriptReference.Functions =
         Args = L["HELP_TOOLTIPCONTAINS_ARGS"],
         Text = L["HELP_TOOLTIPCONTAINS_TEXT"],
         IsFunction = true,
-        Examples = L["HELP_TOOLTIPCONTAINS_EXAMPLES"],
     },
 
     HasStat = 
     {
         IsFunction = true,
-        Args = "stat [, stat1 .. statN]",
+        Args = L["HELP_HASSTAT_ARGS"],
+        Text = L["HELP_HASSTAT_TEXT"],
         Map = Addon.Maps.Stats,
-        Text =  "describe",
-        Examples =
-            GREEN_FONT_COLOR_CODE .. "HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "|n" ..
-            GREEN_FONT_COLOR_CODE .. "HasStat('str') and not HasStat('haste')" .. FONT_COLOR_CODE_CLOSE .. "|n" ..
-            GREEN_FONT_COLOR_CODE .. "HasStat('corruption')" .. FONT_COLOR_CODE_CLOSE .. "|n",
     },
 }

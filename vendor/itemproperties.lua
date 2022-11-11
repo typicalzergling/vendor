@@ -95,20 +95,6 @@ function Addon:DoGetItemProperties(itemObj)
         count = C_Item.GetStackCount(location) or 1
     end
 
-    -- Item properties may already be cached, if so use it.
-    -- Note that while the item guid will have the same properties,
-    -- some properties can and will change, like the location and the stack count.
-    --[[
-    local item = nil
-    if guid then
-        item = Addon:GetItemResultFromItemResultCacheByGUID(guid)
-        if item then
-            -- Return cached item and count
-            return item, count
-        end
-    end]]
-    
-    -- Item not cached, so we need to populate the properties.
     item = {}
 
     -- Item may not be loaded, need to handle this in a non-hacky way.
@@ -173,7 +159,6 @@ function Addon:DoGetItemProperties(itemObj)
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Id);
     item.InventoryType = itemObj:GetInventoryType()
     item.IsConduit = false
-    item.IsKeystone = C_Item.IsItemKeystoneByID(item.Id) or false
     --IsItemSpecificToPlayerClass
 
     -- We may not care about conduits anymore?
@@ -257,8 +242,8 @@ function Addon:DoGetItemProperties(itemObj)
         item.IsCollectable = true
     end
 
-    -- Alias for IsUncollectedAppearance
-    item.IsUncollectedAppearance = item.IsCollectable
+    -- Alias for IsUnknownAppearance
+    item.IsUnknownAppearance = item.IsCollectable
 
     -- Determine if this is a toy.
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
@@ -277,9 +262,6 @@ function Addon:DoGetItemProperties(itemObj)
             item.IsAlreadyKnown = true
         end
     end
-
-    -- Add item to cache
-    --Addon:AddItemResultToItemResultCache(item, guid)
 
     return item, count
 end

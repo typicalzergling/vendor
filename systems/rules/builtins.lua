@@ -268,7 +268,7 @@ local RuleFunctions = {
 
 {
     Name = "HasStat",
-    Documentation = "",
+    Documentation = locale["HELP_HASSTAT_TEXT"],
     Function = function(...)
         local stats = {...};
         local itemStats = {};

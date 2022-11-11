@@ -19,8 +19,8 @@ end
 --[[ Startup our system ]]
 function RuleSystem:Startup()
     self.functions = {}
-    print(xpcall(
-    self.RegisterSystemFunctions, CallErrorHandler, self))
+    xpcall(
+    self.RegisterSystemFunctions, CallErrorHandler, self)
 
     return { "GetRuleFunctions", "GetFunctionDocumentation", "RegisterFunctions", "UnregisterFunctions" }
 end

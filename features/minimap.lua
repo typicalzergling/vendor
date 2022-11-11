@@ -29,11 +29,15 @@ end
 local DATAOBJECT_NAME = AddonName
 local ldb_plugin_definition = {
     type = "data source",
-    text = "",
+    text = "Updating...",
 	label = L.ADDON_NAME,
     icon = "Interface\\Icons\\Achievement_Boss_Zuldazar_TreasureGolem",
     OnClick = function(self, button)
-        Vendor.ShowRules()
+        if button == "RightButton" then
+            Vendor.ShowProfiles()
+        else
+            Vendor.ShowRules()
+        end
     end,
     OnTooltipShow = function(self)
         self:AddLine(L.LDB_BUTTON_TOOLTIP_TITLE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
@@ -65,16 +69,15 @@ end
 -- Sets up all LDB plugins
 function Minimap:SetupLDBPlugin()
     local ldb = Addon:GetFeature("libdatabroker")
-
     self:GetOrCreateLDBPlugin()
     self:GetOrCreateMinimapButton()
     Addon:RegisterCallback(Addon.Events.EVALUATION_STATUS_UPDATED, Addon, updateStats)
     Addon:RegisterEvent("BAG_UPDATE", function() self:UpdateLDBPlugin() end)
     Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function() self:UpdateLDBPlugin() end)
+    updateStats()
 end
 
 function Minimap:OnProfileChanged()
-    self:UpdateLDBPlugin()
 end
 
 -- Hacky way to do minimap icon. Should move this someplace else and clean it up.
