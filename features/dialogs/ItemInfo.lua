@@ -165,7 +165,7 @@ Addon.Features.Dialogs.ItemInfoTab = {
         if (not iteminfo.item:IsItemEmpty()) then
             local models = {}
             for name, value in pairs(Addon:GetItemPropertiesFromItem(iteminfo.item)) do
-                if (type(value) ~= "table") and name ~= "GUID" and name ~= "Link" then
+                if (type(value) ~= "table") and not Addon.HiddenProperties[name] then
                     table.insert(models, {
                         Name = name,
                         Value = value

@@ -146,7 +146,7 @@ function ItemInfo:Drop(item)
     if itemProps then
         for name, value in pairs(itemProps) do
             if (type(value) ~= "table") then
-                if ((name ~= "GUID") and (name ~= "Link")) then
+                if (not Addon.HiddenProperties[name])) then
                     table.insert(model, { Name=name, Value=value });
                 end
             end

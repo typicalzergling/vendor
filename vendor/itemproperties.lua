@@ -41,6 +41,17 @@ local debugp = function (...) Addon:Debug("items", ...) end
 --      location
 --      bag, slot             - we will use the location.
 
+-- These are properties that will work but won't show in the Help
+-- or in the Item Properties window in the Edit Rule dialog.
+-- Also deprecated propertynames we still want to support to not break rules
+-- that have been remapped can show up here to keep the property list cleaner.
+Addon.HiddenProperties = {
+    GUID = true,
+    Link = true,
+    IsUnknownAppearance = true,
+}
+
+
 -- Because Blizzard doesn't make this easy.
 local transmog_invtypes = {
     INVTYPE_HEAD = true,

@@ -51,10 +51,6 @@ Addon.ScriptReference.ItemProperties =
         Text = L["HELP_ISBINDONUSE_TEXT"],
         Notes = L["HELP_ISBINDONUSE_NOTES"] 
     },
-    IsUnknownAppearance = { 
-        Text = L["HELP_ISUNKNOWNAPPEARANCE_TEXT"],
-        Notes = L["HELP_ISUNKNOWNAPPEARANCE_NOTES"] 
-    },
     IsCraftingReagent = { 
         Text = L["HELP_ISCRAFTINGREAGENT_TEXT"],
         Notes = L["HELP_ISCRAFTINGREAGENT_NOTES"] 

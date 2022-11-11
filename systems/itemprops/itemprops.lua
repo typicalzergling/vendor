@@ -202,9 +202,6 @@ If your character has a confirmed collection of this appearance.
 
 We only ever set IsCollected to true if the Blizzard transmog API confirms to us that it is a collected appearance by this character, otherwise it is false in all other circumstances.
 ]],
-IsUnknownAppearance = [[
-Equivalent to IsCollectable
-]],
 IsTransmogEquipment = [[
 Is equipment that can be transmogrified. Not to be confused with an uncollected appearance. 
 ]],

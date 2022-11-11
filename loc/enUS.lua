@@ -567,11 +567,6 @@ HELP_ISBINDONEQUIP_NOTES =
     "If the item has yet to be picked up and it has a bind type of On-Equip, then we will always report it as true. If it is in your possession and Soulbound to you, then this will return false.",
 HELP_ISBINDONUSE_TEXT = [[True if this specific item is currently "Binds-when-used".]],
 HELP_ISBINDONUSE_NOTES = [[If the item is not yet in your possession, then it will always return true if its bind type is On-Use. If it is in your possession and Soulbound to you then this will return false.]],
-HELP_ISUNKNOWNAPPEARANCE_TEXT = [[True if the item you have not yet collected this item Appearance AND the item is not Bind-on-Pickup.]],
-HELP_ISUNKNOWNAPPEARANCE_NOTES =
-    "This will correctly detect items which are unknown appearances (i.e. transmogs you have not yet acquired). However, if the item is BoP, it will not be treated as an Unknown Appearance. This is because the moment you pick up the " ..
-    "item it will become a known appearance. Therefore, it is safe to sell and this inforamtion is irrelevant. This method is used to filter on Bind-on-Equip items that are Unknown Appearances and is generally useful for preventing " ..
-    "you from accidentally selling them. We have a built-in Keep rule for this purpose, so generally you won't need to use this.",
 HELP_ISTOY_TEXT = "True if the item is a toy.",
 HELP_ISCRAFTINGREAGENT_TEXT = "True if this specific item is a crafting reagent.",
 HELP_ISCRAFTINGREAGENT_NOTES = [[This is determined by the tooltip text. Note that if you drag a crafting reagent to the item box in a custom rule definition to read its properties, that item may incorrectly report as "false" but it will evaluate correctly with this property.]],
