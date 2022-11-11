@@ -40,7 +40,7 @@ function Addon:EvaluateItem(item, ignoreCache)
 
     -- Check the Cache for the result if we aren't ignoring it.
     if not ignoreCache then
-        local cachedEntry = Addon:GetItemResultFromItemResultCacheByGUID(item.GUID)
+        local cachedEntry = Addon:GetItemResultForGUID(item.GUID)
         if cachedEntry then
             debugp("Retrieved %s from cache with result: %s - [%s] %s",
                 tostring(item.Link),
@@ -94,115 +94,6 @@ function Addon:EvaluateItem(item, ignoreCache)
     return result
 end
 
--- Returns num kept, num sold, and num destroyed for a given item id.
--- Note that if this is called while evaluations are still occurring, it will
--- give you a running count, thus far, of items that have been kept/sold/destroyed
--- for this particular item id. This is the basis for the "keep at least N" type
--- rule behavior.
-function Addon:GetResultCountsForItemId(id)
-    local resultCount = {}
-    resultCount[0] = 0
-    resultCount[1] = 0
-    resultCount[2] = 0
-
-    for guid, entry in pairs(resultCache) do
-        -- Find entries with the specified item ID
-        if entry.Id == id then
-            resultCount[entry.Result] = resultCount[entry.Result] + 1
-        end
-    end
-    -- Num Kept, Num Sold, Num Destroyed
-    return resultCount[0], resultCount[1], resultCount[2]
-end
-
-function Addon:AddResultToCache(guid, result, ruleid, rule, ruletype, id)
-    assert(type(guid) == "string" and type(result) == "number")
-
-    local cacheEntry = {}
-    cacheEntry.Result = result
-    cacheEntry.RuleId = ruleid
-    cacheEntry.Rule = rule
-    cacheEntry.RuleType = ruletype
-    cacheEntry.Id = id
-
-    assert(guid ~= "")
-    self:Debug("resultcache", "Cached result: %s = %s", guid, result)
-    resultCache[guid] = cacheEntry
-end
-
-
-
-local escache = {}
-local escachestale = true
-function Addon:ClearEvaluationStatusCache()
-    escache = {}
-    escachestale = true
-end
-
-function Addon:GetEvaluationStatus()
-    print("Evaluate Status")
-    if escachestale then
-        -- No cache, generate the status.
-        local count = 0
-        local value = 0
-        local tosell = 0
-        local todestroy = 0
-        local sellitems = {}
-        local destroyitems = {}
-        for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local item, itemCount = Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
-                local result = Addon:EvaluateItem(item)
-                
-                if result > 0 then
-                    count = count + 1
-                end
-
-                if result == 1 then
-                    value = value + item.TotalValue
-                    tosell = tosell + 1
-                    table.insert(sellitems, item.Link)
-                elseif result == 2 then
-                    todestroy = todestroy + 1
-                    table.insert(destroyitems, item.Link)
-                end
-            end
-        end
-        escache = {}
-        escache.count = count
-        escache.value = value
-        escache.tosell = tosell
-        escache.todestroy = todestroy
-        escache.sellitems = sellitems
-        escache.destroyitems = destroyitems
-        escachestale = false
-    end
-
-    return escache.count, escache.value, escache.tosell, escache.todestroy, escache.sellitems, escache.destroyitems
-end
-
-function Addon:GetEvaluationDetails()
-    local results = {}
-    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local item, itemCount = Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
-            if item then
-                local result, ruleid, rule, ruletype = Addon:EvaluateItem(item)
-                local entry = {}
-                entry.GUID = item.GUID
-                entry.Id = item.Id
-                entry.Count = itemCount
-                entry.Result = result
-                entry.RuleId = ruleid
-                entry.Rule = rule
-                entry.RuleType = ruletype
-                table.insert(results, entry)
-            end
-        end
-    end
-    return results
-end
-
 -- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
 function Addon:LoadAllBagItemLinks()
     for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
@@ -211,7 +102,3 @@ function Addon:LoadAllBagItemLinks()
         end
     end
 end
-
--- Placeholder for now
---function Addon:OnBagUpdate(event, bag)
---end

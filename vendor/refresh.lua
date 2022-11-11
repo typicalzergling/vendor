@@ -20,6 +20,14 @@ local refresh = {}
 refresh.threadName = Addon.c_RefreshThreadName
 refresh.delayTimer = nil
 
+
+local function cancelDelayTimer()
+    if refresh.delayTimer then
+        refresh.delayTimer:Cancel()
+        refresh.delayTimer = nil
+    end
+end
+
 function Addon:IsItemResultRefreshInProgress()
     -- We are refreshing if we have a thread active.
     return not not Addon:GetThread(refresh.threadName)
@@ -35,10 +43,7 @@ end
 
 local function doStartItemRefresh()
     -- Clear the delay timer
-    if refresh.delayTimer then
-        refresh.delayTimer:Cancel()
-        refresh.delayTimer = nil
-    end
+    cancelDelayTimer()
 
     -- Check if we are already in progress
     if Addon:IsItemResultRefreshInProgress() then
@@ -84,10 +89,7 @@ function Addon:StartItemResultRefresh(delayInSeconds)
 
     -- If we are already pending a delay, this call will overwrite that delay.
     -- Note that immediate call with no delay will always be immediate.
-    if refresh.delayTimer then
-        debugp("Refresh already delayed, delaying again...")
-        refresh.delayTimer:Cancel()
-    end
+    cancelDelayTimer()
 
     -- If passed with a delay, we will schedule it to start in that time.
     if delayInSeconds then
@@ -100,3 +102,18 @@ function Addon:StartItemResultRefresh(delayInSeconds)
     end
 end
 
+-- Called when the item result cache is cleared.
+function Addon:OnItemResultCacheCleared()
+    debugp("Itemresult cache was cleared, stopping refresh in progress and restarting.")
+
+    -- Halt any scan in progress
+    Addon:StopItemResultRefresh()
+
+    -- Rules changed or something else significant, lets give it a few seconds
+    -- for more changes to occur before we do the refresh.
+    Addon:StartItemResultRefresh(7)
+end
+
+function Addon:InitializeItemResultRefresh()
+    Addon:RegisterCallback(Addon.Events.ITEMRESULT_CACHE_CLEARED, Addon, Addon.OnItemResultCacheCleared)
+end

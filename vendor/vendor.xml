@@ -15,4 +15,5 @@
     <Script file="listmanager.lua"/>
     <Script file="tooltip.lua"/>
     <Script file="refresh.lua"/>
+    <Script file="status.lua"/>
 </Ui>
