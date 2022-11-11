@@ -37,11 +37,11 @@ Addon.CommonUI.Colors =
 
     -- Dialog Colors
     DIALOG_BACK_COLOR = CreateColor(0.1, 0, 0, .97),
-    DIALOG_CONTENT_BORDER_COLOR = CreateColor(0, 0, 0, 1),
+    DIALOG_CONTENT_BORDER_COLOR = CreateColor(.1, .1, .1, 1),
     DIALOG_CONTENT_BACKGROUND_COLOR = CreateColor(.05, .05, .05, 1),
     DIALOG_CAPTION_BACK_COLOR = CreateColor(0.18, 0, 0, 1),
     DIALOG_CAPTION_COLOR = CreateColor(1, 1, 0, 1),
-    DIALOG_BORDER_COLOR = CreateColor(0, 0, 0, 1),
+    DIALOG_BORDER_COLOR = CreateColor(.2, .2, .2, 1),
 
     -- Edit Colors
     EDIT_BORDER = CreateColor(1, 1, 1, .4),
