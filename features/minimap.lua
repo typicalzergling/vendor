@@ -36,8 +36,6 @@ local ldb_plugin_definition = {
         Vendor.ShowRules()
     end,
     OnTooltipShow = function(self)
-        -- Dirty hack until we have all events covered.
-        updateStats()
         self:AddLine(L.LDB_BUTTON_TOOLTIP_TITLE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
         self:AddDoubleLine(L.LDB_BUTTON_TOOLTIP_VALUE, sellValueStr)
         self:AddLine(" ")
@@ -65,12 +63,22 @@ function Minimap:UpdateLDBPlugin()
     updateStats()
 end
 
+function Addon:UpdateLDBPlugin()
+    updateStats()
+end
+
+function Addon:InitializeLDBPlugin()
+    Addon:RegisterCallback(Addon.Events.EVALUATION_STATUS_UPDATED, Addon, Addon.UpdateLDBPlugin)
+end
+
+
 -- Sets up all LDB plugins
 function Minimap:SetupLDBPlugin()
     local ldb = Addon:GetFeature("libdatabroker")
 
     self:GetOrCreateLDBPlugin()
     self:GetOrCreateMinimapButton()
+    Addon:RegisterCallback(Addon.Events.EVALUATION_STATUS_UPDATED, Addon, updateStats)
     Addon:RegisterEvent("BAG_UPDATE", function() self:UpdateLDBPlugin() end)
     Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function() self:UpdateLDBPlugin() end)
 end
