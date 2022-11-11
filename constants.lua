@@ -78,6 +78,7 @@ Addon.Events = {
     ITEMRESULT_ADDED = "itemresult-added",
     ITEMRESULT_REMOVED = "itemresult-removed",
     ITEMRESULT_CACHE_CLEARED = "itemresult-cache-cleared",
+    EVALUATION_STATUS_UPDATED = "evaluation-status-updated",
 }
 
 -- Blizzard Color Codes that are not in all versions
