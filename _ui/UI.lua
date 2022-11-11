@@ -233,6 +233,24 @@ function DialogContent:Close()
 end
 
 --[[ Helper to retrieve the feature ]]
+function DialogContent:RegisterCallback(event, target, handler)
+    local dialog = rawget(self, DialogContent)
+    dialog:RegisterCallback(event, handler, target)
+end
+
+--[[ Helper to retrieve the feature ]]
+function DialogContent:UnregisterCallback(event, target)
+    local dialog = rawget(self, DialogContent)
+    dialog:UnregisterCallback(event, target)
+end
+
+--[[ Helper to retrieve the feature ]]
+function DialogContent:RaiseEvent(event, ...)
+    local dialog = rawget(self, DialogContent)
+    dialog:TriggerEvent(event, dialog,...)
+end
+
+--[[ Helper to retrieve the feature ]]
 function DialogContent:GetFeature(feature)
     return Addon:GetFeature(feature)
 end

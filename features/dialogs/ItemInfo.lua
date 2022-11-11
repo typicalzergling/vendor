@@ -1,5 +1,7 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
+local Dialog = Addon.CommonUI.Dialog
+local EditRuleEvents = Addon.Features.Dialogs.EditRuleEvents
 
 local PropertyItem = {
     OnLoad = function(item)
@@ -146,6 +148,9 @@ local PropertyItem = {
         if (text) then
             item:Notify("OnInsertText", text)
         end
+        
+        local model = item:GetModel()
+        Dialog.RaiseEvent(item, EditRuleEvents.HELP_CONTEXT, model.Name, "property")
     end
 }
 
