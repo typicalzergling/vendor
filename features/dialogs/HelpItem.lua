@@ -5,6 +5,7 @@ local Colors = Addon.CommonUI.Colors
 local HelpItem = {}
 local UI = Addon.CommonUI.UI
 local Layouts = Addon.CommonUI.Layouts
+local Dialog = Addon.CommonUI.Dialog
 local CONTENT_PADDING = 12
 local CONTENT_SPACING = 10
 

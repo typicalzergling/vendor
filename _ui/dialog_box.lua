@@ -1,6 +1,6 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
-local DialogBox = Mixin({}, Addon.CommonUI.Mixins.Border)
+local DialogBox = Mixin({}, Addon.CommonUI.Mixins.Border, CallbackRegistryMixin)
 local Colors = Addon.CommonUI.Colors
 local AddonColors = Addon.Colors or  {}
 local UI = Addon.CommonUI.UI
@@ -100,8 +100,11 @@ local function layout(dialog)
 end
 
 function DialogBox:OnLoad()
-    self.hideOnEscape = 1
+    CallbackRegistryMixin.OnLoad(self)
+    self:GenerateCallbackEvents({})
+    self:SetUndefinedEventsAllowed(true)
     self:OnBorderLoaded()
+    rawset(self, DialogBox, self)
 
     -- Setup our host
     local host = self.Host
@@ -184,6 +187,8 @@ function DialogBox:SetContent(frame)
     end
 
     self.__content = frame
+    rawset(frame, DialogBox, self)
+
     layout(self)
 end
 
@@ -356,4 +361,71 @@ function DialogBox.Colorize(frame)
     _visit(frame, _getColor, _getLocalizedString)
 end
 
+local Dialog = {}
+
+--[[ 
+    Given a frame walk the parent chain until the dialog is found 
+
+    Static 
+]] 
+function Dialog.Find(frame)
+    while (frame and frame ~= UIParent) do
+        local dialog = rawget(frame, DialogBox)
+        if (dialog) then
+            return dialog
+        end
+        frame = frame:GetParent()
+    end
+    return nil
+end
+
+--[[ 
+    Raise an event to the dialog from a child frame
+
+    Static
+]]
+function Dialog.RaiseEvent(frame, event, ...)
+    local dialog = Dialog.Find(frame)
+
+    --@debug@
+    assert(dialog, "Unable to locate the dialog to raise event : " .. tostring(event))
+    --@end-debug@
+
+    Addon:Debug("dialogs", "Raising dialog event '%s'", tostring(event))
+    dialog:TriggerEvent(event, dialog, ...)
+end
+
+--[[
+    Register for a dialog level event
+
+    Static
+]]
+function Dialog.RegisterCallback(frame, event, handler)
+    local dialog = Dialog.Find(frame)
+
+    --@debug@
+    assert(dialog, "Unable to locate the dialog to register our callback for : " .. tostring(event))
+    --@end-debug@
+
+    Addon:Debug("dialogs", "Registering a callback for '%s'", tostring(event))
+    dialog:RegisterCallback(event, frame, handler)
+end
+
+--[[
+    Register for a dialog level event
+
+    Static
+]]
+function Dialog.UnregisterCallback(frame, event, handler)
+    local dialog = Dialog.Find(frame)
+
+    --@debug@
+    assert(dialog, "Unable to locate the dialog to unregister our callback for : " .. tostring(event))
+    --@end-debug@
+
+    Addon:Debug("dialogs", "Removing a callback for '%s'", tostring(event))
+    dialog:UnregisterCallback(event, frame)
+end
+
 Addon.CommonUI.DialogBox = DialogBox
+Addon.CommonUI.Dialog = Dialog

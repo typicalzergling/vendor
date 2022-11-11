@@ -1,5 +1,6 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
+local Dialog = Addon.CommonUI.Dialog
 
 local PropertyItem = {
     OnLoad = function(item)
@@ -146,6 +147,9 @@ local PropertyItem = {
         if (text) then
             item:Notify("OnInsertText", text)
         end
+        
+        local model = item:GetModel()
+        Dialog.RaiseEvent(item, "SetHelpContext", model.Name, "property")
     end
 }
 
