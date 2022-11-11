@@ -145,3 +145,13 @@ function Addon:InitializeItemTooltips()
     Addon:Debug("tooltip", "Adding tooltip processing for items.")
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
 end
+
+function Addon:InitializeItemTooltips()
+    local initializeTooltips = function ()
+        Addon:Debug("tooltip", "Adding tooltip processing for items.")
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
+    end
+    -- Tooltip. Delay this one second so other things intializing don't move the tooltip over them and
+    -- cause unnecessary evaluations.
+    C_Timer.After(1, initializeTooltips)
+end

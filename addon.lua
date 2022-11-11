@@ -40,6 +40,7 @@ function Addon:OnInitialize()
     --@end-do-not-package@
 
     -- Set up events
+    -- TODO: Move each of these to their own file's initialize call for modularity.
     self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
@@ -48,13 +49,10 @@ function Addon:OnInitialize()
     -- Merchant Button
     --self.MerchantButton.Initialize()
 
-    -- Tooltip. Delay this one second so other things intializing don't move the tooltip over them and
-    -- cause unnecessary evaluations.
-    C_Timer.After(1, function() Addon:InitializeItemTooltips() end)
+    Addon:InitializeItemResultRefresh()
+    Addon:InitializeEvaluationStatus()
+    Addon:InitializeItemTooltips()
 
-    -- Do Pruning of History across all characters.
-    -- TODO: Make this a setting
-    -- Consider dynamic history pruning when it gets to a certain size, auto-prune it.
-    -- Setting this on a timer so it doesn't cause lag during resource intensive addon loading.
-    C_Timer.After(Addon.c_PruneHistoryDelay, function() Addon:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
+    -- Do a delayed pruning of history across all characters.
+    Addon:PostInitializePruneHistory()
 end

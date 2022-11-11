@@ -228,7 +228,6 @@ function RuleManager:Update()
 
     -- Clear the item cache and schedule a refresh.
     Addon:ClearItemResultCache()
-    Addon:StartItemResultRefresh(7)
 end
 
 --*****************************************************************************

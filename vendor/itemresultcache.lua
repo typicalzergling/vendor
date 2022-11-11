@@ -136,13 +136,17 @@ end
 -- Wrapper for GUID-based item lookup.
 -- This looks up where the item is if it exists at all
 -- If it does exist, we check its location and see if it is fresh. If not, nil.
-function Addon:GetItemResultByGUID(guid)
+function Addon:GetItemResultForGUID(guid)
     local entry = Addon:GetItemResultFromItemResultCacheByGUID(guid)
     if not entry then return nil end
     -- We do have an entry, see if the item at that bag and slot matches.
-    -- If it does not match, then the item is stale and we don't have information about it.
-    -- In that case, return nil.
-    -- TODO Implement this
+    local itemObj = Item:CreateFromItemGUID(guid)
+    if not itemObj or itemObj:IsItemEmpty() then return nil end
+    if doesItemMatchCacheEntry(itemObj, entry) then
+        return entry
+    else
+        return nil
+    end
 end
 
 -- Safe remove guid from cache by also removing it from the bag and slot map.
@@ -232,5 +236,5 @@ function Addon:OnBagUpdate(bagID)
     -- Using delayed refresh means we will not do any work on a looting event or when items
     -- first appear in the inventory unless players specifically mouse over those items before
     -- we refresh them.
-    Addon:StartItemResultRefresh(5)
+    Addon:StartItemResultRefresh(6)
 end

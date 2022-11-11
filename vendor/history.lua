@@ -201,6 +201,11 @@ function Addon:PruneAllHistory(hours)
     return total
 end
 
+function Addon:PostInitializePruneHistory()
+    C_Timer.After(Addon.c_PruneHistoryDelay, function() Addon:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
+end
+
+
 local function isLookupIdInUse(index, name)
     local history = getHistoryVariable():GetOrCreate()
     local total = 0
