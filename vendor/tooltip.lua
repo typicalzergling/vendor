@@ -21,15 +21,15 @@ end
 
 -- Called by keybinds to direct-add items to the blocklists
 function Addon:AddTooltipItemToSellList()
-    self:AddTooltipItemToList(self.ListType.SELL)
+    self:AddTooltipItemToList(Addon.SystemListId.ALWAYS)
 end
 
 function Addon:AddTooltipItemToKeepList()
-    self:AddTooltipItemToList(self.ListType.KEEP)
+    self:AddTooltipItemToList(Addon.SystemListId.NEVER)
 end
 
 function Addon:AddTooltipItemToDestroyList()
-    self:AddTooltipItemToList(self.ListType.DESTROY)
+    self:AddTooltipItemToList(Addon.SystemListId.DESTROY)
 end
 
 -- Result cache

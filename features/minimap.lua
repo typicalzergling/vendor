@@ -61,6 +61,7 @@ function Minimap:GetOrCreateLDBPlugin()
 end
 
 function Minimap:UpdateLDBPlugin()
+    print("update")
     updateStats()
 end
 
@@ -95,10 +96,12 @@ end
 
 function Minimap:OnInitialize()
     self:SetupLDBPlugin()
+    Addon:RegisterCallback(Addon.Events.EVALUATION_STATUS_UPDATED, self, self.UpdateLDBPlugin)
 end
 
 function Minimap:GetDependencies()
     return { "libdatabroker" }
 end
+
 
 Addon.Features.Minimap = Minimap

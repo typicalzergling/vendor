@@ -341,27 +341,35 @@ function Addon:ToggleItemInBlocklist(list, item)
     local id = self:GetItemIdFromString(item)
     if not id then return nil end
 
-    -- Get existing blocklist id
-    local existinglist = Addon:GetBlocklistForItem(id)
+    local systemLists = Addon:GetSystemLists()
+
+    -- Find the list the item is in
+    local existingList
+    for listId, list in pairs(systemLists) do
+        if (list:Contains(id)) then
+            existingList = listId
+            break
+        end
+    end
 
     -- Check if the list is Sell and the item is Unsellable
     -- If so, change the list type to Destroy
-    if list == Addon.ListType.SELL then
+    if list == Addon.SystemListId.ALWAYS then
         local isUnsellable = select(11, GetItemInfo(id)) == 0
         if isUnsellable then
             self:Print(L.CMD_LISTTOGGLE_UNSELLABLE, link)
-            list = Addon.ListType.DESTROY
+            list = Addon.SystemListId.DESTROY
         end
     end
 
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
-    if list == existinglist then
-        Addon:GetList(list):Remove(id)
+    if existingList and list == existinglist then
+        systemLists[list]:Remove(id)
         Addon:ClearItemResultCacheByItemId(id)
         return 2
     else
-        Addon:GetList(list):Add(id)
+        systemLists[list]:Add(id)
         Addon:ClearItemResultCacheByItemId(id)
         return 1
     end

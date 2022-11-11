@@ -34,7 +34,7 @@ function ListSystem:Startup()
     self.customLists = ListSystem:CreateCustomListManager()
     self:RegisterFunctions()
 
-    return { "GetList", "GetLists", "CreateList", "DeleteList" }
+    return { "GetList", "GetLists", "CreateList", "DeleteList", "GetSystemLists" }
 end
 
 --[[ Shutdown our system ]]
@@ -71,6 +71,18 @@ function ListSystem:GetLists()
     -- Custom lists
     for _, customList in ipairs(self.customLists:GetLists()) do
         table.insert(lists, self:CreateCustomList(customList.Id))
+    end
+
+    return lists
+end
+
+--[[ Retrieve only the system lists ]]
+function ListSystem:GetSystemLists()
+    local lists = {}
+    
+    -- Start with the system lists
+    for _, systemListId in pairs(Addon.SystemListId) do
+        lists[systemListId] = self:CreateSystemList(systemListId)
     end
 
     return lists
