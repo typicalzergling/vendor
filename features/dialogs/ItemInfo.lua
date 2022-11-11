@@ -1,6 +1,7 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
 local Dialog = Addon.CommonUI.Dialog
+local EditRuleEvents = Addon.Features.Dialogs.EditRuleEvents
 
 local PropertyItem = {
     OnLoad = function(item)
@@ -149,7 +150,7 @@ local PropertyItem = {
         end
         
         local model = item:GetModel()
-        Dialog.RaiseEvent(item, "SetHelpContext", model.Name, "property")
+        Dialog.RaiseEvent(item, EditRuleEvents.HELP_CONTEXT, model.Name, "property")
     end
 }
 

@@ -408,7 +408,7 @@ function Dialog.RegisterCallback(frame, event, handler)
     --@end-debug@
 
     Addon:Debug("dialogs", "Registering a callback for '%s'", tostring(event))
-    dialog:RegisterCallback(event, frame, handler)
+    dialog:RegisterCallback(event, handler, frame)
 end
 
 --[[

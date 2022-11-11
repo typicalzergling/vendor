@@ -3,6 +3,7 @@ local locale = Addon:GetLocale()
 local Dialogs = Addon.Features.Dialogs
 local EditRule = Mixin({}, Addon.CommonUI.Mixins.Debounce)
 local RuleType = Addon.RuleType
+local Dialog = Addon.CommonUI.Dialog
 
 local RuleType = Mixin({}, Addon.CommonUI.Mixins.Border)
 local RULETYPE_BORDER = CreateColor(.5, .5, .5, .5)
@@ -13,6 +14,10 @@ local RULETYPE_TEXT = CreateColor(1, 1, 1, 0.8)
 local RULETYPE_SELECTED_TEXT = YELLOW_FONT_COLOR
 local RULETYPE_SELECTED_BORDER = CreateColor(1, 1, 0, .45)
 local RULETYPE_SELECTED_BACK = CreateColor(1, 1, 0, .05)
+
+Dialogs.EditRuleEvents = {
+    HELP_CONTEXT = "set-help-context",
+}
 
 function RuleType:OnLoad()
     self:OnBorderLoaded(nil, RULETYPE_BORDER, RULETYPE_BACK)
@@ -172,6 +177,7 @@ local HelpTab = {
         t.items:Sort(function (modelA, modelB)
             return (modelA.Name < modelB.Name)
         end)
+        Dialog.RegisterCallback(t, Dialogs.EditRuleEvents.HELP_CONTEXT, t.OnSetHelpContext)
     end,
 
     OnActivated = function(self)
@@ -224,7 +230,13 @@ local HelpTab = {
         end
 
         return models
-    end
+    end,
+
+    OnSetHelpContext = function(self, dialog, term, type)
+        self.filters:SetSelected({ [type] = true })
+        self.filter:SetText(term)
+        self:ApplyFilters()
+    end,
 }
 
 function RuleType:IsSelected()
