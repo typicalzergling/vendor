@@ -13,7 +13,6 @@ end
 
 --[[ Shutdown our system ]]
 function ItemProperties:Shutdown()
-    self:UnregisterFunctions()
 end
 
 Addon.Systems.ItemProperties = ItemProperties

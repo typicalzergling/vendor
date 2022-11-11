@@ -364,7 +364,7 @@ function Addon:ToggleItemInBlocklist(list, item)
 
     -- Add it to the specified list.
     -- If it already existed, remove it from that list.
-    if existingList and list == existinglist then
+    if existingList and list == existingList then
         systemLists[list]:Remove(id)
         Addon:ClearItemResultCacheByItemId(id)
         return 2

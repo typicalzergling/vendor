@@ -111,7 +111,7 @@ function Addon:OnItemResultCacheCleared()
 
     -- Rules changed or something else significant, lets give it a few seconds
     -- for more changes to occur before we do the refresh.
-    Addon:StartItemResultRefresh(7)
+    Addon:StartItemResultRefresh(4)
 end
 
 function Addon:InitializeItemResultRefresh()

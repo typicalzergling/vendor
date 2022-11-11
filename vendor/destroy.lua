@@ -24,7 +24,7 @@ function Addon:DestroyNextItem()
             end
 
             -- Refresh and get the data entry for this slot.
-            local entry =  xpcall(Addon.RefreshBagAndSlot, CallErrorHandler, Addon, bag, slot)
+            local _, entry =  xpcall(Addon.RefreshBagAndSlot, CallErrorHandler, Addon, bag, slot)
             if entry and entry.Result.Action == Addon.ActionType.DESTROY then
                 currentDestroyedItem = entry.Item.Link
                 self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem), tostring(entry.Result.Rule))
@@ -49,6 +49,7 @@ end
 function Addon:DestroyItems()
     if Addon:DestroyNextItem() then
         -- see if we have more items remaining
+        --Addon:GenerateEvaluationStatus()
         local count, value, tosell, todestroy, sellitems, destroyitems = Addon:GetEvaluationStatus()
         if todestroy > 0 then
             self:Print(L.ITEM_DESTROY_MORE_ITEMS, todestroy)

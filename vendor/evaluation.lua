@@ -76,12 +76,12 @@ function Addon:EvaluateItem(item, ignoreCache)
             else
                 result.Action = Addon.ActionType.SELL
             end
-        elseif Addon.RuleType.DESTROY == ruletype then
+        elseif Addon.RuleType.DESTROY == result.RuleType then
             result.Action = Addon.ActionType.DESTROY
-        elseif Addon.RuleType.KEEP == ruletype then
+        elseif Addon.RuleType.KEEP == result.RuleType then
             result.Action = Addon.ActionType.NONE
         else
-            error("Unknown ruletype: "..tostring(ruletype))
+            error("Unknown ruletype: "..tostring(result.RuleType))
         end
     end
 
