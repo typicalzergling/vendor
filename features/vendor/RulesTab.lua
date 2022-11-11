@@ -61,6 +61,34 @@ end
 function RulesTab:ShowRules(category)
 	self.activeConfig = self.ruleFeature:GetConfig(category.Type)
 	self.rules:Filter(self:CreateFilter(category.Type, true))
+	self.rules:Sort(function(ruleA, ruleB)
+			local hasA = self.activeConfig:Contains(ruleA.Id)
+			local hasB = self.activeConfig:Contains(ruleB.Id)
+
+			if (hasA and not hasB) then
+				return true
+			elseif (not hasA and hasB) then
+				return false
+			end
+
+			if (ruleA.Order) then
+				if (not ruleB.Order) then
+					return true
+				elseif (ruleA.Order ~= ruleB.Order) then
+					return ruleA.Order  < ruleB.Order
+				end
+			end
+
+			if (ruleB.Order) then
+				if (not ruleA.Order) then
+					return true
+				elseif (ruleA.Order ~= ruleB.Order) then
+					return ruleA.Order  < ruleB.Order
+				end
+			end
+
+			return ruleA.Name < ruleB.Name
+		end)
 end
 
 function RulesTab:UpdateConfig(view)

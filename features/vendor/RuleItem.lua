@@ -6,9 +6,55 @@ local Layouts = Addon.CommonUI.Layouts
 local RuleItem = Mixin({}, Addon.CommonUI.Mixins.Tooltip)
 local UI = Addon.CommonUI.UI
 
-local AddonColors = Addon.Colors
-AddonColors.ENABLED_RULE_BACK = CreateColor(0, 1, 0, .125)
-AddonColors.HOVER_RULE_BACK = CreateColor(1, 1, 0, .10)
+local ITEM_PADDING = { 
+    left = 24, -- Acccount for the icon
+    right = 6,
+    top = 6,
+    bottom = 6
+}
+
+local COLORS = {
+    normal = {
+        name = "TEXT",
+        description = "SECONDARY_TEXT",
+        back = "TRANSPARENT",
+    },
+    hover = {
+        name = "HOVER_TEXT",
+        description = "HOVER_SECONDARY_TEXT",
+        back = "HOVER_BACKGROUND",
+    },
+    active = {
+        name = "TEXT",
+        description = "SECONDARY_TEXT",
+        back = "ACTIVE_RULE_BACK",
+    },
+    activeHover = {
+        name = "SELECTED_TEXT",
+        description = "SELECTED_SECONDARY_TEXT",
+        back = "ACTIVE_RULE_HOVER_BACK",
+    },
+    unhealty = {
+        name = "DISABLED_TEXT",
+        description = "DISABLED_TEXT",
+        back = "UNHEALTHY_RULE_BACK",
+    },
+    unhealthyHover = {
+        name = "DISABLED_TEXT",
+        description = "DISABLED_TEXT",
+        back = "UNHEALTHY_RULE_HOVER_BACK",
+    },
+    migrate = {
+        name = "DISABLED_TEXT",
+        description = "DISABLED_TEXT",
+        back = "MIGRATE_RULE_BACK",
+    },
+    migrateHover = {
+        name = "DISABLED_TEXT",
+        description = "DISABLED_TEXT",
+        back = "MIGRATE_RULE_HOVER_BACK",
+    }
+}
 
 -- Helper for debugging
 local function debug(msg, ...)
@@ -18,7 +64,7 @@ end
 function RuleItem:OnLoad()
     self.active = false
     self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-    self:InitTooltip()
+    self:SetColors("normal")
 end
 
 function RuleItem:OnModelChange(model)
@@ -36,7 +82,6 @@ end
 
 --[[ When we are shown make sure out colors up to date ]]
 function RuleItem:OnShow()
-    self:SetColors()
 end
 
 --[[ Handle clicks on this rule itme ]]
@@ -44,30 +89,44 @@ function RuleItem:OnClick(button)
     if (button == "RightButton") then
         self:Edit()
     else
-        self.active = not self.active
-        self:SetColors()
-        self:ShowParams(self.active)
+        self:SetActive(not self:IsActive())
         self:Save()
     end
 end
 
 function RuleItem:OnEnter()
     self:SetColors()
+    self:TooltipEnter()
 end
 
 function RuleItem:OnLeave()
     self:SetColors()
+    self:TooltipLeave()
 end
 
 function RuleItem:SetActive(active)
-    self.active = active == true
+    self.active = (active == true)
     self:ShowParams(active)
+
+    if (self.active) then
+        self.check:Show()
+    else
+        self.check:Hide()
+    end
     self:SetColors()
 end
 
 --[[ Determine if this rule is active ]]
 function RuleItem:IsActive()
     return self.active == true
+end
+
+function RuleItem:IsUnhealthy()
+    return false
+end
+
+function RuleItem:NeedsMigration()
+    return false
 end
 
 --[[ Get the id for this rule ]]
@@ -120,38 +179,51 @@ function RuleItem:Edit()
     editDialog:ShowEditRule(self:GetRuleId(), params)
 end
 
+--[[ Determine the colors for this item ]]
 function RuleItem:SetColors()
-    local showBackdrop = false
-    if (self:IsActive()) then
-        UI.SetColor(self.name, "SELECTED_TEXT")
-        UI.SetColor(self.description, "SELECTED_SECONDARY_TEXT")
-        UI.SetColor(self.backdrop, "ENABLED_RULE_BACK")
-        showBackdrop = true
-    elseif (self:IsMouseOver()) then
-        UI.SetColor(self.name, "HOVER_TEXT")
-        UI.SetColor(self.description, "HOVER_SECONDARY_TEXT")
-        UI.SetColor(self.backdrop, "HOVER_RULE_BACK")
-        showBackdrop = true
+    local active = self:IsActive()
+    local unhealthy = self:IsUnhealthy()
+    local migrate = self:NeedsMigration()
+    local colors = COLORS.normal
+
+    if (self:IsMouseOver()) then
+        if (active) then
+            colors = COLORS.activeHover
+        elseif (unhealthy) then
+            colors = COLORS.unhealthyHover
+        elseif (migrate) then
+            colors = COLORS.migrateHover
+        else
+            colors = COLORS.hover
+        end
     else
-        UI.SetColor(self.name, "TEXT")
-        UI.SetColor(self.description, "SECONDARY_TEXT")
+        if (active) then
+            colors = COLORS.active
+        elseif (unhealthy) then
+            colors = COLORS.unhealty
+        elseif (migrate) then
+            colors = COLORS.migrate
+        else
+            colors = COLORS.normal
+        end
     end
 
-    if (showBackdrop) then
-        self.backdrop:Show()
-    else
-        self.backdrop:Hide()
+    if (colors) then
+        UI.SetColor(self.name, colors.name)
+        UI.SetColor(self.description, colors.description)
+        UI.SetColor(self.backdrop, colors.back)
     end
 end
 
 function RuleItem:HasTooltip()
+    return true
 end
 
 function RuleItem:OnTooltip(tooltip)
 end
 
 function RuleItem:OnSizeChanged()
-    xpcall(Layouts.Stack, CallErrorHandler, self, self.stack, 6, 4)
+    Layouts.Stack(self, self.stack, ITEM_PADDING, 4)
 end
 
 --[[ Create the parameters for this rule ]]

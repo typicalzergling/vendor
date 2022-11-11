@@ -57,8 +57,28 @@
     <Button name="RuleItem" virtual="true">
         <Size x="1" y="22"/>
         <Layers>
-            <Layer level="BAKGROUND">
-                <Texture setAllPoints="true" parentKey="backdrop" hidden="true"/>
+            <Layer level="BACKGROUND">
+                <Texture setAllPoints="true" parentKey="backdrop"/>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="check" file="Interface\Addons\Vendor\assets\Check">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-2"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="unhealthy" file="Interface\Addons\Vendor\assets\Cross" hidden="true">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.check"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="migrate" file="Interface\Addons\Vendor\assets\Question" hidden="true">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.check"/>
+                    </Anchors>
+                </Texture>
             </Layer>
             <Layer level="ARTWORK">
                 <FontString inherits="GameFontNormal" parentKey="name" justifyH="LEFT" parentArray="stack" maxLines="1">
