@@ -42,9 +42,8 @@ registerAdiBagsExtension()
 
 -- Use highest priority, since Vendor could end up reclassifying absolutely anything in the bags.
 local sellFilter = adiBags:RegisterFilter("VendorSell", 100, 'ABEvent-1.0')
-sellFilter.uiName = "Vendor: Sell"
-sellFilter.uiDesc = "Put items that the Vendor addon will sell at a merchant into this collection."..
-" This filter must be a very high priority to work correctly, as it can reclassify any item in your inventory."
+sellFilter.uiName = L.FILTER_VENDOR_SELL_NAME
+sellFilter.uiDesc = L.FILTER_VENDOR_SELL_DESC
 
 function sellFilter:OnInitialize()
     -- No settings, so nothing to initialize at this time.

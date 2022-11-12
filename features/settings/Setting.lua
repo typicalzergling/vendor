@@ -44,7 +44,7 @@ end
 
 --[[ Sets the value of this setting ]]
 function Setting:SetValue(value)
-    assert(type(value) == self:GetType())
+    assert(type(value) == self:GetType(), "Type mismatch, Expected "..self:GetType()..", got "..type(value))
     local current = self.getValue()
     if (value ~= current) then
         self.setValue(value)
@@ -93,7 +93,7 @@ function Addon.Features.Settings.CreateSetting(name, defaultValue, getValue, set
     return setting
 end
 
---[[ Creates a feature which controls the enabling/disabling of a feature ]]
+--[[ Creates a setting which controls the enabling/disabling of a feature ]]
 function Addon.Features.Settings.CreateFeatureSetting(name)
     local setting = CreateFromMixins(Setting, CallbackRegistryMixin)
 

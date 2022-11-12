@@ -108,16 +108,16 @@ end
 
 --[[=== System: SavedVariables ==============================================]]
 
-local SavedVeriablesSystem = {}
+local SavedVariablesSystem = {}
 
 --[[ Initialize hthe saved variable system ]]
-function SavedVeriablesSystem:Startup()
+function SavedVariablesSystem:Startup()
 	self.variables = {}
 	return { "CreateSavedVariable" }
 end
 
 --[[ Create a new saved variable ]]
-function SavedVeriablesSystem:CreateSavedVariable(name)
+function SavedVariablesSystem:CreateSavedVariable(name)
 	if (not self.variables[name]) then
 		self.variables[name] = SavedVariable.new(name)
 	end
@@ -125,8 +125,8 @@ function SavedVeriablesSystem:CreateSavedVariable(name)
 end
 
 --[[ Called when our variables are loaded ]]
-function SavedVeriablesSystem:ON_VARIABLES_LOADED()
+function SavedVariablesSystem:ON_VARIABLES_LOADED()
 	rawset(Addon, VARIABLES_LOADED, 1)
 end
 
-Addon.Systems.SavedVariables = SavedVeriablesSystem
+Addon.Systems.SavedVariables = SavedVariablesSystem

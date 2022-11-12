@@ -245,7 +245,7 @@ CMD_DESTROY_HELP = "Destroys all items matching Destroy rules or in the Destroy 
 API_REGISTEREXTENSION_TITLE = "Register Extension",
 API_REGISTEREXTENSION_DOCS = "Registers a Vendor extension with Vendor. See CurseForge documentation for details.",
 API_EVALUATEITEM_TITLE = "Evaluate Item",
-API_EVALUATEITEM_DOCS = "Evaluates an item for selling. Input is a Tooltip + Link, Bag + Slot, or Link. Bag and Slot is best.",
+API_EVALUATEITEM_DOCS = "Evaluates an item for selling. Input is a Bag and Slot.",
 API_ADDTOALWAYSSELL_TITLE = "Add Tooltip Item To Always Sell List",
 API_ADDTOALWAYSSELL_DOCS = "Toggles the item that has a tooltip showing on or off the Always Sell list.",
 API_ADDTONEVERSELL_TITLE = "Add Tooltip Item To Never Sell List",
@@ -580,18 +580,6 @@ HELP_SLOT_TEXT = [[The slot ID of the item, or -1 if it is not in a bag and slot
 
 -- FUNCTION HELP
 
-HELP_PLAYERLEVEL = "Returns the current level of the player",
-HELP_PLAYERCLASS = "Returns the localized class name of the player. This should match any localized class names in your client, such as the tooltip.",
-HELP_PLAYERITEMLEVEL = "Returns the average item level of your gear",
-
-HELP_ITEMQUALITY_ARGS = "qual [, qual1..qualN]",
-HELP_ITEMQUALITY_TEXT = "[re-visit] What ist he point? This adds complexity unnecessarily. Determines the item quality.",
-
-HELP_ITEMISFROMEXPANSION_ARGS = "xpack0 [, xpack1 .. xpackN]",
-HELP_ITEMISFROMEXPANSION_TEXT = "[re-visit] Cut? For items which are marked with and expansion this will compare it against the argeuments, they can either be the numeric identifier or one of the strings shown below.",
-
-HELP_ITEMTYPE_ARGS = "type0 [, type2...typeN]",
-HELP_ITEMTYPE_TEXT = "[re-vist] Cut? Checks the item type against the string/number passed in which represents the item type",
 HELP_ISEQUIPPED_TEXT = "True if the item is currently equipped. Will never be true for items in inventory.",
 
 HELP_ISINEQUIPMENTSET_ARGS = "[setName0 .. setNameN]",

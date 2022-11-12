@@ -1127,6 +1127,14 @@ lua_filter() {
 		-e "s/--@end-non-$1@\]===\]/--@end-non-$1@/g"
 }
 
+debug_statement_filter() {
+	sed \
+		-e "s/^\s*Addon\:Debug(.*$//g" \
+		-e "s/^\s*local function debugp(.*$//g" \
+		-e "s/^\s*debugp(.*$//g" \
+		-e "s/^\s*assert(.*$//g"
+}
+
 toc_filter() {
 	_trf_token=$1; shift
 	_trf_comment=
@@ -1387,6 +1395,7 @@ copy_directory_tree() {
 							[ -n "$_cdt_do_not_package" ] && _cdt_filters+="|do_not_package_filter lua"
 							[ -n "$_cdt_classic" ] && _cdt_filters+="|lua_filter retail"
 							[ -n "$_cdt_localization" ] && _cdt_filters+="|localization_filter"
+							_cdt_filters+="|debug_statement_filter"
 							;;
 						*.xml)
 							[ -n "$_cdt_alpha" ] && _cdt_filters+="|xml_filter alpha"

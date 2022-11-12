@@ -39,7 +39,7 @@ function Addon:Vendor_AutoSell()
 
     -- Becuase Ark is on another planet and has its own concept of bags, must convert to blizzard bags.
     local bag = ArkInventory.API.InternalIdToBlizzardBagId( object.loc_id, object.bag_id )
-    result, ruleid, name = Vendor.EvaluateItem(bag, object.slot_id)
+    local result = Vendor.EvaluateItem(bag, object.slot_id)
     if not result then
         return false
     else
@@ -57,7 +57,7 @@ function Addon:Vendor_Destroy()
 
     -- Becuase Ark is on another planet and has its own concept of bags, must convert to blizzard bags.
     local bag = ArkInventory.API.InternalIdToBlizzardBagId( object.loc_id, object.bag_id )
-    result, ruleid, name = Vendor.EvaluateItem(bag, object.slot_id)
+    local result, ruleid, name = Vendor.EvaluateItem(bag, object.slot_id)
     if not result then
         return false
     else

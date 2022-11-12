@@ -56,7 +56,6 @@ function LibDataBroker:CreateLDBDataObject(name, definition)
 
     assert(type(name) == "string" and type(definition) == "table", "Invalid arguments to CreateLDBObject")
     assert(not self.ldbObjects[name], "Data object by that name already exists.")
-
     local _, ldbobject = xpcall(
         function()
             local ldbo = self.ldb:NewDataObject(name, definition)
@@ -80,6 +79,21 @@ function LibDataBroker:GetLDBDataObject(name)
     if not self:IsLDBAvailable() then return nil end
     if not name then error("Must provide a name to GetLDBDataObject") end
     return self.ldbObjects[name]
+end
+
+function LibDataBroker:SetButtonToPosition(button, position)
+    if (not self:IsLDBIconAvailable()) then
+        debugp("LDBIcon is not available.")
+        return false
+    end
+
+    local success, result = xpcall(
+        function()
+            self.ldbi:SetButtonToPosition(button, position)
+        end,
+        CallErrorHandler)
+    debugp("SetButtonToPosition success = %s", not not success)
+    return success
 end
 
 -- A note about this one. minimaptable should be in a saved variable table.

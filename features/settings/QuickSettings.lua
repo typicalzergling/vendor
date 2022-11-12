@@ -70,9 +70,24 @@ function QuickSettings:CreateList(parent)
     setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "")
     setting.isNew = true
 
-    -- Quick setting for LDB/Minimap
-    local minimapbutton = Settings.CreateFeatureSetting("MinimapButton")
-    setting = list:AddSetting(minimapbutton, "OPTIONS_SETTINGNAME_MINIMAP", "QUICK_REPAIR_SETTING_HELP")
+    -- Quick setting for Minimapbutton
+    --[[ Checks if the auto-repair quick setting should be enabled ]]
+    local function isMinimapButtonEnabled(self)
+        mapbuttonenabled = Addon:GetProfile():GetValue(Addon.c_Config_MinimapButton)
+        return (not not mapbuttonenabled)
+    end
+
+    local minimapbutton = Settings.CreateSetting(nil, true,
+        function() return isMinimapButtonEnabled(self) end,
+        function(value)
+            local profile = Addon:GetProfile()
+            if value then
+                profile:SetValue(Addon.c_Config_MinimapButton, true)
+            else
+                profile:SetValue(Addon.c_Config_MinimapButton, false)
+            end
+        end)
+    setting = list:AddSetting(minimapbutton, "OPTIONS_SETTINGNAME_MINIMAP", "QUICK_MINIMAP_SETTING_HELP")
     setting.isNew = true
 
 	return list;

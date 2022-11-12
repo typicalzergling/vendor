@@ -93,29 +93,6 @@ Addon.ScriptReference.Functions =
         Text = L["HELP_PLAYERITEMLEVEL"]
     },
     --@end-retail@
-    ItemQuality =
-    {
-        Arguments = L["HELP_ITEMQUALITY_ARGS"],
-        Map = Addon.Maps.ItemQuality,
-        Text = L["HELP_ITEMQUALITY_TEXT"],
-        IsFunction = true,
-    },
-
-    IsFromExpansion =
-    {
-        Args = L["HELP_ITEMISFROMEXPANSION_ARGS"],
-        Text = L["HELP_ITEMISFROMEXPANSION_TEXT"],
-        Map = Addon.Maps.Expansion,
-        IsFunction = true,
-    },
-
-    ItemType =
-    {
-        IsFunction = true,
-        Args = L["HELP_ITEMTYPE_ARGS"],
-        Text = L["HELP_ITEMTYPE_TEXT"],
-        Map = Addon.Maps.ItemType,
-    },
 
     IsInEquipmentSet =
     {

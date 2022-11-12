@@ -13,7 +13,7 @@ Addon:MakePublic(
 
 Addon:MakePublic(
     "EvaluateItem",
-    function (arg1, arg2) return Addon:EvaluateSource(arg1, arg2) end,
+    function (bag, slot) return Addon:EvaluateSource(bag, slot) end,
     L["API_EVALUATEITEM_TITLE"],
     L["API_EVALUATEITEM_DOCS"])
 

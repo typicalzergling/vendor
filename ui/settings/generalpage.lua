@@ -5,7 +5,7 @@ local MerchantButton = Addon.MerchantButton
 local AUTO_SELL = Addon.c_Config_AutoSell
 local TOOLTIP = Addon.c_Config_Tooltip
 local AUTO_REPAIR = Addon.c_Config_AutoRepair
-local MINIMAP = Addon.c_Config_Minimap
+local MINIMAP = Addon.c_Config_MinimapButton
 local MERCHANT = Addon.c_Config_MerchantButton
 local GUILD_REPAIR = Addon.c_Config_GuildRepair
 
@@ -42,9 +42,6 @@ function GeneralPage:OnLoad()
 		Addon:Debug("settings", "General (Merchant) has changed to: %s", state)
 		self:SetProfileValue(MERCHANT, state == true)
 	end
-
-	self.MiniMap:Disable()
-	self.MiniMap:SetChecked(true)
 
 	if (not Addon.IsClassic) then
 		local merchantNew = CreateFrame("Frame", nil,  self, "NewFeatureLabelTemplate")

@@ -143,31 +143,6 @@ end
 
 local RuleFunctions = {
 {
-    Name = "ItemQuality",
-    Function = function(...)
-        return checkMap(QUALITY, Quality, {...})
-    end,
-    Documentation = locale["HELP_ITEMQUALITY_TEXT"]
-},
-
-{
-    Name = "ItemType",
-    Function = function(...)
-            return checkMap(ITEM_TYPE, TypeId, {...})
-        end,
-    Documentation = locale["HELP_ITEMTYPE_TEXT"]
-},
-{
-    Name = "IsFromExpansion",
-    Function = function(...)
-        local xpackId = ExpansionPackId;
-        if (xpackId ~= 0) then
-            return checkMap(EXPANSION, xpackId, {...})
-        end
-    end,
-    Documentation = locale["HELP_ITEMISFROMEXPANSION_TEXT"]
-},
-{
     Name = "PlayerLevel",
     Function = function()
         return tonumber(UnitLevel("player"))

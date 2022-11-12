@@ -27,7 +27,7 @@ Addon.c_Config_RefreshThrottle = "refresh_throttle"
 Addon.c_Config_ThrottleTime = "throttle_time"
 Addon.c_Config_AutoRepair = "autorepair"
 Addon.c_Config_GuildRepair = "guildrepair"
-Addon.c_Config_Minimap = "showminimap"
+Addon.c_Config_MinimapData = "minimapdata"
 Addon.c_Config_MinimapButton = "minimapbutton"
 Addon.c_Config_MerchantButton = "merchantbutton"
 

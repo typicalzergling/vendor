@@ -4,11 +4,21 @@ local L = Addon:GetLocale()
 
 local debugp = function (...) Addon:Debug("evaluate", ...) end
 
--- This is a wrapper for Evaluate Item that takes GetItemProperties parameters as input.
--- This is for use cases where you do not need the item itself and just want to know
--- the result. This is also the public api implementaion.
-function Addon:EvaluateSource(arg1, arg2)
-    return Addon:EvaluateItem(Addon:GetItemProperties(arg1, arg2))
+-- This now takes only a bag and slot
+function Addon:EvaluateSource(bag, slot)
+    Addon:Debug("extensions", "Received call into EvaluateSource")
+    local action = 0
+    local ruleid = nil
+    local name = nil
+    local ruletype = nil
+    local result = Addon:GetItemResultForBagAndSlot(bag, slot)
+    if result then
+        action = result.Result.Action
+        ruleid = result.Result.RuleID
+        name = result.Result.Rule
+        ruletype = result.Result.RuleType
+    end
+    return action, ruleid, name, ruletype
 end
 
 -- Evaluating items.
@@ -23,7 +33,6 @@ end
 -- for rule evaluations.
 -- This method always returns a number as the first parameter, but the others may be nil.
 function Addon:EvaluateItem(item, ignoreCache)
-
     -- Return a table of data. These are the default "no item" values.
     local result = {}
     result.Action = Addon.ActionType.NONE
@@ -37,17 +46,11 @@ function Addon:EvaluateItem(item, ignoreCache)
     end
 
     debugp("In Evaluate Item: %s", tostring(item.Link))
-
     -- Check the Cache for the result if we aren't ignoring it.
     if not ignoreCache then
         local cachedEntry = Addon:GetItemResultForGUID(item.GUID)
         if cachedEntry then
-            debugp("Retrieved %s from cache with result: %s - [%s] %s",
-                tostring(item.Link),
-                tostring(cachedEntry.Result.Action),
-                tostring(cachedEntry.Result.RuleType),
-                tostring(cachedEntry.Result.Rule)
-            )
+            debugp("Retrieved %s from cache with result: %s - [%s] %s", tostring(item.Link), tostring(cachedEntry.Result.Action), tostring(cachedEntry.Result.RuleType), tostring(cachedEntry.Result.Rule))
             -- Return deep copy so they don't ruin our actual data with this.
             return Addon.DeepTableCopy(cachedEntry.Result)
         end
