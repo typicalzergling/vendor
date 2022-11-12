@@ -61,9 +61,7 @@ end
 
 --[[ Handle processing a particular item for loc + colors ]]
 local function processItem(item)
-    --@debug@
     assert(item, "expected a non-null item")
-    --@end-debug@
 
     -- Set color
     if (type(item.Color) == "string") then
@@ -79,9 +77,7 @@ end
 
 --[[ Process all of the frames/regions ]]
 local function visitFrame(frame)
-    --@debug@
     assert(frame, "expected a non-null frame")
-    --@end-debug@
 
     for _, child in pairs({ frame:GetChildren() }) do
         processItem(child)
@@ -119,10 +115,7 @@ function UI.Attach(item, class)
 end
 
 function UI.Resolve(path)
-    --@debug@
     assert(type(path) == "string", "the string must be a path")
-    --@debug-end@
-
     return resolveObject(Addon, path)
 end
 

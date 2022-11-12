@@ -322,8 +322,7 @@ function Layouts.Stack(panel, children, padding, spacing, panelWidth)
     width = width - (paddingLeft + paddingRight)
     local num = table.getn(children)
 
-    Addon:Debug("layouts", "Stack + num=%s, width=%s, spacing=%s, padding=[%s, %s, %s, %s]", 
-        num, width, spacing, paddingLeft, paddingTop, paddingRight, paddingBottom)
+    Addon:Debug("layouts", "Stack + num=%s, width=%s, spacing=%s, padding=[%s, %s, %s, %s]", num, width, spacing, paddingLeft, paddingTop, paddingRight, paddingBottom)
 
     for i, child in ipairs(children) do
         if (child:IsShown()) then

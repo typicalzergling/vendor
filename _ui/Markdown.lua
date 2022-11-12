@@ -193,9 +193,7 @@ function QuoteMarkdownFrame:Layout(width)
     self.content:SetWidth(contentWidth)
     self.content:SetHeight(0)
     self:SetHeight(12 + self.content:GetHeight())
-
-    Addon:Debug("layouts", "*QuoteMarkdownFrame* = %d x %s [%s x %s]", width, self:GetHeight(),
-        self.content:GetWidth(), self.content:GetHeight())
+    Addon:Debug("layouts", "*QuoteMarkdownFrame* = %d x %s [%s x %s]", width, self:GetHeight(), self.content:GetWidth(), self.content:GetHeight())
 
 end
 
