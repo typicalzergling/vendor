@@ -57,7 +57,7 @@ function QuickSettings:CreateList(parent)
 
     -- Quick repair setting, this also enables guild repair
     local repair = Settings.CreateSetting(nil, isAutorepairEnabled(self),
-        function() return isAutoSellEnabled(self) end,
+        function() return isAutorepairEnabled(self) end,
         function(value)
             local profile = Addon:GetProfile()
             if (value) then
