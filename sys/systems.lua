@@ -129,7 +129,7 @@ function Systems:Init()
             if (type(system.GetDependencies) == "function") then
                 local success, deps = xpcall(system.GetDependencies, CallErrorHandler, system)
                 if (not success) then
-                    error("Failed to get depedencies for system '" .. name .. "'")
+                    error("Failed to get dependencies for system '" .. name .. "'")
                 end
                 dependencies = deps
             end
@@ -288,7 +288,7 @@ end
 function Systems:Get(system)
     local data = systems[string.lower(system)]
     if (data) then
-        assert(data.ready, "Attempting to retrieve a system that isn't initiaized")
+        assert(data.ready, "Attempting to retrieve a system that isn't initialized")
         return data.instance
     end
 end

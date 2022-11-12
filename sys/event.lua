@@ -146,7 +146,7 @@ function Addon:GenerateEvents(events)
 end
 
 -- Unregisters events which can be raised takes the ssame argument as the function above
-function Addon:RemoveEvents(event)
+function Addon:RemoveEvents(events)
     assert(events and type(events) == "table", "The events argument must be a table")
     
     local e = {}

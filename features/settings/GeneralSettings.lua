@@ -23,9 +23,9 @@ end
 function GeneralSettings:CreateList(parent)
 	local list = Settings.CreateList(parent)
 
-	-- merchant and minimap button
-    local minimap = Settings.CreateFeatureSetting("minimap")
-	list:AddSetting(minimap, "OPTIONS_SETTINGNAME_MINIMAP", "OPTIONS_SETTINGDESC_MINIMAP")
+	-- minimap button
+    local minimapbutton = Settings.CreateFeatureSetting("MinimapButton")
+	list:AddSetting(minimapbutton, "OPTIONS_SETTINGNAME_MINIMAP", "OPTIONS_SETTINGDESC_MINIMAP")
 
 	self:CreateSell(list)
 	self:CreateRepair(list)
@@ -73,8 +73,8 @@ function GeneralSettings:CreateTooltip(list)
     local setting = list:AddSetting(tooltip, "OPTIONS_SETTINGNAME_TOOLTIP", "OPTIONS_SETTINGDESC_TOOLTIP")
 	setting.Margins = INDENT
 
-    local tooliupRule = Settings.CreateSetting(Addon.c_Config_GuildRepair, true)
-    setting = list:AddSetting(tooliupRule, "OPTIONS_SETTINGNAME_EXTRARULEINFO", "OPTIONS_SETTINGDESC_EXTRARULEINFO", tooltip)
+    local tooltipRule = Settings.CreateSetting(Addon.c_Config_Tooltip_Rule, true)
+    setting = list:AddSetting(tooltipRule, "OPTIONS_SETTINGNAME_EXTRARULEINFO", "OPTIONS_SETTINGDESC_EXTRARULEINFO", tooltip)
 	setting.Margins = INDENT
 end
 

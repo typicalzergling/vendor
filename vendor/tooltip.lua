@@ -71,9 +71,6 @@ local function addItemTooltipLines(tooltip, tooltipData)
         return nil
     end
 
-
-    local profile = Addon:GetProfile();
-
     -- We have a simple cache here for performance and so we don't constantly re-evaluate the same item repeatedly.
     -- Tooltips execute many times per second. If you hold your mouse over an item, it will keep generating a new
     -- tooltip, which will call this code over and over again, even when the item is the same item. Therefore,
@@ -93,7 +90,6 @@ local function addItemTooltipLines(tooltip, tooltipData)
         Addon:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
     end
 
-    -- Add lines to the tooltip we are scanning after we've scanned it.
     -- We always add if the item is in the Always-Sell or Never-Sell list.
     if blocklist then
         -- Add Addon state to the tooltip.
@@ -110,17 +106,19 @@ local function addItemTooltipLines(tooltip, tooltipData)
         -- TODO: For custom lists, need to enumerate and list memberships.
     end
 
+    local profile = Addon:GetProfile();
+
     -- Add a warning that this item will be auto-sold on next vendor trip.
-    if (profile:GetValue(Addon.c_Config_Tooltip)) then
-        if result == Addon.ActionType.SELL then
-            tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
-        elseif result == Addon.ActionType.DESTROY then
-            tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_DELETED"], FONT_COLOR_CODE_CLOSE))    
-        end
+    if not profile:GetValue(Addon.c_Config_Tooltip) then return end
+    if result == Addon.ActionType.SELL then
+        tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_SOLD"], FONT_COLOR_CODE_CLOSE))
+    elseif result == Addon.ActionType.DESTROY then
+        tooltip:AddLine(string.format("%s%s%s", RED_FONT_COLOR_CODE, L["TOOLTIP_ITEM_WILL_BE_DELETED"], FONT_COLOR_CODE_CLOSE))    
     end
     
     -- Add Advanced Rule information if set and available.
-    if (ruleName and profile:GetValue(Addon.c_Config_Tooltip_Rule)) then
+    if not profile:GetValue(Addon.c_Config_Tooltip_Rule) then return end
+    if (ruleName) then
         if result == Addon.ActionType.SELL then
             tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
         elseif result == Addon.ActionType.DESTROY then

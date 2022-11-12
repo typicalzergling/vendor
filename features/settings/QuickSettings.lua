@@ -71,8 +71,8 @@ function QuickSettings:CreateList(parent)
     setting.isNew = true
 
     -- Quick setting for LDB/Minimap
-    local minimap = Settings.CreateFeatureSetting("minimap")
-    setting = list:AddSetting(minimap, "OPTIONS_SETTINGNAME_MINIMAP", "QUICK_REPAIR_SETTING_HELP")
+    local minimapbutton = Settings.CreateFeatureSetting("MinimapButton")
+    setting = list:AddSetting(minimapbutton, "OPTIONS_SETTINGNAME_MINIMAP", "QUICK_REPAIR_SETTING_HELP")
     setting.isNew = true
 
 	return list;
