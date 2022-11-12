@@ -8,7 +8,19 @@ Notes = [[
 
 Another expansion, another major update for Vendor!
 
-# New UI
+# Full 10.0.2 Support, Performance, and Reliability
+
+For us 10.0.2 was not something we scraped together to make it work in time for the expansion. We've spent a lot of time on beta getting it right. A key focus of this release has been performance. We don't want our addon
+to get in the way of your frames or game enjoyment. As such we have optimized some of the most fundamental parts of the addon, and in many places it has significant rewrites. A key part of this is making our 'status'
+updates of what we're going to sell in your bag delayed and happens more as a background action. If you mouseover something or go to a merchant it is still immediate in those scenarios, but when you're out and about, gathering,
+questing, leveling, etc - we don't think you really care whether or not our data is immediately up to date. It can come 10-20 seconds later without disrupting your play. As such, our libdatabroker plugin will be a little delayed
+between the time you loot and the time it updates. This is not a bug; this is a performance feature! We've found along the way that many other bag-scanning addons do so immediately and you will see a sutter in your UI from them.
+When we turn everything else off, our addon has no such stutter.
+
+Blizzard also introduced a lot of changes in this '.2' release. We had to fight through those changes and squash a lot of random tainting and and similar issues with the API updates. We think we got them all but please report any you do see
+and we will investigate.
+
+# All New UI
 
 As Blizzard keeps changing their UI every expansion and every classic release, we are perpetually broken by trying to retain the Blizzard theming. So we're abandoning Blizzard UI theming and using new primitives now that
 should work on any version. We strongly suspect this is why many popular addons with configuration options choose to do this rather than adopt Blizzard's UI - they are too inconsistent and break us too often and too easily
@@ -18,13 +30,37 @@ The New UI is wider than before, hopefully this will not cause problems for too 
 
 # Custom Lists
 
-This feature was actually released in 5.3 but we didn't mention it, but you can now create custom lists and then build rules around your custom item lists. The goal in the future is to allow sharing and for you to have sell or keep rules
+You can now create custom lists and then build rules around your custom item lists. The goal in the future is to allow sharing and for you to have sell or keep rules
 which target specific item lists that you can turn on and off as you desire and give you more granular control over the lists.
+
+An important thing to know about Custom Lists is that they are account-wide, while the normal Sell/Keep/Destroy lists are profile based. This means you can now have a common list of things you want to keeps shared across the account
+(in case you didn't want to use profiles.) To use a custom list, we have a new rule function 
+    
+# IsInList
+
+Use this function to use your custom lists in rules. For example, you could make a list of all the halloween candy item IDs, put them into a custom list named "HalloweenCandy" and then make a destroy rule for them using: IsInList("HalloweenCandy").
+This feature is a little late for Halloween but it is just in time for all the winter holiday crap. IsInList() also works for the base Keep, Sell, and Destroy lists, just put "keep", "sell" or "destroy" in for the list name. IsInList also accepts
+multiple lists, so you can create rules that merge lists together. 
+
+# Dragonflight CraftedQuality Property
+
+We added support for CraftedQuality so you can make rules for the new crafting quality introduced in Dragonflight. For example, keeping gear with CraftedQuality > 0, or vendoring potions with CraftedQuality == 1, whatever you fancy.
 
 # Rename profile
 
 A rename button has been added to the profile tab allowing you to change the name of an 
 exising profile
+
+# Rule Import & Export
+
+[fill this in]
+
+# Other stuff
+
+We made our packager strip out all of our debug messages and asserts so they won't even be loaded into memory or executed, making the release version more lean. We did some significant refactoring of our code to be more modular in the future.
+While not a big deal for you it is more memory efficient this way. We also delay-load most of our features so you will have a very fast load time with Vendor. Performance! We have a minimap icon that will save position now. Right-clicking the
+minimap button or the LDB plugin button will now open the profiles tab directly.
+
 
 ]]},
 {

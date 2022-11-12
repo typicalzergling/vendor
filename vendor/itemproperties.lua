@@ -170,7 +170,6 @@ function Addon:DoGetItemProperties(itemObj)
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Id);
     item.InventoryType = itemObj:GetInventoryType()
     item.IsConduit = false
-    --IsItemSpecificToPlayerClass
 
     -- We may not care about conduits anymore?
     -- TODO: Maybe gut this one?
@@ -255,6 +254,12 @@ function Addon:DoGetItemProperties(itemObj)
 
     -- Alias for IsUnknownAppearance
     item.IsUnknownAppearance = item.IsCollectable
+
+    -- Get Crafted Quality for Dragonflight professions.
+    -- There is also a Reagent Quality but every instance I have found for that it is identical.
+    -- We will just use the one for now unless there is need to add the differentiation.
+    item.CraftedQuality = C_TradeSkillUI.GetItemCraftedQualityByItemInfo(item.Link)
+    if not item.CraftedQuality then item.CraftedQuality = 0 end
 
     -- Determine if this is a toy.
     -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.

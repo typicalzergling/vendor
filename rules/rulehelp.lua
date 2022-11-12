@@ -25,7 +25,7 @@ Addon.ScriptReference.ItemProperties =
         Text = L["HELP_BINDTYPE_TEXT"],
         Notes = L["HELP_BINDTYPE_NOTES"] 
     },
-    StackSize = L["HELP_STACKSIZE_TEXT"],
+    Count = L["HELP_STACKSIZE_TEXT"],
     UnitValue = { 
         Text = L["HELP_UNITVALUE_TEXT"],
         Notes = L["HELP_UNITVALUE_NOTES"] 
@@ -67,6 +67,7 @@ Addon.ScriptReference.ItemProperties =
     IsBagAndSlot = L["HELP_ISBAGANDSLOT_TEXT"],
     Bag = L["HELP_BAG_TEXT"],
     Slot = L["HELP_SLOT_TEXT"],
+    CraftedQuality = L["HELP_CRAFTEDQUALITY_TEXT"],
 }
 
 Addon.ScriptReference.Functions =

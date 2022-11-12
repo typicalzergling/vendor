@@ -67,7 +67,7 @@ function QuickSettings:CreateList(parent)
                 profile:SetValue(Addon.c_Config_AutoRepair, false)
             end
         end)
-    setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "")
+    setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "QUICK_REPAIR_SETTING_HELP")
     setting.isNew = true
 
     -- Quick setting for Minimapbutton

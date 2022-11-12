@@ -88,14 +88,21 @@ OPTIONS_AUDIT_FILTER_LABEL = "Filter:",
 OPTIONS_AUDIT_EMPTY = "No records match the filters and/or search terms specified.",
 OPTIONS_AUDIT_SEARCH_PLACEHOLDER = "Enter terms to search",
 OPTIONS_AUDIT_FILTER_SOLD = "Sold",
-OPTIONS_AUDIT_FILTER_SOLD_DESC = "[re-vist] Include items which were sold",
+OPTIONS_AUDIT_FILTER_SOLD_DESC = "Include all items which were sold",
 OPTIONS_AUDIT_FILTER_DESTROYED = "Destroyed",
+OPTIONS_AUDIT_FILTER_DESTROYED_DESC = "Include all items which were destroyed",
 OPTIONS_AUDIT_FILTER_EPIC = "Epic Items",
+OPTIONS_AUDIT_FILTER_EPIC_DESC = "Include Epic quality items",
 OPTIONS_AUDIT_FILTER_RARE = "Rare Items",
+OPTIONS_AUDIT_FILTER_RARE_DESC = "Include Rare quality items",
 OPTIONS_AUDIT_FILTER_UNCOMMON = "Uncommon Items",
+OPTIONS_AUDIT_FILTER_UNCOMMON_DESC = "Include Uncommon quality items",
 OPTIONS_AUDIT_FILTER_LEGENDARY = "Legendary or Better",
+OPTIONS_AUDIT_FILTER_LEGENDARY_DESC = "Include Legendary quality or better items",
 OPTIONS_AUDIT_FILTER_COMMON = "Common or Less",
+OPTIONS_AUDIT_FILTER_COMMON_DESC = "Include Common quality or worse items.",
 OPTIONS_AUDIT_FILTER_EXTENSION = "Extension Rule",
+OPTIONS_AUDIT_FILTER_EXTENSION_DESC = "Include items sold or destroyed from a Vendor extension rule.",
 OPTIONS_AUDIT_FILTER_ALL = "All",
 OPTIONS_VENDOR_AUDIT = "Vendor Audit:",
 OPTIONS_AUDIT_TT_PROFILE = "Profile:",
@@ -149,12 +156,12 @@ OPTIONS_SETTINGDESC_MINIMAP = "Vendor will show a minimap button for quickly acc
 OPTIONS_SETTINGNAME_SELLBUTTON = "Show Auto-Sell Button on Merchant Window",
 OPTIONS_SETTINGDESC_SELLBUTTON = "Add an 'Auto-Sell' button to the merchant's sell window to run the Vendor Auto-sell.",
 
-QUICK_SELL_SETTING = "[re-visit] Auto-Sell",
-QUICK_SELL_SETTING_HELP = "[re-visit] Automatically sell items when interacting with a merchant. If this is disabled you can still manually sell by setting a hotkey or by adding a button.\n\nenables buyback limit",
-QUICK_REPAIR_SETTING = "[re-visit] Auto-Repair",
-QUICK_REPAIR_SETTING_HELP = "[re-visit] Automatically repair when visiting a repair-capable vendor.\nEnables guild repair",
-QUICK_LDB_SETTING = "[re-visit] LDB",
-QUICK_LDB_SETTING_HELP = "[re-visit] LDB enable minimap and titan?",
+QUICK_SELL_SETTING = "Auto-Sell items at merchant",
+QUICK_SELL_SETTING_HELP = "Automatically sell items when interacting with a merchant. If this is disabled you can still manually trigger an autosell by setting a hotkey.\n\nThis also enables the 12-item limit on selling, which is the buyback limit for safety.",
+QUICK_REPAIR_SETTING = "Auto-Repair at repair merchants",
+QUICK_REPAIR_SETTING_HELP = "Automatically repair when visiting a repair-capable vendor.\n\nThis also enables using guild repair when available.",
+QUICK_MINIMAP_SETTING = "Show Minimap Button",
+QUICK_MINIMAP_SETTING_HELP = "Enable the Vendor Minimap button on the minimap. On mouseover the button displays items that will be sold/destroyed. Left click brings up the rules configuration page, while right-click brings up profiles.",
 
 -- Profiles Page
 OPTIONS_PROFILE_TITLE = "Profiles",
@@ -436,23 +443,23 @@ LISTDIALOG_DESCR_LABEL = "Description:",
 LISTDIALOG_CONTENTS_LABEL = "Items:",
 LISTDIALOG_NAME_HELPTEXT = "type the name of your list here",
 LISTDIALOG_DESCR_HELPTEXT = "type the description of your list here",
-LISTDIALOG_ADDBYID_LABEL = "[re-visit]  You can add an item using it's id by typing the id in the box below and clicking add",
+LISTDIALOG_ADDBYID_LABEL = "Enter Item ID to add directly, or drag item into the list.",
 LISTDIALOG_ADDBYID = "Add",
-LISTDIALOG_SYSTEM_INFO = "[rv] This is a built-in list and saved in your profile, you can add and remove items bit you cannot modify the name or description",
+LISTDIALOG_SYSTEM_INFO = "This is a built-in list and saved in the current profile, you can add and remove items bit you cannot modify the name or description",
 LISTDIALOG_ADDBYID_HELP = "Type the ID an item",
-EDITLIST_DUPLICATE_NAME_CAPTION = "[rv] Duplicate List",
+EDITLIST_DUPLICATE_NAME_CAPTION = "Name already exists",
 EDITLIST_DUPLICATE_NAME_FMT1 = [[
 # Duplicate List Name
 
-[rv] A list already exists with the name '%s' please choose another.
+A list already exists with the name '%s' please choose another.
 ]],
 DELETE_LIST_CAPTION = "Delete List",
 DELETE_LIST_FMT1 = [[
 # Delete List
 
-[rv] Are you sure you want to delete list '%s' deleting this list will remove
+Are you sure you want to delete list '%s'? Deleting this list will remove
 it from all of your characters, and may affect any rules configured to use 
-the list
+the list.
 ]],
 CONFIRM_DELETE_LIST = "Confirm",
 CANCEL_DELETE_LIST = "Cancel",
@@ -466,7 +473,7 @@ ITEMLIST_EMPTY_SELL_LIST = "Your always sell list is current empty you can drag 
 ITEMLIST_EMPTY_KEEP_LIST = "Your never sell list is current empty you can drag and drop items into this list to add them.",
 ITEMLIST_REMOVE_TOOLTIP = "Remove from list",
 ITEMLIST_UNSELLABLE = "%s is unsellable, adding to Destroy list instead.",
-ITEMLIST_EMPTY = "[re-visit] There are no items in this list, you can drag and drop items here to populate the list",
+ITEMLIST_EMPTY = "There are no items in this list yet. You can drag and drop items here to populate the list.",
 
 -- LDB Object
 LDB_BUTTON_BUTTON_LABEL = "Vendor: ",
@@ -577,6 +584,14 @@ HELP_ISUNSELLABLE_NOTES = [[There are a few very rare exceptions where items may
 HELP_ISBAGANDSLOT_TEXT = [[True if the item has a defined bag and slot.]],
 HELP_BAG_TEXT = [[The bag ID of the item, or -1 if it is not in a bag and slot.]],
 HELP_SLOT_TEXT = [[The slot ID of the item, or -1 if it is not in a bag and slot.]],
+HELP_CRAFTEDQUALITY_TEXT = [[
+The Dragonflight Profession Crafted Quality of an item or reagent.
+
+   0 = No Quality
+   1 = 1 gem (bronze)
+   2 = 2 gems (silver)
+   3 = 3 gems, etc
+]],
 
 -- FUNCTION HELP
 
