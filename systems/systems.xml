@@ -12,4 +12,7 @@
 
     <!-- Item Props -->
     <Script file="systems/itemprops/itemprops.lua"/>
+
+    <!-- Account settings -->
+    <Script file="systems/accountsettings/accountsettings.lua"/>
 </Ui>

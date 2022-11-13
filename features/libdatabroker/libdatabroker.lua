@@ -86,7 +86,7 @@ function LibDataBroker:SetButtonToPosition(button, position)
         debugp("LDBIcon is not available.")
         return false
     end
-
+    
     local success, result = xpcall(
         function()
             self.ldbi:SetButtonToPosition(button, position)

@@ -6,6 +6,7 @@ local function debugp(...) Addon:Debug("minimapbutton", ...) end
 local MinimapButton = {
     NAME = "MinimapButton",
     VERSION = 1,
+    -- you can also use GetDependencies
     DEPENDENCIES = {
         "LibDataBroker",
         "LDBStatusPlugin",
@@ -13,13 +14,12 @@ local MinimapButton = {
 }
 
 -- Default minimap state and position
-local mapdefault = {}
-mapdefault.hide = false
-mapdefault.minimapPos = 225
+local mapdefault = {
+    hide = false,
+    minimapPos = 225
+}
 
 -- Used for tracking the actual data.
-local currentProfileName = nil
-local currentProfile = nil
 local profilemapdata = nil
 local minimapButton = nil
 
@@ -29,7 +29,7 @@ end
 
 local function updateButtonVisibility()
     debugp("Updating button visibility")
-    local enabled = currentProfile:GetValue(Addon.c_Config_MinimapButton)
+    local enabled = Addon:GetProfile():GetValue(Addon.c_Config_MinimapButton)
     if enabled then
         minimapButton:Show()
     else
@@ -46,14 +46,14 @@ local function updateButtonPosition()
     end
 
     -- we need to update the button's position to the current profile setting.
-    profilemapdata = currentProfile:GetValue(Addon.c_Config_MinimapData) or mapdefault
+    profilemapdata = Addon:GetAccountSetting(Addon.c_Config_MinimapData, mapdefault)
     local success = ldb:SetButtonToPosition(minimapButton, profilemapdata.minimapPos)
     debugp("Button position updated: %s", not not success)
 end
 
 local function savePositionToProfile()
     debugp("Saving button position")
-    currentProfile:SetValue(Addon.c_Config_MinimapData, profilemapdata)
+    Addon:SetAccountSetting(Addon.c_Config_MinimapData, profilemapdata)
 end
 
 function MinimapButton:Create()
@@ -77,9 +77,7 @@ function MinimapButton:Create()
     end
 
     -- Get minimap data from profile
-    currentProfile = Addon:GetProfile()
-    currentProfileName = Addon:GetCurrentProfile()
-    profilemapdata = currentProfile:GetValue(Addon.c_Config_MinimapData) or mapdefault
+    profilemapdata = Addon:GetAccountSetting(Addon.c_Config_MinimapData, mapdefault)
 
     -- Create the minimap button.
     minimapButton = ldb:CreateLDBIcon(ldbstatusplugin:GetDataObjectName(), profilemapdata)
@@ -102,24 +100,11 @@ function MinimapButton:OnTerminate()
     savePositionToProfile()
 end
 
--- Called whenever profiles change
--- This is ANY setting changed.
-function MinimapButton:OnProfileChanged()
-    -- Check if a different profile was set.
-    if currentProfileName ~= Addon:GetCurrentProfile() then 
-        -- Save the position as we still have handle to the previous profile.
-        savePositionToProfile()
-
-        -- Update to new profile
-        currentProfileName = Addon:GetCurrentProfile()
-        currentProfile = Addon:GetProfile()
-
-        -- Profile changed, we need to update button state to the new profile
+function MinimapButton:OnAccountSettingChange(settings)
+    if (settings[Addon.c_Config_MinimapData]) then
         updateButtonPosition()
+        updateButtonVisibility()
     end
-
-    -- Profile changed, but we don't know whether button state changed, so check.
-    updateButtonVisibility()
 end
 
 Addon.Features.MinimapButton = MinimapButton
