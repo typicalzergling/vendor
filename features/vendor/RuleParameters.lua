@@ -164,7 +164,7 @@ function Vendor.CreateRuleParameter(parent, param)
         frame = Mixin(CreateFrame("Frame", nil, parent, "RuleParam_String"), StringParameter)
     end
 
-    assert(frame, "Unknwon paramater type: " .. param.Type)
+    assert(frame, "Unknwon parameter type: " .. param.Type)
     Addon.CommonUI.DialogBox.Colorize(frame)
     frame:SetParam(param)
     frame.Parameter = param

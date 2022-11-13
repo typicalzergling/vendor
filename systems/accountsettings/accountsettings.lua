@@ -1,5 +1,6 @@
 local _, Addon = ...
 local AccountSettings = {}
+local function debugp(...) Addon:Debug("accountsettings", ...) end
 
 --[[ Retrieve our depenedencies ]]
 function AccountSettings:GetDependencies()
@@ -8,7 +9,7 @@ end
 
 --[[ Called when the settings have changed ]]
 function AccountSettings:GetEvents()
-    return { "OnAccountSettingChange "}
+    return { "OnAccountSettingChange"}
 end
 
 --[[ Startup our system ]]
@@ -28,19 +29,20 @@ end
 
 --[[ Retrieve an account setting ]]
 function AccountSettings:GetAccountSetting(name, default)
+    assert(type(name) == "string", "Invalid input to GetAccountSetting")
     local value = self.savedVariable:Get(name)
-    print("get account", name, value, default, type(value))
+    debugp("GetAccountSetting: %s = %s (%s), default = %s", name, tostring(value), type(value), tostring(default))
     if (type(value) == "nil") then
 
         -- Default value provided 
         if (type(default) ~= nil) then
-            Addon:Debug("accountsettings", "Return the default value for '%s'", name)
+            debugp("Return the default value for '%s'", name)
             return default
         end
 
         -- Are there addon defaults?
-        if (type(Addon.Defaults) == "table" and type(Addon.Defaults.Account) == "tablle") then
-            Addon:Debug("accountsettings", "Returning the default value from 'Addon.Defaults.Account[%s]'", name)
+        if (type(Addon.Defaults) == "table" and type(Addon.Defaults.Account) == "table") then
+            debugp("Returning the default value from 'Addon.Defaults.Account[%s]'", name)
             value = Addon.Defaults.Account[name]
         end
     end
@@ -56,7 +58,7 @@ function AccountSettings:SetAccountSetting(name, value)
     local current = self:GetAccountSetting(name)
     if (value ~= current) then
         self.savedVariable:Set(name, value)
-        Addon:Debug("accountsettings", "The value '%s' as been changed to '%s", name, tostring(value))
+        debugp("The value '%s' as been changed to '%s", name, tostring(value))
 
         if (self.timer) then
             self.timer:Cancel()

@@ -271,7 +271,7 @@ function EditRule:OnInitDialog(dialog)
     self.matches = tabs:AddTab("matches", "matches", "Vendor_EditRule_Matches", Dialogs.MatchesTab)
     self.items = tabs:AddTab("iteminfo", "iteminfo", "Vendor_EditRule_ItemInfo", Dialogs.ItemInfoTab)
     self.items:RegisterCallback("INSERT_TEXT", self.InsertText, self)
-    tabs:AddTab("parameters", "parameters", "Vendor_EditRule_Parameters", {})
+    --tabs:AddTab("parameters", "parameters", "Vendor_EditRule_Parameters", {})
 
     self:SetRuleType("SELL")
     tabs:ShowTab("help")
@@ -302,7 +302,7 @@ function EditRule:InsertText(_, text)
     end
 end
 
---[[ Compute the current paraamters for this rule ]]
+--[[ Compute the current parameters for this rule ]]
 function EditRule:GetCurrentParameters()
     if (self.rule and type(self.rule.Params) == "table") then
         local params = {}

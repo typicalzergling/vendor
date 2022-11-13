@@ -272,7 +272,6 @@
 		</Frames>
     </Frame> 
 
-
     <Frame name="Vendor_EditRule_Parameters" virtual="true" hidden="true">
         <Layers>
 			<Layer level="ARTWORK">
@@ -288,6 +287,5 @@
             </Layer>
         </Layers>
     </Frame>
-
 </Ui>
 

@@ -152,7 +152,7 @@ OPTIONS_SETTINGDESC_SELL_THROTTLE = "This is the number of items vendored per se
 OPTIONS_SETTINGNAME_CYCLE_RATE = "Cycle Rate",
 OPTIONS_SETTINGDESC_CYCLE_RATE = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 OPTIONS_SETTINGNAME_MINIMAP = "Show Minimap Button",
-OPTIONS_SETTINGDESC_MINIMAP = "Vendor will show a minimap button for quickly accessing rules and lists, and mousing over it shows a summary of matching items.",
+OPTIONS_SETTINGDESC_MINIMAP = "Vendor will show a minimap button for quickly accessing rules and profiles, and mousing over it shows a summary of matching items.\n\nThis is an account-wide setting.",
 OPTIONS_SETTINGNAME_SELLBUTTON = "Show Auto-Sell Button on Merchant Window",
 OPTIONS_SETTINGDESC_SELLBUTTON = "Add an 'Auto-Sell' button to the merchant's sell window to run the Vendor Auto-sell.",
 
@@ -161,7 +161,7 @@ QUICK_SELL_SETTING_HELP = "Automatically sell items when interacting with a merc
 QUICK_REPAIR_SETTING = "Auto-Repair at repair merchants",
 QUICK_REPAIR_SETTING_HELP = "Automatically repair when visiting a repair-capable vendor.\n\nThis also enables using guild repair when available.",
 QUICK_MINIMAP_SETTING = "Show Minimap Button",
-QUICK_MINIMAP_SETTING_HELP = "Enable the Vendor Minimap button on the minimap. On mouseover the button displays items that will be sold/destroyed. Left click brings up the rules configuration page, while right-click brings up profiles.",
+QUICK_MINIMAP_SETTING_HELP = "Enable the Vendor Minimap button on the minimap. On mouseover the button displays items that will be sold/destroyed. Left click brings up the rules configuration page, while right-click brings up profiles.\n\nThis is an account-wide setting.",
 
 -- Profiles Page
 OPTIONS_PROFILE_TITLE = "Profiles",

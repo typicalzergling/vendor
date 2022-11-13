@@ -115,8 +115,8 @@ function Addon:RefreshBagAndSlot(bag, slot, force)
 end
 
 -- Wrapper for getting an item result for the given bag and slot.
-function Addon:GetItemResultForBagAndSlot(bag, slot)
-    if Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
+function Addon:GetItemResultForBagAndSlot(bag, slot, force)
+    if force or Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
         return Addon:RefreshBagAndSlot(bag, slot, true)
     else
         return getItemFromBagMap(bag, slot)
@@ -237,4 +237,11 @@ function Addon:OnBagUpdate(bagID)
     -- first appear in the inventory unless players specifically mouse over those items before
     -- we refresh them.
     Addon:StartItemResultRefresh(6)
+end
+
+function Addon:OnPlayerEquipmentChanged(slotID)
+    -- When player equipment changes, we could likely have some rule evaluations changed, so
+    -- we should start a refresh with force function flagged so we always rebuild the cache
+    -- after such an event.
+    Addon:StartItemResultRefresh(6, true)
 end

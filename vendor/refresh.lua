@@ -41,7 +41,11 @@ function Addon:StopItemResultRefresh()
     end
 end
 
-local function doStartItemRefresh()
+-- forceNext is an option where we are guaranteed to force an update
+-- on the next refresh, even if non-forced refeshes are also triggered.
+local forceNext = false
+local function doStartItemRefresh(forceUpdate)
+    forceUpdate = forceUpdate or forceNext
     -- Clear the delay timer
     cancelDelayTimer()
 
@@ -62,7 +66,7 @@ local function doStartItemRefresh()
         for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
 
-                if Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
+                if forceUpdate or Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
                     Addon:RefreshBagAndSlot(bag, slot, true)
                     numProcessed = numProcessed + 1
                 end
@@ -84,9 +88,11 @@ local function doStartItemRefresh()
 end
 
 -- ItemResultRefresh has optional argument for delay in seconds.
-function Addon:StartItemResultRefresh(delayInSeconds)
+function Addon:StartItemResultRefresh(delayInSeconds, forceUpdate)
     assert(not delayInSeconds or type(delayInSeconds) == "number")
-
+    if forceUpdate then
+        forceNext = true
+    end
     -- If we are already pending a delay, this call will overwrite that delay.
     -- Note that immediate call with no delay will always be immediate.
     cancelDelayTimer()
@@ -97,8 +103,8 @@ function Addon:StartItemResultRefresh(delayInSeconds)
         refresh.delayTimer = C_Timer.NewTimer(delayInSeconds, doStartItemRefresh)
         Addon:RaiseEvent(ITEMRESULT_REFRESH_TRIGGERED, delayInSeconds)
     else
-        debugp("Starting immediate ItemResult Refresh")
-        doStartItemRefresh()
+        debugp("Starting immediate ItemResult Refresh. Force = %s", tostring(forceNext))
+        doStartItemRefresh(forceNext)
     end
 end
 

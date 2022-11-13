@@ -24,7 +24,7 @@ function GeneralSettings:CreateList(parent)
 	local list = Settings.CreateList(parent)
 
 	-- minimap button
-    local minimapbutton = Settings.CreateSetting(Addon.c_Config_MinimapButton, true)
+	local minimapbutton = Addon.Features.MinimapButton:CreateSettingForMinimapButton()
 	list:AddSetting(minimapbutton, "OPTIONS_SETTINGNAME_MINIMAP", "OPTIONS_SETTINGDESC_MINIMAP")
 
 	self:CreateSell(list)

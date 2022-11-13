@@ -58,36 +58,6 @@ local function checkMap(map, expectedValue, values)
 end
 
 --*****************************************************************************
--- Matches the item quality (or item qualities) this accepts multiple arguments
--- which can be either strings or numbers.
---*****************************************************************************
-function Addon.RuleFunctions.ItemQuality(...)
-    return checkMap(Addon.Maps.Quality, Quality, {...})
-end
-
---*****************************************************************************
--- Rule function which match the item type against the list of arguments
--- which can either be numeric or strings which are mapped with the table
--- above.
---*****************************************************************************
-function Addon.RuleFunctions.ItemType(...)
-    return checkMap(Addon.Maps.ItemType, TypeId, {...})
-end
-
---*****************************************************************************
--- Rule function which matches of the item is from a particular expansion
--- these can either be numeric or you can use a value from the table above
--- NOTE: If the expansion pack id is zero, it can belong to any or none,
---       this will always evaluate to false.
---*****************************************************************************
-function Addon.RuleFunctions.IsFromExpansion(...)
-    local xpackId = ExpansionPackId;
-    if (xpackId ~= 0) then
-        return checkMap(Addon.Maps.Expansion, xpackId, {...})
-    end
-end
-
---*****************************************************************************
 -- Rule function which returns the level of the player.
 --*****************************************************************************
 function Addon.RuleFunctions.PlayerLevel()
@@ -148,6 +118,65 @@ function Addon.RuleFunctions.IsInEquipmentSet(...)
             end
         end
     end
+end
+
+
+--*****************************************************************************
+-- This function uses Blizzard API to get total count of an item everywhere.
+-- Arguments: includeBank, includeUses (charges)
+--*****************************************************************************
+function Addon.RuleFunctions.TotalItemCount(...)
+    local includeBank, includeUses = ...
+    -- Assuming if you care to know about the bank you also want reagent bank.
+    return GetItemCount(Link, includeBank, includeUses, includeBank)
+end
+
+--*****************************************************************************
+-- This function returns the currently equipped item level of the items the
+-- player is wearing that match the same inventory locations. Otherwise returns
+-- 0 for non-equippable items or no item in the slot.
+--*****************************************************************************
+function Addon.RuleFunctions.CurrentEquippedItemLevel(...)
+
+    -- Return 0 if this is a non-equippable item.
+    if not IsEquipment then return 0 end
+
+    return 1
+    --[[
+    -- Get the inventory item matching this one.
+    local invSlotId, name = 
+    local location = 
+
+    -- Checks the item set for the specified item
+    local function check(itemId, setId)
+        itemIds = C_EquipmentSet.GetItemIDs(setId);
+        for _, setItemId in pairs(itemIds) do
+            if ((setItemId ~= -1) and (setItemId == itemId)) then
+                return true
+            end
+        end
+    end
+
+    local sets = { ... };
+    local itemId = Id;
+    if (#sets == 0) then
+        -- No sets provied, so enumerate and check all of the characters item sets
+        local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
+        for _, setId in pairs(itemSets) do
+            if (check(itemId, setId)) then
+                return true;
+            end
+        end
+    else
+        -- Check against the specific item set/sets provided.
+        for _, set in ipairs(sets) do
+            local setId = C_EquipmentSet.GetEquipmentSetID(set)
+            if (setId and check(itemId, setId)) then
+                return true
+            end
+        end
+    end
+    ]]
 end
 
 --@do-not-package@

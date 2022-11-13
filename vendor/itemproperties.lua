@@ -49,8 +49,38 @@ Addon.HiddenProperties = {
     GUID = true,
     Link = true,
     IsUnknownAppearance = true,
+    InventorySlotIds = true,
 }
 
+-- WHY is there no API for converting EquipLoc to InvSlotIDs?
+-- This is returning a table becuase Trinkets and Rings and dual wield has 2 slots each.
+-- These are the equippable slots for the item.
+local inventorySlotIds = {
+    INVTYPE_HEAD            = {1},
+    INVTYPE_NECK            = {2},
+    INVTYPE_SHOULDER        = {3},
+    INVTYPE_BODY            = {4},
+    INVTYPE_CHEST           = {5},
+    INVTYPE_WAIST           = {6},
+    INVTYPE_LEGS            = {7},
+    INVTYPE_FEET            = {8},
+    INVTYPE_WRIST           = {9},
+    INVTYPE_HAND            = {10},
+    INVTYPE_FINGER          = {11,12},
+    INVTYPE_TRINKET         = {13,14},
+    INVTYPE_WEAPON          = {16,17}, -- 17 is only if dual wielding
+    INVTYPE_SHIELD          = {17},
+    INVTYPE_RANGED          = {16},
+    INVTYPE_CLOAK           = {15},
+    INVTYPE_2HWEAPON        = {16},
+    INVTYPE_TABARD          = {19},
+    INVTYPE_ROBE            = {5},
+    INVTYPE_WEAPONMAINHAND  = {16},
+    INVTYPE_WEAPONOFFHAND   = {17},  -- Doc says 16 but that doesn't make sense.
+    INVTYPE_HOLDABLE        = {17},
+    INVTYPE_THROWN          = {16},
+    INVTYPE_RANGEDRIGHT     = {16},
+}
 
 -- Because Blizzard doesn't make this easy.
 local transmog_invtypes = {
@@ -170,6 +200,12 @@ function Addon:DoGetItemProperties(itemObj)
     item.IsAzeriteItem = (getItemInfo[15] == 7) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(item.Id);
     item.InventoryType = itemObj:GetInventoryType()
     item.IsConduit = false
+
+    -- Map the equippable slot ids for this item
+    item.InventorySlotIds = {}
+    if inventorySlotIds[item.EquipLoc] then
+        item.InventorySlotIds = inventorySlotIds[item.EquipLoc]
+    end
 
     -- We may not care about conduits anymore?
     -- TODO: Maybe gut this one?

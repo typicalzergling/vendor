@@ -20,44 +20,74 @@ local mapdefault = {
 }
 
 -- Used for tracking the actual data.
-local profilemapdata = nil
+-- The button holds truth since it can be manipulated by other addons to manage how minimap buttons
+-- appear. So another addon may disable our minimap button on the user's behalf so we will reflect
+-- that state here.
 local minimapButton = nil
 
 function MinimapButton:Get()
     return minimapButton
 end
 
-local function updateButtonVisibility()
-    debugp("Updating button visibility")
-    local enabled = Addon:GetProfile():GetValue(Addon.c_Config_MinimapButton)
-    if enabled then
-        minimapButton:Show()
-    else
+local function updateMinimapButtonVisibility()
+    if not minimapButton then return end
+    local accountMapData = Addon:GetAccountSetting(Addon.c_Config_MinimapData)
+    assert(accountMapData and type(accountMapData.hide) == "boolean", "Error retrieving settings for MinimapButton")
+    debugp("Updating button visibility. Hide = %s", tostring(accountMapData.hide ))
+    if accountMapData.hide then
+        minimapButton.hide = true
         minimapButton:Hide()
+    else
+        minimapButton.hide = false
+        minimapButton:Show()
     end
 end
 
-local function updateButtonPosition()
-    debugp("Updating button position")
-    local ldb = Addon:GetFeature("LibDataBroker")
-    if not ldb or not ldb:IsLDBIconAvailable() then
-        debugp("LDBIcon is not available.")
-        return false
-    end
-
-    -- we need to update the button's position to the current profile setting.
-    profilemapdata = Addon:GetAccountSetting(Addon.c_Config_MinimapData, mapdefault)
-    local success = ldb:SetButtonToPosition(minimapButton, profilemapdata.minimapPos)
-    debugp("Button position updated: %s", not not success)
+local function saveMinimapSettings()
+    -- It's possible the minimap button wasn't created if the dependency is missing.
+    if not minimapButton then return end
+    debugp("Saving Minimap Settings")
+    -- The button holds truth since it can be manipulated by other addons to manage how minimap buttons
+    -- appear. So another addon may disable our minimap button on the user's behalf so we will reflect
+    -- that state here.
+    -- It's possible the minimap button wasn't created if the dependency is missing.
+    Addon:SetAccountSetting(Addon.c_Config_MinimapData, minimapButton.db)
 end
 
-local function savePositionToProfile()
-    debugp("Saving button position")
-    Addon:SetAccountSetting(Addon.c_Config_MinimapData, profilemapdata)
+local function resetMinimapDataToDefault()
+    debugp("Resetting MinimapButton data to defaults.")
+    Addon:SetAccountSetting(Addon.c_Config_MinimapData, mapdefault)
+end
+
+function MinimapButton:CreateSettingForMinimapButton()
+    return Addon.Features.Settings.CreateSetting(nil, true, self.IsMinimapButtonEnabled, self.SetMinimapButtonEnabled)
+end
+
+function MinimapButton.IsMinimapButtonEnabled()
+    local accountMapData = Addon:GetAccountSetting(Addon.c_Config_MinimapData)
+    if accountMapData then
+        return not accountMapData.hide
+    else
+        -- Going to assume that if the data is corrupted or missing they want the minimap button.
+        -- this should help get back into a good state.
+        resetMinimapDataToDefault()
+        return true
+    end
+end
+
+function MinimapButton.SetMinimapButtonEnabled(value)
+    local accountMapData = Addon:GetAccountSetting(Addon.c_Config_MinimapData)
+    if value then
+        accountMapData.hide = false
+        Addon:SetAccountSetting(Addon.c_Config_MinimapData, accountMapData)
+    else
+        accountMapData.hide = true
+        Addon:SetAccountSetting(Addon.c_Config_MinimapData, accountMapData)
+    end
 end
 
 function MinimapButton:Create()
-    -- Ensure idempotency - if this is already created we have nothing to create.
+    -- If this is already created we have nothing to create.
     if minimapButton then
         return true
     end
@@ -76,11 +106,13 @@ function MinimapButton:Create()
         return false
     end
 
-    -- Get minimap data from profile
-    profilemapdata = Addon:GetAccountSetting(Addon.c_Config_MinimapData, mapdefault)
+    -- Get data from the account setting.
+    local accountMapData = Addon:GetAccountSetting(Addon.c_Config_MinimapData, mapdefault)
 
     -- Create the minimap button.
-    minimapButton = ldb:CreateLDBIcon(ldbstatusplugin:GetDataObjectName(), profilemapdata)
+    minimapButton = ldb:CreateLDBIcon(ldbstatusplugin:GetDataObjectName(), accountMapData)
+
+    debugp("MinimapButton Starting State = %s - %s", tostring(not minimapButton.db.hide), tostring(minimapButton.db.minimapPos))
     return not not minimapButton
 end
 
@@ -97,13 +129,14 @@ end
 
 function MinimapButton:OnTerminate()
     debugp("Terminating")
-    savePositionToProfile()
+    saveMinimapSettings()
 end
 
 function MinimapButton:OnAccountSettingChange(settings)
+    if not minimapButton then return end
     if (settings[Addon.c_Config_MinimapData]) then
-        updateButtonPosition()
-        updateButtonVisibility()
+        debugp("MinimapButton Settings Update")
+        updateMinimapButtonVisibility()
     end
 end
 

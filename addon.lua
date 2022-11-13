@@ -45,6 +45,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
     self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
     self:RegisterEvent("BAG_UPDATE_DELAYED", "OnBagUpdate")
+    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", "OnPlayerEquipmentChanged")
 
     -- Merchant Button
     --self.MerchantButton.Initialize()
