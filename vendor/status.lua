@@ -48,7 +48,7 @@ end
 -- This method should run after a refresh since all of the items and evaluations will already be cached.
 -- This will make it very fast to create the status.
 -- Results of the status will be cached until the next time GenerateEvaluationStatus() is called.
-function Addon:GenerateEvaluationStatus()
+function Addon:GenerateEvaluationStatus(force)
     debugp("Generating Evaluation Status")
     local count = 0
     local value = 0
@@ -62,7 +62,7 @@ function Addon:GenerateEvaluationStatus()
             -- If it has changed, it will refresh the item, so calling this outside refresh is OK,
             -- however it does a lot more work and is bad for performance. Let Refresh efficiently
             -- update the cache while this piggybacks on that effort to give timely status updates.
-            local entry = Addon:GetItemResultForBagAndSlot(bag, slot)
+            local entry = Addon:GetItemResultForBagAndSlot(bag, slot, force)
             if entry then
                 if entry.Result.Action ~= Addon.ActionType.NONE then
                     count = count + 1

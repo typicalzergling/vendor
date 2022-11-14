@@ -123,6 +123,11 @@ of our code to be more modular in the future. While not a big deal for you it is
 efficient this way. We also delay-load most of our features so you will have a very fast load time
 with Vendor. Performance!
 
+# Known Issues
+
+* Destroy will report 1 more item remaining to be destroyed than there actually is.
+
+
 ]]},
 {
 Release ="5.3 (November 3, 2022)",

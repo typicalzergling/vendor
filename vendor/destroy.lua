@@ -49,7 +49,7 @@ end
 function Addon:DestroyItems()
     if Addon:DestroyNextItem() then
         -- see if we have more items remaining
-        Addon:GenerateEvaluationStatus()
+        Addon:GenerateEvaluationStatus(true)
         local count, value, tosell, todestroy, sellitems, destroyitems = Addon:GetEvaluationStatus()
         if todestroy > 0 then
             self:Print(L.ITEM_DESTROY_MORE_ITEMS, todestroy)
