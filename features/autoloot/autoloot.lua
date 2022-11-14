@@ -22,9 +22,7 @@ local LOOTED = "looted"
 local CLEARED = "cleared"
 
 
-local function debug(message, ...) 
-    Addon:Debug("AUTOLOOT", message, ...)
-end
+local function debugp(message, ...) Addon:Debug("AUTOLOOT", message, ...) end
 
 -- Check if the item has the specific state
 local function CheckState(item, ...)
@@ -75,7 +73,7 @@ local function CountEmptySlots()
 end
 
 function AutolootFeature:OnInitialize()
-    debug("Initializing auto-loot feature");
+    debugp("Initializing auto-loot feature");
     local rulesEngine = Addon:CreateRulesEngine(false)
 
     for _, category in ipairs(Addon.SmartLoot.Category) do
@@ -114,7 +112,7 @@ end
 -- the rules as we've normally got.
 
 function AutolootFeature:ON_LOOT_READY(autoloot)
-    debug("Loot ready : %s", tostring(autoloot))
+    debugp("Loot ready : %s", tostring(autoloot))
 
     print(pcall(function()
         self:CreateLootTable()
@@ -126,7 +124,7 @@ function AutolootFeature:ON_LOOT_SLOT_CHANGED(slot)
     if (self.lootTable) then
         for _, item in ipairs(self.lootTable) do
             if (item.slot == slot and not CheckState(LOOTED,SKIPPED)) then
-                debug("Unprocessed item in slot '%d' was updated", slot)
+                debugp("Unprocessed item in slot '%d' was updated", slot)
 
                 local loot = GetLootInfo()
                 item.info = loot[slot]
@@ -138,7 +136,7 @@ function AutolootFeature:ON_LOOT_SLOT_CHANGED(slot)
 end
 
 function AutolootFeature:ON_LOOT_SLOT_CLEARED(slot)
-    debug("---> slot cleared %d", slot)
+    debugp("---> slot cleared %d", slot)
 end
 
 function AutolootFeature:CreateLootTable()
@@ -215,7 +213,7 @@ function AutolootFeature:CheckLoot(item)
                 return true, item.slot, eval.weight
             end
         else
-            debug("[%s] did't match any rules (force looting)", item.link)
+            debugp("[%s] did't match any rules (force looting)", item.link)
             return true, -1, -1
         end
     end
@@ -237,7 +235,7 @@ function AutolootFeature:LootNextItem()
     for _, item in ipairs(self.lootTable) do
 
         local should, slot, weight = self:CheckLoot(item)
-        debug("CheckLoot :: %s  loot=%s, slot=%d, weight=%d", item.link or item.info.item, tostring(should), slot, weight)
+        debugp("CheckLoot :: %s  loot=%s, slot=%d, weight=%d", item.link or item.info.item, tostring(should), slot, weight)
 
         if should then
             if (CheckState(item, ALWAYS)) then
@@ -260,7 +258,7 @@ function AutolootFeature:LootNextItem()
     end
 
     if (loot) then        
-        debug("Looting :: %s  %d/%d", loot.link or loot.info.item, loot.slot, #self.lootTable)
+        debugp("Looting :: %s  %d/%d", loot.link or loot.info.item, loot.slot, #self.lootTable)
         
         if (not CheckState(loot, ALWAYS)) then
             Vendor_XX_LootInfo = Vendor_XX_LootInfo or {}

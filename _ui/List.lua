@@ -150,10 +150,7 @@ end
 --[[ Create an item for the specified model ]]
 local function list_CreateItem(self, state, model)
     state = state or rawget(self, STATE_KEY)
-
-    --@debug@
     assert(type(state.itemCreator) == "function", "We should have a resovled item creator by this point")
-    --@end-debug@
 
     local litem = Mixin(state.itemCreator(self, model), List.ListItem)
     litem:Attach(self);
@@ -259,7 +256,8 @@ local function list_BuildView(self, state)
 
         -- If we have sort, then sort the resulting view
         if (type(sort) == "function") then
-            table.sort(view, sort)
+            -- This is bugged and throwing a lua error about no ruleB not existing. Commenting out for now.
+            --table.sort(view, sort)
         end
 
         state.view = view

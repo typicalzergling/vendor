@@ -6,5 +6,7 @@
     <Include file="features/settings/widgets.xml"/>
     <Script file="features/settings/GeneralSettings.lua"/>
     <Script file="features/settings/QuickSettings.lua"/>
+    <!--@do-not-package@-->
     <Script file="features/settings/DebugSettings.lua"/>
+    <!--@end-do-not-package@-->
 </Ui>

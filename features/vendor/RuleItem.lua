@@ -57,9 +57,7 @@ local COLORS = {
 }
 
 -- Helper for debugging
-local function debug(msg, ...)
-    Addon:Debug("ruleitem", msg, ...)
-end
+local function debugp(msg, ...) Addon:Debug("ruleitem", msg, ...) end
 
 function RuleItem:OnLoad()
     self.active = false
@@ -161,10 +159,10 @@ function RuleItem:Save()
         Addon:DebugForEach("profile", params)
 
         if self:IsActive() then
-            debug("SaveRule :: %s [%s]", ruleId, tostring(params))
+            debugp("SaveRule :: %s [%s]", ruleId, tostring(params))
             self.ruleConfig:Set(ruleId, params)
         else
-            debug("SaveRule :: %s [disabled]", ruleId)
+            debugp("SaveRule :: %s [disabled]", ruleId)
             self.ruleConfig:Remove(ruleId)
         end
         self.ruleConfig:Commit()

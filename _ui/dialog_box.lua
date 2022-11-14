@@ -386,11 +386,7 @@ end
 ]]
 function Dialog.RaiseEvent(frame, event, ...)
     local dialog = Dialog.Find(frame)
-
-    --@debug@
     assert(dialog, "Unable to locate the dialog to raise event : " .. tostring(event))
-    --@end-debug@
-
     Addon:Debug("dialogs", "Raising dialog event '%s'", tostring(event))
     dialog:TriggerEvent(event, dialog, ...)
 end
@@ -402,11 +398,7 @@ end
 ]]
 function Dialog.RegisterCallback(frame, event, handler)
     local dialog = Dialog.Find(frame)
-
-    --@debug@
     assert(dialog, "Unable to locate the dialog to register our callback for : " .. tostring(event))
-    --@end-debug@
-
     Addon:Debug("dialogs", "Registering a callback for '%s'", tostring(event))
     dialog:RegisterCallback(event, handler, frame)
 end
@@ -418,11 +410,7 @@ end
 ]]
 function Dialog.UnregisterCallback(frame, event, handler)
     local dialog = Dialog.Find(frame)
-
-    --@debug@
     assert(dialog, "Unable to locate the dialog to unregister our callback for : " .. tostring(event))
-    --@end-debug@
-
     Addon:Debug("dialogs", "Removing a callback for '%s'", tostring(event))
     dialog:UnregisterCallback(event, frame)
 end

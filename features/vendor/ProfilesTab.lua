@@ -6,13 +6,7 @@ local ProfilesTab = {}
 local Colors = Addon.CommonUI.Colors
 
 --[[ Helper function for debugging ]]
-local function debug(...)
-    local message = ""
-    for _, arg in ipairs({...}) do
-        message = message .. tostring(arg)
-    end
-    Addon:Debug("profilestab", message)
-end
+local function debugp(...) Addon:Debug("profilestab", ...) end
 
 function ProfilesTab:OnLoad()
     self.profileManager = Addon:GetProfileManager()
@@ -33,13 +27,13 @@ function ProfilesTab:GetProfiles()
 end
 
 function ProfilesTab:OnProfileDeleted()
-    debug("Profiles have changed")
+    debugp("Profiles have changed")
     self.profiles:Rebuild()
     self:Update()
 end
 
 function ProfilesTab:OnProfileCreated()
-    debug("Profiles have changed")
+    debugp("Profiles have changed")
     self.profiles:Rebuild()
     self:Update()
 end
@@ -72,7 +66,7 @@ end
 function ProfilesTab:CopyProfile()
     local selected = self:GetSelectedProfile()
     if (selected) then
-        debug("Copy profile '", selected:GetName(), "'")
+        debugp("Copy profile '"..tostring(selected:GetName()).."'")
 
         local profileName = self:GetCopyProfileName(selected)
          
@@ -114,7 +108,7 @@ function ProfilesTab:RenameProfile()
         local text = self.name:GetText()
 
         if (not self:NameExists(text)) then
-            debug("Changing the name of profile '", selected:GetName(), "' to : ", text)
+            debugp("Changing the name of profile '", selected:GetName(), "' to : ", text)
             selected:SetName(text)
             self.name:SetText()
         end
@@ -130,10 +124,10 @@ end
 function ProfilesTab:SetProfile()
     local selectedProfile = self:GetSelectedProfile()
     if (selectedProfile) then
-        debug("SetProfile selecting new profile '", selectedProfile:GetName(), "'")
+        debugp("SetProfile selecting new profile '"..tostring(selectedProfile:GetName()).."'")
         self.profileManager:SetProfile(selectedProfile)
     else
-        debug("SetProfile was called without a selected profile")
+        debugp("SetProfile was called without a selected profile")
     end
 end
 
@@ -150,7 +144,7 @@ function ProfilesTab:NameExists(name)
 
     -- Show an error when it exists
     if (exists) then
-        debug("A profile with the name '", name, "' already exists")
+        debugp("A profile with the name '"..tostring(name).."' already exists")
         UI.MessageBox("OPTIONS_PROFILE_DUPLICATE_NAME_CAPTION",
             locale:FormatString("OPTIONS_PROFILE_DUPLICATE_NAME_FMT1", name),
             OK)

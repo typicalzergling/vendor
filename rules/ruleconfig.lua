@@ -2,9 +2,7 @@ local _, Addon = ...;
 local RuleConfigObject = {}
 
 -- Helper for debugging
-local function debug(...)
-	Addon:Debug("ruleconfig", ...);
-end
+local function debugp(...) Addon:Debug("ruleconfig", ...) end
 
 -- Validates if the rule type is valid
 local function IsValidRuleType(ruleType)
@@ -70,13 +68,13 @@ end
 
 -- Loads / Populates this object with the contentes of the saved variable.
 function RuleConfigObject:Load(saved)
-	debug("Loading rule configuration");
+	debugp("Loading rule configuration");
 	self.rules = Addon.DeepTableCopy(saved or {});
 end
 
 -- Saves our current configuration
 function RuleConfigObject:Save()
-	debug("Saving rule configuration");
+	debugp("Saving rule configuration");
 	return Addon.DeepTableCopy(self.rules or  {});
 end
 
@@ -102,11 +100,11 @@ function RuleConfigObject:Set(ruleId, parameters)
 	assert(ValidateRuleConfig(rule), "The rule configuration appears to be invalid");
 	local index = GetIndexOf(self.rules, ruleId);
 	if (not index) then
-		debug("Adding new rule '%s' to the config", ruleId);
+		debugp("Adding new rule '%s' to the config", tostring(ruleId));
 		table.insert(self.rules, rule);
 		index = table.getn(self.rules);
 	else
-		debug("Updated rule '%s' in the configration", ruleId);
+		debugp("Updated rule '%s' in the configration", tostring(ruleId));
 		self.rules[index] = rule;
 	end
 
@@ -118,7 +116,7 @@ end
 function RuleConfigObject:Remove(ruleId)
 	local index = GetIndexOf(self.rules, ruleId);
 	if (index) then
-		debug("Removed rule '%s'", ruleId);
+		debugp("Removed rule '%s'", ruleId);
 		table.remove(self.rules, index);
 		self:TriggerEvent("OnChanged", self);
 		return true
@@ -146,7 +144,7 @@ end
 function RuleConfigObject:Commit()
 	local profile = assert(Addon:GetProfileManager():GetProfile(), "Expected a valid active profile");
 	profile:SetRules(self.type, self.rules);
-	debug("Commited rules '%s' to the profile", self.type)
+	debugp("Commited rules '%s' to the profile", tostring(self.type))
 end
 
 Addon.RuleConfig = {
