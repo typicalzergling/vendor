@@ -8,7 +8,7 @@ local ENABLED_FILTERS = "audit-filters"
 function HistoryTab:OnLoad()
     self.history = Addon:GetFeature("History")
     self.items:Sort(function(a, b)
-            return a.TimeStamp < b.TimeStamp
+            return a.TimeStamp > b.TimeStamp
         end)
 
     for _, filter in ipairs(self.history:GetFilters()) do
