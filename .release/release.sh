@@ -1129,7 +1129,7 @@ lua_filter() {
 
 debug_statement_filter() {
 	sed \
-		-e "s/^\s*Addon\:Debug(.*$//g" \
+		-e "s/^\s*Addon\:Debug.*$//g" \
 		-e "s/^\s*local function debugp(.*$//g" \
 		-e "s/^\s*debugp(.*$//g" \
 		-e "s/^\s*assert(.*$//g"
