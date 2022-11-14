@@ -512,7 +512,7 @@ HELP_QUALITY_TEXT = [[The quality of the item:
 5 = Legendary
 6 = Artifact
 7 = Heirloom
-8 = Wow Token<
+8 = Wow Token
 
 You can also use the following constants in your scripts: POOR, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, ARTIFACT, HEIRLOOM]],
 HELP_LEVEL_TEXT = [[The item level (iLvl) of the item.]],
@@ -603,12 +603,14 @@ Checks if the item is a memmber of a Blizzard equipment set and returns true if 
 If no arguments are provied then all of the chracters equipment sets are check, otherwise
 this checks only the specified sets.
 
-## Examples:
+## Examples
 
->  Any equpment set:
+Any equpment set:
+
 > IsInEquipmentSet()
->
->  In your "Tank" equipment set.
+
+In your "Tank" equipment set.
+
 > IsInEquipmentSet("Tank")
 
 ### Notes
@@ -619,7 +621,7 @@ Equipment set matches by item ID, which means it can match different ilvl versio
 HELP_HASSTAT_TEXT = [[
 Checks if the item has a specific 'stat' or Attribute. These are attributes of the items specifically and not any random text.
 
-## Examples:
+## Examples
 
 > HasStat("Speed")
 > HasStat("Mastery")
@@ -635,13 +637,136 @@ Checks if specified text is in the item's tooltip.
 Which side of the tooltip (left or right), and a specific line to check are optional.
 If no line or side is specified, the entire tooltip will be checked.
 
-## Examples:
+## Examples
 
 > TooltipContains("Rogue")
 > TooltipContains("Fated Mythic")
-> 
-> Check left side of tooltip, line 1 for "Vanq"
+
+Check left side of tooltip, line 1 for "Vanq"
+
 > TooltipContains("Vanq", "left", 1)
+]],
+
+HELP_PLAYERLEVEL = [[
+Returns the current level of the player. This is so you can make rules that only work while leveling or at max level.
+]],
+
+HELP_PLAYERCLASS = [[
+Returns the English classname in all caps of the current player to make class-based rules.
+Names will be fully capitalized english class name with no spaces, such as "MAGE", "DEATHKNIGHT", "DEMONHUNTER", etc
+
+Example: PlayerClass() == "DEMONHUNTER"
+
+]],
+
+HELP_PLAYERITEMLEVEL = [[
+Returns the average item level of the player as it appears in the character panel, rounded down to nearest integer.
+]],
+
+HELP_PLAYERCLASSID = [[
+Returns the index of the current player's class to make class-based rules. Index
+is a faster and shorter lookup than name. Class Indexes:
+
+> 1 = Warrior
+> 2 = Paladin
+> 3 = Hunter
+> 4 = Rogue
+> 5 = Priest
+> 6 = Death Knight
+> 7 = Shaman
+> 8 = Mage
+> 9 = Warlock
+>10 = Monk
+>11 = Druid
+>12 = Demon Hunter
+>13 = Evoker
+
+]],
+
+HELP_PLAYERSPECIALIZATION = [[
+Returns the localized name of the player's current specialization. Ex: "Balance" for a Balance druid.
+]],
+
+HELP_PLAYERSPECIALIZATIONID = [[
+Returns the specialization ID of the player's current specialization.
+
+Spec ID Reference:
+
+> Death Knight: 250 = Blood, 251 = Frost, 252 = Unholy
+> Demon Hunter: 577 = Havoc, 581 = Vengeance
+> Druid: 102 = Balance, 103 = Feral, 104 = Guardian, 105 = Restoration
+> Evoker: 1467 = Devastation, 1468 = Preservation
+> Hunter: 253 = Beast Mastery, 254 = Marksmanship, 255 = Survival
+> Mage: 62 = Arcane, 63 = Fire, 64 = Frost
+> Monk: 268 = Brewmaster, 270 = Mistweaver, 269 = Windwalker
+> Paladin: 65 = Holy, 66 = Protection, 70 = Retribution
+> Priest: 256 = Discipline, 257 = Holy, 258 = Shadow
+> Rogue: 259 = Assassination, 260 = Outlaw, 261 = Subtlety
+> Shaman: 262 = Elemental, 263 = Enhancement, 264 = Restoration
+> Warlock: 265 = Affliction, 266 = Demonology, 267 = Destruction
+> Warrior: 71 = Arms, 72 = Fury, 73 = Protection
+
+## Examples
+
+True if the player is currently a Fury Warrior
+
+> PlayerSpecializationId() == 72
+
+]],
+
+HELP_TOTALITEMCOUNT_TEXT = [[
+Usage: TotalItemCount([includeBank, includeUses])
+
+Returns the total number of the item the player has in their bags.
+Parameters:
+  includeBank - set to 'true' if you want to include bank and reagent bank.
+  includeUses - set to 'true' if you want to count items with multiple uses multiple times.
+
+"includeUses" is for items with multiple charges per item on them, like Healthstones.
+
+## Examples
+
+More than 100 of this item in bags
+
+> TotalItemCount() > 100
+
+More than 100 of this item in bags and bank
+
+> TotalItemCount(true) > 500
+
+More than 50 uses of this item in bags only
+
+> TotalItemCount(false, true)
+
+More than 50 uses of this item across all bags and bank
+
+> TotalItemCount(true, true) > 50
+]],
+
+
+HELP_CURRENTEQUIPPEDLEVEL_TEXT = [[
+Usage: CurrentEquippedLevel()
+
+Returns the current item level of the equipped item in the same slot, or 0 if the item being evaluated is not an equippable item or doesn't have a meaningful equipment slot.
+This rule is for determining how an item compares to your currently equipped item in the same slot. For example, it can tell you
+if the item being evaluated is an item level upgrade over the current item you have equipped in that slot.
+
+For equipment that can be in multiple slots (such as rings) the number returned is the lower item level among the two items equipped.
+
+For dual wielding characters, one-handed weapons will check both weapons.
+
+For Fury warriors, two-handed weapons will check both weapons (to factor in Titan Grip).
+
+## Examples
+
+True if the item is equal to or higher item level than your current equipped item in that slot.
+
+> CurrentEquippedLevel() <= Level
+
+True if the item is within 13 item levels of your currently equipped ger (within one tier)
+
+> CurrentEquippedLevel() <= (Level + 13)
+
 ]],
 
 }) -- END OF LOCALIZATION TABLE

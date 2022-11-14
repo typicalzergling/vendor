@@ -2,65 +2,126 @@ local AddonName, Addon = ...
 
 Addon.ReleaseNotes = {
 {
-Release ="6.0 (November ?, 2022)",
+Release ="6.0 (November 15, 2022)",
 Notes = [[
 # Vendor 6.0!
 
 Another expansion, another major update for Vendor!
 
-# Full 10.0.2 Support, Performance, and Reliability
+# Full 10.0.2 Support, focus on Performance, and Reliability
 
-For us 10.0.2 was not something we scraped together to make it work in time for the expansion. We've spent a lot of time on beta getting it right. A key focus of this release has been performance. We don't want our addon
-to get in the way of your frames or game enjoyment. As such we have optimized some of the most fundamental parts of the addon, and in many places it has significant rewrites. A key part of this is making our 'status'
-updates of what we're going to sell in your bag delayed and happens more as a background action. If you mouseover something or go to a merchant it is still immediate in those scenarios, but when you're out and about, gathering,
-questing, leveling, etc - we don't think you really care whether or not our data is immediately up to date. It can come 10-20 seconds later without disrupting your play. As such, our libdatabroker plugin will be a little delayed
-between the time you loot and the time it updates. This is not a bug; this is a performance feature! We've found along the way that many other bag-scanning addons do so immediately and you will see a sutter in your UI from them.
-When we turn everything else off, our addon has no such stutter.
+For us 10.0.2 was not something we scraped together to make it work in time for the expansion.
+We've spent a lot of time on beta getting it right. A key focus of this release has been performance.
+We don't want our addon to get in the way of your frames or game enjoyment. As such we have optimized
+some of the most fundamental parts of the addon, and in many places it has significant rewrites. A key
+part of this is making our 'status' updates of what we're going to sell in your bag delayed and happens
+more as a background action. 
 
-Blizzard also introduced a lot of changes in this '.2' release. We had to fight through those changes and squash a lot of random tainting and and similar issues with the API updates. We think we got them all but please report any you do see
-and we will investigate.
+If you mouseover something or go to a merchant to autosell, the vendor evaluation is it is still immediate
+in those scenarios, but when you're out and about, gathering, questing, leveling, etc and looking at the
+libdatabroker Titan plugin or the mouseover on the Minimap button to see what Vendor will sell, that information
+may be a little delayed by about 8-10 seconds. We don't think you really care whether or not our data
+is immediately up to date, but we think you definitely care about an addon not robbing you of frames
+or CPU unnecessarily. It can come 10 seconds later without disrupting your play.
+
+As such, our libdatabroker plugin will be a little delayed between the
+time you loot and the time it updates. This is not a bug; this is a performance feature! We've found
+along the way that many other bag-scanning addons do so immediately and you will see a stutter in your
+UI from them. When we turn everything else off, our addon has no such stutter.
+
+Blizzard also introduced a lot of changes in this '.2' release. We had to fight through those changes
+and squash a lot of random tainting and and similar issues with the API updates. We think we got them
+all but please report any you do see and we will investigate.
 
 # All New UI
 
-As Blizzard keeps changing their UI every expansion and every classic release, we are perpetually broken by trying to retain the Blizzard theming. So we're abandoning Blizzard UI theming and using new primitives now that
-should work on any version. We strongly suspect this is why many popular addons with configuration options choose to do this rather than adopt Blizzard's UI - they are too inconsistent and break us too often and too easily
-to adopt their UI theme, so we will simply stop trying. Sorry Blizzard, we'd like to keep the theme of your game but we just can't.
+As Blizzard keeps changing their UI every expansion and every classic release, we are perpetually
+broken by trying to retain the Blizzard theming. So we're abandoning Blizzard UI theming and using
+new primitives now that should work on any version. We strongly suspect this is why many popular
+addons with configuration options choose to do this rather than adopt Blizzard's UI - they are too
+inconsistent and break us too often and too easily to adopt their UI theme, so we will simply stop
+trying. Sorry Blizzard, we'd like to keep the theme of your game but we just can't.
 
-The New UI is wider than before, hopefully this will not cause problems for too many folks. We feel this is necessary to have a better user experience in our addon.
+The New UI is wider than before, hopefully this will not cause problems for too many folks. We feel
+this is necessary to have a better user experience in our addon.
+
+# LibDataBroker & Retired Titan Plugin
+
+We retired the Titan plugin since LibDataBroker support has replaced it. To access Vendor in Titan,
+just right click the Titan bar and select the General category -> Vendor to enable it.
+
+Any other consumers of LibDataBroker will also now have a Vendor plugin too, check it out!
+
+# ElvUI DataTexts Support
+
+ElvUI users can also now add a Vendor plugin to "DataTexts" bar at the bottom. In ElvUI options,
+go to DataTexts -> Select a Datatext panel -> Select "Vendor" the DataTexts Dropdown menu.
+
+Vendor is all the way at the bottom and not indicated that it is an addon, but it is there and has
+the same information as the Titan Plugin.
 
 # Custom Lists
 
-You can now create custom lists and then build rules around your custom item lists. The goal in the future is to allow sharing and for you to have sell or keep rules
-which target specific item lists that you can turn on and off as you desire and give you more granular control over the lists.
+You can now create custom lists and then build rules around your custom item lists. The goal in the
+future is to allow sharing and for you to have sell or keep rules which target specific item lists
+that you can turn on and off as you desire and give you more granular control over the lists.
 
-An important thing to know about Custom Lists is that they are account-wide, while the normal Sell/Keep/Destroy lists are profile based. This means you can now have a common list of things you want to keeps shared across the account
-(in case you didn't want to use profiles.) To use a custom list, we have a new rule function 
+An important thing to know about Custom Lists is that they are account-wide, while the normal
+Sell/Keep/Destroy lists are profile based. This means you can now have a common list of things you
+want to keeps shared across the account (in case you didn't want to use profiles.) To use a custom
+list, we have a new rule function 
     
-# IsInList
+# IsInList() Function
 
-Use this function to use your custom lists in rules. For example, you could make a list of all the halloween candy item IDs, put them into a custom list named "HalloweenCandy" and then make a destroy rule for them using: IsInList("HalloweenCandy").
-This feature is a little late for Halloween but it is just in time for all the winter holiday crap. IsInList() also works for the base Keep, Sell, and Destroy lists, just put "keep", "sell" or "destroy" in for the list name. IsInList also accepts
-multiple lists, so you can create rules that merge lists together. 
+Use this function to use your custom lists in rules. For example, you could make a list of all the
+halloween candy item IDs, put them into a custom list named "HalloweenCandy" and then make a
+destroy rule for them using: IsInList("HalloweenCandy"). This feature is a little late for
+Halloween but it is just in time for all the winter holiday crap. IsInList() also works for the base
+Keep, Sell, and Destroy lists, just put "keep", "sell" or "destroy" in for the list name. IsInList
+also accepts multiple lists, so you can create rules that merge lists together. 
 
-# Dragonflight CraftedQuality Property
+# New Item Properties
 
-We added support for CraftedQuality so you can make rules for the new crafting quality introduced in Dragonflight. For example, keeping gear with CraftedQuality > 0, or vendoring potions with CraftedQuality == 1, whatever you fancy.
+* CraftedQuality - The new quality introduced in Dragonflight for crafted gear and reagents.
+* IsProfessionEquipment - Whether the item is the new profession equipment in Dragonflight.
 
-# Rename profile
+These new properties support the new profession changes in Dragonflight. We will probably add more
+here in the future.
 
-A rename button has been added to the profile tab allowing you to change the name of an 
-exising profile
+# New Rule Functions
 
-# Rule Import & Export
+* PlayerSpecialization() - Your current spec name
+* PlayerSpecializationId() - Numeric representation of your spec
+* TotalItemCount() - Total number of the item you have in your inventory, can include bank and
+charge/uses as parameters.
+* CurrentEquippedLevel() - The item level of your currently equipped gear in that same slot options
+as the item being evaluated. If multiple slots it returns the lower of the two equipped items.
+* IsInList() - The new list-checking function mentioned above.
 
-[fill this in]
+Documentation for all of these functions and the older ones is updated in the rule editor "help" tab
+in-game!
 
-# Other stuff
+# Minimap Button Fixed
 
-We made our packager strip out all of our debug messages and asserts so they won't even be loaded into memory or executed, making the release version more lean. We did some significant refactoring of our code to be more modular in the future.
-While not a big deal for you it is more memory efficient this way. We also delay-load most of our features so you will have a very fast load time with Vendor. Performance! We have a minimap icon that will save position now. Right-clicking the
-minimap button or the LDB plugin button will now open the profiles tab directly.
+The Minimap button has been fixed and now has a working toggle setting, which is acount-wide.
+Its state and position on the minimap is also saved and is account-wide, so you don't need to set it
+on every profile.
 
+Right-clicking on the minimap button will also directly open profiles to make it more convenient
+to swap profiles.
+
+# Addon Extension Testing Status
+
+We have tested all our plugins except TradeSkillMaster and AdiBags, which we think probably still
+works. Probably.
+
+# Other less interesting stuff
+
+We made our packager strip out all of our debug messages and asserts so they won't even be loaded
+into memory or executed, making the release version more lean. We did some significant refactoring
+of our code to be more modular in the future. While not a big deal for you it is more memory
+efficient this way. We also delay-load most of our features so you will have a very fast load time
+with Vendor. Performance!
 
 ]]},
 {

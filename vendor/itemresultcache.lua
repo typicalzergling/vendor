@@ -213,6 +213,15 @@ function Addon:ClearItemResultCache()
     return
 end
 
+-- Not using this yet, but seems like a good way to keep our data integrity up to date.
+function Addon:RemoveMissingItemsFromItemResultCache()
+    for guid, v in pairs(itemResultCache) do
+        if not C_Item.IsItemGUIDInInventory(guid) then
+            Addon:RemoveItemResultFromCacheByGUID(guid)
+        end
+    end
+end
+
 -- Goes through our entire cache and clears any item with the corresponding item ID.
 -- This is for handling blocklist updates. Rather than clear everything, we only
 -- need to clear the cache for an item that changed. However, we don't use this just yet

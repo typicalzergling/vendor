@@ -100,8 +100,38 @@ local STATS =  {
     ["str"] = ITEM_MOD_STRENGTH_SHORT,
     ["strength"] = ITEM_MOD_STRENGTH_SHORT,
     ["vers"] = ITEM_MOD_VERSATILITY,
-    ["vers"] = ITEM_MOD_VERSATILITY, 
+    ["versatility"] = ITEM_MOD_VERSATILITY, 
 };
+
+--*****************************************************************************
+-- Mapping of EquipLoc to corresponding SlotIds
+--*****************************************************************************
+local INVENTORY_SLOT_MAP = {
+    INVTYPE_HEAD            = {1},
+    INVTYPE_NECK            = {2},
+    INVTYPE_SHOULDER        = {3},
+    INVTYPE_BODY            = {4},
+    INVTYPE_CHEST           = {5},
+    INVTYPE_WAIST           = {6},
+    INVTYPE_LEGS            = {7},
+    INVTYPE_FEET            = {8},
+    INVTYPE_WRIST           = {9},
+    INVTYPE_HAND            = {10},
+    INVTYPE_FINGER          = {11,12},
+    INVTYPE_TRINKET         = {13,14},
+    INVTYPE_WEAPON          = {16,17}, -- 17 is only if dual wielding
+    INVTYPE_SHIELD          = {17},
+    INVTYPE_RANGED          = {16},
+    INVTYPE_CLOAK           = {15},
+    INVTYPE_2HWEAPON        = {16},
+    INVTYPE_TABARD          = {19},
+    INVTYPE_ROBE            = {5},
+    INVTYPE_WEAPONMAINHAND  = {16},
+    INVTYPE_WEAPONOFFHAND   = {17},  -- Doc says 16 but that doesn't make sense.
+    INVTYPE_HOLDABLE        = {17},
+    INVTYPE_THROWN          = {16},
+    INVTYPE_RANGEDRIGHT     = {16},
+}
 
 --*****************************************************************************
 -- Helper function which given a value, will search the map for the value
@@ -144,34 +174,61 @@ end
 local RuleFunctions = {
 {
     Name = "PlayerLevel",
+    Documentation = locale["HELP_PLAYERLEVEL"],
     Function = function()
         return tonumber(UnitLevel("player"))
     end,
-    Documentation = locale["HELP_PLAYERLEVEL"]
 },
+
 {
     Name = "PlayerClass",
+    Documentation = locale["HELP_PLAYERCLASS"],
     Function = function()
-        local localizedClassName = UnitClass("player")
-        return localizedClassName --This is intentional to avoid passing back extra args
+        local localizedClassName, englishClass = UnitClass("player")
+        return englishClass --This is intentional to avoid passing back extra args
     end,
-    Documentation = locale["HELP_PLAYERCLASS"]
+},
+
+{
+    Name = "PlayerClassId",
+    Documentation = locale["HELP_PLAYERCLASSID"],
+    Function = function()
+        return select(3, UnitClass("player"))
+    end,
+},
+
+{
+    Name = "PlayerSpecialization",
+    Documentation = locale["HELP_PLAYERSPECIALIZATION"],
+    Function = function()
+        return select(2, GetSpecializationInfo(GetSpecialization()))
+    end,
+},
+
+{
+    Name = "PlayerSpecializationId",
+    Documentation = locale["HELP_PLAYERSPECIALIZATIONID"],
+    Function = function()
+        return select(1, GetSpecializationInfo(GetSpecialization()))
+    end,
 },
 
 --@retail@
 {
     Name = "PlayerItemLevel",
+    Documentation = locale["HELP_PLAYERITEMLEVEL"],
     Function = function()
         assert(not Addon.IsClassic);
         local itemLevel = GetAverageItemLevel();
 	    return floor(itemLevel);
     end,
-    Documentation = locale["HELP_PLAYERITEMLEVEL"]
+
 },
 --@end-retail@
 
 {
     Name = "IsInEquipmentSet",
+    Documentation = locale["HELP_ISINEQUIPMENTSET_TEXT"],
     Function = function(...)
         -- Checks the item set for the specified item
         local function check(itemId, setId)
@@ -203,7 +260,6 @@ local RuleFunctions = {
             end
         end
     end,
-    Documentation = locale["HELP_ISINEQUIPMENTSET_TEXT"]
 },
 --@do-not-package@
 {
@@ -217,8 +273,9 @@ local RuleFunctions = {
     Name = "print",
     Function = function(...)
         return Addon:Debug("rules", ...)
-    end
+    end,
 },
+
 --@end-do-not-package@
 
 {
@@ -273,6 +330,76 @@ local RuleFunctions = {
         return false;
     end
 },
+
+{
+    Name = "TotalItemCount",
+    Documentation = locale["HELP_TOTALITEMCOUNT_TEXT"],
+    Function = function(...)
+        local includeBank, includeUses = ...
+        -- Assuming if you care to know about the bank you also want reagent bank.
+        return GetItemCount(Link, includeBank, includeUses, includeBank)
+    end,
+},
+
+{
+    Name = "CurrentEquippedLevel",
+    Documentation = locale["HELP_CURRENTEQUIPPEDLEVEL_TEXT"],
+    Function = function(...)
+
+        -- Return 0 if this is a non-equippable item.
+        if not IsEquipment then return 0 end
+
+        -- Get the slot IDs for the current piece of gear
+        local slots = {}
+        if INVENTORY_SLOT_MAP[EquipLoc] then
+            slots = INVENTORY_SLOT_MAP[EquipLoc]
+        end
+        assert(type(slots) == "table", "Expected InventorySlotIds to be a table, got "..type(slots))
+        if #slots == 0 then return 0 end
+
+        -- Check for multiple slots
+        -- Multiple slots occurs int he following situations:
+        --      One-Handed Weapon in Offhand
+        --      Rings
+        --      Trinkets
+        if #slots == 0 then return 0 end
+
+        if EquipLoc == "INVTYPE_WEAPON" then
+            -- Dual wield can check both slots, but non-dual wield cannot, so
+            -- if this character cannot dual wield, then remove slot 17 from the
+            -- check so we don't compare a weapon with a shield.
+            if not CanDualWield() then
+                slots = {16}
+            end
+        end
+
+        -- Warriors can Dual-Wield 2H weapons.
+        if EquipLoc == "INVTYPE_2HWEAPON" and (select(3, UnitClass("player"))== 1) then
+            -- Only fury warriors have titan grip
+            local specId = GetSpecializationInfo(GetSpecialization()) 
+            if specId == 72 then
+                slots = {16,17}
+            end
+        end
+
+        local lowestlevel = 0
+        for _, slot in ipairs(slots) do
+            local location = ItemLocation:CreateFromEquipmentSlot(slot)
+            if C_Item.DoesItemExist(location) then
+                local link = C_Item.GetItemLink(location)
+                --local equiploc = select(4, GetItemInfoInstant(link))
+                local ilvl = GetDetailedItemLevelInfo(link)
+                if ilvl and (lowestlevel == 0 or ilvl < lowestlevel) then
+                    lowestlevel = ilvl
+                end
+            end
+        end
+
+        --print("Lowest Level for ", Link ," is ", tostring(lowestlevel))
+        return lowestlevel
+    end,
+},
+
 }
 
 function Addon.Systems.Rules:RegisterSystemFunctions()

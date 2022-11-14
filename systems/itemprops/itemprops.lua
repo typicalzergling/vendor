@@ -133,7 +133,7 @@ intending to match Vanilla will not do what you want, as it will include non-Van
 ExpansionPackId() < 7 will match a great many items. If you want to be safe, use this in conjunction with
 IsEquipment(), and have some items from Vanilla and several expansion packs to verify.
 ]],
-IzAzeriteItem = [[True if the item is Azerite gear from BFA.]],
+IsAzeriteItem = [[True if the item is Azerite gear from BFA.]],
 IsEquipment = [[
 True if the item is wearable equipment. This is equivalent to EquipLoc ~= nil
 
@@ -202,6 +202,11 @@ If your character has a confirmed collection of this appearance.
 
 We only ever set IsCollected to true if the Blizzard transmog API confirms to us that it is a collected appearance by this character, otherwise it is false in all other circumstances.
 ]],
+
+IsProfessionEquipment = [[
+Returns true if the item is an equippable piece of profession equipment.
+]],
+
 IsTransmogEquipment = [[
 Is equipment that can be transmogrified. Not to be confused with an uncollected appearance. 
 ]],
