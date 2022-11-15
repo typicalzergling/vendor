@@ -62,6 +62,24 @@ function RulesTab:ShowRules(category)
 	self.activeConfig = self.ruleFeature:GetConfig(category.Type)
 	self.rules:Filter(self:CreateFilter(category.Type, true))
 	self.rules:Sort(function(ruleA, ruleB)
+
+			if not ruleB then
+				Addon:Debug("rulesdialog", "Nil ruleB in sort")
+				return false
+			end
+
+			if not ruleA then
+				Addon:Debug("rulesdialog", "Nil ruleA in sort")
+				return true
+			end
+
+			--[[if not ruleA then
+				return true
+			end
+			if not ruleB then
+				return false
+			end]]
+
 			local hasA = self.activeConfig:Contains(ruleA.Id)
 			local hasB = self.activeConfig:Contains(ruleB.Id)
 

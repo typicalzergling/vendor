@@ -320,7 +320,6 @@ function EditRule:OnScriptChanged(text)
                 self.ruleStatus:SetStatus("invalid", errorMessage)
             end
         end
-
     end
 end
 
@@ -380,7 +379,7 @@ function EditRule:UpdateButtons()
     local buttons = {}
     local changes = self.changes or {}
 
-    -- If hte dialog is in "view" mode then only meaningful button to have
+    -- If the dialog is in "view" mode then only meaningful button to have
     -- enabled is close.
     if (self:InViewMode()) then
         buttons.close = true

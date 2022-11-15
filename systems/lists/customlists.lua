@@ -92,7 +92,7 @@ function CustomLists:SetContents(listId, items)
     end
 
     list.UpdatedBy = Addon:GetCharacterFullName()
-    list.Timestamp = time
+    list.Timestamp = time()
     list.Items = items or {}
 
     self.variable:Set(list.Id, list)
