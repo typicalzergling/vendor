@@ -473,7 +473,7 @@ function EditRule:UpdateButtons()
     local buttons = {}
     local changes = self.changes or {}
 
-    -- If hte dialog is in "view" mode then only meaningful button to have
+    -- If the dialog is in "view" mode then only meaningful button to have
     -- enabled is close.
     if (self:InViewMode()) then
         buttons.close = true
@@ -509,7 +509,7 @@ function EditRule:SetRule(rule, parameters)
     self.rule = rule;
     self.parameters = parameters
 
-    self:SetRuleType(rule.Type or "sell")
+    self:SetRuleType(rule.Type or "keep")
     self.description:SetText(rule.Description or "")
     self.name:SetText(rule.Name or "")
     local script = rule.Script
