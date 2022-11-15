@@ -59,8 +59,16 @@ local function addItemTooltipLines(tooltip, tooltipData)
         return nil
     end
 
-    if not tooltip:IsShown() then return nil end
+    -- Combat check - printing vendor tooltips is not worth risking scans and other things
+    -- happening while you are in combat. You can get the tooltip info when you are out
+    -- of combat. Note we will still scan and do the right thing if you were to interact
+    -- with a vendor in combat.
+    if UnitAffectingCombat("player") then 
+        Addon:Debug("tooltip", "Player in combat, skipping tooltip writing.")
+        return nil 
+    end
 
+    if not tooltip:IsShown() then return nil end
     -- Due to blizzard weirdness with locations not controlled by the player, we need to
     -- skip over any locations not owned by the player or the DoesItemExist() method will
     -- fail because it isn't in control of the player. Probably a blizzard bug, but alas

@@ -47,6 +47,7 @@ function Addon:OnInitialize()
     self:RegisterEvent("BAG_UPDATE_DELAYED", "OnBagUpdate")
     self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", "OnPlayerEquipmentChanged")
     self:RegisterEvent("PROFESSION_EQUIPMENT_CHANGED", "OnPlayerEquipmentChanged")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnPlayerLeavingCombat")
 
     -- Merchant Button
     --self.MerchantButton.Initialize()

@@ -208,7 +208,7 @@ function Addon:ClearItemResultCache()
     bagItemMap = {}
     -- Anytime the Result Cache gets cleared, the Tooltip Result Cache also needs clearing.
     Addon:ClearTooltipResultCache()
-    debugp("ItemREsultCache cleared.")
+    debugp("ItemResultCache cleared.")
     Addon:RaiseEvent(ITEMRESULT_CACHE_CLEARED)
     return
 end
@@ -245,12 +245,12 @@ function Addon:OnBagUpdate(bagID)
     -- Using delayed refresh means we will not do any work on a looting event or when items
     -- first appear in the inventory unless players specifically mouse over those items before
     -- we refresh them.
-    Addon:StartItemResultRefresh(6)
+    Addon:StartItemResultRefresh(4)
 end
 
 function Addon:OnPlayerEquipmentChanged(slotID)
     -- When player equipment changes, we could likely have some rule evaluations changed, so
     -- we should start a refresh with force function flagged so we always rebuild the cache
     -- after such an event.
-    Addon:StartItemResultRefresh(6, true)
+    Addon:StartItemResultRefresh(4, true)
 end

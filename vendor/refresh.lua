@@ -44,10 +44,18 @@ end
 -- forceNext is an option where we are guaranteed to force an update
 -- on the next refresh, even if non-forced refeshes are also triggered.
 local forceNext = false
+local abortedScanDueToCombat = false
 local function doStartItemRefresh(forceUpdate)
     forceUpdate = forceUpdate or forceNext
     -- Clear the delay timer
     cancelDelayTimer()
+
+    -- Check for combat, do not interfere!
+    if UnitAffectingCombat("player") then
+        debugp("Player is in combat, cancelling scan. Will resume after combat.")
+        abortedScanDueToCombat = true
+        return
+    end
 
     -- Check if we are already in progress
     if Addon:IsItemResultRefreshInProgress() then
@@ -65,6 +73,16 @@ local function doStartItemRefresh(forceUpdate)
         local numProcessed = 0
         for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
+
+                -- If we are in combat, stop the scan.
+                if UnitAffectingCombat("player") then
+                    debugp("Player entered combat, aborting refresh.")
+                    if forceUpdate then
+                        forceNext = true
+                    end
+                    abortedScanDueToCombat = true
+                    return
+                end
 
                 if forceUpdate or Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
                     Addon:RefreshBagAndSlot(bag, slot, true)
@@ -118,6 +136,17 @@ function Addon:OnItemResultCacheCleared()
     -- Rules changed or something else significant, lets give it a few seconds
     -- for more changes to occur before we do the refresh.
     Addon:StartItemResultRefresh(4)
+end
+
+function Addon:OnPlayerLeavingCombat()
+    -- We may have had a refresh underway during combat, which would be cancelled and blocked.
+    -- So when player leaves combat, see if we had one such event, and if so, complete the
+    -- refresh.
+    if abortedScanDueToCombat then
+        debugp("Retriggering scan now that combat has ended.")
+        abortedScanDueToCombat = false
+        Addon:StartItemResultRefresh(4)
+    end
 end
 
 function Addon:InitializeItemResultRefresh()

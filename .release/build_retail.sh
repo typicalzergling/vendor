@@ -34,10 +34,10 @@ do
 done
 
 # Now recursively delete the old folder.
-#rm -rf ".release/retail"
+rm -rf ".release/retail"
 
 # Build the retail addons. We are not publishing. Offline only.
-#./release.sh -dz -r ../.release/retail -m ./../.pkgmeta
+./release.sh -dz -r ../.release/retail -m ./../.pkgmeta
 
 # Set new junctions.
 for root in $flavors

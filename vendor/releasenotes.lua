@@ -29,9 +29,13 @@ time you loot and the time it updates. This is not a bug; this is a performance 
 along the way that many other bag-scanning addons do so immediately and you will see a stutter in your
 UI from them. When we turn everything else off, our addon has no such stutter.
 
-Blizzard also introduced a lot of changes in this '.2' release. We had to fight through those changes
-and squash a lot of random tainting and and similar issues with the API updates. We think we got them
-all but please report any you do see and we will investigate.
+Vendor is now also mindful of doing any work while you are in combat. We will not provide tooltip text
+additions during combat, and any low-priority refresh of your bag data we are doing to keep the databroker
+up to date will be halted immediately upon entering combat, with a delayed restart when you exit
+combat. If you happen to use a merchant while in combat we will still do our normal priority scan
+for auto-selling, and if you do an item delete hotkey we will do the same with that. Essentially we
+will only do work you want us to do while you are in combat, otherwise we will stay out of the way!
+
 
 # All New UI
 
@@ -127,7 +131,12 @@ with Vendor. Performance!
 
 * Sort order of rules is not bubbling up selected rules to the top. Elusive bug there preventing
 us from enabling sorting.
+* Deleting a rule has a pop up dialog that immediately closes the rule editor.
 
+
+Blizzard also introduced a lot of changes in this '.2' release. We had to fight through those changes
+and squash a lot of random tainting and and similar issues with the API updates. We think we got them
+all but please report any you do see and we will investigate.
 
 ]]},
 {

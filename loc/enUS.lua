@@ -459,23 +459,23 @@ A list already exists with the name '%s' please choose another.
 ]],
 DELETE_LIST_CAPTION = "Delete List",
 DELETE_LIST_FMT1 = [[
-# Delete List
+# Delete list %s?
 
-Are you sure you want to delete list '%s'? Deleting this list will remove
-it from all of your characters, and may affect any rules configured to use 
-the list.
+Deleting this list will remove it from all of your characters, and may affect any rules configured to use 
+the list. THIS ACTION CANNOT BE UNDONE!
+
+Are you sure?
 ]],
-CONFIRM_DELETE_LIST = "Confirm",
+CONFIRM_DELETE_LIST = "Yes, DELETE",
 CANCEL_DELETE_LIST = "Cancel",
 
 DELETE_RULE_CAPTION = "Delete Rule",
 DELETE_RULE_FMT1 = [[
-# Delete Rule
+# Delete rule %s?
 
-Are you sure you want to delete the rule '%s'? Deleting this rule will remove
-it from all of your characters.
+Deleting this rule will remove it from all of your characters. THIS ACTION CANNOT BE UNDONE!
 
-THIS ACTION CANNOT BE UNDONE! Are you sure?
+Are you sure?
 ]],
 CONFIRM_DELETE_RULE = "Yes, DELETE",
 CANCEL_DELETE_RULE = "Cancel",
