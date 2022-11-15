@@ -39,6 +39,8 @@ function ListsTab:ShowList()
     local selected = self.lists:GetSelected()
     if (selected) then
         self.items:SetList(selected)
+    else
+        self.items:Clear()
     end
 
     UI.Enable(self.editList, selected ~= nil)
