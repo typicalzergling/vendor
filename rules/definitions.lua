@@ -266,7 +266,7 @@ Rules.SystemRules =
         Type = KEEP_RULE,
         Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
         Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
-        ScriptText = "IsEquipment and Soulbound",
+        ScriptText = "IsEquipment and IsSoulbound",
         Script = function()
                 return IsEquipment and IsSoulbound;
             end,

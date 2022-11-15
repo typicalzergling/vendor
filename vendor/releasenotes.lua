@@ -131,7 +131,7 @@ with Vendor. Performance!
 
 * Sort order of rules is not bubbling up selected rules to the top. Elusive bug there preventing
 us from enabling sorting.
-* Deleting a rule has a pop up dialog that immediately closes the rule editor.
+* Sort order for item properties is also not working correctly, same issue as above.
 
 
 Blizzard also introduced a lot of changes in this '.2' release. We had to fight through those changes
