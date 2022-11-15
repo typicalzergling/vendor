@@ -1,7 +1,9 @@
 local _, Addon = ...
 local MatchItem = Mixin({}, ItemMixin)
 local MatchesTab = {}
-local Colors = Addon.CommonUI.Colors
+local Dialog = Addon.CommonUI.Dialog
+local EditRuleEvents = Addon.Features.Dialogs.EditRuleEvents
+local UI = Addon.CommonUI.UI
 
 --[[
     Called when the matches 
@@ -52,14 +54,8 @@ end
     Called when the matches tab is loaded
 ]]
 function MatchesTab:OnLoad()
-    self.label:SetTextColor(Colors.SECONDARY_TEXT:GetRGBA())
-end
-
---[[
-    Called to create the item for a match in the UX
-]]
-function MatchesTab:CreateMatchItem()
-    return Mixin(CreateFrame("Frame", nil, self, "Vendor_EditRule_MatchItem"), MatchItem)
+    Dialog.RegisterCallback(self, EditRuleEvents.CLEAR_MATCHES, self.ClearMatches)
+    Dialog.RegisterCallback(self, EditRuleEvents.SHOW_MATCHES, self.ShowMatches)
 end
 
 --[[
@@ -69,17 +65,70 @@ function MatchesTab:GetMatches()
     return self.matchItems
 end
 
+local function formatValue(value)
+    if (type(value) == "boolean") then
+        return EPIC_PURPLE_COLOR:WrapTextInColorCode(tostring(value))
+    elseif (type(value) == "number") then
+        return ORANGE_FONT_COLOR:WrapTextInColorCode(tostring(value))
+    elseif (type(value) == "string") then
+        return GREEN_FONT_COLOR:WrapTextInColorCode("\"" .. value .. "\"")
+    end
+
+    return value
+end
+
+function MatchesTab:BuildMatchParameters(parameters)
+    if (self.params) then
+        for _, frame in ipairs(self.params) do
+            frame:ClearAllPoints()
+            frame:Hide()
+        end
+    end
+    
+    self.params = {}
+    for _, param in ipairs(parameters) do
+        Addon:Debug("editrule", "Add parameter :: %s = %s", param.Name, param.Value)
+        local frame = CreateFrame("Frame", nil, self.parameters, "EditRule_MatchParameter")
+        frame.value:SetText(formatValue(param.Value))
+        frame.name:SetText(param.Name)
+        frame.Layout = function(_, width)
+            frame:SetWidth(width)
+            frame:SetHeight(math.max(frame.name:GetHeight(), frame.value:GetHeight()))
+        end
+        UI.Prepare(frame)
+        frame:Show()
+        table.insert(self.params, frame)
+    end
+
+    local padding = { left = 12, right = 12, bottom = 12 }
+    Addon:Debug("editrule", "Layout parameters (%s)", table.getn(self.params))
+    Addon.CommonUI.Layouts.Stack(self.parameters, self.params, padding, 0)
+end
+
 --[[
     Called to set the matches we should show    
 ]]
-function MatchesTab:SetMatches(matches)
+function MatchesTab:ShowMatches(matches, parameters)
+    Addon:Debug("editrule", "Show matches")
+
     self.matchItems = matches or {}
     self.matches:Rebuild()
+
+    if (type(parameters) == "table") then
+        self:BuildMatchParameters(parameters)
+        self.parameters:Show()
+    else
+        self.parameters:SetHeight(2)
+        self.parameters:Hide()
+    end
 end
 
 function MatchesTab:ClearMatches()
+    Addon:Debug("editrule", "Clear matches")
+    self.parameters:SetHeight(2)
     self.matchItems = nil
     self.matches:Rebuild()
 end
 
 Addon.Features.Dialogs.MatchesTab = MatchesTab
+Addon.Features.Dialogs.MatchItem = MatchItem

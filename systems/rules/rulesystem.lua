@@ -6,6 +6,12 @@ RuleEvents = {
     DOCS_CHANGED = "_OnRFDocumenationChange",
 }
 
+RuleSource = {
+    SYSTEM = "system",
+    CUSTOM = "custom",
+    EXTENSION = "extension"
+}
+
 --[[ Retrieve our depenedencies ]]
 function RuleSystem:GetDependencies()
     return { "savedvariables", "profile" }
@@ -96,3 +102,4 @@ end
 
 Addon.Systems.Rules = RuleSystem
 Addon.Systems.Rules.RuleEvents = RuleEvents
+Addon.RuleSource = RuleSource

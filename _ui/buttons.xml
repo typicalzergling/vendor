@@ -30,11 +30,10 @@
                 </FontString>
             </Layer>
         </Layers>
-        <Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Chip")</OnLoad></Scripts>
     </CheckButton>
 
-    <Frame virtual="true" name="CommonUI_ChipList">
-        <Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "ChipList")</OnLoad></Scripts>
+    <Frame virtual="true" name="CommonUI_Chips">
+        <Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Chips")</OnLoad></Scripts>
     </Frame>
 
     <Button name="CommonUI_IconButton" virtual="true">

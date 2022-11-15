@@ -15,6 +15,7 @@
     <Script file="ItemLink.lua"/>
     <Script file="CategoryItem.lua"/>
     <Script file="Markdown.lua"/>
+    <Script file="chips.lua"/>
     
     <!-- UX -->
     <Include file="buttons.xml"/>

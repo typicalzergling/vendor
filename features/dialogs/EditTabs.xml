@@ -1,58 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
-	<Frame name="Vendor_EditRule_MatchItem" virtual="true" hidden="true">
-		<Size x="1" y="22"/>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture parentKey="hilite" hidden="true">
-					<Color r="1" g="1" b="1" a=".125"/>
-					<Anchors>
-						<Anchor point="TOPLEFT"/>
-						<Anchor point="BOTTOMRIGHT"/>
-					</Anchors>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
-				<FontString parentKey="name" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" maxLines="1" wordwrap="false">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="8"/>
-						<Anchor point="BOTTOMRIGHT" x="-8"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-	</Frame>
-
-    <Frame name="Vendor_EditRule_Matches" virtual="true" hidden="true">
-        <Layers>
-			<Layer level="ARTWORK">
-				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
-					<KeyValues>
-						<KeyValue key="LocKey" value="EDITRULE_MATCHES_TAB_TEXT" type="string"/>
-					</KeyValues>
-					<Anchors>
-						<Anchor point="TOPLEFT"/>
-						<Anchor point="TOPRIGHT"/>
-					</Anchors>
-				</FontString>
-            </Layer>
-        </Layers>
-		<Frames>
-			<Frame parentKey="matches" inherits="CommonUI_List">
-				<Size x="10" y="100"/>
-				<KeyValues>
-					<KeyValue key="ItemSource" value="GetMatches" type="string"/>
-					<KeyValue key="ItemCreator" value="CreateMatchItem" type="string"/>
-					<KeyValue key="EmptyText" value="EDITRULE_NO_MATCHES" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="BOTTOMLEFT" y="-12"/>
-					<Anchor point="BOTTOMRIGHT"/>
-				</Anchors>
-			</Frame>
-		</Frames>
-    </Frame>
-
 	<Frame name="Vendor_EditRule_ItemProperty" virtual="true" hidden="true">
 		<KeyValues>
 			<KeyValue key="PaddingY" value="8" type="number"/>
@@ -246,7 +193,7 @@
 					<Anchor point="RIGHT"/>
 				</Anchors>
 			</Frame>
-            <Frame parentKey="filters" inherits="CommonUI_ChipList">
+            <Frame parentKey="filters" inherits="CommonUI_Chips">
                 <KeyValues>
                     <KeyValue key="Handler" value="ApplyFilters"/>
                 </KeyValues>

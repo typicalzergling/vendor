@@ -1,0 +1,96 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+    <Frame name="EditRule_MatchParameter" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="value" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-80"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="equals" justifyH="MIDDLE" justifyV="MIDDLE" inherits="GameFontNormal" maxLines="1" wordwrap="false" text="=">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeKey="$parent.value" x="-4"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="name" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" wordwrap="true">
+                    <KeyValues>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.equals" relativePoint="TOPLEFT" x="-4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+    </Frame>
+
+	<Frame name="EditRule_MatchItem" virtual="true" hidden="true">
+		<Size x="1" y="22"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="hilite" hidden="true">
+					<Color r="1" g="1" b="1" a=".125"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="name" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" maxLines="1" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8"/>
+						<Anchor point="BOTTOMRIGHT" x="-8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+    <Frame name="Vendor_EditRule_Matches" virtual="true" hidden="true">
+        <Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<KeyValues>
+						<KeyValue key="LocKey" value="EDITRULE_MATCHES_TAB_TEXT" type="string"/>
+						<KeyValue key="Color" value="SECONDARY_TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+            </Layer>
+        </Layers>
+		<Frames>
+			<Frame parentKey="parameters">
+                <Size x="1" y="1"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="BOTTOMLEFT" y="-12"/>
+					<Anchor point="TOPRIGHT" relativeKey="$parent.label" relativePoint="BOTTOMRIGHT" y="-12"/>
+				</Anchors>
+            </Frame>
+			<Frame parentKey="matches" inherits="CommonUI_List">
+				<Size x="10" y="100"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetMatches"/>
+					<KeyValue key="ItemTemplate" value="EditRule_MatchItem"/>
+					<KeyValue key="ItemClass" value="Features.Dialogs.MatchItem"/>
+					<KeyValue key="EmptyText" value="EDITRULE_NO_MATCHES"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.parameters" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+    </Frame>
+
+</Ui>
+

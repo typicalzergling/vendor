@@ -149,8 +149,8 @@ local PropertyItem = {
             item:Notify("OnInsertText", text)
         end
         
-        local model = item:GetModel()
-        Dialog.RaiseEvent(item, EditRuleEvents.HELP_CONTEXT, model.Name, "property")
+        --local model = item:GetModel()
+        --Dialog.RaiseEvent(item, EditRuleEvents.HELP_CONTEXT, model.Name, "property")
     end
 }
 

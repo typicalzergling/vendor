@@ -180,7 +180,7 @@
                     <Anchor point="RIGHT"/>
                 </Anchors>
             </Frame>
-            <Frame parentKey="filters" inherits="CommonUI_ChipList">
+            <Frame parentKey="filters" inherits="CommonUI_Chips">
                 <KeyValues>
                     <KeyValue key="Handler" value="ApplyFilter"/>
                 </KeyValues>

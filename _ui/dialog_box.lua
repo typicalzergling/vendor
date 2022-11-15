@@ -388,7 +388,7 @@ function Dialog.RaiseEvent(frame, event, ...)
     local dialog = Dialog.Find(frame)
     assert(dialog, "Unable to locate the dialog to raise event : " .. tostring(event))
     Addon:Debug("dialogs", "Raising dialog event '%s'", tostring(event))
-    dialog:TriggerEvent(event, dialog, ...)
+    dialog:TriggerEvent(event, ...)
 end
 
 --[[

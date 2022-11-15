@@ -4,63 +4,13 @@ local Dialogs = Addon.Features.Dialogs
 local EditRule = Mixin({}, Addon.CommonUI.Mixins.Debounce)
 local RuleType = Addon.RuleType
 local Dialog = Addon.CommonUI.Dialog
-
-local RuleType = Mixin({}, Addon.CommonUI.Mixins.Border)
-local RULETYPE_BORDER = CreateColor(.5, .5, .5, .5)
-local RULETYPE_BACK = CreateColor(0, 0, 0, 0)
-local RULETYPE_HOVER_BORDER = CreateColor(0.8, 0.8, 0.8, .5)
-local RULETYPE_HOVER_BACK = CreateColor(1, 1, 1, 0.1)
-local RULETYPE_TEXT = CreateColor(1, 1, 1, 0.8)
-local RULETYPE_SELECTED_TEXT = YELLOW_FONT_COLOR
-local RULETYPE_SELECTED_BORDER = CreateColor(1, 1, 0, .45)
-local RULETYPE_SELECTED_BACK = CreateColor(1, 1, 0, .05)
+local UI  = Addon.CommonUI.UI
 
 Dialogs.EditRuleEvents = {
     HELP_CONTEXT = "set-help-context",
+    CLEAR_MATCHES = "clear-matches",
+    SHOW_MATCHES = "show-matches",
 }
-
-function RuleType:OnLoad()
-    self:OnBorderLoaded(nil, RULETYPE_BORDER, RULETYPE_BACK)
-    self.selected = false
-
-    local label = locale[self.Label]
-    self.label:SetText(label or self.Label or "")
-
-    local help = locale[self.Help]
-    self.help:SetText(help or self.Help or "")
-
-    self.help:SetTextColor(RULETYPE_TEXT:GetRGBA())
-    self.label:SetTextColor(RULETYPE_TEXT:GetRGBA())
-end
-
-function RuleType:OnEnter()
-    if (not self.selected) then
-        self:SetBorderColor(RULETYPE_HOVER_BORDER)
-        self:SetBackgroundColor(RULETYPE_HOVER_BACK)
-        self.label:SetTextColor(RULETYPE_SELECTED_TEXT:GetRGBA())
-    end
-end
-
-function RuleType:OnLeave()
-    if (not self.selected) then
-        self:SetBorderColor(RULETYPE_BORDER)
-        self:SetBackgroundColor(RULETYPE_BACK)
-        self.label:SetTextColor(RULETYPE_TEXT:GetRGBA())
-    end
-end
-
-function RuleType:SetSelected(selected)
-    self.selected = selected or false
-    if (selected) then
-        self.label:SetTextColor(RULETYPE_SELECTED_TEXT:GetRGBA())
-        self:SetBorderColor(RULETYPE_SELECTED_BORDER)
-        self:SetBackgroundColor(RULETYPE_SELECTED_BACK)
-    else
-        self.label:SetTextColor(RULETYPE_TEXT:GetRGBA())
-        self:SetBorderColor(RULETYPE_BORDER)
-        self:SetBackgroundColor(RULETYPE_BACK)
-    end
-end
 
 local HELP_FUNCTION_BACK = CreateColor(0, .5, .5, .125)
 local HELP_PROPERTY_BACK = CreateColor(.5, .5, 0, .125)
@@ -239,41 +189,29 @@ local HelpTab = {
     end,
 }
 
-function RuleType:IsSelected()
-    return (self.selected == true)
-end
-
---[[
-    Checks if the specified  rule is read-only (will diable the dialog)
-]]
-local function _isReadOnlyRule(rule)
-end
-
 --[[
     Initialize the edit rule dialog
 ]]
 function EditRule:OnInitDialog(dialog)
+    dialog:SetCaption("EDITRULE_CAPTION")
+
     local tabs = self.tabs
 
-    Addon:DebugForEach("list", Dialogs.MatchesTab)
+    self.ruleType:AddChips({
+        { id=RuleType.KEEP, text="EDITRULE_KEEPRULE_LABEL", tooltip="EDITRULE_KEEPRULE_TEXT" },
+        { id=RuleType.SELL, text="EDITRULE_SELLRULE_LABEL", tooltip="EDITRULE_SELLRULE_TEXT" },
+        { id=RuleType.DESTROY, text="EDITRULE_DELETERULE_LABEL", tooltip="EDITRULE_DELETERULE_TEXT" }
+    })
 
-    dialog:SetCaption("EDITRULE_CAPTION")
     Addon.AttachImplementation(self.ruleStatus, Dialogs.RuleStatus)
 
-    for _, type in ipairs(self.ruleType) do
-        Addon.AttachImplementation(type, RuleType, true)
-        type:SetScript("OnClick", function(ruleType)
-            self:SetRuleType(ruleType.Type)
-        end)
-    end
-
-    self.help = tabs:AddTab("help", "help", "Vendor_EditRule_Help", HelpTab)
-    self.matches = tabs:AddTab("matches", "matches", "Vendor_EditRule_Matches", Dialogs.MatchesTab)
-    self.items = tabs:AddTab("iteminfo", "iteminfo", "Vendor_EditRule_ItemInfo", Dialogs.ItemInfoTab)
+    self.help = tabs:AddTab("help", "EDITRULE_HELP_TAB_NAME", "Vendor_EditRule_Help", HelpTab)
+    self.matches = tabs:AddTab("matches", "EDITRULE_MATCHES_TAB_NAME", "Vendor_EditRule_Matches", Dialogs.MatchesTab)
+    self.items = tabs:AddTab("iteminfo", "EDITRULE_ITEMINFO_TAB_NAME", "Vendor_EditRule_ItemInfo", Dialogs.ItemInfoTab)
     self.items:RegisterCallback("INSERT_TEXT", self.InsertText, self)
-    --tabs:AddTab("parameters", "parameters", "Vendor_EditRule_Parameters", {})
 
-    self:SetRuleType("SELL")
+    self:SetRuleType(RuleType.SELL)
+    tabs:ShowTab("matches")
     tabs:ShowTab("help")
     self.ruleStatus:SetStatus("unhealthy")
 end
@@ -304,12 +242,20 @@ end
 
 --[[ Compute the current parameters for this rule ]]
 function EditRule:GetCurrentParameters()
-    if (self.rule and type(self.rule.Params) == "table") then
+    local parameters = self.editor:GetParameters()
+    if (parameters) then
         local params = {}
-        for _, param in ipairs(self.rule.Params) do
+        local info = {}
 
+        for _, param in ipairs(parameters) do
+            local paramInfo = {
+                Name = param.Name,
+                Type = param.Type,
+            }
+            
             if (type(self.parameters) == "table") then
                 params[param.Key] = self.parameters[param.Key]
+                paramInfo.Value = self.parameters[param.Key]
             else
                 local default = param.Default
                 if (type(default) == "function") then
@@ -317,10 +263,13 @@ function EditRule:GetCurrentParameters()
                 end
 
                 params[param.Key] = default
+                paramInfo.Value = default
             end
-        end
 
-        return params
+            table.insert(info, paramInfo)
+        end
+        Addon:DebugForEach("editrule", info)
+        return params, info
     end
 
     return nil
@@ -332,23 +281,16 @@ function EditRule:UpdateMatches()
 
     Addon:Debug("editrule", "UpdateMatches :: START")
 
-    if (self.readonly) then
-        assert(self.rule, "Expected a valid rule definition")
-        local params = self:GetCurrentParameters()
+    local script = self.editor:GetScript()
+    local parameters, info = self:GetCurrentParameters()
+    local matches = rules:GetMatches(script, parameters)
 
-        matches = rules:GetMatches(self.rule.Script, params)
-    elseif (self.changes.scriptValid) then
-        local params = self:GetCurrentParameters()
-
-        matches = rules:GetMatches(self.changes.script, params)
-    end
-
-    if (matches) then
+    if (matches) then        
         Addon:Debug("editrule", "UpdateMatches :: %s", table.getn(matches))
-        self.matches:Call("SetMatches", matches)
+        self:RaiseEvent(Dialogs.EditRuleEvents.SHOW_MATCHES, matches, info)
     else
         Addon:Debug("editrule", "UpdateMatches :: no matches found")
-        self.matches:Call("ClearMatches", matches)
+        self:RaiseEvent(Dialogs.EditRuleEvents.SHOW_MATCHES, {}, info)
     end
 end
 
@@ -356,72 +298,61 @@ end
     Called when the script changes
 ]]
 function EditRule:OnScriptChanged(text)
-    local rules = Addon:GetFeature("Rules")
-
-    if (not self.readonly) then
-        local errorMessage = nil
-        local scriptValid = false
+    if (not self.editor:IsReadOnly()) then
+        self.editor:SetScript(text)
 
         if (text and string.len(text) ~= 0) then
+            local rules = Addon:GetFeature("Rules")
             local valid, msg = rules:ValidateRule(text)
             Addon:Debug("editrule", "Validate script '%s' [%s, %s]", text, valid, msg or "")
 
             if (valid) then
-                scriptValid = true
-                self.changes.scriptValid = true
-                self.changes.script = text
                 self.ruleStatus:SetStatus("ok")
+                self:Debounce(.75, self.UpdateMatches)
             else
+                local errorMessage = nil
                 local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
                 if (err) then
                     errorMessage = Addon.StringTrim(err)
                 else
                     errorMessage = Addon.StringTrim(msg)
                 end
-            end
-        end
-
-        if (not scriptValid) then
-            if (not errorMessage) then
-                self.ruleStatus:Clear()
-            else
                 self.ruleStatus:SetStatus("invalid", errorMessage)
             end
-    
-            self.changes.scriptValid = false
         end
-    end
 
-    self:Debounce(.50, self.UpdateMatches)
-    self:UpdateButtons()
+    end
 end
 
 --[[
     Called when the name changes
 ]]
 function EditRule:OnNameChanged(text)
-    self.changes.name = text
-    self:UpdateButtons()
+    if (not self.editor:IsReadOnly()) then
+        self.editor:SetName(text)
+    end
 end
 
 --[[
     Called when the description changes
 ]]
 function EditRule:OnDescriptionChanged(text)
-    self.changes.description = text
+    if (not self.editor:IsReadOnly()) then
+        self.editor:SetDescription(text)
+    end
 end
 
 --[[
     Set the rule type
 ]]
 function EditRule:SetRuleType(type)
-    local uctype = string.upper(type or "")
-    for _, ruleType in ipairs(self.ruleType) do
-            ruleType:SetSelected(ruleType.Type == uctype)
-    end
-    
-    if (self.changes) then
-        self.changes.type = uctype
+    self.ruleType:SetSelected({ [type] = true })
+end
+
+--[[ Handle a type change ]]
+function EditRule:OnRuleTypeChanged()
+    if (not self.editor:IsReadOnly()) then
+        self.editor:SetType(self:GetRuleType())
     end
 end
 
@@ -429,41 +360,17 @@ end
     Determines the current rule type
 ]]
 function EditRule:GetRuleType()
-    for _, ruleType in ipairs(self.ruleType) do
-        if (ruleType:IsSelected()) then
-            return ruleType.Type
-        end
+    local ruleType = self.ruleType:GetSelected()
+
+    if (ruleType[RuleType.SELL]) then
+        return RuleType.SELL
+    elseif (ruleType[RuleType.KEEP]) then
+        return RuleType.KEEP
+    elseif (ruleType[RuleType.DESTROY]) then
+        return RuleType.DESTROY
     end
 
-    return "SELL"
-end
-
---[[
-    Checks if the specified string is both a valid string, and also no empty
-]]
-local function validateString(str)    
-    if (type(str) == "string") then
-        str = Addon.StringTrim(str)
-        return string.len(str) ~= 0
-    end
-
-    return false;
-end
-
---[[
-    Determine if the current rule is read-only
-]]
-function EditRule:InViewMode()
-    local rule = self.rule
-    return (type(rule) == "table") and (rule.IsSystem or rule.IsExtension)
-end
-
---[[
-    Determines if this is a new rule (or an existing rule)
-]]
-function EditRule:IsNewRule()
-    local changes = self.changes or {}
-    return (changes.newRule == true)
+    return RuleType.KEEP
 end
 
 --[[
@@ -497,104 +404,117 @@ function EditRule:UpdateButtons()
     self:GetDialog():SetButtonState(buttons)
 end
 
+--[[ Sets the edtitor attached to this dialog ]]
+function EditRule:Update()
+    local editor = self.editor
+    assert(self.editor, "We should have a valid editor to update our state")
+
+    local readonly = editor:IsReadOnly()
+
+    UI.Enable(self.name, not readonly)
+    UI.Enable(self.description, not readonly)
+    UI.Enable(self.script, not readonly)
+    --UI.Enable(self.ruleType, not readonly)
+
+    self:SetButtonState({
+        close = {
+            enabled = true,
+            show = readonly,
+        },
+        cancel = {
+            enabled = true,
+            show = not readonly,
+        },
+        delete = {
+            enabled = editor:CanDelete(),
+            show = not editor:IsNew() and not readonly
+        },
+        save = {
+            show = not readonly,
+            enabled = editor:CanSave()
+        }
+    })
+end
+
 --[[
     Sets the rule we are viewing or editing this requries a valid rule
 ]]
 function EditRule:SetRule(rule, parameters)
     assert(type(rule) == "table", "Expected the rule definition to be a table")
 
-    local dialog = self:GetDialog()
-    self.changes = {}
-    
-    self.rule = rule;
+    self:SetCaption("EDITRULE_CAPTION")
+    self.editor = Dialogs.CreateRuleEditor(rule)
     self.parameters = parameters
 
-    self:SetRuleType(rule.Type or "sell")
-    self.description:SetText(rule.Description or "")
-    self.name:SetText(rule.Name or "")
-    local script = rule.Script
-    if (type(script) ~= "string") then
-        script = rule.ScriptText
-    end
-    self.script:SetText(script or "")
+    self:Setup()
+    self:Update()
+    self:Debounce(0.05, self.UpdateMatches)
+end
 
-    if (self:InViewMode()) then
-        self.readonly = true
-        dialog:SetCaption("VIEWRULE_CAPTION")
+--[[ Sync the dialog state to the editor ]]
+function EditRule:Setup()
+    local editor = self.editor
+    assert(editor, "we should have a valid editor")
 
-        self.script:Disable()
-        self.name:Disable()
-        self.description:Disable()
+    --- Determine our caption
+    if (editor:IsNew()) then
+        self:SetCaption("CREATERULE_CAPTION")
+    elseif (not editor:IsReadOnly()) then
+        self:SetCaption("EDITRULE_CAPTION")
     else
-        dialog:SetCaption("EDITRULE_CAPTION")
-
-        self.script:Enable()
-        self.name:Enable()
-        self.description:Enable()
+        self:SetCaption("VIEWRULE_CAPTION")
     end
 
-    --self.matches:Call("ClearMatches")
-    self:Debounce(0.15, self.UpdateMatches)
-    self:UpdateButtons()
+    -- Transfer our text
+    self.name:SetText(editor:GetName())
+    self.description:SetText(editor:GetDescription())
+    self.script:SetText(editor:GetScript())
+    self.ruleType:SetSelected({ [editor:GetType()] = true })
+
+    -- Setup the rule status if applicable
+    local source = editor:GetSource()
+    if (source == RuleSource.CUSTOM) then
+        if (editor:IsNew()) then
+            self.ruleStatus:SetStatus()
+        else
+            self.ruleStatus:SetStatus()
+        end
+    elseif (source == RuleSource.SYSTEM) then
+        self.ruleStatus:SetStatus("system")
+    elseif (source == RuleSource.EXTENSION) then
+        self.ruleStatus:SetStatus("extension")
+    end
+
+    if (not editor:IsReadOnly()) then
+        editor:RegisterCallback(Dialogs.RuleEditorEvents.CHANGED, self.Update, self)
+    end
 end
 
 --[[
     Sets the dialog to create a new rule
 ]]
-function EditRule:NewRule()
-    local dialog = self:GetDialog()
+function EditRule:NewRule()    
+    self.editor = Dialogs.CreateRuleEditor()
+    self:Setup()
+    self:RaiseEvent(Dialogs.EditRuleEvents.CLEAR_MATCHES)
+    self:Update()
+end
 
-    self.readonly = false
-    self.changes = { newRule = true }
+function EditRule:CopyRule(rule, parameters)
+    assert(type(rule) == "table", "Expected the rule definition to be a table")
 
-    dialog:SetCaption("EDITRULE_CAPTION")
-    self:SetRuleType("sell")
+    self.editor = Dialogs.CreateRuleEditor(rule, true)
+    self.parameters = parameters
 
-    self.script:Enable()
-    self.script:SetText("")
-
-    self.name:Enable()
-    self.name:SetText("")
-
-    self.description:Enable()
-    self.description:SetText("")
-
-    self.ruleStatus:Clear()
-    self.matches:Call("ClearMatches")
-    self:UpdateButtons()
+    self:Setup()
+    self:Update()
+    self:Debounce(0.05, self.UpdateMatches)
 end
 
 function EditRule:SaveRule()
-    if (not self.readonly) then
-        local rule = {}
-        local changes = self.changes or {}
-        local rules = Addon:GetFeature("Rules")
-
-        -- If we have a rule, then copy it into the rule
-        if (type(self.rule) == "table") then
-            for k, v in pairs(self.rule) do
-                rule[k] = v
-            end
-        end
-
-        -- Assign the type
-        local type = self:GetRuleType()
-        if type == "SELL" then
-            rule.Type = RuleType.SELL
-        elseif (type == "KEEP") then
-            rule.Type = RuleType.KEEP
-        elseif (type == "DESTROY") then
-            rule.Type = RuleType.DESTROY
-        end
-
-        -- Merge in our changes
-        rule.Name = changes.name or rule.Name
-        rule.Description = changes.description or rule.Description
-        rule.Script = changes.script or rule.Script
-
-        -- Save the rule
-        self.rule = rules:SaveRule(rule)
-        self.changes = {}
+    if (not self.editor:IsReadOnly()) then
+        self.editor:Save()
+        self:Close()
     end
 end
 

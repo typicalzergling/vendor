@@ -6,6 +6,7 @@ local TEST_NAME = "<test-rule>"
 local TEST_CATEGORY_NAME = "<test>"
 local EVENTS = { "OnRuleDefinitionCreated", "OnRuleDefinitionUpdated", "OnRuleDefinitionDeleted", "OnRuleFunctionsChanged" }
 local RuleType = Addon.RuleType
+local RuleSource = Addon.RuleSource
 
 function RulesFeature:OnInitialize()
     Addon:Debug("rules", "Initialize Rules Feature")
@@ -82,10 +83,12 @@ function RulesFeature:FindRule(ruleId)
         rule = Addon.DeepTableCopy(rule)
         if (type == "SYSTEM") then
             rule.IsSystem = true
-        end
-
-        if (type == "EXT") then
+            rule.Source = RuleSource.SYSTEM
+        elseif (type == "EXT") then
             rule.IsExtension = true
+            rule.Source = RuleSource.EXTENSION
+        else
+            rule.Source = RuleSource.CUSTOM
         end
     end
 

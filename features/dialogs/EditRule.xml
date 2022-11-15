@@ -1,27 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
-	<Button name="Vendor_RuleType" parentArray="ruleType" virtual="true">
-        <Size x="1" y="56"/>
-		<Layers>
-			<Layer level="ARTWORK">
-				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
-					<Size x="1" y="18"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="8" y="-8"/>
-						<Anchor point="TOPRIGHT" x="-8" y="-8"/>
-					</Anchors>
-				</FontString>
-				<FontString parentKey="help" inherits="GameFontHighlightSmall" justifyH="LEFT" justifyV="TOP">
-					<Size x="256" y="1"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.label" y="-1"/>
-						<Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-	</Button>
-
     <Frame name="Vendor_RuleStatus" virtual="true">
         <Size x="2" y="64"/>
         <Layers>
@@ -45,11 +23,56 @@
     
     <Frame name="Vendor_Dialogs_EditRule" virtual="true" hidden="true">
         <Size x="796" y="550"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="labelName" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITRULE_NAME_LABEL"/>>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="RIGHT" relativePoint="CENTER" x="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="labelDescr" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITRULE_DESCR_LABEL"/>>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelName" y="-46"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelName" y="-46"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="labelScript" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITRULE_SCRIPT_LABEL"/>>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelDescr" y="-76"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelDescr" y="-76"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="labelType" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITRULE_TYPE_LABEL"/>>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-116"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelScript" y="-116"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
         <Frames>
             <Frame parentKey="tabs" inherits="CommonUI_TabControl">
                 <Anchors>
                     <Anchor point="TOPRIGHT"/>
-                    <Anchor point="LEFT" relativePoint="CENTER" x="6"/>
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.labelName" x="8"/>
                     <Anchor point="BOTTOM"/>
                 </Anchors>
             </Frame>
@@ -61,26 +84,24 @@
 			<Frame parentKey="name" inherits="CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_NAME_HELPTEXT" type="string"/>
-					<KeyValue key="Label" value="EDITRULE_NAME_LABEL" type="string"/>
 					<KeyValue key="Handler" value="OnNameChanged" type="string"/>
 				</KeyValues>
 				<Size x="1" y="30"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" y="-18"/>
-					<Anchor point="RIGHT" relativePoint="CENTER" x="-6"/>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelName" y="-4"/>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelName" y="-4"/>
 				</Anchors>
 			</Frame>
 
 			<Frame parentKey="description"  inherits="CommonUI_TextArea">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_DESCR_HELPTEXT" type="string"/>
-					<KeyValue key="Label" value="EDITRULE_DESCR_LABEL" type="string"/>
 					<KeyValue key="Handler" value="OnDescriptionChanged" type="string"/>
 				</KeyValues>
-				<Size x="1" y="80"/>
+				<Size x="1" y="8"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.name" x="0" y="-24"/>
-					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelDescr" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelScript" y="12"/>
 				</Anchors>
 			</Frame>
 
@@ -88,55 +109,30 @@
 				<Size x="1" y="120"/>
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
-					<KeyValue key="Label" value="EDITRULE_SCRIPT_LABEL" type="string"/>
 					<KeyValue key="Handler" value="OnScriptChanged" type="string"/>
 				</KeyValues>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.description" x="0" y="-24"/>
-					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelType" y="12"/>
 				</Anchors>
 			</Frame>
 
-            <Button inherits="Vendor_RuleType" parentKey="sellRule">
+			<Frame inherits="CommonUI_Chips" parentKey="ruleType">
 				<KeyValues>
-					<KeyValue key="Help" value="EDITRULE_SELLRULE_TEXT" type="string"/>
-					<KeyValue key="Label" value="EDITRULE_SELLRULE_LABEL" type="string"/>
-					<KeyValue key="Type" value="SELL" type="string"/>
+					<KeyValue key="IsExclusive" value="true" type="boolean"/>
+					<KeyValue key="OneSize" value="true" type="boolean"/>
+					<KeyValue key="Handler" value="OnRuleTypeChanged"/>
 				</KeyValues>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.script" x="0" y="-10"/>
-					<Anchor point="RIGHT" relativeKey="$parent.name"/>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelType" x="0" y="-6"/>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelType" x="0" y="-6"/>
 				</Anchors>
-            </Button>
-
-            <Button inherits="Vendor_RuleType" parentKey="keepRule">
-				<KeyValues>
-					<KeyValue key="Help" value="EDITRULE_KEEPRULE_TEXT" type="string"/>
-					<KeyValue key="Label" value="EDITRULE_KEEPRULE_LABEL" type="string"/>
-					<KeyValue key="Type" value="KEEP" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.sellRule" x="0" y="-8"/>
-					<Anchor point="RIGHT" relativeKey="$parent.name"/>
-				</Anchors>
-            </Button>
-
-            <Button inherits="Vendor_RuleType" parentKey="deleteRule">
-				<KeyValues>
-					<KeyValue key="Help" value="EDITRULE_DELETERULE_TEXT" type="string"/>
-					<KeyValue key="Label" value="EDITRULE_DELETERULE_LABEL" type="string"/>
-					<KeyValue key="Type" value="DELETE" type="string"/>
-				</KeyValues>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.keepRule" x="0" y="-8"/>
-					<Anchor point="RIGHT" relativeKey="$parent.name"/>
-				</Anchors>
-            </Button>
+			</Frame>
 
             <Frame inherits="Vendor_RuleStatus" hidden="true" parentKey="ruleStatus">
                 <Anchors>
                     <Anchor point="BOTTOMLEFT"/>
-                    <Anchor point="RIGHT" relativeKey="$parent.name"/>
+                    <Anchor point="RIGHT" relativeKey="$parent.labelName"/>
                 </Anchors>
             </Frame>
 

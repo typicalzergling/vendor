@@ -375,10 +375,14 @@ DATA_MIGRATION_SL_NOTICE = YELLOW_FONT_COLOR_CODE.. "Detected migration to Shado
 DATA_MIGRATION_ERROR = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration was detected, but no action taken. Please notify the addon authors here: https://www.curseforge.com/wow/addons/vendor/issues" ..FONT_COLOR_CODE_CLOSE,
 
 -- Edit Rule Dialog
-EDITRULE_CAPTION = "Rule Editor",
+EDITRULE_CAPTION = "Edit Rule",
+CREATERULE_CAPTION = "Create Rule",
 VIEWRULE_CAPTION = "View Rule",
 CREATE_BUTTON = "Create",
+EDITRULE_DEFAULT_NAME = "New Rule",
+EDITRULE_DEFAULT_COPY_NAME_FMT1 = "%s (Copy)",
 EDITRULE_NAME_LABEL = "Name:",
+EDITRULE_TYPE_LABEL = "Type:",
 EDITRULE_NAME_HELPTEXT = "type the name of your rule here",
 EDITRULE_FILTER_LABEL = "Filter:",
 EDITRULE_FILTER_HELPTEXT = "click here to filter the help",

@@ -5,7 +5,9 @@
 	<Script file="features/dialogs/ItemInfo.lua"/>
 	<Script file="features/dialogs/Matches.lua"/>
 	<Script file="features/dialogs/HelpItem.lua"/>
+    <Script file="features/dialogs/ruleeditor.lua"/>
 
     <Include file="features/dialogs/EditTabs.xml"/>
+    <Include file="features/dialogs/matches.xml"/>
     <Include file="features/dialogs/EditRule.xml"/>
 </Ui>

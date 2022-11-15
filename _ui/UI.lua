@@ -240,7 +240,8 @@ end
 --[[ Helper to retrieve the feature ]]
 function DialogContent:RaiseEvent(event, ...)
     local dialog = rawget(self, DialogContent)
-    dialog:TriggerEvent(event, dialog,...)
+    print("raise-event", event, ...)
+    dialog:TriggerEvent(event, ...)
 end
 
 --[[ Helper to retrieve the feature ]]
