@@ -512,16 +512,46 @@ end
 
 function EditRule:SaveRule()
     if (not self.editor:IsReadOnly()) then
-        self.editor:Save()
-        self:Close()
+        local rules = Addon:GetFeature("rules")
+        local duplicateName = false
+        
+        -- Check for duplicates
+        local name = string.lower(self.editor:GetName())
+        for _, rule in ipairs(rules:GetRules(nil, true)) do
+            if (string.lower(rule.Name) == name) then
+                if (self.editor:IsNew() or (self.editor:GetId() ~= rule.Id)) then
+                    Addon:Debug("editrule", "Found duplicate rule '%s'", rule.Id)
+                    duplicateName = true
+                end
+            end
+        end
+
+        if (duplicateName) then
+            UI.MessageBox("DUPLICATE_RULE_NAME_CAPTION",
+                locale:FormatString("DUPLICATE_RULE_FMT1", self.editor:GetName()), {
+                    "DUPLICATE_RULE_OK"
+                })
+        else
+            self.editor:Save()
+            self:Close()
+        end
     end
 end
 
 function EditRule:DeleteRule()
     if (not self.editor:IsReadOnly()) then
-        self.editor:Delete()
-        self:Close()
-    end
+        UI.MessageBox("DELETE_RULE_CAPTION",
+            locale:FormatString("DELETE_RULE_FMT1", self.editor:GetName()), {
+                {
+                    text = "CONFIRM_DELETE_RULE",
+                    handler = function()
+                        self.editor:Delete()
+                        self:Close()
+                    end,
+                },
+                "CANCEL_DELETE_RULE"
+            }, self)
+        end
 end
 
 Dialogs.EditRule = EditRule

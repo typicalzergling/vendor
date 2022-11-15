@@ -62,11 +62,39 @@ end
 --[[
     Retrieves all the rules, with an optional type match
 ]]
-function RulesFeature:GetRules(type)
+function RulesFeature:GetRules(ruleType, all)
     --@debug@
-    assert(isValidRuleType(type), "An invalid rule type was provided :: " .. tostring(type))
+    assert(isValidRuleType(ruleType), "An invalid rule type was provided :: " .. tostring(type))
     --@end-debug@
-    return Addon.Rules.GetDefinitions(type)
+
+    local hidden = Addon.RuleConfig:Get(RuleType.HIDDEN)
+    local rules = {}
+
+    for _, rule in ipairs(Addon.Rules.GetDefinitions()) do
+        if (not ruleType or ruleType == rule.Type) then
+            if (not all and hidden:Contains(rule.Id)) then
+                Addon:Debug("rulez", "Excluding hidden rule '%s'", rule.Id)
+            elseif (not all and rule.Locked == true) then
+                Addon:Debug("rulez", "Excluding locked rule '%s'", rule.Id)
+            else
+                Addon:Debug("rulez", "Including rule '%s'", rule.Id)
+                local def = Addon.DeepTableCopy(rule)
+                if (type == "SYSTEM") then
+                    def.IsSystem = true
+                    def.Source = RuleSource.SYSTEM
+                elseif (type == "EXT") then
+                    def.IsExtension = true
+                    def.Source = RuleSource.EXTENSION
+                else
+                    def.Source = RuleSource.CUSTOM
+                end
+        
+                table.insert(rules, def)
+            end
+        end
+    end
+
+    return rules
 end
 
 function RulesFeature:GetConfig(type)

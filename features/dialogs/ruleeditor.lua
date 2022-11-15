@@ -42,6 +42,15 @@ function RuleEditor:Init(rule, copy)
     end
 end
 
+--[[ Get the ID of the rule if we have one ]]
+function RuleEditor:GetId()
+    if (self.rule) then
+        return self.rule.Id
+    end
+    
+    return nil
+end
+
 --[[ Retrieve the name of this rule ]]
 function RuleEditor:GetName()
     return self.name
@@ -189,18 +198,8 @@ function RuleEditor:Delete()
     assert(self.rule and self.rule.Id, "Delete() called with no rule Id")
 
     local ruleId = self.rule.Id
-    local name = self.rule.Name
-    Addon.CommonUI.UI.MessageBox("DELETE_RULE_CAPTION",
-        locale:FormatString("DELETE_RULE_FMT1", self.rule.Name), {
-            {
-                text = "CONFIRM_DELETE_RULE",
-                handler = function()
-                    Addon:Debug("editrule", "Deleting Rule: %s (%s)", tostring(name), ruleId)
-                    Addon:GetFeature("Rules"):DeleteRule(ruleId)
-                end,
-            },
-            "CANCEL_DELETE_RULE"
-        }, self)
+    Addon:Debug("editrule", "Deleting Rule: %s (%s)", tostring(self.name), ruleId)
+    Addon:GetFeature("Rules"):DeleteRule(ruleId)
 end
 
 --[[ Set the dirty state for the rule editor ]]

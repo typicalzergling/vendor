@@ -479,6 +479,14 @@ Are you sure?
 ]],
 CONFIRM_DELETE_RULE = "Yes, DELETE",
 CANCEL_DELETE_RULE = "Cancel",
+DUPLICATE_RULE_NAME_CAPTION = "Existing Name",
+DUPLICATE_RULE_FMT1 = [[
+# Duplicate Rule Name
+
+There is already a rule with the name '%s' plase select another 
+and save the rule again.
+]],
+DUPLICATE_RULE_OK = "Close",
 
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",
