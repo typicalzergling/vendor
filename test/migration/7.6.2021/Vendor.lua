@@ -752,16 +752,6 @@ Vendor_Profiles = {
 		["profile:timestamp"] = 1623450706,
 	},
 }
-Vendor_CustomLists = {
-	["uid:thoekh:sargeras:1624250099878"] = {
-		["Items"] = {
-			[181468] = true,
-			[33292] = true,
-		},
-		["Name"] = "Keeper Stuff",
-		["Description"] = "Stuff to keep",
-	},
-}
 Vendor_History = {
 	["Characters"] = {
 		["Khyrek - Lightbringer"] = {
