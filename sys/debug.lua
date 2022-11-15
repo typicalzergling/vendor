@@ -130,7 +130,7 @@ function Addon:DebugForEach(channel, t, ...)
 
         Addon:Debug(c, "+ Start ForEach: %s", tostring(t))
         if (table.getn(args) ~= 0) then
-            for _, o in ipairs({...}) do
+            for _, o in pairs({...}) do
                 if (string.len(msg) ~= 0) then
                     msg = msg .. " "
                 end
