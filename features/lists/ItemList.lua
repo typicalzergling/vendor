@@ -11,12 +11,14 @@ end
 
 function ItemList:OnShow()
     Addon:RegisterCallback("OnListChanged", self, self.OnListChanged)
+    Addon:RegisterCallback("OnListRemoved", self, self.OnListRemoved)
     Addon:RegisterCallback("OnProfileChanged", self, self.OnListChanged)
     self:Rebuild()
 end
 
 function ItemList:OnHide()
     Addon:UnregisterCallback("OnListChanged", self)
+    Addon:UnregisterCallback("OnListRemoved", self)
     Addon:UnregisterCallback("OnProfileChanged", self)
 end
 
@@ -48,6 +50,12 @@ function ItemList:SetList(list)
     self:Rebuild()
 end
 
+--[[ clear the current items ]]
+function ItemList:Clear()
+    self.list = nil
+    self:Rebuild()
+end
+
 --[[ Retrieve the list ]]
 function ItemList:GetList()
     return self.list
@@ -59,6 +67,15 @@ function ItemList:OnListChanged(list)
         self:Rebuild()
     end
 end
+
+--[[ When the list changes we need to rebuild it ]]
+function ItemList:OnListRemoved(list)
+    if (self.list and self.list:GetId() == list:GetId()) then
+        self.list = nil
+        self:Rebuild()
+    end
+end
+
 
 function ItemList:OnDelete(itemId)
     if (self.list and not self.list:IsReadOnly()) then
