@@ -4,7 +4,14 @@ local Lists = Addon.Features.Lists
 local UI = Addon.CommonUI.UI
 local ListEvents = Addon.Systems.Lists.ListEvents
 local ListType = Addon.Systems.Lists.ListType
+local SystemListId = Addon.SystemListId
 local ListsTab = {}
+
+local SYSTEM_ORDER = {
+    [SystemListId.NEVER] = 1,
+    [SystemListId.ALWAYS] = 100,
+    [SystemListId.DESTROY] = 1000
+}
 
 --[[ Handle loading the list ]]
 function ListsTab:OnLoad()
@@ -19,6 +26,21 @@ function ListsTab:OnLoad()
     Addon:RegisterCallback(ListEvents.REMOVED, self, function()
         self.lists:Rebuild()
     end)
+
+    self.lists:Sort(function (a, b)
+            local typeA = a:GetType()
+            local typeB = b:GetType()
+
+            if (typeA ~= typeB) then
+                return typeA < typeB
+            else
+                if (typeA == ListType.SYSTEM) then
+                    return SYSTEM_ORDER[a:GetId()] < SYSTEM_ORDER[b:GetId()]
+                end
+               
+                return a:GetName() < b:GetName()
+            end
+        end)
 end
 
 --[[ Called when the lists tab is activated ]]

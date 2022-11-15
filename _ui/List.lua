@@ -18,6 +18,20 @@ local UI = Addon.CommonUI.UI
 local Layouts = Addon.CommonUI.Layouts
 local DISCARD_TIME = 60.0
 
+--[[ sort the array, technially this sorts from least greatest ]]
+local function bubbleSort(array, sort)
+    local num = table.getn(array)
+    for i = 1, num do
+        for j = 1, num - i do
+            if (sort(array[j], array[j + 1]) ~= true) then
+                local t = array[j]
+                array[j] = array[j + 1]
+                array[j + 1] = t
+            end
+        end
+    end
+end
+
 --[[ Calls a hanlder on the list or it's parent ]]
 local function list_callHandler(list, handler, ...)
     local func = list[handler]
@@ -257,7 +271,7 @@ local function list_BuildView(self, state)
         -- If we have sort, then sort the resulting view
         if (type(sort) == "function") then
             -- This is bugged and throwing a lua error about ruleB not existing. Commenting out for now.
-            --table.sort(view, sort)
+            bubbleSort(view, sort)
         end
 
         state.view = view
