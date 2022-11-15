@@ -99,16 +99,15 @@ end
     Called to delete a rule from the custom definitions, the rule MUST be a 
     custom rule for this to do anything.
 ]]
-function RulesFeature:DeleteRule(ruleId)
+function RulesFeature:DeleteRule(rule)
+    local ruleId = rule
     if type(ruleId) == "table" then
         ruleId = rule.Id
     end
-
-    if (type(ruleId) == "string") then
-        local rule = Addon.Rules.DeleteDefinition(ruleId)
-        if (rule) then
-            Addon:RaiseEvent("OnRuleDefinitionDeleted", rule)
-        end
+    assert(type(ruleId) == "string", "Invalid input to DeleteRule")
+    local deletedRule = Addon.Rules.DeleteDefinition(ruleId)
+    if (deletedRule) then
+        Addon:RaiseEvent("OnRuleDefinitionDeleted", deletedRule)
     end
 end
 

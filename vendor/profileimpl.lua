@@ -289,8 +289,6 @@ function Addon:OnCheckProfileMigration(profile)
 
 		-- Update the keeprules.
 		profile:SetValue(PROFILE_KEEP_RULES, keeprules)
-		profile:SetValue(Addon.c_Config_MerchantButton, true)
-		profile:SetValue(Addon.c_Config_Minimap, true)
 	end
 
 	-- Profile version is now migrated, update to current.

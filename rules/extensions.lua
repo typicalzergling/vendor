@@ -177,6 +177,7 @@ local function addRuleDefinition(ext, rdef)
         Extension = ext,
         Params = rdef.Params,
         Order = tonumber(rdef.Order) or nil,
+        ExtensionName = ext.Source,
     };
 
     Addon:Debug("extensions", "Added rule '%s' from: %s", r.Name, ext.Name);

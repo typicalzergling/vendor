@@ -125,7 +125,8 @@ with Vendor. Performance!
 
 # Known Issues
 
-* Destroy will report 1 more item remaining to be destroyed than there actually is.
+* Sort order of rules is not bubbling up selected rules to the top. Elusive bug there preventing
+us from enabling sorting.
 
 
 ]]},

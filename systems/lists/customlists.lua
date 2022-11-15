@@ -39,14 +39,14 @@ function CustomLists:Create(name, description, items)
 	return list
 end
 
---[[ Creates a custom list ]]
+--[[ Deletes a custom list ]]
 function CustomLists:Delete(listId)
     listId = getListId(listId)
 
     local list = self:Get(listId)
     if (list) then
         self.variable:Set(list.Id, nil)
-        Addon:Debug("customlists", "Remooved List '%s' [%s]", list.Name, list.Id)
+        Addon:Debug("customlists", "Removed List '%s' [%s]", list.Name, list.Id)
 	    return list
     end
 

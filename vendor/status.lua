@@ -74,6 +74,7 @@ function Addon:GenerateEvaluationStatus(force)
                     table.insert(sellitems, entry.Item.Link)
                 elseif entry.Result.Action == Addon.ActionType.DESTROY then
                     todestroy = todestroy + 1
+                    Addon:Debug("destroy", "Marking item: %s for Destroy", entry.Item.Link)
                     table.insert(destroyitems, entry.Item.Link)
                 end
             end

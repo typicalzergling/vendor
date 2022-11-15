@@ -415,7 +415,7 @@ EDITRULE_MIGRATE_RULE_TITLE ="Verify Rule",
 EDITRULE_MIGRATE_RULE_TEXT ="Rule requires review before it can be used. Please verify that it matches what you expect and save.",
 EDITRULE_UNHEALTHY_TEXT = "The following error occured while trying to evaulate this rule:|n%s",
 EDITRULE_EXTENSION_RULE = "Extension Rule",
-EDITRULE_EXTENSION_RULE_TEXT = "This rules comes from '%s' extension and cannot be edited or deleted. ",
+EDITRULE_EXTENSION_RULE_TEXT = "This rule comes from '%s' extension and cannot be edited or deleted. ",
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
 
@@ -467,6 +467,18 @@ the list.
 ]],
 CONFIRM_DELETE_LIST = "Confirm",
 CANCEL_DELETE_LIST = "Cancel",
+
+DELETE_RULE_CAPTION = "Delete Rule",
+DELETE_RULE_FMT1 = [[
+# Delete Rule
+
+Are you sure you want to delete the rule '%s'? Deleting this rule will remove
+it from all of your characters.
+
+THIS ACTION CANNOT BE UNDONE! Are you sure?
+]],
+CONFIRM_DELETE_RULE = "Yes, DELETE",
+CANCEL_DELETE_RULE = "Cancel",
 
 -- ItemLists
 ITEMLIST_LOADING = "Loading...",

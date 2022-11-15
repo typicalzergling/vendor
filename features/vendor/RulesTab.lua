@@ -46,6 +46,10 @@ function RulesTab:OnRuleDefinitionUpdated()
 	self.rules:Rebuild()
 end
 
+function RulesTab:OnRuleDefinitionDeleted()
+	self.rules:Rebuild()
+end
+
 function RulesTab:GetRules()
 	return self.ruleFeature:GetRules()
 end
@@ -63,25 +67,8 @@ function RulesTab:ShowRules(category)
 	self.rules:Filter(self:CreateFilter(category.Type, true))
 	self.rules:Sort(function(ruleA, ruleB)
 
-			if not ruleB then
-				Addon:Debug("rulesdialog", "Nil ruleB in sort")
-				return false
-			end
-
-			if not ruleA then
-				Addon:Debug("rulesdialog", "Nil ruleA in sort")
-				return true
-			end
-
-			--[[if not ruleA then
-				return true
-			end
-			if not ruleB then
-				return false
-			end]]
-
-			local hasA = self.activeConfig:Contains(ruleA.Id)
-			local hasB = self.activeConfig:Contains(ruleB.Id)
+			local hasA = ruleA and self.activeConfig:Contains(ruleA.Id)
+			local hasB = ruleB and self.activeConfig:Contains(ruleB.Id)
 
 			if (hasA and not hasB) then
 				return true
@@ -105,7 +92,11 @@ function RulesTab:ShowRules(category)
 				end
 			end
 
-			return ruleA.Name < ruleB.Name
+			if ruleA.Name ~= ruleB.Name then
+				return ruleA.Name < ruleB.Name
+			else
+				return ruleA.Id < ruleB.Id
+			end
 		end)
 end
 
@@ -122,9 +113,9 @@ function RulesTab:UpdateConfig(view)
 end
 
 --[[ Creates a filter based on the parameters ]]
-function RulesTab:CreateFilter(type, includeHidden)
+function RulesTab:CreateFilter(ruleType, includeHidden)
 	return function(rule)
-			if (rule.Type == type) then
+			if (rule.Type == ruleType) then
 				return true
 			end
 

@@ -210,10 +210,10 @@ function EditRule:OnInitDialog(dialog)
     self.items = tabs:AddTab("iteminfo", "EDITRULE_ITEMINFO_TAB_NAME", "Vendor_EditRule_ItemInfo", Dialogs.ItemInfoTab)
     self.items:RegisterCallback("INSERT_TEXT", self.InsertText, self)
 
-    self:SetRuleType(RuleType.SELL)
+    self:SetRuleType(RuleType.KEEP)
     tabs:ShowTab("matches")
     tabs:ShowTab("help")
-    self.ruleStatus:SetStatus("unhealthy")
+    self.ruleStatus:SetStatus("unhealthy", "Empty rule")
 end
 
 function EditRule:OnHide()
@@ -471,7 +471,7 @@ function EditRule:Setup()
     self.ruleType:SetSelected({ [editor:GetType()] = true })
 
     -- Setup the rule status if applicable
-    local source = editor:GetSource()
+    local source, name = editor:GetSource()
     if (source == RuleSource.CUSTOM) then
         if (editor:IsNew()) then
             self.ruleStatus:SetStatus()
@@ -481,7 +481,7 @@ function EditRule:Setup()
     elseif (source == RuleSource.SYSTEM) then
         self.ruleStatus:SetStatus("system")
     elseif (source == RuleSource.EXTENSION) then
-        self.ruleStatus:SetStatus("extension")
+        self.ruleStatus:SetStatus("extension", tostring(name))
     end
 
     if (not editor:IsReadOnly()) then
@@ -513,6 +513,13 @@ end
 function EditRule:SaveRule()
     if (not self.editor:IsReadOnly()) then
         self.editor:Save()
+        self:Close()
+    end
+end
+
+function EditRule:DeleteRule()
+    if (not self.editor:IsReadOnly()) then
+        self.editor:Delete()
         self:Close()
     end
 end

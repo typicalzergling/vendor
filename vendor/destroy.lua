@@ -45,16 +45,9 @@ function Addon:DestroyNextItem()
     return false
 end
 
--- Wrapper for item destruction and reporting items that remain.
+-- Wrapper for item destruction
 function Addon:DestroyItems()
-    if Addon:DestroyNextItem() then
-        -- see if we have more items remaining
-        Addon:GenerateEvaluationStatus(true)
-        local count, value, tosell, todestroy, sellitems, destroyitems = Addon:GetEvaluationStatus()
-        if todestroy > 0 then
-            self:Print(L.ITEM_DESTROY_MORE_ITEMS, todestroy)
-        end
-    else
+    if not Addon:DestroyNextItem() then
         -- No items were destroyed.
         self:Print(L.ITEM_DESTROY_NONE_REMAIN)
     end

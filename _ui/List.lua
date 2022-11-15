@@ -256,8 +256,8 @@ local function list_BuildView(self, state)
 
         -- If we have sort, then sort the resulting view
         if (type(sort) == "function") then
-            -- This is bugged and throwing a lua error about no ruleB not existing. Commenting out for now.
-            table.sort(view, sort)
+            -- This is bugged and throwing a lua error about ruleB not existing. Commenting out for now.
+            --table.sort(view, sort)
         end
 
         state.view = view

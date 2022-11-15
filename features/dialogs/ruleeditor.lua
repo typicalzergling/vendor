@@ -104,6 +104,10 @@ function RuleEditor:GetSource()
         return RuleSource.CUSTOM
     end
 
+    if self.rule.Source == RuleSource.EXTENSION then
+        return self.rule.Source, self.rule.ExtensionName
+    end
+
     return self.rule.Source
 end
 
@@ -176,6 +180,27 @@ function RuleEditor:Save()
     else
         rules:SaveRule(rule)
     end
+end
+
+--[[ Save the changes to this rule ]]
+function RuleEditor:Delete()
+    assert(self:GetSource() == RuleSource.CUSTOM, "Only custom rules are savable")
+    assert(self:CanDelete(), "Why are you trying to delete a non-deletable rule?")
+    assert(self.rule and self.rule.Id, "Delete() called with no rule Id")
+
+    local ruleId = self.rule.Id
+    local name = self.rule.Name
+    Addon.CommonUI.UI.MessageBox("DELETE_RULE_CAPTION",
+        locale:FormatString("DELETE_RULE_FMT1", self.rule.Name), {
+            {
+                text = "CONFIRM_DELETE_RULE",
+                handler = function()
+                    Addon:Debug("editrule", "Deleting Rule: %s (%s)", tostring(name), ruleId)
+                    Addon:GetFeature("Rules"):DeleteRule(ruleId)
+                end,
+            },
+            "CANCEL_DELETE_RULE"
+        }, self)
 end
 
 --[[ Set the dirty state for the rule editor ]]
