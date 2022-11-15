@@ -83,7 +83,6 @@ function Chip:SetLabel(label)
     text:SetText(label)
     text:SetWidth(0)
     self:SetWidth(self.text:GetWidth() + CHIP_PADDING * 2)
-    print("chip", label, self:GetWidth())
 end
 
 --[[ Set the tooltip for the chip ]]
@@ -168,7 +167,6 @@ end
 function Chips:OnUpdate()
     if (self.reflow and self:IsVisible()) then
         self.reflow = false
-        print("layou chips")
         Layouts.Flow(self, 8, 8)
     end
 end

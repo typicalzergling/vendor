@@ -141,8 +141,6 @@ function RuleEditor:CanSave()
         return false
     end
 
-    print("Cansave")
-
     if (type(self.name) ~= "string") or string.len(self.name) == 0 then
         return false
     end
