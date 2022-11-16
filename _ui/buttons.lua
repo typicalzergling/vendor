@@ -229,10 +229,20 @@ function Layouts.Stack(panel, children, padding, spacing, panelWidth)
                 height = height + mt
             end
 
-            child:ClearAllPoints()
-            child:SetWidth(width - (mr + ml))
-            child:SetPoint("TOPLEFT", panel, "TOPLEFT", ml + paddingLeft, -height)
-            --child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -paddingRight, -height)
+            if (objectType ~= "Line") then
+                child:ClearAllPoints()
+                if (child.Align == "far") then
+                    child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -(mr + paddingRight), -height)
+                elseif (child.Align == "near") then
+                    child:SetPoint("TOPLEFT", panel, "TOPLEFT", ml + paddingLeft, -height)
+                else
+                    child:SetWidth(width - (mr + ml))
+                    child:SetPoint("TOPLEFT", panel, "TOPLEFT", ml + paddingLeft, -height)
+                end
+            else
+                child:SetStartPoint("TOPLEFT", panel, "TOPLEFT", 0, -height)
+                child:SetEndPoint("TOPRIGHT", panel, "TOPRIGHT", 0, -height)
+            end
 
             if (objectType == "FontString") then
                 child:SetHeight(0)

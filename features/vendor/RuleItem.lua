@@ -5,6 +5,7 @@ local Colors = Addon.CommonUI.Colors
 local Layouts = Addon.CommonUI.Layouts
 local RuleItem = Mixin({}, Addon.CommonUI.Mixins.Tooltip)
 local UI = Addon.CommonUI.UI
+local RuleSource = Addon.RuleSource
 
 local ITEM_PADDING = { 
     left = 24, -- Acccount for the icon
@@ -85,7 +86,7 @@ end
 --[[ Handle clicks on this rule itme ]]
 function RuleItem:OnClick(button)
     if (button == "RightButton") then
-        self:Edit()
+        self:ShowContextMenu()
     else
         self:SetActive(not self:IsActive())
         self:Save()
@@ -175,6 +176,64 @@ function RuleItem:Edit()
 
     local editDialog = Addon:GetFeature("Dialogs")
     editDialog:ShowEditRule(self:GetRuleId(), params)
+end
+
+--[[ Prompts the user to delete this rule, deletes it if desired  ]]
+function RuleItem:Delete()
+    UI.MessageBox("DELETE_RULE_CAPTION",
+        locale:FormatString("DELETE_RULE_FMT1", self:GetModel().Name), {
+        {
+            text = "CONFIRM_DELETE_RULE",
+            handler = function()
+                Addon:GetFeature("Rules"):DeleteRule(self:GetRuleId())
+            end,
+        },
+        "CANCEL_DELETE_RULE"
+    }, self)
+end
+
+--[[ Prompts the user to hide the then hides the rule if needed ]]
+function RuleItem:HideRule()
+    UI.MessageBox("HIDE_RULE_CAPTION",
+        locale:FormatString("HIDE_RULE_FMT1", self:GetModel().Name), {
+        {
+            text = "CONFIRM_HIDE_RULE",
+            handler = function()
+                self:SetActive(false)
+                self:Save()
+
+                local hidden = Addon.RuleConfig:Get(Addon.RuleType.HIDDEN)
+                hidden:Set(self:GetRuleId())
+                hidden:Commit()
+            end,
+        },
+        "CANCEL_HIDE_RULE"
+    }, self)
+end
+
+function RuleItem:ShowContextMenu()
+    local rule = self:GetModel()
+    local menu = {}
+
+    if (rule.Source == RuleSource.SYSTEN) then
+        table.insert(menu, { text="RULE_CMENU_VIEW", handler=function() self:Edit() end })
+    else
+        table.insert(menu, { text="RULE_CMENU_EDIT", handler=function() self:Edit() end })
+        table.insert(menu, { text="RULE_CMENU_DELETE", handler=function() self:Delete() end })
+    end
+    table.insert(menu, "-")
+
+    if (self:IsActive()) then
+        table.insert(menu, { text="RULE_CMENU_DISABLE", handler=function() self:SetActive(false) end })
+    else
+        table.insert(menu, { text="RULE_CMENU_ENABLE", handler=function() self:SetActive(true) end })
+    end
+
+    table.insert(menu, { text="RULE_CMENU_HIDE", handler=function() self:HideRule() end })
+    table.insert(menu, "-")
+    table.insert(menu, "RULE_CMENU_CLOSE")
+
+    Addon.CommonUI.ShowContextMenu(self, menu)
 end
 
 --[[ Determine the colors for this item ]]
