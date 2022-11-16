@@ -5,6 +5,7 @@ local EditRule = Mixin({}, Addon.CommonUI.Mixins.Debounce)
 local RuleType = Addon.RuleType
 local Dialog = Addon.CommonUI.Dialog
 local UI  = Addon.CommonUI.UI
+local RuleSource = Addon.RuleSource
 
 Dialogs.EditRuleEvents = {
     HELP_CONTEXT = "set-help-context",
@@ -251,6 +252,7 @@ function EditRule:GetCurrentParameters()
             local paramInfo = {
                 Name = param.Name,
                 Type = param.Type,
+                Key = param.Key,
             }
             
             if (type(self.parameters) == "table") then

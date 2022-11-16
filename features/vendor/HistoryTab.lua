@@ -26,11 +26,13 @@ function HistoryTab:OnActivate()
 
     self.filters:SetSelected(filters)
     self.items:Filter(self.history:CreateFilter(filters))
+    Addon:RegisterCallback("OnHistoryChanged", self, function() self.items:Rebuild() end)
 end
 
 function HistoryTab:OnDeactivate()
     local profile = Addon:GetProfile()
     profile:SetValue(ENABLED_FILTERS, self.filters:GetSelected())
+    Addon:UnregisterCallback("OnHistoryChanged", self)
 end
 
 --[[ Apply the filters to our view ]]

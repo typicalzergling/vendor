@@ -591,7 +591,9 @@ function Rules.GetDefinitions(typeFilter)
     -- Gather system rules
     for _, ruleDef in ipairs(Rules.SystemRules) do
         if (not ruleDef.Locked and ((not typeFilter) or (ruleDef.Type == typeFilter))) then
-            table.insert(defs, ruleDef);
+            local def = Addon.DeepTableCopy(ruleDef)
+            def.Source = Addon.RuleSource.SYSTEM
+            table.insert(defs, def);
         end
     end
 
@@ -599,7 +601,9 @@ function Rules.GetDefinitions(typeFilter)
     if (Vendor_CustomRuleDefinitions) then
         for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
             if (not typeFilter) or (ruleDef.Type == typeFilter) then
-                table.insert(defs, ruleDef);
+                local def = Addon.DeepTableCopy(ruleDef)
+                def.Source = Addon.RuleSource.CUSTOM
+                    table.insert(defs, def);
             end
         end
     end
@@ -608,7 +612,9 @@ function Rules.GetDefinitions(typeFilter)
     if (Package.Extensions) then
         for _, ruleDef in ipairs(Package.Extensions:GetRules(typeFilter)) do
             ruleDef.Locked = false;
-            table.insert(defs, ruleDef);
+            local def = Addon.DeepTableCopy(ruleDef)
+            def.Source = Addon.RuleSource.EXTENSION
+            table.insert(defs, def);
         end
     end
 

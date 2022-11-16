@@ -4,6 +4,7 @@ local RuleSystem = {}
 RuleEvents = {
     FUNCTIONS_CHANGED = "_OnRuleFunctionsChanged",
     DOCS_CHANGED = "_OnRFDocumenationChange",
+    CONFIG_CHANGED = "rule-config-changed",
 }
 
 RuleSource = {

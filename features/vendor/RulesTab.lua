@@ -2,6 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local Vendor = Addon.Features.Vendor
 local RuleType = Addon.RuleType
+local RuleEvents = Addon.Systems.Rules.RuleEvents
 local RulesTab = {}
 
 function RulesTab:OnLoad()
@@ -31,6 +32,13 @@ end
 
 function RulesTab:OnActivate()
 	self.ruleType:EnsureSelection()
+	Addon:RegisterCallback(RuleEvents.CONFIG_CHANGED, self, self.OnConfigChanged)
+	self:ApplyFilers()
+	self.rules:Rebuild()
+end
+
+function RulesTab:OnDeactivate()
+	Addon:UnregisterCallback(RuleEvents.CONFIG_CHANGED, self)
 end
 
 function RulesTab:CreateRule()
@@ -50,8 +58,23 @@ function RulesTab:OnRuleDefinitionDeleted()
 	self.rules:Rebuild()
 end
 
+function RulesTab:OnConfigChanged(type, config)
+	Addon:Debug("rulestab", "Got rule config change '%s'", type)
+	self.rules:Rebuild()
+	self:ApplyFilers()
+end
+
 function RulesTab:GetRules()
-	return self.ruleFeature:GetRules()
+	return self.ruleFeature:GetRules(nil, true)
+end
+
+--[[ Apply our filters ]]
+function RulesTab:ApplyFilers()
+	if (self.activeConfig) then
+		self.rules:Filter(self:CreateFilter())
+	else
+		self.rules:Filter(function() return false end)
+	end
 end
 
 --[[ Create an item for the specified rule ]]
@@ -64,7 +87,7 @@ end
 
 function RulesTab:ShowRules(category)
 	self.activeConfig = self.ruleFeature:GetConfig(category.Type)
-	self.rules:Filter(self:CreateFilter(category.Type, true))
+	self:ApplyFilers()
 	self.rules:Sort(function(ruleA, ruleB)
 
 			local hasA = ruleA and self.activeConfig:Contains(ruleA.Id)
@@ -113,17 +136,20 @@ function RulesTab:UpdateConfig(view)
 end
 
 --[[ Creates a filter based on the parameters ]]
-function RulesTab:CreateFilter(ruleType, includeHidden)
+function RulesTab:CreateFilter()
+	local ruleType = self.activeConfig:GetType()
+	local  hiddenRules = Addon.RuleConfig:Get(RuleType.HIDDEN)
+
 	return function(rule)
-			if (rule.Type == ruleType) then
-				return true
+			if (hiddenRules and hiddenRules:Contains(rule.Id)) then
+				return false
 			end
 
-			if (includeHidden and rule.Type == RuleType.HIDDEN) then
-				return true
+			if (rule.Type ~= ruleType) then
+				return false
 			end
 
-			return false
+			return true
 		end
 end
 

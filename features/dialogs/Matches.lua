@@ -77,20 +77,35 @@ local function formatValue(value)
     return value
 end
 
-function MatchesTab:BuildMatchParameters(parameters)
+--[[ Remove the parameter items from thew view ]]
+function MatchesTab:ClearParameters()
     if (self.params) then
         for _, frame in ipairs(self.params) do
             frame:ClearAllPoints()
             frame:Hide()
         end
+        self.params = nil
     end
+
+    self.parameters:SetHeight(2)
+    self.parameters:Hide()
+end
+
+--[[ Add p arameter items if needed ]]
+function MatchesTab:BuildMatchParameters(parameters)
+    self:ClearParameters()
     
+    -- If there are no parameters we are done
+    if (type(parameters) ~= "table" or table.getn(parameters) == 0) then
+        return
+    end
+
     self.params = {}
     for _, param in ipairs(parameters) do
         Addon:Debug("editrule", "Add parameter :: %s = %s", param.Name, param.Value)
         local frame = CreateFrame("Frame", nil, self.parameters, "EditRule_MatchParameter")
         frame.value:SetText(formatValue(param.Value))
-        frame.name:SetText(param.Name)
+        frame.name:SetText(param.Key)
         frame.Layout = function(_, width)
             frame:SetWidth(width)
             frame:SetHeight(math.max(frame.name:GetHeight(), frame.value:GetHeight()))
@@ -102,6 +117,7 @@ function MatchesTab:BuildMatchParameters(parameters)
 
     local padding = { left = 12, right = 12, bottom = 12 }
     Addon:Debug("editrule", "Layout parameters (%s)", table.getn(self.params))
+    self.parameters:Show()
     Addon.CommonUI.Layouts.Stack(self.parameters, self.params, padding, 0)
 end
 
@@ -113,19 +129,12 @@ function MatchesTab:ShowMatches(matches, parameters)
 
     self.matchItems = matches or {}
     self.matches:Rebuild()
-
-    if (type(parameters) == "table") then
-        self:BuildMatchParameters(parameters)
-        self.parameters:Show()
-    else
-        self.parameters:SetHeight(2)
-        self.parameters:Hide()
-    end
+    self:BuildMatchParameters(parameters)
 end
 
 function MatchesTab:ClearMatches()
     Addon:Debug("editrule", "Clear matches")
-    self.parameters:SetHeight(2)
+    self:ClearParameters()
     self.matchItems = nil
     self.matches:Rebuild()
 end

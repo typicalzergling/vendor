@@ -193,6 +193,10 @@ OPTIONS_RULES_SHOW_HIDDEN = "Show Hidden",
 OPTIONS_RULES_ONE_HIDDEN = " (1 rule)",
 OPTIONS_RULES_N_HIDDEN = " (%s rules)",
 
+SETTINGS_HIDDENRULES_HELP = "[revisit] The list below contains the list of hidden rules, you can select on an unhide the rule to restore it.",
+SETTINGS_HIDDENRULES_EMPTY = "[revisit] There are currently no hidden rules",
+SETTINGS_HIDDENRULES_UNHIDE = "Unhide Rule",
+
 RULE_TOOLTIP_SOURCE = "Source: %s",
 RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",
 RULE_TOOLTIP_CUSTOM_RULE = "Custom Rule",
@@ -479,6 +483,19 @@ Are you sure?
 ]],
 CONFIRM_DELETE_RULE = "Yes, DELETE",
 CANCEL_DELETE_RULE = "Cancel",
+HIDE_RULE_CAPTION = "Hide Rule",
+HIDE_RULE_FMT1 = [[
+# Hide rule %s?
+
+[revisit] If you hide this rule it will no longer show up in the rules list, and will not be used
+to compute sell, keep, destroy
+
+You can unhide the rule by going into the settings tab.
+
+Are you sure?
+]],
+CONFIRM_HIDE_RULE = "Yes, HIDE",
+CANCEL_HIDE_RULE = "Cancel",
 DUPLICATE_RULE_NAME_CAPTION = "Existing Name",
 DUPLICATE_RULE_FMT1 = [[
 # Duplicate Rule Name

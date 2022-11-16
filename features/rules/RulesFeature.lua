@@ -1,5 +1,5 @@
 local _, Addon = ...
-local RulesFeature = { NAME = "Rules", VERSION = 1 }
+local RulesFeature = { NAME = "Rules", VERSION = 1, DEPENDENCIES = { "Settings"} }
 local TEST_CATEGORY = 1
 local TEST_ID = "test.id"
 local TEST_NAME = "<test-rule>"
@@ -12,13 +12,8 @@ function RulesFeature:OnInitialize()
     Addon:Debug("rules", "Initialize Rules Feature")
     Addon:GenerateEvents(EVENTS)
 
-    return
-        -- Internal API
-        {
-            F_ValidateRule = self.ValidateRule,
-            F_CreateRulesEngine = self.CreateRulesEngine,
-            F_GetRuleMatches = self.GetMatches
-        }
+    local settings = Addon:GetFeature("Settings")
+    settings:RegisterPage("Hidden Rules", "tooltip", self.CreateHiddenRulePage)
 end
 
 --[[
@@ -78,18 +73,13 @@ function RulesFeature:GetRules(ruleType, all)
                 Addon:Debug("rulez", "Excluding locked rule '%s'", rule.Id)
             else
                 Addon:Debug("rulez", "Including rule '%s'", rule.Id)
-                local def = Addon.DeepTableCopy(rule)
-                if (type == "SYSTEM") then
-                    def.IsSystem = true
-                    def.Source = RuleSource.SYSTEM
-                elseif (type == "EXT") then
-                    def.IsExtension = true
-                    def.Source = RuleSource.EXTENSION
-                else
-                    def.Source = RuleSource.CUSTOM
+                if (rule.Source == Addon.RuleSource.SYSTEM) then
+                    rule.IsSystem = true
+                elseif (rule.Source == Addon.RuleSource.EXTENSION) then
+                    rule.IsExtension = true
                 end
         
-                table.insert(rules, def)
+                table.insert(rules, rule)
             end
         end
     end

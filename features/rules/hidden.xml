@@ -1,0 +1,65 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Button virtual="true" name="Rules_HiddenRule" hidden="false">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" parentArray="stack" justifyH="LEFT" justifyV="TOP" maxLines="1" inherits="GameFontNormal">
+                    <KeyValues>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                </FontString>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="ruleTYpe" justifyH="RIGHT" justifyV="TOP" maxLines="1" inherits="GameFontNormal" text="(ruletype)">
+                    <Size x="60"/>
+                    <KeyValues>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOP" relativeKey="$parent.text"/>
+                        <Anchor point="BOTTOM" relativeKey="$parent.text"/>
+                        <Anchor point="RIGHT" x="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="secondary" parentArray="stack" justifyH="LEFT" justifyV="TOP" wordWrap="true" inherits="GameFontNormal">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Button>
+
+    <Frame virtual="true" name="Rules_HiddenSettings" hidden="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentArray="stack" justifyH="LEFT" justifyV="TOP" wordWrap="true" inherits="GameFontNormal">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="SETTINGS_HIDDENRULES_HELP"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame inherits="CommonUI_List" parentKey="hidden" parentArray="stack">
+                <Size x="1" y="300"/>
+                <KeyValues>
+                    <KeyValue key="ItemSource" value="GetHiddenRules"/>
+                    <KeyValue key="OnSelection" value="OnSelection"/>
+                    <KeyValue key="EmptyText" value="SETTINGS_HIDDENRULES_EMPTY"/>
+                    <KeyValue key="ItemTemplate" value="Rules_HiddenRule"/>
+                    <KeyValue key="ItemClass" value="Features.Rules.HiddenRuleItem"/>
+                </KeyValues>
+            </Frame>
+            <Button inherits="CommonUI_CommandButton" parentKey="unhide" parentArray="stack">
+                <KeyValues>
+                    <KeyValue key="Label" value="SETTINGS_HIDDENRULES_UNHIDE"/>
+                    <KeyValue key="Handler" value="OnUnhideRule"/>
+                    <KeyValue key="Align" value="far"/>
+                </KeyValues>
+            </Button>
+        </Frames>
+    </Frame>
+</Ui>
