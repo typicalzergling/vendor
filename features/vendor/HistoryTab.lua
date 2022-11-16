@@ -14,6 +14,14 @@ function HistoryTab:OnLoad()
     for _, filter in ipairs(self.history:GetFilters()) do
         self.filters:AddChip(filter.Id, filter.Name, filter.Description)
     end
+    Addon:RegisterCallback("OnHistoryChanged", self, self.OnHistoryChanged)
+end
+
+--[[ Rebuild when the history changes ]]
+function HistoryTab:OnHistoryChanged()
+    if not self:IsVisible() then return end
+    Addon:Debug("history", "HistoryChanged, rebuilding UI")
+    return self.items:Rebuild()
 end
 
 function HistoryTab:OnActivate()
@@ -26,13 +34,12 @@ function HistoryTab:OnActivate()
 
     self.filters:SetSelected(filters)
     self.items:Filter(self.history:CreateFilter(filters))
-    Addon:RegisterCallback("OnHistoryChanged", self, function() self.items:Rebuild() end)
+    self.items:Rebuild()
 end
 
 function HistoryTab:OnDeactivate()
     local profile = Addon:GetProfile()
     profile:SetValue(ENABLED_FILTERS, self.filters:GetSelected())
-    Addon:UnregisterCallback("OnHistoryChanged", self)
 end
 
 --[[ Apply the filters to our view ]]

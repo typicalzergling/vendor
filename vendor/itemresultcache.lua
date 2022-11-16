@@ -108,6 +108,7 @@ function Addon:RefreshBagAndSlot(bag, slot, force)
     else
         local item = Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
         local result = Addon:EvaluateItem(item, force)
+        if not item or not result then return nil end
         local newEntry = createCacheEntryFromItemAndResult(item, result)
         Addon:AddItemResultToItemResultCache(newEntry)
         return newEntry
