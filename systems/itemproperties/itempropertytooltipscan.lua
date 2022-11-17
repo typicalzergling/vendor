@@ -1,0 +1,3 @@
+local _, Addon = ...
+local L = Addon:GetLocale()
+local debugp = function (...) Addon:Debug("items", ...) end

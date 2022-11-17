@@ -286,7 +286,7 @@ end
 
 --[[ Get the specified system ]]
 function Systems:Get(system)
-    local data = systems[string.lower(system)]
+    local data = self.systems[string.lower(system)]
     if (data) then
         assert(data.ready, "Attempting to retrieve a system that isn't initialized")
         return data.instance
