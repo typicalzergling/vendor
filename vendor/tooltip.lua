@@ -148,7 +148,6 @@ end
 
 function Addon:InitializeItemTooltips()
     local initializeTooltips = function ()
-        print("Release = "..tostring(Addon.Systems.Info.Release).."    Retail = "..tostring(Addon.Systems.Info.ReleaseType.Retail))
         if Addon.Systems.Info.IsRetailEra then
             Addon:Debug("tooltip", "Adding tooltip processing for items.")
             TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)

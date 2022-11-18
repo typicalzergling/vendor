@@ -44,7 +44,7 @@ function Addon:AutoRepair()
     local cost, canRepair = GetRepairAllCost()
     if canRepair then
         local profile = self:GetProfile();
-        -- Guild repair is not supported on Classic. The API method "CanGuidlBankRepair" is missing.
+        -- Guild repair is not supported on Classic. The API method "CanGuildBankRepair" is missing.
         if not Addon.IsClassic and profile:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
             -- use guild repairs
             RepairAllItems(true)
@@ -128,8 +128,21 @@ function Addon:AutoSell()
 
         -- Loop through every bag slot once.
         debugp("Starting bag scan...")
-        for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do                
+        local numBags = 0
+        if Addon.Systems.Info.IsClassicEra then
+            numBags = NUM_BAG_SLOTS
+        else
+            numBags = NUM_TOTAL_EQUIPPED_BAG_SLOTS
+        end
+        for bag=0, numBags do
+            -- TODO move this to an initializer for the feature
+            local numBagSlots = 0
+            if Addon.Systems.Info.IsClassicEra then
+                numBagSlots = GetContainerNumSlots(bag)
+            else
+                numBagSlots = C_Container.GetContainerNumSlots(bag)
+            end
+            for slot=1, numBagSlots do                
 
                 -- If the cursor is holding anything then we cant' sell. Yield and check again next cycle.
                 -- We must do this before we get the item info, since the user may have changed what item is in this slot.
@@ -163,7 +176,11 @@ function Addon:AutoSell()
 
                     -- Still open, so OK to sell it.
                     if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
-                        C_Container.UseContainerItem(bag, slot)
+                        if Addon.Systems.Info.IsClassicEra then
+                            UseContainerItem(bag, slot)
+                        else
+                            C_Container.UseContainerItem(bag, slot)
+                        end
                         Addon:RaiseEvent(AUTO_SELL_ITEM, entry.Item.Link, numSold, sellLimitMaxItems)
                     else
                         self:Print("Simulating selling of: %s", tostring(item.Link))
