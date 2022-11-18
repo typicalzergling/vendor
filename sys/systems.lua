@@ -1,4 +1,6 @@
 local AddonName, Addon = ...
+local debugp = function (...) Addon:Debug("systems", ...) end
+
 local systems = {}
 
 --[[ Checks the local list for a dependency ]]
@@ -193,10 +195,8 @@ function Systems:InitTarget(system, complete)
         if (type(api) == "table") then
             system.api = api
             for _, funcname in ipairs(api) do
-                --@debug@
                 assert(not Addon[funcname], "An API with the name '" .. funcname .. "' already exists")
-                assert(type(source[funcname]) == "function", "The API referres to an invalid functon : " .. funcname)
-                --@end-debug@
+                assert(type(source[funcname]) == "function", "The API refers to an invalid functon : " .. funcname)
 
                 Addon[funcname] = function(_, ...)
                         local ret = { xpcall(source[funcname], CallErrorHandler, source, ...) }
@@ -247,16 +247,20 @@ function Systems:InitTarget(system, complete)
     system.instance = setmetatable({}, {
             __metatable = string.format("System:%s", name),
             __newindex = function(_, key)
-                    error("System '" .. name .. "' cannot be modified attempted to set '" .. key .. "'")
+                    assert(false, "System '" .. name .. "' cannot be modified attempted to set '" .. key .. "'")
                 end,
             __index =  function(_, key)
-                    local func = source[key]
-                    if (not key or type(key) ~= "string" or type(func) ~= "function") then
-                        error("System '" .. name .. "' does not have a function : " .. tostring(key))
-                    end
-
-                    return function(_, ...)
-                        xpcall(func, CallErrorHandler, source, ...)
+                    assert(key and type(key) == "string", "System "..name.." invalid key "..tostring(key))
+                    local value = source[key]
+                    if type(value) == "function" then
+                        return function(_, ...)
+                            local result = { xpcall(source[key], CallErrorHandler, source, ...) }
+                            assert(result[1], "Error occurred while trying to invoke "..name.." function "..tostring(key))
+                            table.remove(result, 1)
+                            return unpack(result)
+                        end
+                    else
+                        return value
                     end
                 end
         })

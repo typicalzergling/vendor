@@ -7,11 +7,13 @@
 ]]
 
 local _, Addon = ...
-local ListEditor = {}
-local Lists = Addon.Features.Lists
-local ListType = Addon.Systems.Lists.ListType
-local ChangeType = Addon.Systems.Lists.ChangeType
 local locale  = Addon:GetLocale()
+
+local ListEditor = {}
+local Lists = nil
+local ListType = nil
+local ChangeType = nil
+
 
 --[[ Called to mark the list as dirty (internal)]]
 local function ListEditor_SetDirty(self)
@@ -31,6 +33,10 @@ end
 
 --[[ Initialize this list, setting copy to true will cause this to create a new list ]]
 local function ListEditor_Init(self, list, copy)
+    Lists = Addon.Features.Lists
+    ListType = Addon.Systems.Lists.ListType
+    ChangeType = Addon.Systems.Lists.ChangeType
+
     CallbackRegistryMixin.OnLoad(self)
     self:GenerateCallbackEvents({"OnChanged", "OnDirty"})
 

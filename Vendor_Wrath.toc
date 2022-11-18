@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 30400
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@

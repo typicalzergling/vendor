@@ -8,5 +8,5 @@
     <Include file="vendor/vendor.xml"/>
     <Include file="history/history.xml"/>
     <Include file="libdatabroker/libdatabroker.xml"/>
-    <Include file="minimapbutton/minimapbutton.lua"/>
+    <Include file="minimapbutton/minimapbutton.xml"/>
 </Ui>

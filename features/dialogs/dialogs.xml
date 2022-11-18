@@ -1,13 +1,13 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Script file="features/dialogs/dialogs.lua"/>    
-    <Script file="features/dialogs/EditRule.lua"/>
-    <Script file="features/dialogs/RuleStatus.lua"/>
-	<Script file="features/dialogs/ItemInfo.lua"/>
-	<Script file="features/dialogs/Matches.lua"/>
-	<Script file="features/dialogs/HelpItem.lua"/>
-    <Script file="features/dialogs/ruleeditor.lua"/>
+    <Script file="dialogs.lua"/>    
+    <Script file="EditRule.lua"/>
+    <Script file="RuleStatus.lua"/>
+	<Script file="ItemInfo.lua"/>
+	<Script file="Matches.lua"/>
+	<Script file="HelpItem.lua"/>
+    <Script file="ruleeditor.lua"/>
 
-    <Include file="features/dialogs/EditTabs.xml"/>
-    <Include file="features/dialogs/matches.xml"/>
-    <Include file="features/dialogs/EditRule.xml"/>
+    <Include file="EditTabs.xml"/>
+    <Include file="matches.xml"/>
+    <Include file="EditRule.xml"/>
 </Ui>

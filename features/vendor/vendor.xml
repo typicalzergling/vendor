@@ -1,18 +1,18 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Script file="features/vendor/vendor.lua"/>
-    <Script file="features/vendor/MainDialog.lua"/>
-    <Script file="features/vendor/RulesTab.lua"/>
-    <Script file="features/vendor/SettingsTab.lua"/>
-    <Script file="features/vendor/HelpTab.lua"/>
-    <Script file="features/vendor/ProfilesTab.lua"/>
-    <Script file="features/vendor/ProfileItem.lua"/>
-    <Script file="features/vendor/HistoryTab.lua"/>
-    <Script file="features/vendor/HistoryItem.lua"/>
-    <Script file="features/vendor/RuleItem.lua"/>
-    <Script file="features/vendor/RuleParameters.lua"/>
+    <Script file="vendor.lua"/>
+    <Script file="MainDialog.lua"/>
+    <Script file="RulesTab.lua"/>
+    <Script file="SettingsTab.lua"/>
+    <Script file="HelpTab.lua"/>
+    <Script file="ProfilesTab.lua"/>
+    <Script file="ProfileItem.lua"/>
+    <Script file="HistoryTab.lua"/>
+    <Script file="HistoryItem.lua"/>
+    <Script file="RuleItem.lua"/>
+    <Script file="RuleParameters.lua"/>
 
-    <Include file="features/vendor/MainDialog.xml"/>
-    <Include file="features/vendor/Rules.xml"/>
-    <Include file="features/vendor/Profiles.xml"/>
+    <Include file="MainDialog.xml"/>
+    <Include file="Rules.xml"/>
+    <Include file="Profiles.xml"/>
 
 </Ui>

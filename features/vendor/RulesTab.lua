@@ -1,8 +1,8 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
 local Vendor = Addon.Features.Vendor
-local RuleType = Addon.RuleType
-local RuleEvents = Addon.Systems.Rules.RuleEvents
+local RuleType = nil
+local RuleEvents = nil
 local RulesTab = {}
 
 function RulesTab:OnLoad()
@@ -31,6 +31,11 @@ function RulesTab:GetCategories()
 end
 
 function RulesTab:OnActivate()
+
+	-- This needs an OnLoad or OnInitialize
+	RuleType = Addon.RuleType
+	RuleEvents = Addon.Systems.Rules.RuleEvents
+
 	self.ruleType:EnsureSelection()
 	Addon:RegisterCallback(RuleEvents.CONFIG_CHANGED, self, self.OnConfigChanged)
 	self:ApplyFilers()

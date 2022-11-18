@@ -6,7 +6,7 @@ local ItemProperties = {}
 
 --[[ Retrieve our depenedencies ]]
 function ItemProperties:GetDependencies()
-    return { "rules", "savedvariables", "profile" }
+    return { "info", "savedvariables", "profile" }
 end
 
 --[[ Startup our system ]]

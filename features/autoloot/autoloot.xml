@@ -1,4 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Script file="features/autoloot/autoloot.lua"/>
-    <Script file="features/autoloot/builtins.lua"/>
+    <Script file="autoloot.lua"/>
+    <Script file="builtins.lua"/>
 </Ui>

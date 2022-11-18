@@ -146,16 +146,13 @@ local function addItemTooltipLines(tooltip, tooltipData)
     --@end-debug@
 end
 
--- Amazing new tooltip functinality replacing nasty hooks and jankiness.
-function Addon:InitializeItemTooltips()
-    Addon:Debug("tooltip", "Adding tooltip processing for items.")
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
-end
-
 function Addon:InitializeItemTooltips()
     local initializeTooltips = function ()
-        Addon:Debug("tooltip", "Adding tooltip processing for items.")
-        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
+        print("Release = "..tostring(Addon.Systems.Info.Release).."    Retail = "..tostring(Addon.Systems.Info.ReleaseType.Retail))
+        if Addon.Systems.Info.IsRetailEra then
+            Addon:Debug("tooltip", "Adding tooltip processing for items.")
+            TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
+        end
     end
     -- Tooltip. Delay this one second so other things intializing don't move the tooltip over them and
     -- cause unnecessary evaluations.

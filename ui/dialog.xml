@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="ui/dialog.lua"/>
+	<Script file="dialog.lua"/>
 
     <Frame name="Vendor_Dialog_Template" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true">
 		<Frames>

@@ -140,11 +140,7 @@ function Features:EnableFeature(name)
                     if (type(value) == "function") then
                         return function(_, ...)
                                 local result = { xpcall(value, CallErrorHandler, instance, ...) }
-                                if (not result[1]) then
-                                    debugp("An error occured while trying to invoke %s::%s", feature.name, key)
-                                    return
-                                end
-
+                                assert(result[1], "An error occured while trying to invoke "..feature.name.."::"..key)
                                 table.remove(result, 1)
                                 return unpack(result)
                             end

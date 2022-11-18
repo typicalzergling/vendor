@@ -1,10 +1,12 @@
 local _, Addon = ...
-local Colors = Addon.CommonUI.Colors
-local UI = Addon.CommonUI.UI
-local EditListDialog = {}
-local Lists = Addon.Features.Lists
 local locale = Addon:GetLocale()
-local ListType = Addon.Systems.Lists.ListType
+
+local Colors = nil
+local UI = nil
+local Lists = nil
+local ListType = nil
+
+local EditListDialog = {}
 
 --[[ Sets the list we are editing ]]
 function EditListDialog:SetList(list, copy)
@@ -154,6 +156,11 @@ end
 
 --[[ Show an edit list dialog ]]
 function Addon.Features.Lists.ShowEditDialog(list, copy)
+    Colors = Addon.CommonUI.Colors
+    UI = Addon.CommonUI.UI
+    Lists = Addon.Features.Lists
+    ListType = Addon.Systems.Lists.ListType
+
     local dialog = UI.Dialog("EditList", "Lists_Editor", EditListDialog, {
             save = { label = SAVE, handler = "OnSave" },
             cancel = { label = CANCEL, handler = "Hide", default = true },

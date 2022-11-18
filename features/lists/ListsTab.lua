@@ -1,20 +1,30 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
-local Lists = Addon.Features.Lists
-local UI = Addon.CommonUI.UI
-local ListEvents = Addon.Systems.Lists.ListEvents
-local ListType = Addon.Systems.Lists.ListType
-local SystemListId = Addon.SystemListId
-local ListsTab = {}
+local Lists = nil
+local UI = nil
+local ListEvents = nil
+local ListType = nil
+local SystemListId = nil
+local SYSTEM_ORDER = nil
 
-local SYSTEM_ORDER = {
-    [SystemListId.NEVER] = 1,
-    [SystemListId.ALWAYS] = 100,
-    [SystemListId.DESTROY] = 1000
-}
+local ListsTab = {}
 
 --[[ Handle loading the list ]]
 function ListsTab:OnLoad()
+
+    Lists = Addon.Features.Lists
+    UI = Addon.CommonUI.UI
+    ListEvents = Addon.Systems.Lists.ListEvents
+    ListType = Addon.Systems.Lists.ListType
+    SystemListId = Addon.SystemListId
+
+    SYSTEM_ORDER = {
+        [SystemListId.NEVER] = 1,
+        [SystemListId.ALWAYS] = 100,
+        [SystemListId.DESTROY] = 1000
+    }
+
+
     self.feature = Addon:GetFeature("Lists")
     UI.Enable(self.editList, false)
     UI.Enable(self.copyList, false)

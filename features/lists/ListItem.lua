@@ -1,12 +1,14 @@
 local _, Addon = ...
+local locale = Addon:GetLocale()
 local ListItem = Mixin({}, Addon.CommonUI.Mixins.Tooltip, Addon.CommonUI.Mixins.Border)
 local UI = Addon.CommonUI.UI
 local Colors = Addon.CommonUI.Colors
-local ListType = Addon.Systems.Lists.ListType
-local locale = Addon:GetLocale()
+local ListType = nil
+
 
 --[[ Handle loading ]]
 function ListItem:OnLoad()
+    ListType = Addon.Systems.Lists.ListType
     self:OnBorderLoaded("tbk", Colors.TRANSPARENT, Colors.TRANSPARENT)
     UI.SetColor(self.text, "TEXT")
 end
