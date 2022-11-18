@@ -385,7 +385,8 @@ function AutolootFeature:CreateLootItemProperties(slot, link)
     end
 
     -- If we can't figure out what it is then loot it always
-    local itemInfo = Addon:GetItemPropertiesFromItemLink(link) 
+    local itemproperties = Addon:GetSystem("ItemProperties")
+    local itemInfo = itemproperties:GetItemPropertiesFromItemLink(link) 
     if (questItem or currencyId or not itemInfo) then
         return nil
     end

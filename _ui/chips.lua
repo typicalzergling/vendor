@@ -125,7 +125,7 @@ function Chip:OnClick()
     self:SetColors()
 
     local parent = self:GetParent()
-    parent:OnChipStateChanged(self:GetParentKey(), self:GetChecked())
+    parent:OnChipStateChanged(self:GetDebugName(), self:GetChecked())
 end
 
 --[[ Chips ==================================================================]]

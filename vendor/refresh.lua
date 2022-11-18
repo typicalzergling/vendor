@@ -20,7 +20,6 @@ local refresh = {}
 refresh.threadName = Addon.c_RefreshThreadName
 refresh.delayTimer = nil
 
-
 local function cancelDelayTimer()
     if refresh.delayTimer then
         refresh.delayTimer:Cancel()
@@ -71,8 +70,23 @@ local function doStartItemRefresh(forceUpdate)
         local refreshThrottle = profile:GetValue(Addon.c_Config_RefreshThrottle) or 1
         debugp("Starting bag scan")
         local numProcessed = 0
-        for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do
+        
+        -- TODO move this to an initializer for the feature
+        local numBags = 0
+        if Addon.Systems.Info.IsClassicEra then
+            numBags = NUM_BAG_SLOTS
+        else
+            numBags = NUM_TOTAL_EQUIPPED_BAG_SLOTS
+        end
+        for bag=0, numBags do
+            -- TODO move this to an initializer for the feature
+            local numBagSlots = 0
+            if Addon.Systems.Info.IsClassicEra then
+                numBagSlots = GetContainerNumSlots(bag)
+            else
+                numBagSlots = C_Container.GetContainerNumSlots(bag)
+            end
+            for slot=1, numBagSlots do
 
                 -- If we are in combat, stop the scan.
                 if UnitAffectingCombat("player") then

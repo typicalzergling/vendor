@@ -50,6 +50,19 @@ function Addon.DeepTableCopy(obj, seen)
     return res
 end
 
+-- Deep Table Copy without copying the metatable
+function Addon.DeepTableCopyNoMeta(obj, seen)
+    if type(obj) ~= 'table' then return obj end
+    if seen and seen[obj] then return seen[obj] end
+
+    local s = seen or {}
+    local res = {}
+    s[obj] = res
+    for k, v in pairs(obj) do res[Addon.DeepTableCopy(k, s)] = Addon.DeepTableCopy(v, s) end
+    return res
+end
+
+
 local TypeInformation = {};
 
 --[[===========================================================================

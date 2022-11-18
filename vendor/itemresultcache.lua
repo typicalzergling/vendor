@@ -106,7 +106,8 @@ function Addon:RefreshBagAndSlot(bag, slot, force)
         return nil
     -- If it isn't the above case, it must be the case where we need to add or update.
     else
-        local item = Addon:GetItemPropertiesFromBagAndSlot(bag, slot)
+        local itemProperties = Addon:GetSystem("ItemProperties")
+        local item = itemProperties:GetItemPropertiesFromBagAndSlot(bag, slot)
         local result = Addon:EvaluateItem(item, force)
         if not item or not result then return nil end
         local newEntry = createCacheEntryFromItemAndResult(item, result)

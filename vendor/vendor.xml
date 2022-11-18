@@ -4,7 +4,6 @@
     <Script file="items.lua"/>
     <Script file="blocklists.lua"/>
     <Script file="tooltipscan.lua"/>
-    <Script file="itemproperties.lua"/>
     <Script file="itemresultcache.lua"/>	
     <Script file="evaluation.lua"/>
     <!--<Include file="merchantbutton.xml"/>-->

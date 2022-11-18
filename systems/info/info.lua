@@ -55,7 +55,6 @@ local function populateBuildInfo()
         end
     end
 
-    -- Set Booleans
     Info.IsClassic = Info.Release == Info.ReleaseType.Classic
     Info.IsClassicNext = Info.Release == Info.ReleaseType.ClassicNext
     Info.IsRetail = Info.Release == Info.ReleaseType.Retail

@@ -6,9 +6,10 @@ local Package = select(2, ...);
 -- Simple helper function which handles enumerating bags and running the function.
 local function withEachBagAndItem(func, startBag, endBag)
     assert(type(func) == "function");
+    local itemproperties = Addon:GetSystem("ItemProperties")
     for bag=startBag, endBag do
         for slot=1, ContainerFrame_GetContainerNumSlots(bag) do
-            local item = Addon:GetItemPropertiesFromBagAndSlot(bag, slot);
+            local item = itemproperties:GetItemPropertiesFromBagAndSlot(bag, slot);
             if (item) then
                 if not func(item, bag, slot) then
                     return false;
