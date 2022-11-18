@@ -3,7 +3,6 @@
     <Script file="history.lua"/>
     <Script file="items.lua"/>
     <Script file="blocklists.lua"/>
-    <Script file="tooltipscan.lua"/>
     <Script file="itemresultcache.lua"/>	
     <Script file="evaluation.lua"/>
     <!--<Include file="merchantbutton.xml"/>-->

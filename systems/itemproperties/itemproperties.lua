@@ -4,6 +4,7 @@ local debugp = function (...) Addon:Debug("items", ...) end
 
 local ItemProperties = {}
 local itemPropertiesList = nil
+local itemproperties = nil
 local IS_RETAIL = nil
 local IS_CLASSIC = nil
 
@@ -21,6 +22,7 @@ function ItemProperties:Startup()
     -- So we will minimize function calls that are not necessary
     IS_RETAIL = Addon.Systems.Info.IsRetailEra
     IS_CLASSIC = Addon.Systems.Info.IsClassicEra
+    itemproperties = self
     return {
         "GetPropertyDocumentation",
         "GetPropertyList",
@@ -107,8 +109,9 @@ local function doGetItemProperties(itemObj)
     if not item.GUID then return nil end
 
     -- Populate tooltip and surface args.
+    local tooltipdata = nil
     if IS_RETAIL then
-        local tooltipdata = C_TooltipInfo.GetItemByGUID(item.GUID)
+        tooltipdata = C_TooltipInfo.GetItemByGUID(item.GUID)
         TooltipUtil.SurfaceArgs(tooltipdata)
         for _, line in ipairs(tooltipdata.lines) do
             TooltipUtil.SurfaceArgs(line)
@@ -166,7 +169,7 @@ local function doGetItemProperties(itemObj)
         -- TODO watch for better way. Blizzard API doesn't expose it, which means we need
         -- to scan the tooltip.
         if IS_RETAIL then
-            if Addon:IsItemAccountBoundInTooltip(tooltipdata) then
+            if itemproperties:IsItemAccountBoundInTooltip(tooltipdata) then
                 item.IsAccountBound = true
             end
         end
@@ -181,7 +184,7 @@ local function doGetItemProperties(itemObj)
     -- Determine if this item is cosmetic.
     -- This information is currently not available via API.
     if IS_RETAIL then
-        if tooltipdata and item.IsEquipment and self:IsItemCosmeticInTooltip(tooltipdata) then
+        if tooltipdata and item.IsEquipment and itemproperties:IsItemCosmeticInTooltip(tooltipdata) then
             item.IsCosmetic = true
         end
     end
@@ -241,7 +244,7 @@ local function doGetItemProperties(itemObj)
         -- Since blizz is inconsistent in identifying these, we will just look at these two types and then check the tooltip.
         item.IsToy = false
         if tooltipdata and item.TypeId == 15 or item.TypeId == 0 then
-            if Addon:IsItemToyInTooltip(tooltipdata) then
+            if itemproperties:IsItemToyInTooltip(tooltipdata) then
                 item.IsToy = true
             end
         end
@@ -249,7 +252,7 @@ local function doGetItemProperties(itemObj)
         -- Determine if this is an already-collected item, which should only be usable items.
         item.IsAlreadyKnown = false
         if tooltipdata and item.IsUsable then
-            if Addon:IsItemAlreadyKnownInTooltip(tooltipdata) then
+            if itemproperties:IsItemAlreadyKnownInTooltip(tooltipdata) then
                 item.IsAlreadyKnown = true
             end
         end
