@@ -125,7 +125,7 @@ function Chip:OnClick()
     self:SetColors()
 
     local parent = self:GetParent()
-    parent:OnChipStateChanged(self:GetDebugName(), self:GetChecked())
+    parent:OnChipStateChanged(self, self:GetChecked())
 end
 
 --[[ Chips ==================================================================]]
@@ -149,7 +149,7 @@ function Chips:AddChip(id, text, help, checked)
             end
         end)
 
-    chip:SetParentKey(id)
+    rawset(chip, "chipId", id)
     self.chips[id] = chip
     self.reflow = true
 end
@@ -200,7 +200,9 @@ function Chips:SetSelected(chips)
 end
 
 --[[ Invoked when the state of a chip changes ]]
-function Chips:OnChipStateChanged(id, state)
+function Chips:OnChipStateChanged(chip, state)
+    local id = rawget(chip, "chipId")
+
     if (self.radio) then
         -- If we are in radio mode then only one chip can get selected
         -- at a time.
