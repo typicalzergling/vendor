@@ -152,7 +152,9 @@ function Systems:Terminate()
         -- Remove the APIs
         if (system.api) then
             for _, name in ipairs(system.api) do
-                Addon[name] = nil
+                -- On classic this is firing before Features OnTerminate
+                -- Doesn't seem to be necessary so commenting out for now.
+                --Addon[name] = nil
             end
         end
 

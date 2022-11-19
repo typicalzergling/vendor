@@ -211,6 +211,11 @@ local DOCS = {
     }
 
     function Addon.Systems.ItemProperties:GetPropertyDocumentation()
-        -- TODO filter the docs based on what properties are available on this platform.
-        return DOCS
+        local docs = {}
+        for k,v in pairs(DOCS) do
+            if self:IsPropertySupported(k) then
+                docs[k] = v
+            end
+        end
+        return docs
     end

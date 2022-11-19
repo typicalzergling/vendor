@@ -91,6 +91,7 @@ Addon.CommonUI.Colors =
     TABCONTROL_ACTIVE_TEXT = YELLOW_FONT_COLOR,
     TABCONTROL_ACTIVE_BACK = CreateColor(.4, .4, .4, .1),
     
+    GREEN_FONT_COLOR        = GREEN_FONT_COLOR,
     COMMON_GRAY_COLOR		= CreateColor(0.65882,	0.65882,	0.65882),
     UNCOMMON_GREEN_COLOR	= CreateColor(0.08235,	0.70196,	0.0),
     RARE_BLUE_COLOR			= CreateColor(0.0,		0.56863,	0.94902),

@@ -2,6 +2,7 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local Dialog = Addon.CommonUI.Dialog
 local EditRuleEvents = Addon.Features.Dialogs.EditRuleEvents
+local Colors = Addon.CommonUI.Colors
 
 local PropertyItem = {
     OnLoad = function(item)
@@ -13,24 +14,24 @@ local PropertyItem = {
         item.name:SetText(model.Name)
 
         local valueText = "nil"
-        local valueColor = DISABLE_FONT_COLOR
+        local valueColor = Colors.DISABLED_TEXT
         local valueType = type(model.Value)
 
         if (valueType == "string") then
             valueText = "\"" .. model.Value .. "\""
-            valueColor = GREEN_FONT_COLOR
+            valueColor = Colors.GREEN_FONT_COLOR
         elseif (valueType == "boolean" and not model.Value) then
             valueText = tostring(model.Value)
-            valueColor = EPIC_PURPLE_COLOR
+            valueColor = Colors.EPIC_PURPLE_COLOR
         elseif (valueType == "boolean" and model.Value) then
             valueText = tostring(model.Value)
-            valueColor = Addon.HEIRLOOM_BLUE_COLOR
+            valueColor = Colors.HEIRLOOM_BLUE_COLOR
         elseif (valueType == "number") then
             valueText = tostring(model.Value)
-            valueColor = ORANGE_FONT_COLOR
+            valueColor = Colors.LEGENDARY_ORANGE_COLOR
         elseif (model.Value ~= nil) then
             valueText = tostring(model.Value)
-            valueColor = WHITE_TEXT_COLOR
+            valueColor = Colors.COMMON_GRAY_COLOR
         end
 
         item.value:SetText(valueText)
