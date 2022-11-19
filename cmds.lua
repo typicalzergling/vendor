@@ -138,7 +138,7 @@ end
 -- Withdraws all items which match your currently enabled rules set
 function Addon:Withdraw_Cmd()
     local function findBagWithSpace()
-        for i=0,NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
+        for i=0,Addon:GetNumTotalEquippedBagSlots()  do
             if C_Container.GetContainerNumFreeSlots(i) ~= 0 then
                 return i;
             end

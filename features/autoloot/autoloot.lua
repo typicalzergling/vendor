@@ -65,8 +65,8 @@ end
 local function CountEmptySlots()
     local free = {}
     local count = 0
-    for bag=0,NUM_TOTAL_EQUIPPED_BAG_SLOTS  do 
-        C_Container.GetContainerFreeSlots(bag, free);
+    for bag=0, Addon:GetNumTotalEquippedBagSlots()  do 
+        Addon:GetContainerFreeSlots(bag, free);
         count = count + #free
     end
     return count

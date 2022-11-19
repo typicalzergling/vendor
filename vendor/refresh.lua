@@ -76,7 +76,7 @@ local function doStartItemRefresh(forceUpdate)
         if Addon.Systems.Info.IsClassicEra then
             numBags = NUM_BAG_SLOTS
         else
-            numBags = NUM_TOTAL_EQUIPPED_BAG_SLOTS
+            numBags = Addon:GetNumTotalEquippedBagSlots()
         end
         for bag=0, numBags do
             -- TODO move this to an initializer for the feature

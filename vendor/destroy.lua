@@ -14,8 +14,8 @@ local currentDestroyedItem = nil
 -- to destroying it. This is not as performant as it could be, but lets be real, destruction is a rare thing, so lets err on
 -- the side of safety rather than performance.
 function Addon:DestroyNextItem()
-    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
+    for bag=0, Addon:GetNumTotalEquippedBagSlots()  do
+        for slot=1, Addon:GetContainerNumSlots(bag) do
 
             -- If the cursor is holding anything then we can't pick it up to delete. Yield and check again next cycle.
             if GetCursorInfo() then
@@ -29,7 +29,7 @@ function Addon:DestroyNextItem()
                 currentDestroyedItem = entry.Item.Link
                 self:Print(L.ITEM_DESTROY_CURRENT, tostring(currentDestroyedItem), tostring(entry.Result.Rule))
                 if not Addon.IsDebug or not Addon:GetDebugSetting("simulate") then
-                    C_Container.PickupContainerItem(bag, slot)
+                    Addon:PickupContainerItem(bag, slot)
                     DeleteCursorItem()
                     Addon:AddEntryToHistory(currentDestroyedItem, Addon.ActionType.DESTROY, entry.Result.Rule, entry.Result.RuleID, entry.Item.Count, 0)
                 else

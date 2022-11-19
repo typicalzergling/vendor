@@ -33,7 +33,7 @@ end
 
 --[[ Shows a new tag on the frame ]]
 local function _showNewTag(frame, point, x, y)
-    if (not Addon.IsClassic) then
+    if (Addon.Systems.Info.IsRetailEra) then
         local tag = CreateFrame("Frame", nil,  frame, "NewFeatureLabelTemplate")
         tag:SetPoint("TOPRIGHT", frame, point, x, y)
         tag:Show()

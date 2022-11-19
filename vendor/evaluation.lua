@@ -99,9 +99,9 @@ end
 
 -- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
 function Addon:LoadAllBagItemLinks()
-    for bag=0, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            C_Container.GetContainerItemInfo(bag, slot)
+    for bag=0, Addon:GetNumTotalEquippedBagSlots()  do
+        for slot=1, Addon:GetContainerNumSlots() do
+            Addon:GetContainerItemInfo(bag, slot)
         end
     end
 end
