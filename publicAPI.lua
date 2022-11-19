@@ -50,8 +50,7 @@ Addon:MakePublic(
 Addon:MakePublic(
     "ShowKeybindings",
     function () 
-        -- Blizzard really messed up keybindings so we won't try to direct open them for now.
-        --Addon:OpenKeybindings_Cmd()
+        Addon:OpenKeybindings_Cmd()
     end,
     L["API_OPENKEYBINDINGS_TITLE"],
     L["API_OPENKEYBINDINGS_DOCS"])

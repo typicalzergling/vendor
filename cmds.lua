@@ -81,33 +81,39 @@ end
 
 
 function Addon:OpenKeybindings_Cmd()
-    -- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
-    if not KeyBindingFrame then
-        KeyBindingFrame_LoadUI()
-    end
 
-    -- If we still don't have it, bail.
-    if not KeyBindingFrame then
-        return
-    end
+    -- Blizzard boke keybinds on retail but classic still works this way.
+    if Addon.Systems.Info.IsClassicEra then
+        -- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
+        if not KeyBindingFrame then
+            KeyBindingFrame_LoadUI()
+        end
 
-    -- Make sure the buttons and categories exist, and enumerate them.
-    if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
-        -- Find our category in the list of categories.
-        for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
-            if button.element and button.element.name and button.element.name == _G["BINDING_CATEGORY_VENDOR"] then
-                -- Found it. Click it to set the category.
-                if Addon.IsClassic then
-                    KeybindingsCategoryListButton_OnClick(button)
-                else
-                    button:OnClick()
+        -- If we still don't have it, bail.
+        if not KeyBindingFrame then
+            return
+        end
+
+        -- Make sure the buttons and categories exist, and enumerate them.
+        if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
+            -- Find our category in the list of categories.
+            for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
+                if button.element and button.element.name and button.element.name == "Vendor Addon" then
+                    -- Found it. Click it to set the category.
+                    if Addon.Systems.Info.IsClassicEra then
+                        KeybindingsCategoryListButton_OnClick(button)
+                    else
+                        button:OnClick()
+                    end
                 end
             end
         end
-    end
 
-    -- Show the keybinding frame. Even if we dont' find it, its closer.
-    KeyBindingFrame:Show()
+        -- Show the keybinding frame. Even if we dont' find it, its closer.
+        KeyBindingFrame:Show()
+    else
+        Settings.OpenToCategory(54, "Vendor Addon")
+    end
 end
 
 function Addon:OpenConfigDialog_Cmd()
