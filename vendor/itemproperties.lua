@@ -105,7 +105,7 @@ function Addon:DoGetItemProperties(itemObj)
         count = C_Item.GetStackCount(location) or 1
     end
 
-    item = {}
+    local item = {}
 
     -- Item may not be loaded, need to handle this in a non-hacky way.
     item.GUID = guid or false

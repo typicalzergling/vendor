@@ -86,16 +86,28 @@ local function addItemTooltipLines(tooltip, tooltipData)
     -- or if rules change (which would clear the tooltip result cache).
     if itemGUID ~= tooltipData.guid then
         local item = Addon:GetItemResultForTooltip(tooltipData)
-        itemGUID = item.Item.GUID
-        result = item.Result.Action
-        ruleId = item.Result.RuleID
-        ruleName = item.Result.Rule
-        ruleType = item.Result.RuleType
+        if not item then
+            -- If we get this far we have an invalid item but a valid GUID.
+            -- Keystones will show up this way, so handle them gracefully.
+            itemGUID = tooltipData.guid
+            result = 0
+            blocklist = nil
+            ruleId = nil
+            ruleName = nil
+            ruleType = nil
+            Addon:Debug("tooltip", "Invalid item with valid GUID: %s - %s", tostring(tooltipData.guid), tostring(C_Item.GetItemLinkByGUID(tooltipData.guid)))
+        else
+            itemGUID = item.Item.GUID
+            result = item.Result.Action
+            ruleId = item.Result.RuleID
+            ruleName = item.Result.Rule
+            ruleType = item.Result.RuleType
 
-        -- Check if the item is in the Always or Never sell lists
-        -- TODO: Change this to return a table of lists to which this item belongs.
-        blocklist = Addon:GetBlocklistForItem(item.Item.Link)
-        Addon:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
+            -- Check if the item is in the Always or Never sell lists
+            -- TODO: Change this to return a table of lists to which this item belongs.
+            blocklist = Addon:GetBlocklistForItem(item.Item.Link)
+            Addon:Debug("tooltip", "Cached item for tooltip: %s, [%s, %s, %s, %s]", item.Item.Link, tostring(result), tostring(ruleId), tostring(ruleName), tostring(ruleType))
+        end
     end
 
     -- We always add if the item is in the Always-Sell or Never-Sell list.
@@ -144,12 +156,6 @@ local function addItemTooltipLines(tooltip, tooltipData)
         tooltip:AddLine(string.format("%s RuleId: %s[%s] %s%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleType, ruleId, FONT_COLOR_CODE_CLOSE))
     end
     --@end-debug@
-end
-
--- Amazing new tooltip functinality replacing nasty hooks and jankiness.
-function Addon:InitializeItemTooltips()
-    Addon:Debug("tooltip", "Adding tooltip processing for items.")
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
 end
 
 function Addon:InitializeItemTooltips()
