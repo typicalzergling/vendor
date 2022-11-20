@@ -104,7 +104,7 @@ end
 
 -- Simple helper function which copies the help table, extracting only the 
 -- keys that we know how to display.
-local function copyHelpTable(help)
+local function copyDocumentationTable(help)
     local t = {};
     for k,v in pairs(help) do
         if (type(v) == "string") then
@@ -122,20 +122,14 @@ local function addFunctionDefinition(ext, fdef)
         Extension = ext,
         Name = string.format("%s_%s", ext.Source, fdef.Name),
         Function = fdef.Function;
+        Documentation = fdef.Documentation or "<Missing Documentation>",
+        Supported = fdef.Supported,
+        SourceName = ext.Source
     };
-
-    if (type(fdef.Help) == "string") then
-        f.Help = {
-            Text = fdef.Help,
-            Extension = ext
-        };
-    elseif (type(fdef.Help) == "table") then
-        f.Help = copyHelpTable(fdef.Help);
-        f.Help.Extension = ext;
-    end
 
     Addon:Debug("extensions", "Added function '%s' from:", f.Name, ext.Name);
     table.insert(Extensions._functions, f);
+    Addon:RegisterFunctions({f}, Addon.RuleSource.EXTENSION)
 end
 
 -- Helper function which adds an entry for the extension.
@@ -179,9 +173,12 @@ local function addRuleDefinition(ext, rdef)
         Order = tonumber(rdef.Order) or nil,
         ExtensionName = ext.Source,
     };
-
-    Addon:Debug("extensions", "Added rule '%s' from: %s", r.Name, ext.Name);
-    table.insert(Extensions._rules, r);
+    if (not rdef.Supported or rdef.Supported[Addon.Systems.Info.ReleaseName]) then
+        table.insert(Extensions._rules, r);
+        Addon:Debug("extensions", "Added rule '%s' from: %s", r.Name, ext.Name);
+    else
+        Addon:Debug("extensions", "Skipping rule %s from %s because it is not supported on this release.", r.Name, ext.Name)
+    end
 end
 
 -- Helper function to add an OnRuleUpdate callback to Vendor
@@ -234,7 +231,7 @@ local function validateFunction(fdef)
         return false, "The function definition did not contain a valid name";
     end
 
-    if (not validateString(fdef.Help)) then
+    if (not validateString(fdef.Documentation)) then
         return false, "The function definition did not contain a valid help information";
     end
 
@@ -351,7 +348,7 @@ end
 function Extensions:GetFunctionDocs()
     local docs = {};
     for _, func in ipairs(self._functions) do
-        docs[func.Name] = func.Help;
+        docs[func.Name] = func.Documentation;
     end
     return docs;
 end
@@ -508,13 +505,11 @@ function Addon:RegisterExtension(extension)
         if (not Extensions.registeredCallbacks) then
             Extensions.registeredCallbacks = true;
             Addon:GetProfileManager():RegisterCallback("OnProfileChanged", Extensions.ChangeCallback, Extensions);
-            --Addon.Rules:RegisterCallback("OnDefinitionsChanged", ....)
             Addon.Rules.OnDefinitionsChanged:Add(
                 function()
                     Extensions:ChangeCallback();
                 end);
         end
-        --Addon.Panels.RuleHelp:CreateModels()
     end
     return result;
 end

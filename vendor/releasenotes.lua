@@ -2,6 +2,74 @@ local AddonName, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release ="6.1 (November ?, 2022)",
+Notes = [[
+# Wrath of the Lich King Classic now supported!
+
+We have unified the code and going forward will have a much easier time supporting classic releases
+along with retail, and bringing our new retail features into classic wherever possible.
+
+Classic has all the supported features of Retail that are possible (and make sense) on Classic.
+
+We are not maintaining other Classic releases, as we have already released versions of Vendor that
+work on those releases, so those should have a working version. Moving forward, we will support the
+current classic release and when a new Classic release comes out we will preserve the last best
+version for the earlier releases.
+
+The Same Vendor addon works for both Wrath Classic and Retail - you do not need to download separate
+versions!
+
+
+# New "Side-grade or Better" keep rule in the RulePack
+
+The Vendor RulePack now contains a "Side-grade or Better" keep rule that uses the new CurrentEquippedLevel()
+function added in 6.0. This is a good sample rule to make sure you don't accidentally vendor or delete
+something that is equal or better itemlevel than your currently equipped gear. This works on both
+Classic and Retail versions. This rule is not enabled by default, but is available if you want it.
+
+
+# Rule Context Menu and Hide-Rule Functionality Restored
+
+We've added a right-click menu for the rules lists. Previously right-click would automatical go to
+show or edit a rule. Now show/edit is one option but there are several others.
+
+The new UX once again has "Hide Rule" option, for built-in or extension rules you don't want to have
+cluttering up your rule list. Rules can be un-hidden from the Settings page, where there is a new
+"Hidden Rules" page where you can see all hidden rules and choose to un-hide them. Hidden rules are
+always disabled when hidden.
+
+
+# Rule and List Import / Export
+
+We have enabled a means to import and export rules and lists as strings for sharing with other
+players. This works pretty much like Weakauras Import/Export.
+
+We do not yet support chat-linking to share rules in-game like Weakauras but it is on our list of future
+investments!
+
+
+# Custom Rule Parameters
+
+Custom Rules can now have Parameters like some of our built-in rules have. This is intended for
+convenience so you dont need to change a rule to be useful to different characters which may desire
+slightly different parameters on what is otherwise the exact same rule. The Custom Rule Parameters
+are also helpful for the above mentioned Import/Export functionality so people with which you share
+your rules don't need to edit the rule settings in order to tweak the rule to do what they want.
+
+
+# Notable Bugfixes
+
+* The "/vendor keys" command once again opens the Blizzard Keybindings page to Vendor. On Retail you
+may need to expand the menu for "Vendor Addon" due to the quirkiness of that UI. On Classic we open
+straight to the keybinds just like before.
+* Slight tweak to the CurrentEquippedLevel() function to no longer check for Fury specialization and
+instead have that functionality for all warriors. This is because 2H weapons will have an empty 2nd
+slot if you can't Titan grip and so there's no reason not to check it. You shouldn't notice a difference
+here.
+
+
+]]},
+{
 Release ="6.0 (November 15, 2022)",
 Notes = [[
 # Vendor 6.0!

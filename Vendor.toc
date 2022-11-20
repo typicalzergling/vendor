@@ -34,6 +34,8 @@ systems\systems.xml
 systems\info\info.xml
 systems\interop\interop.xml
 systems\itemproperties\itemproperties.xml
+systems\itemproperties\itempropertytooltipscan.lua
+systems\tooltip\tooltip.lua
 
 # Features
 #features\autoloot\autoloot.xml

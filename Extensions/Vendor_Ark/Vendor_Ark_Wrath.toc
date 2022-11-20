@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 30400
 ## Dependencies: Vendor, ArkInventoryRules
 ## Title: Vendor_ArkInventory
 ## Notes: ArkInventory extension. Requires both Vendor and ArkInventory

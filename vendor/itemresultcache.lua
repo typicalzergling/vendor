@@ -135,12 +135,23 @@ function Addon:GetItemResultForTooltip(tooltipData)
     return Addon:GetItemResultForBagAndSlot(bag, slot)
 end
 
+-- We use the guid to look up the location and then do normal bag and slot lookup.
+function Addon:GetItemResultForLocation(location)
+    if not location then return nil end
+    if not location:IsBagAndSlot() then return nil end
+    local bag, slot = location:GetBagAndSlot()
+    return Addon:GetItemResultForBagAndSlot(bag, slot)
+end
+
 -- Wrapper for GUID-based item lookup.
 -- This looks up where the item is if it exists at all
 -- If it does exist, we check its location and see if it is fresh. If not, nil.
 function Addon:GetItemResultForGUID(guid)
+    -- Putting this as an assert since we can avoid the Classic scenario entirely and its faster.
+    assert(not Addon.Systems.Info.IsClassicEra, "Called a method not supported on Classic from Classic")
     local entry = Addon:GetItemResultFromItemResultCacheByGUID(guid)
     if not entry then return nil end
+
     -- We do have an entry, see if the item at that bag and slot matches.
     local itemObj = Item:CreateFromItemGUID(guid)
     if not itemObj or itemObj:IsItemEmpty() then return nil end

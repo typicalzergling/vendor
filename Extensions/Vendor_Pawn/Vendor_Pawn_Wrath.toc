@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 30400
 ## Title: Vendor_Pawn
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
 ## Version: 2.0.0

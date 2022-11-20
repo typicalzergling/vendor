@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 30400
 ## Title: Vendor_TSM
 ## Notes: TradeSkillMaster extension for Vendor. Requires both TSM and Vendor.
 ## Version: 2.0.0

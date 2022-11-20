@@ -1,8 +1,8 @@
-## Interface: 100002
-## Title: Vendor_Pawn
+## Interface: 30400
+## Title: Vendor_RulesPack
 ## Notes: Pawn extension for Vendor. Requires both Pawn and Vendor.
-## Version: 2.0.0
+## Version: @project-version@
 ## Author: Thoekh of Sargeras & Buskin of Lightbringer
-## Dependencies: Vendor, Pawn
+## Dependencies: Vendor
 
-vendorpawnextension.lua
+vendorrulepack.lua

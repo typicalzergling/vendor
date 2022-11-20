@@ -28,12 +28,11 @@ function Addon:OnInitialize()
 
     -- Setup Console Commands
     self:SetupConsoleCommands()
-    --@debug@
+    --@do-not-package@
     if self.SetupDebugConsoleCommands then
         self:SetupDebugConsoleCommands()
     end
-    --@end-debug@
-    --@do-not-package@
+
     if self.SetupTestConsoleCommands then
         self:SetupTestConsoleCommands()
     end
@@ -54,7 +53,6 @@ function Addon:OnInitialize()
 
     Addon:InitializeItemResultRefresh()
     Addon:InitializeEvaluationStatus()
-    Addon:InitializeItemTooltips()
     
     -- Do a delayed pruning of history across all characters.
     Addon:PostInitializePruneHistory()

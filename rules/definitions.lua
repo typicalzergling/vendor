@@ -63,6 +63,7 @@ Rules.SystemRules =
     {
         Id = "sell.alwayssell",
         Type = SELL_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_ALWAYSSELL"],
         Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
         ScriptText = "IsAlwaysSellItem()",
@@ -76,6 +77,7 @@ Rules.SystemRules =
     {
         Id = "sell.poor",
         Type = SELL_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_POORITEMS"],
         Description = L["SYSRULE_SELL_POORITEMS_DESC"],
         ScriptText = "Quality == POOR",
@@ -88,6 +90,7 @@ Rules.SystemRules =
     {
         Id = "sell.oldfood",
         Type = SELL_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_OLDFOOD"],
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
         ScriptText = "TypeId == 0 and SubTypeId == 5 and (not NO_LEVEL_ONE or Level ~= 1) and Level <= (PlayerLevel() - FOOD_LEVEL)",
@@ -118,6 +121,7 @@ Rules.SystemRules =
     {
         Id = "sell.knowntoys",
         Type = SELL_RULE,
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Name = L["SYSRULE_SELL_KNOWNTOYS"],
         Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
         ScriptText = "IsSoulbound and IsToy and IsAlreadyKnown and not IsUnsellable",
@@ -130,6 +134,7 @@ Rules.SystemRules =
     {
         Id = "sell.uncommongear",
         Type = SELL_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == UNCOMMON and (not IsUnsellable) and Level < ITEMLEVEL",
@@ -151,6 +156,7 @@ Rules.SystemRules =
     {
         Id = "sell.raregear",
         Type = SELL_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_RAREGEAR"],
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == RARE and (not IsUnsellable) and Level < ITEMLEVEL",
@@ -172,6 +178,7 @@ Rules.SystemRules =
     {
         Id = "sell.epicgear",
         Type = SELL_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_EPICGEAR"],
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and Quality == EPIC and (not IsUnsellable) and Level < ITEMLEVEL",
@@ -198,6 +205,7 @@ Rules.SystemRules =
     {
         Id = "keep.neversell",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_NEVERSELL"],
         Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
         ScriptText = "IsNeverSellItem()",
@@ -212,6 +220,7 @@ Rules.SystemRules =
     {
         Id = "keep.legendaryandup",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
         Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
         ScriptText = "Quality >= 5",
@@ -223,6 +232,7 @@ Rules.SystemRules =
     {
         Id = "keep.soulboundgear",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
         Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
         ScriptText = "IsEquipment and IsSoulbound",
@@ -236,6 +246,7 @@ Rules.SystemRules =
     {
         Id = "keep.bindonequipgear",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_BINDONEQUIPGEAR"],
         Description = L["SYSRULE_KEEP_BINDONEQUIPGEAR_DESC"],
         ScriptText = "IsEquipment and IsBindOnEquip",
@@ -246,10 +257,10 @@ Rules.SystemRules =
     },
 
     -- Safeguard rule - Protect those transmogs!
-    --@retail@
     {
         Id = "keep.unknownappearance",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
         Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
         ScriptText = "IsCollectable",
@@ -259,18 +270,19 @@ Rules.SystemRules =
     {
         Id = "keep.cosmetic",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Name = L["SYSRULE_KEEP_COSMETIC"],
         Description = L["SYSRULE_KEEP_COSMETIC_DESC"],
         ScriptText = "IsCosmetic and (IsBindOnEquip or IsBindOnAccount)",
         Script = function() return IsCosmetic and (IsBindOnEquip or IsAccountBound) end,
         Order = 1250,
     },
-    --@end-retail@
 
     -- Safeguard Rule
     {
         Id = "keep.potentialupgrades",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Name = L["SYSRULE_KEEP_POTENTIALUPGRADES"],
         Description = L["SYSRULE_KEEP_POTENTIALUPGRADES_DESC"],
         ScriptText = "IsEquippable and (Level >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5))",
@@ -282,6 +294,7 @@ Rules.SystemRules =
     {
         Id = "keep.common",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_COMMON"],
         Description = L["SYSRULE_KEEP_COMMON_DESC"],
         ScriptText = "Quality == 1",
@@ -293,6 +306,7 @@ Rules.SystemRules =
     {
         Id = "keep.uncommongear",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
         Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 2 and (Level >= ITEMLEVEL)",
@@ -315,6 +329,7 @@ Rules.SystemRules =
     {
         Id = "keep.raregear",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_RAREGEAR"],
         Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 3 and (Level >= ITEMLEVEL)",
@@ -337,6 +352,7 @@ Rules.SystemRules =
     {
         Id = "keep.epicgear",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_EPICGEAR"],
         Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 4 and (Level >= ITEMLEVEL)",
@@ -357,17 +373,16 @@ Rules.SystemRules =
 
     -- Safeguard against selling item sets, even if it matches some
     -- other rule, for example, a fishing or transmog set.
-    --@retail@
     {
         Id = "keep.equipmentset",
         Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Name = L["SYSRULE_KEEP_EQUIPMENTSET"],
         Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
         ScriptText = "IsInEquipmentSet()",
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
     },
-    --@end-retail@
 
     --*****************************************************************************
     -- Destroy Rules
@@ -377,6 +392,7 @@ Rules.SystemRules =
     {
         Id = "destroy.alwaysdestroy",
         Type = DESTROY_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_DESTROYLIST"],
         Description = L["SYSRULE_DESTROYLIST_DESC"],
         ScriptText = "IsInList(\"Destroy\")",
@@ -390,6 +406,7 @@ Rules.SystemRules =
     {
         Id = "destroy.knowntoys",
         Type = DESTROY_RULE,
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Name = L["SYSRULE_DESTROY_KNOWNTOYS"],
         Description = L["SYSRULE_DESTROY_KNOWNTOYS_DESC"],
         ScriptText = "IsSoulbound and IsToy and IsAlreadyKnown and IsUnsellable",
@@ -549,7 +566,9 @@ function Rules.GetDefinitions(typeFilter)
 
     -- Gather system rules
     for _, ruleDef in ipairs(Rules.SystemRules) do
-        if (not ruleDef.Locked and ((not typeFilter) or (ruleDef.Type == typeFilter))) then
+        -- We have to filter out unsupported rules.
+        local supported = ruleDef.Supported[Addon.Systems.Info.ReleaseName]
+        if (supported and not ruleDef.Locked and ((not typeFilter) or (ruleDef.Type == typeFilter))) then
             local def = Addon.DeepTableCopy(ruleDef)
             def.Source = Addon.RuleSource.SYSTEM
             table.insert(defs, def);
@@ -557,17 +576,20 @@ function Rules.GetDefinitions(typeFilter)
     end
 
     -- Gather custom rules
+    -- We dont' need to worry about supported here, we assume it is and let the user decide after
+    -- migration if their rule still works.
     if (Vendor_CustomRuleDefinitions) then
         for _, ruleDef in ipairs(Vendor_CustomRuleDefinitions) do
             if (not typeFilter) or (ruleDef.Type == typeFilter) then
                 local def = Addon.DeepTableCopy(ruleDef)
                 def.Source = Addon.RuleSource.CUSTOM
-                    table.insert(defs, def);
+                table.insert(defs, def);
             end
         end
     end
 
     -- Gather extensions
+    -- We don't need to worry about supportee here, we filtered out unsupported on extension registration.
     if (Package.Extensions) then
         for _, ruleDef in ipairs(Package.Extensions:GetRules(typeFilter)) do
             ruleDef.Locked = false;
@@ -592,7 +614,8 @@ function Rules.GetDefinition(ruleId, ruleType, includeLocked)
 
     -- Check the system rules.
     for _, ruleDef in ipairs(Rules.SystemRules) do
-        if (not ruleDef.Locked or includeLocked) then
+        local supported = not ruleDef.Supported or ruleDef.Supported[Addon.Systems.Info.ReleaseName]
+        if (supported and (not ruleDef.Locked or includeLocked)) then
             if (string.lower(ruleDef.Id) == id) then
                 if ((not ruleType) or (ruleType == ruleDef.Type)) then
                     return ruleDef, "SYSTEM";

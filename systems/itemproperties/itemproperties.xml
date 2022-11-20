@@ -1,6 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="itemproperties.lua"/>
     <Script file="itempropertyinfo.lua"/>
-    <Script file="itempropertytooltipscan.lua"/>
+    <!-- Following two files are mutually exclusive following major tooltip scanning changes -->
+    <!-- <Script file="itempropertytooltipscan.lua"/> -->
+    <!-- <Script file="itempropertytooltipscan_classic.lua"/> -->
     <Script file="itempropertydocs.lua"/>
 </Ui>

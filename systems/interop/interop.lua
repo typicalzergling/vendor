@@ -78,8 +78,8 @@ local function setupGetContainerFreeSlots()
         getContainerFreeSlots = GetContainerFreeSlots
     end
 end
-function Interop:GetContainerFreeSlots(...)
-    return getContainerFreeSlots(...)
+function Interop:GetContainerFreeSlots(container)
+    return getContainerFreeSlots(container)
 end
 
 
@@ -96,6 +96,19 @@ function Interop:GetNumTotalEquippedBagSlots()
     return getNumTotalEquippedBagSlots()
 end
 
+--[[ IsLocationValid - IsValid was added in BFA ]]
+local isLocationValid = nil
+local function setupIsLocationValid()
+    if Info.IsRetailEra then
+        isLocationValid = function(location) return location:IsValid() end
+    else
+        isLocationValid = function(location) return C_Item.DoesItemExist(location) end
+    end
+end
+function Interop:IsLocationValid(location)
+    return isLocationValid(location)
+end
+
 function Interop:Startup()
     setupGetContainerItemInfo()
     setupGetContainerNumSlots()
@@ -103,6 +116,7 @@ function Interop:Startup()
     setupPickupContainerItem()
     setupGetContainerFreeSlots()
     setupGetNumTotalEquippedBagSlots()
+    setupIsLocationValid()
     return {
         "GetContainerItemInfo",
         "GetContainerNumSlots",

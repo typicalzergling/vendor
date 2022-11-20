@@ -87,66 +87,76 @@ local function registerTSMExtension()
         {
             {
                 Name="CustomValue",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getCustomPriceValue,
-                Help="Gets the TSM specified custom price value specified. You can specify any TSM price string! See http://support.tradeskillmaster.com for how price strings work.",
+                Documentation="Gets the TSM specified custom price value specified. You can specify any TSM price string! See http://support.tradeskillmaster.com for how price strings work.",
             },
             {
                 Name="MarketValue",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getMarketPriceValue,
-                Help="This is just a convenient shorthand for the typical TSM 'dbmarket' price factoring in Auction House cut of 5%. In TSM price string terms, this is 'dbmarket * .95'. This is the value you would get if you sold the item at dbmarket on the AH.",
+                Documentation="This is just a convenient shorthand for the typical TSM 'dbmarket' price factoring in Auction House cut of 5%. In TSM price string terms, this is 'dbmarket * .95'. This is the value you would get if you sold the item at dbmarket on the AH.",
             },
             {
                 Name="IsAuctionItem",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=isAuctionItem,
-                Help="Evaluates to true if the item has non-zero value to TSM and can therefore be auctioned.",
+                Documentation="Evaluates to true if the item has non-zero value to TSM and can therefore be auctioned.",
             },
             {
                 Name="TotalQuantity",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getTotalQuantity,
-                Help="Gets the total quantity of an item the player has.",
+                Documentation="Gets the total quantity of an item the player has.",
             },
             {
                 Name="BagQuantity",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getBagQuantity,
-                Help="Gets the quantity of an item the player has in their bags.",
+                Documentation="Gets the quantity of an item the player has in their bags.",
             },
             {
                 Name="BankQuantity",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getBankQuantity,
-                Help="Gets the quantity of an item the player has in their bank.",
+                Documentation="Gets the quantity of an item the player has in their bank.",
             },
             {
                 Name="ReagentBankQuantity",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getReagentBankQuantity,
-                Help="Gets the quantity of an item the player has in their reagent bank.",
+                Documentation="Gets the quantity of an item the player has in their reagent bank.",
             },
             {
                 Name="MailQuantity",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getMailQuantity,
-                Help="Gets the quantity of an item the player has in their mailbox.",
+                Documentation="Gets the quantity of an item the player has in their mailbox.",
             },
             {
                 Name="AuctionQuantity",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getAuctionQuantity,
-                Help="Gets the quantity of an item the player has on the auction house.",
+                Documentation="Gets the quantity of an item the player has on the auction house.",
             },
             {
                 Name="GuildQuantity",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getGuildQuantity,
-                Help="Gets the quantity of an item the player's guild has.",
+                Documentation="Gets the quantity of an item the player's guild has.",
             },
         },
 
         -- This rule is not valuable on Classic, as the dbregionsalerate isn't available, so lots of false positives
         -- are created due to people putting up trash for stupid prices. You need dbregionsalerate to filter out
         -- those bogus postings that inflate the price.
-        --@retail@
         Rules =
         {
             {
                 Id = "worthauctionvalue",
                 Type = "Keep",
                 Name = "TSM - Items Worth Auctioning",
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
                 Description = "Any items which have a (Market Value - Vendor Price) greater than the specified amount of Gold. Example: Specifying '10' will keep all items which have a net auction value greater than 10 gold.",
                 Script = function()
                     return TSM_IsAuctionItem() and (TSM_CustomValue("dbregionsalerate * 100") > 30) and ((TSM_MarketValue() - UnitValue) > (RULE_PARAMS.GOLDVALUE * 10000));

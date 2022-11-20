@@ -40,8 +40,9 @@ local function registerPawnExtension()
         {
             {
                 Name="IsUpgrade",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=isPawnUpgrade,
-                Help="Checks if the item is an upgrade according to Pawn.",
+                Documentation="Checks if the item is an upgrade according to Pawn.",
             },
         },
 
@@ -52,6 +53,7 @@ local function registerPawnExtension()
                 Id = "isupgrade",
                 Type = "Keep",
                 Name = "Pawn Upgrades",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Description = "Any equipment items that the Pawn addon considers an upgrade.",
                 Script = "IsEquipment and Pawn_IsUpgrade()",
                 Order = 1000,
@@ -60,6 +62,7 @@ local function registerPawnExtension()
                 Id = "isnotupgrade",
                 Type = "Sell",
                 Name = "Not Pawn Upgrades",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Description = "Any equipment items that are not considered upgrades by the Pawn addon.",
                 Script = "IsEquipment and not Pawn_IsUpgrade() and not IsEquipped and not IsUnsellable",
                 Order = 1000,

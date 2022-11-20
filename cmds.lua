@@ -81,8 +81,6 @@ end
 
 
 function Addon:OpenKeybindings_Cmd()
-
-    -- Blizzard boke keybinds on retail but classic still works this way.
     if Addon.Systems.Info.IsClassicEra then
         -- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
         if not KeyBindingFrame then
@@ -117,6 +115,7 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
+    print("Expansion: "..tostring(LE_EXPANSION_CURRENT))
     Addon:WithFeature("Vendor", function(vendor)
         vendor:ShowDialog("rules")
     end)

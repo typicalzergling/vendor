@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 30400
 ## Dependencies: Vendor, AdiBags
 ## Title: Vendor_AdiBags
 ## Notes: AdiBags extension. Requires both Vendor and AdiBags

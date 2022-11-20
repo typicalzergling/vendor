@@ -11,8 +11,8 @@ local debugp = function (...) Addon:Debug("itempropertyinfo", ...) end
         Supported = {
             Retail = boolean,
             Classic = boolean,
-            PTR = boolean,
-            Beta = boolean,
+            RetailNext = boolean,       -- Whenever next version of retail is on PTR or Beta
+            ClassicNext = boolean,      -- Whenever next version of classic is on PTR or Beta
         }
     }
 
@@ -47,22 +47,22 @@ local ITEM_PROPERTIES = {
     SubTypeId               = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     StackSize               = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     UnitValue               = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
-    IsCraftingReagent       = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
+    IsCraftingReagent       = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
     IsUsable                = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     IsEquipment             = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     ExpansionPackId         = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     InventoryType           = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
-    IsConduit               = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
-    IsAzeriteItem           = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
-    CraftedQuality          = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
+    IsConduit               = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    IsAzeriteItem           = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    CraftedQuality          = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
 
     -- Derived base properties - not given directly by Blizzard
     UnitGoldValue           = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     TotalValue              = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     TotalGoldValue          = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
     IsUnsellable            = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
-    IsEquippable            = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
-    IsProfessionEquipment   = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
+    IsEquippable            = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    IsProfessionEquipment   = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
 
     -- Bind properties
     BindType                = { Default=0,      Hide=false,   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
@@ -72,18 +72,22 @@ local ITEM_PROPERTIES = {
     IsBindOnUse             = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
 
     -- Transmog properties
-    IsTransmogEquipment     = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
-    IsCollectable           = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
-    IsCollected             = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
-    AppearanceId            = { Default=0,      Hide=true,    Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
+    IsTransmogEquipment     = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    IsCollectable           = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    IsCollected             = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    AppearanceId            = { Default=0,      Hide=true,    Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
 
     -- Tooltip-derived Properties (excluding IsAccountBound)
-    IsCosmetic              = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true } },
-    IsToy                   = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
-    IsAlreadyKnown          = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
+    IsCosmetic              = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    IsToy                   = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+    IsAlreadyKnown          = { Default=false,  Hide=false,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
 
     -- Aliased properties for compat (hidden)
-    IsUnknownAppearance     = { Default=false,  Hide=true ,   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } },
+    IsUnknownAppearance     = { Default=false,  Hide=true ,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
+
+    -- Deprecated Properties for old Tooltip scanning in classic
+    TooltipLeft             = { Default="",     Hide=true ,   Type="string",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true } },
+    TooltipRight            = { Default="",     Hide=true ,   Type="string",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true } },
 }
 
 -- Property info accessors

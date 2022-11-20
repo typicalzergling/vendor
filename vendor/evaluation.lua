@@ -47,7 +47,9 @@ function Addon:EvaluateItem(item, ignoreCache)
 
     debugp("In Evaluate Item: %s", tostring(item.Link))
     -- Check the Cache for the result if we aren't ignoring it.
-    if not ignoreCache then
+    -- We always ignore cache on Classic because a key method to
+    -- validate the entry is not available in that version.
+    if not ignoreCache and not Addon.Systems.Info.IsClassicEra then
         local cachedEntry = Addon:GetItemResultForGUID(item.GUID)
         if cachedEntry then
             debugp("Retrieved %s from cache with result: %s - [%s] %s", tostring(item.Link), tostring(cachedEntry.Result.Action), tostring(cachedEntry.Result.RuleType), tostring(cachedEntry.Result.Rule))

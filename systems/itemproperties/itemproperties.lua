@@ -7,10 +7,11 @@ local itemPropertiesList = nil
 local itemproperties = nil
 local IS_RETAIL = nil
 local IS_CLASSIC = nil
+local Interop = Addon.Systems.Interop
 
 --[[ Retrieve our depenedencies ]]
 function ItemProperties:GetDependencies()
-    return { "info", "savedvariables", "profile" }
+    return { "info", "savedvariables", "profile", "interop"}
 end
 
 
@@ -237,7 +238,6 @@ local function doGetItemProperties(itemObj)
         if not item.CraftedQuality then item.CraftedQuality = 0 end
     end
 
-    -- dirty hack for classic for now
     if IS_RETAIL then
         -- Determine if this is a toy.
         -- Toys are typically type 15 (Miscellaneous), but sometimes 0 (Consumable), and the subtype is very inconsistent.
@@ -256,6 +256,11 @@ local function doGetItemProperties(itemObj)
                 item.IsAlreadyKnown = true
             end
         end
+    else
+        -- Old tooltip import for Classic
+        -- Import the tooltip text as item properties for custom rules.
+        item.TooltipLeft = itemproperties:ImportTooltipTextLeft(location)
+        item.TooltipRight = itemproperties:ImportTooltipTextRight(location)
     end
 
     return item, count
@@ -304,13 +309,16 @@ function ItemProperties:GetItemPropertiesFromTooltip()
         if tooltipData.guid then
             return self:GetItemPropertiesFromGUID(tooltipData.guid)
         end
+    else
+        -- Classic, we dont have GUID from tooltip, use location instead.
+        return self:GetItemPropertiesFromLocation(Addon:GetTooltipItemLocation())
     end
     return nil
 end
 
 -- From Location
 function ItemProperties:GetItemPropertiesFromLocation(location)
-    if not location or not location:IsValid() then return nil end
+    if not location or not Interop:IsLocationValid(location) then return nil end
     return doGetItemProperties(Item:CreateFromItemLocation(location))
 end
 

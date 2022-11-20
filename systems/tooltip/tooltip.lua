@@ -1,35 +1,50 @@
-local AddonName, Addon = ...
+--[[
+    This is for setting the tooltip with game state.
+    It is a system so it loads immediately as the addon is loading. 
+]]
+
+local _, Addon = ...
 local L = Addon:GetLocale()
+local debugp = function (...) Addon:Debug("tooltip", ...) end
+
+local Tooltip = {}
+
+local Info = Addon.Systems.Info
+local ItemProperties = Addon.Systems.ItemProperties
+
+function Tooltip:GetDependencies()
+    return {"info", "itemproperties", "profile", "lists"}
+end
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
-function Addon:AddTooltipItemToList(list)
+function Tooltip:AddTooltipItemToList(list)
     -- Get the item from
     name, link = GameTooltip:GetItem();
     if not link then
-        self:Print(string.format(L["TOOLTIP_ADDITEM_ERROR_NOITEM"], list))
+        Addon:Print(string.format(L["TOOLTIP_ADDITEM_ERROR_NOITEM"], list))
         return
     end
 
     -- Add the link to the specified blocklist.
-    local retval = self:ToggleItemInBlocklist(list, link)
+    local retval = Addon:ToggleItemInBlocklist(list, link)
     if retval == 1 then
-        self:Print(string.format(L["CMD_LISTTOGGLE_ADDED"], tostring(link), list))
+        Addon:Print(string.format(L["CMD_LISTTOGGLE_ADDED"], tostring(link), list))
     elseif retval == 2 then
-        self:Print(string.format(L["CMD_LISTTOGGLE_REMOVED"], tostring(link), list))
+        Addon:Print(string.format(L["CMD_LISTTOGGLE_REMOVED"], tostring(link), list))
     end
 end
 
 -- Called by keybinds to direct-add items to the blocklists
-function Addon:AddTooltipItemToSellList()
-    self:AddTooltipItemToList(Addon.SystemListId.ALWAYS)
+function Tooltip:AddTooltipItemToSellList()
+    Tooltip:AddTooltipItemToList(Addon.SystemListId.ALWAYS)
 end
 
-function Addon:AddTooltipItemToKeepList()
-    self:AddTooltipItemToList(Addon.SystemListId.NEVER)
+function Tooltip:AddTooltipItemToKeepList()
+    Tooltip:AddTooltipItemToList(Addon.SystemListId.NEVER)
 end
 
-function Addon:AddTooltipItemToDestroyList()
-    self:AddTooltipItemToList(Addon.SystemListId.DESTROY)
+function Tooltip:AddTooltipItemToDestroyList()
+    Tooltip:AddTooltipItemToList(Addon.SystemListId.DESTROY)
 end
 
 -- Result cache
@@ -39,8 +54,6 @@ local blocklist = nil
 local ruleId = nil
 local ruleName = nil
 local ruleType = nil
-local callCount = 0
-local recipe = false
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Addon:ClearTooltipResultCache()
@@ -50,7 +63,6 @@ function Addon:ClearTooltipResultCache()
     ruleId = nil
     ruleName = nil
     ruleType = nil
-    Addon:Debug("tooltip", "TooltipResultCache cleared.")
 end
 
 local function addItemTooltipLines(tooltip, tooltipData)
@@ -158,7 +170,7 @@ local function addItemTooltipLines(tooltip, tooltipData)
     --@end-debug@
 end
 
-function Addon:InitializeItemTooltips()
+function Tooltip:InitializeItemTooltips()
     local initializeTooltips = function ()
         if Addon.Systems.Info.IsRetailEra then
             Addon:Debug("tooltip", "Adding tooltip processing for items.")
@@ -169,3 +181,26 @@ function Addon:InitializeItemTooltips()
     -- cause unnecessary evaluations.
     C_Timer.After(1, initializeTooltips)
 end
+
+function Tooltip:Startup()
+    local initializeTooltips = function ()
+        if Addon.Systems.Info.IsRetailEra then
+            Addon:Debug("tooltip", "Adding tooltip processing for items.")
+            TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
+        end
+    end
+    -- Tooltip. Delay this one second so other things intializing don't move the tooltip over them and
+    -- cause unnecessary evaluations.
+    C_Timer.After(1, initializeTooltips)
+
+    return {
+        "AddTooltipItemToSellList",
+        "AddTooltipItemToKeepList",
+        "AddTooltipItemToDestroyList",
+    }
+end
+
+function Tooltip:Shutdown()
+end
+
+Addon.Systems.Tooltip = Tooltip
