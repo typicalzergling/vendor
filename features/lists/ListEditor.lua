@@ -265,6 +265,39 @@ function ListEditor:IsNew()
     return not self.list
 end
 
+--[[ True if we can export this list ]]
+function ListEditor:CanExport()
+    return self.list and self:GetType() == ListType.CUSTOM
+end
+
+--[[ Retruns the export value for this list ]]
+function ListEditor:GetExportValue()
+    local contents = {}
+
+    for _, id in ipairs(self.contents) do
+        contents[id] = true
+    end
+
+    for id, change in pairs(self.changes) do
+        if (change == ChangeType.ADDED) then
+            contents[id] = true
+        elseif (change == ChangeType.REMOVED) then
+            contents[id] = nil
+        end
+    end
+
+    local list = {
+        Name = self.name,
+        Description = self.description,
+        Items = contents,
+    }
+
+    return {
+            Content = "customlist",
+            Items = { list }
+        }
+end
+
 --[[ Create a new profile list ]]
 function Addon.Features.Lists.CreateEditor(list, copy)
     local obj = CreateFromMixins(ListEditor, CallbackRegistryMixin)

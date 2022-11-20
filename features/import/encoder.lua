@@ -19,6 +19,14 @@ local CHAR_CLOSE_TABLE = "-"
 local CHAR_NUMBER = "n"
 local CHAR_STRING = "s"
 
+local L_SHIFT_8 = math.pow(2, 8)
+local L_SHIFT_6 = math.pow(2, 6)
+local R_SHIFT_6 = math.pow(2, 6)
+local R_SHIFT_8 = math.pow(2, 8)
+local R_SHIFT_12 = math.pow(2, 12)
+local R_SHIFT_16 = math.pow(2, 16)
+local R_SHIFT_18 = math.pow(2, 18)
+
 local BASE64_CHARS = {
     [0] = "A", [1] = "B", [2] = "C", [3] = "D", [4] = "E", [5] = "F", [6] = "G", [7] = "H", [8] = "I", [9] = "J",
     [10] = "K", [11] = "L", [12] = "M", [13] = "N", [14] = "O", [15] = "P", [16] = "Q", [17] = "R", [18] = "S", [19] = "T",
@@ -135,7 +143,7 @@ function Encoder.EncodeBase64(str)
     local n = string.len(str)
 
     while (i <= n) do
-        local v = (string.byte(str, i, i + 1) << 8)
+        local v = (string.byte(str, i, i + 1) * L_SHIFT_8)
 
         if (i + 1 <= n) then
             v = v | string.byte(str, i + 1, i + 2)
@@ -149,15 +157,15 @@ function Encoder.EncodeBase64(str)
             v = (v << 8)
         end
 
-        if (not BASE64_CHARS[(v >> 6) & 0x3f]) then
-            print("v=", v, ((v >> 6) & 0x3f))
+        if (not BASE64_CHARS[(v / R_SHIFT_6) & 0x3f]) then
+            print("v=", v, ((v / R_SHIFT_6) & 0x3f))
         end
 
-        encoded = encoded .. BASE64_CHARS[(v >> 18) & 0x3f]
-        encoded = encoded .. BASE64_CHARS[(v >> 12) & 0x3f]
+        encoded = encoded .. BASE64_CHARS[(v / R_SHIFT_18) & 0x3f]
+        encoded = encoded .. BASE64_CHARS[(v / R_SHIFT_12) & 0x3f]
         
         if (i + 1 <= n) then
-            encoded = encoded .. BASE64_CHARS[(v >> 6) & 0x3f]
+            encoded = encoded .. BASE64_CHARS[(v / R_SHIFT_6) & 0x3f]
         else
             encoded = encoded .. "="
         end
@@ -210,28 +218,25 @@ function Encoder.DecodeBase64(base64)
 
     while (i < n) do
         local v = BASE64_INV[string.byte(base64, i, i + 1) - 42]
-        v = (v << 6) | BASE64_INV[string.byte(base64, i + 1, i + 2) - 42]
+        v = (v * L_SHIFT_6) | BASE64_INV[string.byte(base64, i + 1, i + 2) - 42]
         
         local b2 = string.byte(base64, i + 2, i + 3)
         if (b2 == BYTE_EQUAL) then
-            v = v << 6
+            v = v * L_SHIFT_6
         else
-            v = (v << 6) | (BASE64_INV[b2 - 42])
+            v = (v * L_SHIFT_6) | (BASE64_INV[b2 - 42])
         end
 
         local b3 = string.byte(base64, i + 3, i + 4)
-        if (b3 == nil) then
-            print("i=", i, n)
-        end
         if (b3 == BYTE_EQUAL) then
-            v = (v << 6)
+            v = (v * L_SHIFT_6)
         else
-            v = (v << 6) | (BASE64_INV[b3 - 42])
+            v = (v * L_SHIFT_6) | (BASE64_INV[b3 - 42])
         end
 
-        str = str .. string.char((v >> 16) & 0xff)
+        str = str .. string.char((v / R_SHIFT_16) & 0xff)
         if (b2 ~= BYTE_EQUAL) then
-            str = str .. string.char((v >> 8) & 0xff)
+            str = str .. string.char((v / R_SHIFT_8) & 0xff)
         end
         if (b3 ~= BYTE_EQUAL) then
             str = str .. string.char(v & 0xff)

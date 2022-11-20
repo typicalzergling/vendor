@@ -41,4 +41,34 @@
         <Scripts>
         </Scripts>
     </Frame>
+
+    <Frame name="Import_ExportDialog" virtual="true" hidden="true">
+        <Size x="300" y="400"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="help" inherits="GameFontNormal">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                        <KeyValue key="LocText" value="EXPORT_HELP_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame inherits="CommonUI_TextArea" parentKey="export">
+                <KeyValues>
+                    <KeyValue key="ReadOnly" value="true" type="boolean"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+    </Frame>
+
 </Ui>

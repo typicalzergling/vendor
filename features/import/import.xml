@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Script file="import_feature.lua"/>
-    <Script file="import_dialog.lua"/>
-    <Script file="command_button.lua"/>
-    <Include file="import_dialog.xml"/>    
+    <Script file="import.lua"/>
+    <Script file="encoder.lua"/>
+    <Script file="importdialog.lua"/>
+    <Script file="exportdialog.lua"/>
+    <Include file="importui.xml"/>
 </Ui>
