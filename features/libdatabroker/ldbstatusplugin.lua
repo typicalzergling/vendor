@@ -42,7 +42,7 @@ local ldb_plugin_definition = {
     type = "data source",
     text = "Updating...",
 	label = L.ADDON_NAME,
-    icon = "Interface\\Icons\\Achievement_Boss_Zuldazar_TreasureGolem",
+    icon = "Interface\\Addons\\Vendor\\assets\\TreasureGolem",
     OnClick = function(self, button)
         debugp("In OnClick Handler")
         if button == "RightButton" then

@@ -60,8 +60,12 @@ end
 
 --[[ Called to start a single system ]]
 function Features:InitTarget(feature, complete)
+    if not feature then
+        debugp("Called to initialize nil feature.")
+        return
+    end
     C_Timer.After(.25, function()
-        debugp("Initialing feature '%s'", feature.name)
+        debugp("Initializing feature '%s'", feature.name)
             self:EnableFeature(feature.name)
             complete(feature.enabled)
         end)
