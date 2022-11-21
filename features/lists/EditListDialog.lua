@@ -117,8 +117,9 @@ function EditListDialog:OnDelete()
 end
 
 function EditListDialog:OnExport()
+    assert(self.editor:CanExport(), "Expected the current list to be exportable")
     local import = Addon:GetFeature("import")
-    import:ShowExportDialog("LIST:" .. self.editor:GetName())
+    import:ShowExportDialog(self.editor:GetExportValue())
 end
 
 --[[ Called to update our UX state ]]

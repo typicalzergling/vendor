@@ -143,35 +143,31 @@ function Encoder.EncodeBase64(str)
     local n = string.len(str)
 
     while (i <= n) do
-        local v = (string.byte(str, i, i + 1) * L_SHIFT_8)
+        local v = bit.lshift(string.byte(str, i, i + 1), 8)
 
         if (i + 1 <= n) then
-            v = v | string.byte(str, i + 1, i + 2)
+            v = bit.bor(v, string.byte(str, i + 1, i + 2))
         else
-            v = v << 8
+            v = bit.lshift(v, 8)
         end
 
         if (i + 2 <= n) then
-            v = (v << 8) | string.byte(str, i + 2, i + 3)
+            v = bit.bor(bit.lshift(v, 8), string.byte(str, i + 2, i + 3))
         else
-            v = (v << 8)
+            v = bit.lshift(v, 8)
         end
 
-        if (not BASE64_CHARS[(v / R_SHIFT_6) & 0x3f]) then
-            print("v=", v, ((v / R_SHIFT_6) & 0x3f))
-        end
-
-        encoded = encoded .. BASE64_CHARS[(v / R_SHIFT_18) & 0x3f]
-        encoded = encoded .. BASE64_CHARS[(v / R_SHIFT_12) & 0x3f]
+        encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(v, 18), 0x3f)]
+        encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(v, 12), 0x3f)]
         
         if (i + 1 <= n) then
-            encoded = encoded .. BASE64_CHARS[(v / R_SHIFT_6) & 0x3f]
+            encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(v, 6), 0x3f)]
         else
             encoded = encoded .. "="
         end
 
         if (i + 2 <= n) then
-            encoded = encoded .. BASE64_CHARS[v & 0x3f]
+            encoded = encoded .. BASE64_CHARS[bit.band(v, 0x3f)]
         else
             encoded = encoded .. "="
         end
@@ -218,28 +214,28 @@ function Encoder.DecodeBase64(base64)
 
     while (i < n) do
         local v = BASE64_INV[string.byte(base64, i, i + 1) - 42]
-        v = (v * L_SHIFT_6) | BASE64_INV[string.byte(base64, i + 1, i + 2) - 42]
+        v = bit.bor(bit.lshift(v, 6), BASE64_INV[string.byte(base64, i + 1, i + 2) - 42])
         
         local b2 = string.byte(base64, i + 2, i + 3)
         if (b2 == BYTE_EQUAL) then
-            v = v * L_SHIFT_6
+            v = bit.lshift(v, 6)
         else
-            v = (v * L_SHIFT_6) | (BASE64_INV[b2 - 42])
+            v = bit.bor(bit.lshift(v, 6),(BASE64_INV[b2 - 42]))
         end
 
         local b3 = string.byte(base64, i + 3, i + 4)
         if (b3 == BYTE_EQUAL) then
-            v = (v * L_SHIFT_6)
+            v = bit.lshift(v, 6)
         else
-            v = (v * L_SHIFT_6) | (BASE64_INV[b3 - 42])
+            v = bit.bor(bit.lshift(v, 6), (BASE64_INV[b3 - 42]))
         end
 
-        str = str .. string.char((v / R_SHIFT_16) & 0xff)
+        str = str .. string.char(bit.band(bit.rshift(v, 16), 0xff))
         if (b2 ~= BYTE_EQUAL) then
-            str = str .. string.char((v / R_SHIFT_8) & 0xff)
+            str = str .. string.char(bit.band(bit.rshift(v, 8), 0xff))
         end
         if (b3 ~= BYTE_EQUAL) then
-            str = str .. string.char(v & 0xff)
+            str = str .. string.char(bit.band(v,  0xff))
         end
         i = i + 4
     end

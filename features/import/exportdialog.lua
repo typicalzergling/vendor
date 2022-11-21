@@ -3,6 +3,7 @@ local UI = Addon.CommonUI.UI
 local ExportDialog = {}
 local CURRENT_EXPORT_VERSION = 1
 local Encoder = Addon.Features.Import.Encoder
+local Info = Addon.Systems.Info
 
 --@debug@
 local function debugp(msg, ...) Addon:Debug("exportdialog", msg, ...) end
@@ -16,6 +17,7 @@ function ExportDialog:OnInitDialog(dialog, export)
     export.Source = AddonName
     export.Player = character
     export.Realm = realm
+    export.InterfaceVersion = Info.Build.InterfaceVersion
 
     self.export:SetText(Encoder.EncodeValue(export))
     self.export:SetFocus()
