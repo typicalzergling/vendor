@@ -17,6 +17,20 @@ function Addon.StringLTrim(str)
     return string.sub(str, s, l);
 end
 
+
+-- Gets item ID from an itemstring or item link
+-- If a number is passed in it assumes that is the ID
+function Addon.GetItemIdFromString(str)
+    -- extract the id
+    if type(str) == "number" or tonumber(str) then
+        return tonumber(str)
+    elseif type(str) == "string" then
+        return tonumber(string.match(str, "item:(%d+):"))
+    else
+        return nil
+    end
+end
+
 -- Trim the end of a string
 function Addon.StringRTrim(str)
     local e = string.len(str);

@@ -13,7 +13,7 @@ local Info = Addon.Systems.Info
 local ItemProperties = Addon.Systems.ItemProperties
 
 function Tooltip:GetDependencies()
-    return {"info", "itemproperties", "profile", "lists"}
+    return {"info", "itemproperties", "profile", "lists", "evaluation"}
 end
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.

@@ -24,13 +24,17 @@ function Features:Startup()
     self.features = {}
     if (type(Addon.Features) == "table") then
         for name, feature in pairs(Addon.Features) do
-            local featureInfo = {
-                name = name,
-                instance = feature,
-                enabled = false,
-            }
 
-            self.features[string.lower(name)] = featureInfo
+            if (name == nil or feature == nil) then
+                debugp("Feature named %s is nil", tostring(name))
+            else
+                local featureInfo = {
+                    name = name,
+                    instance = feature,
+                    enabled = false,
+                }
+                self.features[string.lower(name)] = featureInfo
+            end
         end
     end
 

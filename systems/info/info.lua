@@ -67,9 +67,60 @@ local function populateBuildInfo()
     debugp("IsRetailNext = %s", tostring(Info.IsRetailNext))
 end
 
+-- Convert price to a pretty string
+-- To reduce spam we don't show copper unless it is the only unit of measurement (i.e. < 1 silver)
+-- Gold:    FFFFFF00
+-- Silver:  FFFFFFFF
+-- Copper:  FFAE6938
+function Info:GetPriceString(price, all)
+    if not price then
+        return "<missing>"
+    end
+
+    local copper, silver, gold, str
+    copper = price % 100
+    price = math.floor(price / 100)
+    silver = price % 100
+    gold = math.floor(price / 100)
+
+    str = {}
+    if gold > 0 or all then
+        table.insert(str, "|cFFFFD100")
+        table.insert(str, gold)
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-GoldIcon:12:12:4:0|t  ")
+
+        table.insert(str, "|cFFE6E6E6")
+        table.insert(str, string.format("%02d", silver))
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
+
+        if (all) then
+            table.insert(str, "|cFFC8602C")
+            table.insert(str, copper)
+            table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
+        end
+
+    elseif silver > 0 then
+        table.insert(str, "|cFFE6E6E6")
+        table.insert(str, silver)
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
+
+    else
+        -- Show copper if that is the only unit of measurement.
+        table.insert(str, "|cFFC8602C")
+        table.insert(str, copper)
+        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
+    end
+
+    -- Return the concatenated string using the efficient function for it
+    return table.concat(str)
+end
+
+
 function Info:Startup()
     populateBuildInfo()
-    return {}
+    return {
+        "GetPriceString",
+    }
 end
 
 function Info:Shutdown()

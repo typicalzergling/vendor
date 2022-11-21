@@ -13,7 +13,7 @@ local Info = Addon.Systems.Info
 local ItemProperties = Addon.Systems.ItemProperties
 
 function Tooltip:GetDependencies()
-    return {"info", "itemproperties", "profile", "lists"}
+    return {"info", "itemproperties", "profile", "lists", "rules", "evaluation"}
 end
 
 -- We are tracking the location to which the tooltip is currently set. This is because blizzard does not expose

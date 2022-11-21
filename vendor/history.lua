@@ -129,7 +129,7 @@ function Addon:AddEntryToHistory(link, action, rule, ruleid, count, value)
     local entry = {}
     entry.TimeStamp = time()
     entry.Action = action
-    entry.Id = Addon:GetItemIdFromString(link)
+    entry.Id = Addon.GetItemIdFromString(link)
     entry.Count = count
     entry.Value = value
     entry.Profile = getOrCreateProfileId()

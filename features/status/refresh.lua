@@ -9,6 +9,8 @@ local L = Addon:GetLocale()
 
 local debugp = function (...) Addon:Debug("refresh", ...) end
 
+local Status = Addon.Features.Status
+
 -- Refresh Events
 local ITEMRESULT_REFRESH_TRIGGERED = Addon.Events.ITEMRESULT_REFRESH_TRIGGERED
 local ITEMRESULT_REFRESH_START = Addon.Events.ITEMRESULT_REFRESH_START
@@ -27,13 +29,13 @@ local function cancelDelayTimer()
     end
 end
 
-function Addon:IsItemResultRefreshInProgress()
+function Status:IsItemResultRefreshInProgress()
     -- We are refreshing if we have a thread active.
     return not not Addon:GetThread(refresh.threadName)
 end
 
-function Addon:StopItemResultRefresh()
-    if Addon:IsItemResultRefreshInProgress() then
+function Status:StopItemResultRefresh()
+    if Status:IsItemResultRefreshInProgress() then
         debugp("Stopping the refresh thread.")
         Addon:RemoveThread(refresh.threadName)
         Addon:RaiseEvent(ITEMRESULT_REFRESH_STOP)
@@ -57,9 +59,9 @@ local function doStartItemRefresh(forceUpdate)
     end
 
     -- Check if we are already in progress
-    if Addon:IsItemResultRefreshInProgress() then
+    if Status:IsItemResultRefreshInProgress() then
         -- If already in progress then stop it so we can restart from beginning.
-        Addon:StopItemResultRefresh()
+        Status:StopItemResultRefresh()
     end
 
     -- begin refresh thread
@@ -70,23 +72,8 @@ local function doStartItemRefresh(forceUpdate)
         local refreshThrottle = profile:GetValue(Addon.c_Config_RefreshThrottle) or 1
         debugp("Starting bag scan")
         local numProcessed = 0
-        
-        -- TODO move this to an initializer for the feature
-        local numBags = 0
-        if Addon.Systems.Info.IsClassicEra then
-            numBags = NUM_BAG_SLOTS
-        else
-            numBags = Addon:GetNumTotalEquippedBagSlots()
-        end
-        for bag=0, numBags do
-            -- TODO move this to an initializer for the feature
-            local numBagSlots = 0
-            if Addon.Systems.Info.IsClassicEra then
-                numBagSlots = GetContainerNumSlots(bag)
-            else
-                numBagSlots = C_Container.GetContainerNumSlots(bag)
-            end
-            for slot=1, numBagSlots do
+        for bag=0, Addon:GetNumTotalEquippedBagSlots() do
+            for slot=1, Addon:GetContainerNumSlots(bag) do
 
                 -- If we are in combat, stop the scan.
                 if UnitAffectingCombat("player") then
@@ -120,7 +107,7 @@ local function doStartItemRefresh(forceUpdate)
 end
 
 -- ItemResultRefresh has optional argument for delay in seconds.
-function Addon:StartItemResultRefresh(delayInSeconds, forceUpdate)
+function Status:StartItemResultRefresh(delayInSeconds, forceUpdate)
     assert(not delayInSeconds or type(delayInSeconds) == "number")
     if forceUpdate then
         forceNext = true
@@ -141,28 +128,43 @@ function Addon:StartItemResultRefresh(delayInSeconds, forceUpdate)
 end
 
 -- Called when the item result cache is cleared.
-function Addon:OnItemResultCacheCleared()
+function Status:OnItemResultCacheCleared()
     debugp("Itemresult cache was cleared, stopping refresh in progress and restarting.")
 
     -- Halt any scan in progress
-    Addon:StopItemResultRefresh()
+    Status:StopItemResultRefresh()
 
     -- Rules changed or something else significant, lets give it a few seconds
     -- for more changes to occur before we do the refresh.
-    Addon:StartItemResultRefresh(4)
+    Status:StartItemResultRefresh(4)
 end
 
-function Addon:OnPlayerLeavingCombat()
+function Status:OnPlayerLeavingCombat()
     -- We may have had a refresh underway during combat, which would be cancelled and blocked.
     -- So when player leaves combat, see if we had one such event, and if so, complete the
     -- refresh.
     if abortedScanDueToCombat then
         debugp("Retriggering scan now that combat has ended.")
         abortedScanDueToCombat = false
-        Addon:StartItemResultRefresh(4)
+        Status:StartItemResultRefresh(4)
     end
 end
 
-function Addon:InitializeItemResultRefresh()
-    Addon:RegisterCallback(Addon.Events.ITEMRESULT_CACHE_CLEARED, Addon, Addon.OnItemResultCacheCleared)
+-- Fires when a bag changes. 
+function Status:OnBagUpdate(bagID)
+    -- When a bag changes some items inside it have changed, but we don't know which ones.
+    -- Refresh will figure out what ones changed and update the ones that changed.
+    -- Use a delay so multiple looting events close together don't have us doing extra work.
+    -- Bag updates happen a lot, and we want to be non-intrusive to the player experience.
+    -- Using delayed refresh means we will not do any work on a looting event or when items
+    -- first appear in the inventory unless players specifically mouse over those items before
+    -- we refresh them.
+    Status:StartItemResultRefresh(4)
+end
+
+function Status:OnPlayerEquipmentChanged(slotID)
+    -- When player equipment changes, we could likely have some rule evaluations changed, so
+    -- we should start a refresh with force function flagged so we always rebuild the cache
+    -- after such an event.
+    Status:StartItemResultRefresh(4, true)
 end

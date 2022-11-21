@@ -3,6 +3,13 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("autosell", ...) end
 
+local Merchant = {
+    NAME = "Merchant",
+    VERSION = 1,
+    DEPENDENCIES = {
+    },
+}
+
 local threadName = Addon.c_ItemSellerThreadName
 local AUTO_SELL_START = Addon.Events.AUTO_SELL_START
 local AUTO_SELL_COMPLETE = Addon.Events.AUTO_SELL_COMPLETE
@@ -12,59 +19,59 @@ local isMerchantOpen = false
 local isAutoSelling = false
 
 -- When the merchant window is opened, we will attempt to auto repair and sell.
-function Addon:OnMerchantShow()
+function Merchant.OnMerchantShow()
     debugp("Merchant opened.")
     isMerchantOpen = true
-    local profile = self:GetProfile();
+    local profile = Addon:GetProfile();
 
     -- Do auto-repair if enabled
     if profile:GetValue(Addon.c_Config_AutoRepair) then
-        self:AutoRepair()
+        Merchant:AutoRepair()
     end
 
     -- Do auto-selling if enabled
     if profile:GetValue(Addon.c_Config_AutoSell) then
-        self:AutoSell()
+        Merchant:AutoSell()
     end
 end
 
-function Addon:OnMerchantClosed()
+function Merchant.OnMerchantClosed()
     debugp("Merchant closed.")
     isMerchantOpen = false
 end
 
 -- For checking to make sure merchant window is open prior to selling anything.
-function Addon:IsMerchantOpen()
+function Merchant:IsMerchantOpen()
     if Addon.IsDebug and Addon:GetDebugSetting("simulate") then return true end
     return isMerchantOpen
 end
 
 -- Do Autorepair. If using guild funds and guild funds don't cover the repair, we will use our own funds.
-function Addon:AutoRepair()
+function Merchant:AutoRepair()
     local cost, canRepair = GetRepairAllCost()
     if canRepair then
-        local profile = self:GetProfile();
+        local profile = Addon:GetProfile();
         -- Guild repair is not supported on Classic. The API method "CanGuildBankRepair" is missing.
-        if not Addon.IsClassic and profile:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
+        if not Addon.Systems.Info.IsClassicEra and profile:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
             -- use guild repairs
             RepairAllItems(true)
-            self:Print(string.format(L["MERCHANT_REPAIR_FROM_GUILD_BANK"], self:GetPriceString(cost)))
+            Addon:Print(string.format(L["MERCHANT_REPAIR_FROM_GUILD_BANK"], Addon:GetPriceString(cost)))
         else
             -- use own funds
             RepairAllItems()
-            self:Print(string.format(L["MERCHANT_REPAIR_FROM_SELF"], self:GetPriceString(cost)))
+            Addon:Print(string.format(L["MERCHANT_REPAIR_FROM_SELF"], Addon:GetPriceString(cost)))
         end
     end
 end
 
 -- This returns true if we are in the middle of autoselling.
-function Addon:IsAutoSelling()
+function Merchant:IsAutoSelling()
     -- We are selling if we have a thread active.
-    return not not self:GetThread(threadName)
+    return not not Addon:GetThread(threadName)
 end
 
 -- If this merchant has no items it is not a sellable merchant (such as an autohammer).
-function Addon:CanSellAtMerchant()
+function Merchant:CanSellAtMerchant()
     return GetMerchantNumItems() > 0
 end
 
@@ -97,10 +104,10 @@ end
 --    and watch for these events and re-scan, but that's making things significantly more complex for an edge case that doesnt
 --    really matter. Worst-case, the user re-opens the merchant window.
 -- Tiggered manually flag is to give additional feedback during the auto-selling.
-function Addon:AutoSell()
+function Merchant:AutoSell()
     -- Start selling on a thread.
     -- If coroutine already exists no need to create another one.
-    if self:GetThread(threadName) then
+    if Addon:GetThread(threadName) then
         return
     end
 
@@ -120,7 +127,7 @@ function Addon:AutoSell()
         end
 
         -- If this merchant has no items it is not a sellable merchant (such as an autohammer), so terminate.
-        if not Addon:CanSellAtMerchant() then
+        if not Merchant:CanSellAtMerchant() then
             Addon:Debug("autosell", "Cannot sell at merchant, aborting autosell.")
             setIsAutoSelling(false)
             return
@@ -136,7 +143,7 @@ function Addon:AutoSell()
                 while GetCursorInfo() do
 
                     -- It is possible the merchant window closes while the user is holding an item, so check for termination condition before yielding.
-                    if not self:IsMerchantOpen() then
+                    if not Merchant:IsMerchantOpen() then
                         printSellSummary(numSold, totalValue)
                         return
                     end
@@ -155,7 +162,7 @@ function Addon:AutoSell()
 
                     -- UseContainerItem is really just a limited auto-right click, and it will equip/use the item if we are not in a merchant window!
                     -- So before we do this, make sure the Merchant frame is still open. If not, terminate the coroutine.
-                    if not self:IsMerchantOpen() then
+                    if not Merchant:IsMerchantOpen() then
                         printSellSummary(numSold, totalValue)
                         setIsAutoSelling(false)
                         return
@@ -166,13 +173,13 @@ function Addon:AutoSell()
                         Addon:UseContainerItem(bag, slot)
                         Addon:RaiseEvent(AUTO_SELL_ITEM, entry.Item.Link, numSold, sellLimitMaxItems)
                     else
-                        self:Print("Simulating selling of: %s", tostring(item.Link))
+                        Addon:Print("Simulating selling of: %s", tostring(item.Link))
                         Addon:RaiseEvent(AUTO_SELL_ITEM, entry.Item.Link, numSold, sellLimitMaxItems)
                     end
 
                     -- Record sell data
                     local netValue = entry.Item.TotalValue
-                    self:Print(L["MERCHANT_SELLING_ITEM"], tostring(entry.Item.Link), self:GetPriceString(netValue), tostring(entry.Result.Rule))
+                    Addon:Print(L["MERCHANT_SELLING_ITEM"], tostring(entry.Item.Link), Addon:GetPriceString(netValue), tostring(entry.Result.Rule))
                     numSold = numSold + 1
                     totalValue = totalValue + netValue
 
@@ -181,7 +188,7 @@ function Addon:AutoSell()
 
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
-                        self:Print(L["MERCHANT_SELL_LIMIT_REACHED"], sellLimitMaxItems)
+                        Addon:Print(L["MERCHANT_SELL_LIMIT_REACHED"], sellLimitMaxItems)
                         printSellSummary(numSold, totalValue)
                         setIsAutoSelling(false)
                         return
@@ -200,61 +207,24 @@ function Addon:AutoSell()
     end  -- Coroutine end
 
     -- Add thread to the thread queue and start it.
-    self:AddThread(thread, threadName)
+    Addon:AddThread(thread, threadName)
 end
 
 -- Confirms the popup if an item will be non-tradeable when sold, but only when we are auto-selling it.
-function Addon:AutoConfirmSellTradeRemoval(link)
-    if self:IsAutoSelling() then
-        self:Print(L["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"], link)
+function Merchant.AutoConfirmSellTradeRemoval(link)
+    if Merchant:IsAutoSelling() then
+        Addon:Print(L["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"], link)
         SellCursorItem()
     end
 end
 
--- Convert price to a pretty string
--- To reduce spam we don't show copper unless it is the only unit of measurement (i.e. < 1 silver)
--- Gold:    FFFFFF00
--- Silver:  FFFFFFFF
--- Copper:  FFAE6938
-function Addon:GetPriceString(price, all)
-    if not price then
-        return "<missing>"
-    end
-
-    local copper, silver, gold, str
-    copper = price % 100
-    price = math.floor(price / 100)
-    silver = price % 100
-    gold = math.floor(price / 100)
-
-    str = {}
-    if gold > 0 or all then
-        table.insert(str, "|cFFFFD100")
-        table.insert(str, gold)
-        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-GoldIcon:12:12:4:0|t  ")
-
-        table.insert(str, "|cFFE6E6E6")
-        table.insert(str, string.format("%02d", silver))
-        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
-
-        if (all) then
-            table.insert(str, "|cFFC8602C")
-            table.insert(str, copper)
-            table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
-        end
-
-    elseif silver > 0 then
-        table.insert(str, "|cFFE6E6E6")
-        table.insert(str, silver)
-        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-SilverIcon:12:12:4:0|t  ")
-
-    else
-        -- Show copper if that is the only unit of measurement.
-        table.insert(str, "|cFFC8602C")
-        table.insert(str, copper)
-        table.insert(str, "|r|TInterface\\MoneyFrame\\UI-CopperIcon:12:12:4:0|t")
-    end
-
-    -- Return the concatenated string using the efficient function for it
-    return table.concat(str)
+function Merchant:OnInitialize()
+    Addon:RegisterEvent("MERCHANT_SHOW", Merchant.OnMerchantShow)
+    Addon:RegisterEvent("MERCHANT_CLOSED", Merchant.OnMerchantClosed)
+    Addon:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", Merchant.AutoConfirmSellTradeRemoval)
 end
+
+function Merchant:OnTerminate()
+end
+
+Addon.Features.Merchant = Merchant

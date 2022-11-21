@@ -3,7 +3,7 @@ local UI = Addon.CommonUI.UI
 local Dialogs = { 
     NAME = "Dialogs", 
     VERSION = 1,
-    DEPENDENCIES = { "Rules", "Import" }
+    DEPENDENCIES = { "Rules" }
 }
 
 function Dialogs:OnInitialize(a, b, host)

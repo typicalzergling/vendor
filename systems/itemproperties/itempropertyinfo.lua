@@ -86,8 +86,11 @@ local ITEM_PROPERTIES = {
     IsUnknownAppearance     = { Default=false,  Hide=true ,   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
 
     -- Deprecated Properties for old Tooltip scanning in classic
-    TooltipLeft             = { Default="",     Hide=true ,   Type="string",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true } },
-    TooltipRight            = { Default="",     Hide=true ,   Type="string",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true } },
+    TooltipLeft             = { Default=nil,     Hide=true ,   Type="table",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true } },
+    TooltipRight            = { Default=nil,     Hide=true ,   Type="table",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true } },
+
+    -- Used for data only
+    TooltipData             = { Default=nil,     Hide=true ,   Type="table",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false } },
 }
 
 -- Property info accessors

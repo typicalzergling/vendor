@@ -4,7 +4,8 @@ local UI = Addon.CommonUI.UI
 local ImportFeature = {
     NAME = "Import",
     DESCRIPTION = " [tbd] ",
-    VERSION = 1
+    VERSION = 1,
+    DEPENDENCIES = { "Rules", "lists" }
 }
 
 function ImportFeature:OnInitialize(a, b, host)

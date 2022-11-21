@@ -331,12 +331,12 @@ local RuleFunctions = {
         if Addon.Systems.Info.IsRetailEra then
             if side then
                 if side == "left" then
-                    return Addon:IsStringInTooltipLeftText(OBJECT.TooltipData, str)
+                    return Addon.Systems.ItemProperties:IsStringInTooltipLeftText(OBJECT.TooltipData, str)
                 else
-                    return Addon:IsStringInTooltipRightText(OBJECT.TooltipData, str)
+                    return Addon.Systems.ItemProperties:IsStringInTooltipRightText(OBJECT.TooltipData, str)
                 end
             else
-                return Addon:IsStringInTooltip(OBJECT.TooltipData, str)
+                return Addon.Systems.ItemProperties:IsStringInTooltip(OBJECT.TooltipData, str)
             end
         else
             -- Classic scan used pre-cached tooltip text.

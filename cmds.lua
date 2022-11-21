@@ -34,7 +34,7 @@ function Addon:ListToggle_Cmd(list, item)
     end
 
     -- get item id
-    local id = self:GetItemIdFromString(item)
+    local id = self.GetItemIdFromString(item)
 
     -- if id specified, add or remove it
     if id then
@@ -115,7 +115,6 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
-    print("Expansion: "..tostring(LE_EXPANSION_CURRENT))
     Addon:WithFeature("Vendor", function(vendor)
         vendor:ShowDialog("rules")
     end)
@@ -123,21 +122,23 @@ end
 
 -- Initiates a manual Auto-Sell. This ignores the auto-sell configuration setting.
 function Addon:AutoSell_Cmd()
+
+    local merchant = Addon:GetFeature("Merchant")
     -- Check for merchant not being open.
-    if not self:IsMerchantOpen() then
+    if not merchant:IsMerchantOpen() then
         self:Print(L["CMD_AUTOSELL_MERCHANTNOTOPEN"])
         return
     end
 
     -- Check for sell in progress.
-    if self:IsAutoSelling() then
+    if merchant:IsAutoSelling() then
         self:Print(L["CMD_AUTOSELL_INPROGRESS"])
         return
     end
 
     -- OK to do the auto-sell.
     self:Print(L["CMD_AUTOSELL_EXECUTING"])
-    self:AutoSell()
+    merchant:AutoSell()
 end
 
 -- Withdraws all items which match your currently enabled rules set
@@ -177,7 +178,8 @@ end
 
 function Addon:Destroy_Cmd()
     Addon:Print(L.CMD_RUNDESTROY)
-    Addon:DestroyItems()
+    local destroy = Addon:GetFeature("Destroy")
+    destroy:DestroyItems()
 end
 
 -- Prints the public API

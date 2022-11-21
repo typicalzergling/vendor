@@ -38,22 +38,9 @@ function Addon:OnInitialize()
     end
     --@end-do-not-package@
 
-    -- Set up events
-    -- TODO: Move each of these to their own file's initialize call for modularity.
-    self:RegisterEvent("MERCHANT_SHOW", "OnMerchantShow")
-    self:RegisterEvent("MERCHANT_CLOSED", "OnMerchantClosed")
-    self:RegisterEvent("MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL", "AutoConfirmSellTradeRemoval")
-    self:RegisterEvent("BAG_UPDATE_DELAYED", "OnBagUpdate")
-    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", "OnPlayerEquipmentChanged")
-    --self:RegisterEvent("PROFESSION_EQUIPMENT_CHANGED", "OnPlayerEquipmentChanged")
-    self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnPlayerLeavingCombat")
-
     -- Merchant Button
     --self.MerchantButton.Initialize()
-
-    Addon:InitializeItemResultRefresh()
-    Addon:InitializeEvaluationStatus()
-    
+   
     -- Do a delayed pruning of history across all characters.
     Addon:PostInitializePruneHistory()
 end
