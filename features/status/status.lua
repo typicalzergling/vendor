@@ -6,12 +6,41 @@ local L = Addon:GetLocale()
 
 local debugp = function (...) Addon:Debug("status", ...) end
 
+local Status = {
+    NAME = "Status",
+    VERSION = 1,
+    DEPENDENCIES = {
+    },
+}
+
+
+-- Setup the evaluation status cache.
+local escache = {}
+escache = {}
+escache.count = 0
+escache.value = 0
+escache.tosell = 0
+escache.todestroy = 0
+escache.sellitems = {}
+escache.destroyitems = {}
+
+-- This is the main bit of information we produce - status on what Vendor is doing.
+-- This method can be spammed all the callers want, because it does not cause any work to happen,
+-- we'll just keep giving them the same results until that data actually changes.
+-- Because of this, it is recommended to not call this method directly as with polling but to
+-- instead respond to EVALUATION_STATUS_UPDATED events that signal this will return new data.
+function Addon:GetEvaluationStatus()
+    return escache.count, escache.value, escache.tosell, escache.todestroy, escache.sellitems, escache.destroyitems
+end
+
+
+
 -- Returns num kept, num sold, and num destroyed for a given item id.
 -- Note that if this is called while evaluations are still occurring, it will
 -- give you a running count, thus far, of items that have been kept/sold/destroyed
 -- for this particular item id. This is the basis for the "keep at least N" type
 -- rule behavior.
-function Addon:GetResultCountsForItemId(id)
+function Status.GetResultCountsForItemId(id)
     local resultCount = {}
     resultCount[0] = 0
     resultCount[1] = 0
@@ -28,27 +57,10 @@ function Addon:GetResultCountsForItemId(id)
 end
 
 
--- Setup the evaluation status cache.
-local escache = {}
-escache = {}
-escache.count = 0
-escache.value = 0
-escache.tosell = 0
-escache.todestroy = 0
-escache.sellitems = {}
-escache.destroyitems = {}
-
--- This will trigger evaluation if one is not already active.
--- Because of this, it is recommended to not call this method directly but to instead respond to
--- ITEMCACHE_REFRESH_COMPLETE events to signal calculating hte EvaluationSTatus.
-function Addon:GetEvaluationStatus()
-    return escache.count, escache.value, escache.tosell, escache.todestroy, escache.sellitems, escache.destroyitems
-end
-
 -- This method should run after a refresh since all of the items and evaluations will already be cached.
 -- This will make it very fast to create the status.
 -- Results of the status will be cached until the next time GenerateEvaluationStatus() is called.
-function Addon:GenerateEvaluationStatus(force)
+function Status.GenerateEvaluationStatus(force)
     debugp("Generating Evaluation Status")
     local count = 0
     local value = 0
@@ -56,9 +68,8 @@ function Addon:GenerateEvaluationStatus(force)
     local todestroy = 0
     local sellitems = {}
     local destroyitems = {}
-    local interop = Addon:GetSystem("Interop")
-    for bag=0, interop:GetNumTotalEquippedBagSlots() do
-        for slot=1, interop:GetContainerNumSlots(bag) do
+    for bag=0, Addon:GetNumTotalEquippedBagSlots() do
+        for slot=1, Addon:GetContainerNumSlots(bag) do
             -- If the item has not changed this should be just pulling data from the cache.
             -- If it has changed, it will refresh the item, so calling this outside refresh is OK,
             -- however it does a lot more work and is bad for performance. Let Refresh efficiently
@@ -93,7 +104,22 @@ function Addon:GenerateEvaluationStatus(force)
     Addon:RaiseEvent(Addon.Events.EVALUATION_STATUS_UPDATED)
 end
 
--- Attach generation of evaluation status to completion of an item refresh.
-function Addon:InitializeEvaluationStatus()
-    Addon:RegisterCallback(Addon.Events.ITEMRESULT_REFRESH_COMPLETE, Addon, Addon.GenerateEvaluationStatus)
+function Status:OnInitialize()
+
+    -- Blizzard Events for tracking combat and when bags/equipment changes
+    Addon:RegisterEvent("PLAYER_REGEN_ENABLED", Status.OnPlayerLeavingCombat)
+    Addon:RegisterEvent("BAG_UPDATE_DELAYED", Status.OnBagUpdate)
+    Addon:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", Status.OnPlayerEquipmentChanged)
+    -- Profession equipment not quite supported yet, when we do we should trigger on this.
+    -- This will trigger a bag update anywa.
+    --Addon:RegisterEvent("PROFESSION_EQUIPMENT_CHANGED", "OnPlayerEquipmentChanged")
+
+    -- Internal events for when item cache is cleared to re-trigger a refresh, and when it is completed.
+    Addon:RegisterCallback(Addon.Events.ITEMRESULT_CACHE_CLEARED, Status, Status.OnItemResultCacheCleared)
+    Addon:RegisterCallback(Addon.Events.ITEMRESULT_REFRESH_COMPLETE, Status, Status.GenerateEvaluationStatus)
 end
+
+function Status:OnTerminate()
+end
+
+Addon.Features.Status = Status

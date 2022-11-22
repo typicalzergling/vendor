@@ -72,7 +72,7 @@ end
 
 --[[ Retrieve the history item ]]
 function HistoryTab:GetHistory()
-    return self.history:GetCharacterHistory()
+    return self.history:GetCharacterHistoryEntries()
 end
 
 Vendor.MainDialog.HistoryTab = HistoryTab

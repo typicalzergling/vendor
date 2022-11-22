@@ -24,15 +24,23 @@ function Features:Startup()
     self.features = {}
     if (type(Addon.Features) == "table") then
         for name, feature in pairs(Addon.Features) do
-            local featureInfo = {
-                name = name,
-                instance = feature,
-                enabled = false,
-            }
 
-            self.features[string.lower(name)] = featureInfo
+            if (name == nil or feature == nil) then
+                debugp("Feature named %s is nil", tostring(name))
+            else
+                local featureInfo = {
+                    name = name,
+                    instance = feature,
+                    enabled = false,
+                }
+                self.features[string.lower(name)] = featureInfo
+            end
         end
     end
+
+    Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+        Features:BeginInit()
+    end)
 
     return { "GetFeature", "IsFeatureEnabled", "EnableFeature", "DisableFeature",  "WithFeature" }
 end
@@ -60,15 +68,12 @@ end
 
 --[[ Called to start a single system ]]
 function Features:InitTarget(feature, complete)
-    if not feature then
-        debugp("Called to initialize nil feature.")
-        return
-    end
-    C_Timer.After(.25, function()
+    assert(feature, "Attempt to initialize a nil feature, this is a developer error.")
+    --C_Timer.After(.03, function()
         debugp("Initializing feature '%s'", feature.name)
             self:EnableFeature(feature.name)
             complete(feature.enabled)
-        end)
+    --    end)
 end
 
 function Features:EndInit(success)
@@ -246,11 +251,6 @@ function Features:OnAllSystemsReady()
 
         self:AddTarget(feature, feature.name, dependencies)
     end
-
-    -- TODO: Add delay load for features that don't need to be in right away.
-    --C_Timer.After(10, function()
-            self:BeginInit()
-    --    end)
 end
 
 Addon.Features = {}

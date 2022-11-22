@@ -119,6 +119,9 @@ local function doGetItemProperties(itemObj)
         end
     end
 
+    -- Copy in case they reuse or change the tooltip data between scan and evaluation.
+    item.TooltipData = Addon.DeepTableCopy(tooltipdata)
+
     -- Get the effective item level.
     item.Level = GetDetailedItemLevelInfo(item.Link)
 

@@ -4,14 +4,21 @@ local L = Addon:GetLocale()
 
 local debugp = function (...) Addon:Debug("evaluate", ...) end
 
+-- System Def
+local Evaluation = {}
+
+function Evaluation:GetDependencies()
+    return { "info", "lists", "rules", "interop", "itemproperties"}
+end
+
 -- This now takes only a bag and slot
-function Addon:EvaluateSource(bag, slot)
+function Evaluation:EvaluateSource(bag, slot)
     Addon:Debug("extensions", "Received call into EvaluateSource")
     local action = 0
     local ruleid = nil
     local name = nil
     local ruletype = nil
-    local result = Addon:GetItemResultForBagAndSlot(bag, slot)
+    local result = Evaluation:GetItemResultForBagAndSlot(bag, slot)
     if result then
         action = result.Result.Action
         ruleid = result.Result.RuleID
@@ -32,7 +39,7 @@ end
 -- The itemCount is returned separately since it depends on the source and is not used
 -- for rule evaluations.
 -- This method always returns a number as the first parameter, but the others may be nil.
-function Addon:EvaluateItem(item, ignoreCache)
+function Evaluation:EvaluateItem(item, ignoreCache)
     -- Return a table of data. These are the default "no item" values.
     local result = {}
     result.Action = Addon.ActionType.NONE
@@ -50,7 +57,7 @@ function Addon:EvaluateItem(item, ignoreCache)
     -- We always ignore cache on Classic because a key method to
     -- validate the entry is not available in that version.
     if not ignoreCache and not Addon.Systems.Info.IsClassicEra then
-        local cachedEntry = Addon:GetItemResultForGUID(item.GUID)
+        local cachedEntry = Evaluation:GetItemResultForGUID(item.GUID)
         if cachedEntry then
             debugp("Retrieved %s from cache with result: %s - [%s] %s", tostring(item.Link), tostring(cachedEntry.Result.Action), tostring(cachedEntry.Result.RuleType), tostring(cachedEntry.Result.Rule))
             -- Return deep copy so they don't ruin our actual data with this.
@@ -58,8 +65,8 @@ function Addon:EvaluateItem(item, ignoreCache)
         end
     end
 
-    if (not self.ruleManager) then
-        self.ruleManager = Addon.RuleManager:Create();
+    if (not Addon.ruleManager) then
+        Addon.ruleManager = Addon.RuleManager:Create();
     end
     
     -- First return value of rules manager is a boolean on whether it matched a rule.
@@ -68,7 +75,7 @@ function Addon:EvaluateItem(item, ignoreCache)
     -- 1 = Item will be sold
     -- 2 = Item will be deleted
     local match = nil
-    match, result.RuleID, result.Rule, result.RuleType = self.ruleManager:Run(item)
+    match, result.RuleID, result.Rule, result.RuleType = Addon.ruleManager:Run(item)
     if match then
         if Addon.RuleType.SELL == result.RuleType then
             if item.IsUnsellable then
@@ -91,7 +98,7 @@ function Addon:EvaluateItem(item, ignoreCache)
     end
 
     --[[
-    self:Debug("resultcache", "Adding %s to cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
+    Addon:Debug("resultcache", "Adding %s to cache with result: %s - [%s] %s", tostring(item.Link), tostring(retval), tostring(ruletype), tostring(rule))
     Addon:AddResultToCache(item.GUID, retval, ruleid, rule, ruletype, item.Id)
     ]]
     -- TODO: We do not want to add the cache entry here, but for the external API wrapper, we should.
@@ -99,11 +106,21 @@ function Addon:EvaluateItem(item, ignoreCache)
     return result
 end
 
--- This is a bit of a hack to do a call for blizzard to fetch all the item links in our bags to populate the item links.
-function Addon:LoadAllBagItemLinks()
-    for bag=0, Addon:GetNumTotalEquippedBagSlots()  do
-        for slot=1, Addon:GetContainerNumSlots() do
-            Addon:GetContainerItemInfo(bag, slot)
-        end
-    end
+function Evaluation:Startup()
+    return {
+        "EvaluateSource",                   -- Wrapped in Public API
+        "ClearItemResultCacheByItemId",     -- Forced Cache Clear   - Used by Blocklists
+        "ClearItemResultCache",             -- Forced Cache Clear   - Used in many places
+        "GetItemResultForBagAndSlot",       -- Get Result - BagAndSlot
+        "GetItemResultForTooltip",          -- Get Result - Tooltip
+        "GetItemResultForLocation",         -- Get Result - Location
+        "GetItemResultForGUID",             -- Get Result - GUID
+        "IsBagAndSlotRefreshNeeded",        -- Refresh Test         - Used by Refresh
+        "RefreshBagAndSlot",                -- Refresh Bag item     - Used by Refresh
+    }
 end
+
+function Evaluation:Shutdown()
+end
+
+Addon.Systems.Evaluation = Evaluation

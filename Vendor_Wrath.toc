@@ -2,8 +2,8 @@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History Vendor_AccountSettings Vendor_XX_InstanceInfo Vendor_XX_LootInfo
-## SavedVariablesPerCharacter: Vendor_RulesConfig Vendor_ActiveProfile Vendor_Character_Data
+## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History, Vendor_AccountSettings, Vendor_XX_InstanceInfo, Vendor_XX_LootInfo
+## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_ActiveProfile, Vendor_Character_Data
 ## Author: Thoekh of Sargeras & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
@@ -21,6 +21,7 @@ sys\config.lua
 
 # Main addon
 addon.xml
+releasenotes.lua
 RulesEngine\rules.xml
 rules\rules.xml
 vendor\vendor.xml
@@ -35,17 +36,21 @@ systems\info\info.xml
 systems\interop\interop.xml
 systems\itemproperties\itemproperties.xml
 systems\itemproperties\itempropertytooltipscan_classic.lua
-systems\tooltip\tooltip_classic.lua
+systems\evaluation\evaluation.xml
 
 # Features
 #features\autoloot\autoloot.xml
-features\rules\rules.xml
-features\lists\lists.xml
-features\dialogs\dialogs.xml
+features\tooltip\tooltip_classic.lua
+features\merchant\merchant.xml
+features\destroy\destroy.xml
 features\import\import.xml
-features\settings\settings.xml
-features\vendor\vendor.xml
+features\ui_rules\rules.xml
+features\ui_lists\lists.xml
+features\ui_dialogs\dialogs.xml
+features\ui_settings\settings.xml
+features\ui_vendor\vendor.xml
 features\history\history.xml
+features\status\status.xml
 features\libdatabroker\libdatabroker.xml
 features\minimapbutton\minimapbutton.xml
 

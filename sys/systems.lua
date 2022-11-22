@@ -62,24 +62,25 @@ function DependencyInit:Next()
             pending = true
             if (target.target == nil) then
                 Addon:DebugForEach("systems", target)
-            end
-            self:InitTarget(target.target, function(success)
-                    target.success = success
-                    target.complete = true
+            else
+                self:InitTarget(target.target, function(success)
+                        target.success = success
+                        target.complete = true
 
-                    for _, notify in ipairs(self.targets) do
-                        if (notify ~= target) then
-                            if (notify.deps and notify.deps[target.name]) then
-                                notify.pending = notify.pending - 1
-                                self:DependencyReady(notify.target, target.name, success)
+                        for _, notify in ipairs(self.targets) do
+                            if (notify ~= target) then
+                                if (notify.deps and notify.deps[target.name]) then
+                                    notify.pending = notify.pending - 1
+                                    self:DependencyReady(notify.target, target.name, success)
+                                end
                             end
                         end
-                    end
 
-                    self:InitComplete(target.target, success)
-                    self:Next()
-                end)
-            break
+                        self:InitComplete(target.target, success)
+                        self:Next()
+                    end)
+                break
+            end
         elseif (target.complete and not target.success) then
             errors = errors + 1
         end

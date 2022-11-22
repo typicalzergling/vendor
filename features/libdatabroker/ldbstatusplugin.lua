@@ -8,6 +8,7 @@ local LDBStatusPlugin = {
     VERSION = 1,
     DEPENDENCIES = { 
         "LibDataBroker",
+        "Status",
     },
 }
 

@@ -338,7 +338,7 @@ end
 -- Returns 2 if item was removed from the list.
 -- Returns nil if no action taken.
 function Addon:ToggleItemInBlocklist(list, item)
-    local id = self:GetItemIdFromString(item)
+    local id = select(1, GetItemInfoInstant(item))
     if not id then return nil end
 
     local systemLists = Addon:GetSystemLists()
@@ -375,6 +375,13 @@ function Addon:ToggleItemInBlocklist(list, item)
     end
 end
 
+function Addon:IsItemIdValid(itemid)
+    if type(itemid) ~= "number" then return false end
+    local item = CreateFromMixins(ItemMixin)
+    item:SetItemID(itemid)
+    return not item:IsItemEmpty()
+end
+
 -- Generic list accessor
 function Addon:IsItemInList(id, listType)
     local list = Addon:GetList(listType)
@@ -399,7 +406,7 @@ end
 
 -- Returns whether an item is in the list and which one.
 function Addon:GetBlocklistForItem(item)
-    local id = self:GetItemIdFromString(item)
+    local id = select(1, GetItemInfoInstant(item))
     if id then
         for _, list in pairs(ListType) do
             if (isSystemListType(list)) then

@@ -29,6 +29,7 @@ function Addon:SetupDebugConsoleCommands()
     Addon:RegisterDebugChannel("extensions")
     Addon:RegisterDebugChannel("history")
     Addon:RegisterDebugChannel("historystats")
+    Addon:RegisterDebugChannel("historytab")
     Addon:RegisterDebugChannel("info")
     Addon:RegisterDebugChannel("interop")
     Addon:RegisterDebugChannel("itemerrors")
@@ -187,6 +188,25 @@ end
 
 function Addon:DumpItemPropertiesFromTooltip()
     Addon:DumpTooltipItemProperties()
+end
+
+-- Assumes link
+function Addon:GetLinkFromString(link)
+    if link and type(link) == "string" then
+        local _, _, lstr = link:find('|H(.-)|h')
+        return lstr
+    else
+        return nil
+    end
+end
+
+function Addon:GetLinkPropertiesFromString(link)
+    local lstr = self:GetLinkFromString(link)
+    if lstr then
+        return {strsplit(':', lstr)}
+    else
+        return {}
+    end
 end
 
 Addon:MakePublic(

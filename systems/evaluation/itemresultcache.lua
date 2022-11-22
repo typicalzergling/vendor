@@ -9,6 +9,8 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("itemcache", ...) end
 
+local Evaluation = Addon.Systems.Evaluation
+
 local itemResultCache = {}
 local bagItemMap = {}
 
@@ -27,7 +29,7 @@ end
 local function getItemFromBagMap(bag, slot)
     if not bagItemMap[bag] then return nil end
     if not bagItemMap[bag][slot] then return nil end
-    return Addon:GetItemResultFromItemResultCacheByGUID(bagItemMap[bag][slot])
+    return Evaluation:GetItemResultFromItemResultCacheByGUID(bagItemMap[bag][slot])
 end
 
 -- Removes the item at that bag and slot
@@ -69,7 +71,7 @@ end
 -- 5) Item exists and Entry exists but are different -> Update Entry (Add)
 -- This is expected to be called many times so we will try to keep most
 -- calculations here fast and simple.
-function Addon:IsBagAndSlotRefreshNeeded(bag, slot)
+function Evaluation:IsBagAndSlotRefreshNeeded(bag, slot)
     local itemObj = Item:CreateFromBagAndSlot(bag, slot)
     local entry = getItemFromBagMap(bag, slot)
     if itemObj:IsItemEmpty() then
@@ -94,7 +96,7 @@ end
 -- Refreshes the data on a specific bag and slot.
 -- Returns nil if there's no item, or the latest we have on it.
 -- The "force" parameter forces a refresh (ignores the cache)
-function Addon:RefreshBagAndSlot(bag, slot, force)
+function Evaluation:RefreshBagAndSlot(bag, slot, force)
     -- Check for remove first as it is the easy case.
     local itemObj = Item:CreateFromBagAndSlot(bag, slot)
     local entry = getItemFromBagMap(bag, slot)
@@ -102,54 +104,54 @@ function Addon:RefreshBagAndSlot(bag, slot, force)
     -- If item is empty it can only be Case #3
     if itemObj:IsItemEmpty() then
         if not entry then return nil end
-        Addon:RemoveItemResultFromCacheByGUID(entry.Item.GUID)
+        Evaluation:RemoveItemResultFromCacheByGUID(entry.Item.GUID)
         return nil
     -- If it isn't the above case, it must be the case where we need to add or update.
     else
         local itemProperties = Addon:GetSystem("ItemProperties")
         local item = itemProperties:GetItemPropertiesFromBagAndSlot(bag, slot)
-        local result = Addon:EvaluateItem(item, force)
+        local result = Evaluation:EvaluateItem(item, force)
         if not item or not result then return nil end
         local newEntry = createCacheEntryFromItemAndResult(item, result)
-        Addon:AddItemResultToItemResultCache(newEntry)
+        Evaluation:AddItemResultToItemResultCache(newEntry)
         return newEntry
     end
 end
 
 -- Wrapper for getting an item result for the given bag and slot.
-function Addon:GetItemResultForBagAndSlot(bag, slot, force)
-    if force or Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
-        return Addon:RefreshBagAndSlot(bag, slot, true)
+function Evaluation:GetItemResultForBagAndSlot(bag, slot, force)
+    if force or Evaluation:IsBagAndSlotRefreshNeeded(bag, slot) then
+        return Evaluation:RefreshBagAndSlot(bag, slot, true)
     else
         return getItemFromBagMap(bag, slot)
     end
 end
 
 -- We use the guid to look up the location and then do normal bag and slot lookup.
-function Addon:GetItemResultForTooltip(tooltipData)
+function Evaluation:GetItemResultForTooltip(tooltipData)
     if not tooltipData then return nil end
     if not tooltipData.guid then return nil end
     local location = C_Item.GetItemLocation(tooltipData.guid)
     if not location:IsBagAndSlot() then return nil end
     local bag, slot = location:GetBagAndSlot()
-    return Addon:GetItemResultForBagAndSlot(bag, slot)
+    return Evaluation:GetItemResultForBagAndSlot(bag, slot)
 end
 
 -- We use the guid to look up the location and then do normal bag and slot lookup.
-function Addon:GetItemResultForLocation(location)
+function Evaluation:GetItemResultForLocation(location)
     if not location then return nil end
     if not location:IsBagAndSlot() then return nil end
     local bag, slot = location:GetBagAndSlot()
-    return Addon:GetItemResultForBagAndSlot(bag, slot)
+    return Evaluation:GetItemResultForBagAndSlot(bag, slot)
 end
 
 -- Wrapper for GUID-based item lookup.
 -- This looks up where the item is if it exists at all
 -- If it does exist, we check its location and see if it is fresh. If not, nil.
-function Addon:GetItemResultForGUID(guid)
+function Evaluation:GetItemResultForGUID(guid)
     -- Putting this as an assert since we can avoid the Classic scenario entirely and its faster.
     assert(not Addon.Systems.Info.IsClassicEra, "Called a method not supported on Classic from Classic")
-    local entry = Addon:GetItemResultFromItemResultCacheByGUID(guid)
+    local entry = Evaluation:GetItemResultFromItemResultCacheByGUID(guid)
     if not entry then return nil end
 
     -- We do have an entry, see if the item at that bag and slot matches.
@@ -163,7 +165,7 @@ function Addon:GetItemResultForGUID(guid)
 end
 
 -- Safe remove guid from cache by also removing it from the bag and slot map.
-function Addon:RemoveItemResultFromCacheByGUID(guid)
+function Evaluation:RemoveItemResultFromCacheByGUID(guid)
     local item = itemResultCache[guid]
     if not item then return end
     -- Assume that our data integrity isn't hosed and bag map is in sync
@@ -185,12 +187,12 @@ function Addon:RemoveItemResultFromCacheByGUID(guid)
 end
 
 -- Arg is a location or a guid
-function Addon:AddItemResultToItemResultCache(cacheEntry)
+function Evaluation:AddItemResultToItemResultCache(cacheEntry)
     assert(type(cacheEntry) == "table" and cacheEntry.Item.GUID, "Invalid CacheEntry")
 
     -- If there is an existing item GUID entry, we need to remove it first.
-    if Addon:IsItemInResultCacheByGUID(cacheEntry.Item.GUID) then
-        Addon:RemoveItemResultFromCacheByGUID(cacheEntry.Item.GUID)
+    if Evaluation:IsItemInResultCacheByGUID(cacheEntry.Item.GUID) then
+        Evaluation:RemoveItemResultFromCacheByGUID(cacheEntry.Item.GUID)
     end
 
     itemResultCache[cacheEntry.Item.GUID] = cacheEntry
@@ -202,20 +204,20 @@ function Addon:AddItemResultToItemResultCache(cacheEntry)
     Addon:RaiseEvent(ITEMRESULT_ADDED, cacheEntry.Item.GUID)
 end
 
-function Addon:IsItemInResultCacheByGUID(guid)
+function Evaluation:IsItemInResultCacheByGUID(guid)
     assert(type(guid) == "string", "Invalid input to IsItemInResultCacheByGUID")
     return not not itemResultCache[guid]
 end
 
 -- Input is a guid. It may be stale. This is the quick and dirty lookup where you get
 -- the actual item result.
-function Addon:GetItemResultFromItemResultCacheByGUID(guid)
+function Evaluation:GetItemResultFromItemResultCacheByGUID(guid)
     assert(type(guid) == "string", "Invalid input to GetItemResultFromItemResultCacheByGUID")
     return itemResultCache[guid]
 end
 
 -- Nuke the entire site from orbit; it's the only way to be sure.
-function Addon:ClearItemResultCache()
+function Evaluation:ClearItemResultCache()
     -- Clear it all
     itemResultCache = {}
     bagItemMap = {}
@@ -227,10 +229,10 @@ function Addon:ClearItemResultCache()
 end
 
 -- Not using this yet, but seems like a good way to keep our data integrity up to date.
-function Addon:RemoveMissingItemsFromItemResultCache()
+function Evaluation:RemoveMissingItemsFromItemResultCache()
     for guid, v in pairs(itemResultCache) do
         if not C_Item.IsItemGUIDInInventory(guid) then
-            Addon:RemoveItemResultFromCacheByGUID(guid)
+            Evaluation:RemoveItemResultFromCacheByGUID(guid)
         end
     end
 end
@@ -240,30 +242,11 @@ end
 -- need to clear the cache for an item that changed. However, we don't use this just yet
 -- as any change to a list is also a profile change, which triggers a full cache wipe.
 -- Maybe we can find targeted ways to to use this in the future.
--- TODO: Try to use this were we can.
-function Addon:ClearItemResultCacheByItemId(itemId)
+-- TODO: Try to use this where we can.
+function Evaluation:ClearItemResultCacheByItemId(itemId)
     for guid, entry in pairs(itemResultCache) do
         if entry.Item.Id == itemId then
-            Addon:RemoveItemResultFromCacheByGUID(guid)
+            Evaluation:RemoveItemResultFromCacheByGUID(guid)
         end
     end
-end
-
--- Fires when a bag changes. 
-function Addon:OnBagUpdate(bagID)
-    -- When a bag changes some items inside it have changed, but we don't know which ones.
-    -- Refresh will figure out what ones changed and update the ones that changed.
-    -- Use a delay so multiple looting events close together don't have us doing extra work.
-    -- Bag updates happen a lot, and we want to be non-intrusive to the player experience.
-    -- Using delayed refresh means we will not do any work on a looting event or when items
-    -- first appear in the inventory unless players specifically mouse over those items before
-    -- we refresh them.
-    Addon:StartItemResultRefresh(4)
-end
-
-function Addon:OnPlayerEquipmentChanged(slotID)
-    -- When player equipment changes, we could likely have some rule evaluations changed, so
-    -- we should start a refresh with force function flagged so we always rebuild the cache
-    -- after such an event.
-    Addon:StartItemResultRefresh(4, true)
 end

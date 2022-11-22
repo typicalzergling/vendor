@@ -7,14 +7,15 @@ local _, Addon = ...
 local L = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("tooltip", ...) end
 
-local Tooltip = {}
-
 local Info = Addon.Systems.Info
 local ItemProperties = Addon.Systems.ItemProperties
 
-function Tooltip:GetDependencies()
-    return {"info", "itemproperties", "profile", "lists"}
-end
+local Tooltip = {
+    NAME = "Tooltip",
+    VERSION = 1,
+    DEPENDENCIES = {
+    },
+}
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
 function Tooltip:AddTooltipItemToList(list)
@@ -35,15 +36,15 @@ function Tooltip:AddTooltipItemToList(list)
 end
 
 -- Called by keybinds to direct-add items to the blocklists
-function Tooltip:AddTooltipItemToSellList()
+function Addon:AddTooltipItemToSellList()
     Tooltip:AddTooltipItemToList(Addon.SystemListId.ALWAYS)
 end
 
-function Tooltip:AddTooltipItemToKeepList()
+function Addon:AddTooltipItemToKeepList()
     Tooltip:AddTooltipItemToList(Addon.SystemListId.NEVER)
 end
 
-function Tooltip:AddTooltipItemToDestroyList()
+function Addon:AddTooltipItemToDestroyList()
     Tooltip:AddTooltipItemToList(Addon.SystemListId.DESTROY)
 end
 
@@ -54,6 +55,7 @@ local blocklist = nil
 local ruleId = nil
 local ruleName = nil
 local ruleType = nil
+local itemId = 0
 
 -- Forcibly clear the cache, used when Blocklist or rules change to force a re-evaluation and update the tooltip.
 function Addon:ClearTooltipResultCache()
@@ -63,6 +65,7 @@ function Addon:ClearTooltipResultCache()
     ruleId = nil
     ruleName = nil
     ruleType = nil
+    itemId = 0
 end
 
 local function addItemTooltipLines(tooltip, tooltipData)
@@ -107,6 +110,7 @@ local function addItemTooltipLines(tooltip, tooltipData)
             ruleId = nil
             ruleName = nil
             ruleType = nil
+            itemId = 0
             Addon:Debug("tooltip", "Invalid item with valid GUID: %s - %s", tostring(tooltipData.guid), tostring(C_Item.GetItemLinkByGUID(tooltipData.guid)))
         else
             itemGUID = item.Item.GUID
@@ -114,6 +118,7 @@ local function addItemTooltipLines(tooltip, tooltipData)
             ruleId = item.Result.RuleID
             ruleName = item.Result.Rule
             ruleType = item.Result.RuleType
+            itemId = item.Item.Id
 
             -- Check if the item is in the Always or Never sell lists
             -- TODO: Change this to return a table of lists to which this item belongs.
@@ -149,17 +154,17 @@ local function addItemTooltipLines(tooltip, tooltipData)
     end
     
     -- Add Advanced Rule information if set and available.
-    if not profile:GetValue(Addon.c_Config_Tooltip_Rule) then return end
-    if (ruleName) then
-        if result == Addon.ActionType.SELL then
-            tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
-        elseif result == Addon.ActionType.DESTROY then
-            tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_DESTROY"], ruleName))
-        else
-            tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_KEEP"], ruleName))
+    if profile:GetValue(Addon.c_Config_Tooltip_Rule) then
+        if (ruleName) then
+            if result == Addon.ActionType.SELL then
+                tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_SELL"], ruleName))
+            elseif result == Addon.ActionType.DESTROY then
+                tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_DESTROY"], ruleName))
+            else
+                tooltip:AddLine(string.format(L["TOOLTIP_RULEMATCH_KEEP"], ruleName))
+            end
         end
     end
-
 
     --@debug@
     if (ruleId) then
@@ -167,40 +172,26 @@ local function addItemTooltipLines(tooltip, tooltipData)
         -- no line means we didn't match anything.
         tooltip:AddLine(string.format("%s RuleId: %s[%s] %s%s",L["ADDON_NAME"], ACHIEVEMENT_COLOR_CODE, ruleType, ruleId, FONT_COLOR_CODE_CLOSE))
     end
+
+    if (itemId) then
+        -- Add item ID tooltip, it's handy for debugging.
+        tooltip:AddLine(string.format("%sItem ID: %s%s", HEIRLOOM_BLUE_COLOR_CODE, tostring(itemId), FONT_COLOR_CODE_CLOSE))
+    end
     --@end-debug@
 end
 
-function Tooltip:InitializeItemTooltips()
+function Tooltip:OnInitialize()
     local initializeTooltips = function ()
-        if Addon.Systems.Info.IsRetailEra then
-            Addon:Debug("tooltip", "Adding tooltip processing for items.")
-            TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
-        end
+        Addon:Debug("tooltip", "Adding tooltip processing for items.")
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
     end
+
     -- Tooltip. Delay this one second so other things intializing don't move the tooltip over them and
     -- cause unnecessary evaluations.
     C_Timer.After(1, initializeTooltips)
 end
 
-function Tooltip:Startup()
-    local initializeTooltips = function ()
-        if Addon.Systems.Info.IsRetailEra then
-            Addon:Debug("tooltip", "Adding tooltip processing for items.")
-            TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, addItemTooltipLines)
-        end
-    end
-    -- Tooltip. Delay this one second so other things intializing don't move the tooltip over them and
-    -- cause unnecessary evaluations.
-    C_Timer.After(1, initializeTooltips)
-
-    return {
-        "AddTooltipItemToSellList",
-        "AddTooltipItemToKeepList",
-        "AddTooltipItemToDestroyList",
-    }
+function Tooltip:OnTerminate()
 end
 
-function Tooltip:Shutdown()
-end
-
-Addon.Systems.Tooltip = Tooltip
+Addon.Features.Tooltip = Tooltip
