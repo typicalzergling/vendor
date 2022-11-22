@@ -27,4 +27,12 @@ function MainDialog:NavigateTo(tabId)
 	self:Show()
 end
 
+function MainDialog:OnImport()
+	local feature = Addon:GetFeature("import")
+	print("onimport - ", feature)
+	if (feature) then
+		feature:ShowImportDialog()
+	end
+end
+
 Vendor.MainDialog = MainDialog

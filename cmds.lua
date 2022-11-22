@@ -13,6 +13,14 @@ function Addon:SetupConsoleCommands()
     self:AddConsoleCommand("api", L.CMD_API_HELP, "PrintAPI_Cmd")
     self:AddConsoleCommand("history", L.CMD_HISTORY_HELP, "History_Cmd")
     self:AddConsoleCommand("destroy", L.CMD_DESTROY_HELP, "Destroy_Cmd")
+    self:AddConsoleCommand("import", "imports", "Import_Cmd")
+end
+
+function Addon:Import_Cmd(text)
+    local feature = Addon:GetFeature("import")
+    if (feature) then
+        feature:ShowImportDialog(text)
+    end
 end
 
 -- Add or remove items from the blacklist or whitelist.

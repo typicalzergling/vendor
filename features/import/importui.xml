@@ -25,28 +25,41 @@
         </Frames>
 	</Frame>
 
-	<Frame name="Import_ImportDialog" virtual="true">
+    <Frame name="Import_ImportDialog" virtual="true" hidden="true">
         <Size x="300" y="400"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="help" inherits="GameFontNormal" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                        <KeyValue key="LocText" value="IMPORT_HELP_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
         <Frames>
-            <Frame inherits="CommonUI_TabControl" parentKey="tabs">
+            <Frame inherits="CommonUI_TextArea" parentKey="import">
                 <KeyValues>
-                    <KeyValue key="hideTabs" value="true" type="boolean"/>
+                    <KeyValue key="Placeholder" value="Import place holder"/>
+                    <KeyValue key="Handler" value="OnImportText"/>
                 </KeyValues>
                 <Anchors>
-					<Anchor point="TOPLEFT" y="-24"/>
                     <Anchor point="BOTTOMRIGHT"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
                 </Anchors>
             </Frame>
         </Frames>
-        <Scripts>
-        </Scripts>
-    </Frame>
+    </Frame>    
 
     <Frame name="Import_ExportDialog" virtual="true" hidden="true">
         <Size x="300" y="400"/>
         <Layers>
             <Layer level="ARTWORK">
-                <FontString parentKey="help" inherits="GameFontNormal">
+                <FontString parentKey="help" inherits="GameFontNormal" justifyH="LEFT">
                     <KeyValues>
                         <KeyValue key="Color" value="SECONDARY_TEXT"/>
                         <KeyValue key="LocText" value="EXPORT_HELP_TEXT"/>

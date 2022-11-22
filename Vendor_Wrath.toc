@@ -42,7 +42,7 @@ systems\tooltip\tooltip_classic.lua
 features\rules\rules.xml
 features\lists\lists.xml
 features\dialogs\dialogs.xml
-#features\import\import.xml
+features\import\import.xml
 features\settings\settings.xml
 features\vendor\vendor.xml
 features\history\history.xml

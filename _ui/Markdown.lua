@@ -224,6 +224,38 @@ function Markdown:SetMarkdown(markdown)
     self:Rebuild()
 end
 
+--[[=========================================================================]]
+
+local ScrollingMarkdown = {}
+
+--[[ static ]]
+function ScrollingMarkdown.Create(parent, markdown)
+    local frame = CreateFrame("Frame", "import", parent or UIParent)
+    UI.Attach(frame, ScrollingMarkdown)
+
+    -- Scrollbar
+    frame.scroll = CreateFrame("Slider", nil, frame)
+    frame.scroll:SetWidth(8)
+    frame.scroll:SetPoint("TOPRIGHT")
+    frame.scroll:SetPoint("BOTTOMRIGHT")
+    frame.scroll:Show()
+
+    frame.host = CreateFrame("Frame", nil, frame)
+    frame.host:SetPoint("TOPLEFT")
+    frame.host:SetPoint("BOTTOMRIGHT", frame.scroll, "BOTTOMLEFT", -4, 0)
+    frame.host:Show()
+
+    frame.contents = Addon.CommonUI.CreateMarkdownFrames(frame.host, markdown)
+    return frame
+end
+
+function ScrollingMarkdown:OnSizeChanged(width,  height)
+    self.host:SetWidth(width)
+    local height = Layouts.Stack(self.host, self.contents, 0, 10)
+    self.host:SetPoint("TOPLEFT")
+    self.host:SEtPoint("BOTTOMRIGHT")
+end
+
 function Addon.CommonUI.CreateMarkdownFrames(parent, markdown, callback)
     if (type(markdown) ~= "string") then
         error("Usage: CreateMarkdown( frame, string )")
@@ -273,3 +305,4 @@ function Addon.CommonUI.CreateMarkdownFrames(parent, markdown, callback)
 end
 
 Addon.CommonUI.Markdown = Markdown
+Addon.CommonUI.MarkdownView = ScrollingMarkdown

@@ -1,4 +1,5 @@
 local AddonName, Addon = ...
+local L = Addon:GetLocale()
 local UI = Addon.CommonUI.UI
 local ExportDialog = {}
 local CURRENT_EXPORT_VERSION = 1
@@ -9,6 +10,7 @@ local Info = Addon.Systems.Info
 local function debugp(msg, ...) Addon:Debug("exportdialog", msg, ...) end
 --@end-debug@
 
+--[[ Initialize the export dialog ]]
 function ExportDialog:OnInitDialog(dialog, export)
     assert(type(export) == "table", "On exporting tables is allowed")
     local character, realm = UnitFullName("player")
@@ -19,27 +21,51 @@ function ExportDialog:OnInitDialog(dialog, export)
     export.Realm = realm
     export.InterfaceVersion = Info.Build.InterfaceVersion
 
-    self.export:SetText(Encoder.EncodeValue(export))
-    self.export:SetFocus()
+    self.exportText = Encoder.Encode(export)
+    self.export:SetText(self.exportText)
+
+    local edit = self.export.control
+    rawset(edit, "exportText", self.exportText)
+    edit:SetScript("OnEditFocusGained", self.EditOnEditFocusGained)
+    edit:SetScript("OnEditFocusLost", self.EditOnEditFocusGained)
+    edit:SetScript("OnTextChanged", self.EditOnTextChanged)
+    edit:SetScript("OnChar", self.EditOnEditFocusGained)
 end
 
 function ExportDialog:OnShow()
-    --print("import dialog on show")
+    self.export:SetFocus()
+end
+
+function ExportDialog:EditOnChar()
+    self:SetText(rawget(self, "exportText"))
+end
+
+function ExportDialog:EditOnTextChanged()
+    self:SetText(rawget(self, "exportText"))
+end
+
+function ExportDialog:EditOnEditFocusGained()
+    self:HighlightText();
+end
+
+function ExportDialog:EditOnEditFocusLost()
+    self:HighlightText(0,0);
 end
 
 function ExportDialog:OnHide()
-    --print("import diloag on hide")
 end
 
 function ExportDialog:ImportRules()
-    --print("import rules")
 end
 
 --[[ Show the export dialog with the contents provided ]]
-function Addon.Features.Import:ShowExportDialog(export)
-   local dialog = UI.Dialog("EXPORT_DIALOG_CAPTOIN", "Import_ExportDialog", ExportDialog, {
-        CLOSE
-    }, export)
+function Addon.Features.Import:ShowExportDialog(caption, export)
+    assert(type(caption) == "string", "Expected a string for the caption")
+    assert(type(export) == "table", "The export object must be a table")
+  
+    local dialog = UI.Dialog(caption, "Import_ExportDialog", ExportDialog, {
+            { label = L["EXPORT_CLOSE_BUTTON"], handler = "Hide" }
+        }, export)
 
     dialog:Show()
 end

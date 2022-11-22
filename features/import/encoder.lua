@@ -5,27 +5,10 @@ local BYTE_NUMBER_CODE = string.byte("n")
 local BYTE_STRING_CODE = string.byte("s")
 local BYTE_OPEN_TABLE = string.byte("+")
 local BYTE_CLOSE_TABLE = string.byte("-")
-local BYTE_SEPARATOR = string.byte("|")
+local BYTE_SEPARATOR = string.byte(";")
 local BYTE_TRUE = string.byte("t")
 local BYTE_FALSE = string.byte("f")
 local BYTE_EQUAL = string.byte("=")
-
-local CHAR_EQUAL = "="
-local CHAR_TRUE = "t"
-local CHAR_FALSE = "f"
-local CHAR_SEPARATOR = "|"
-local CHAR_OPEN_TABLE = "+"
-local CHAR_CLOSE_TABLE = "-"
-local CHAR_NUMBER = "n"
-local CHAR_STRING = "s"
-
-local L_SHIFT_8 = math.pow(2, 8)
-local L_SHIFT_6 = math.pow(2, 6)
-local R_SHIFT_6 = math.pow(2, 6)
-local R_SHIFT_8 = math.pow(2, 8)
-local R_SHIFT_12 = math.pow(2, 12)
-local R_SHIFT_16 = math.pow(2, 16)
-local R_SHIFT_18 = math.pow(2, 18)
 
 local BASE64_CHARS = {
     [0] = "A", [1] = "B", [2] = "C", [3] = "D", [4] = "E", [5] = "F", [6] = "G", [7] = "H", [8] = "I", [9] = "J",
@@ -33,46 +16,43 @@ local BASE64_CHARS = {
     [20] = "U", [21] = "V", [22] = "W", [23] = "X", [24] = "Y", [25] = "Z",
     [26] = "a", [27] = "b", [28] = "c", [29] = "d", [30] = "e", [31] = "f", [32] = "g", [33] = "h", [34] = "i", [35] = "j", 
     [36] = "k", [37] = "l", [38] = "m", [39] = "n", [40] = "o", [41] = "p", [42] = "q", [43] = "r", [44] = "s", [45] = "t",
-    [46] = "u", [47] = "v", [48] = "w", [49] = "x", [50] = "y", [51] = "z", 
+    [46] = "u", [47] = "v", [48] = "w", [49] = "x", [50] = "y", [51] = "z",
     [52] = "0", [53] = "1", [54] = "2", [55] = "3", [56] = "4", [57] = "5", [58] = "6", [59] = "7", [60] = "8", [61] = "9", [62] = "+", [63] = "/"
 }
 
-local BASE64_INV = {
-    62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58,
-    59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5,
-    6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28,
-    29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
-    43, 44, 45, 46, 47, 48, 49, 50, 51 
+local BASE64_PADDING = {
+    [0] = "",
+    [1] = "==",
+    [2] = "="
 }
 
 --[[ (private) Given a LUA value this encoded is to a persitable string ]]
 function Encoder.EncodeValue(value)
     if (type(value) == "boolean") then
         if  (value) then
-            return CHAR_TRUE
+            return "t"
         else
-            return CHAR_FALSE
+            return "f"
         end
     elseif (type(value) == "number") then
-        return CHAR_NUMBER .. tostring(value) .. CHAR_SEPARATOR
+        return string.format("n%d;", value)
     elseif (type(value) == "string") then
-        return CHAR_STRING .. tostring(string.len(value)) .. CHAR_SEPARATOR .. value .. CHAR_SEPARATOR
+        return string.format("s%d;%s;", string.len(value), value)
     elseif (type(value) == "table") then
-        local s = CHAR_OPEN_TABLE
+        local s = "+"
         for name, tvalue in pairs(value) do
+            assert(value ~= nil, "Cannot encode nil values")
             assert(type(name) == "string" or type(name) == "number", "Only number and string keys are suppored got : " .. type(name))
-            s = s .. Encoder.EncodeValue(name)
-            s = s .. Encoder.EncodeValue(tvalue)
+            s = s .. Encoder.EncodeValue(name) .. Encoder.EncodeValue(tvalue)
         end
-        s = s .. CHAR_CLOSE_TABLE
+        s = s .. "-"
         return s
     end
 end
 
 --[[ Read the next seperator, returns then ntext character after the seperator ]]
 local function getNextPart(str, start)
-    local next = string.find(str, CHAR_SEPARATOR, start, true)
+    local next = string.find(str, ";", start, true)
     if (next) then
         return string.sub(str, start, next - 1), next
     end
@@ -111,7 +91,6 @@ function Encoder.NextValue(str, start)
         nextEnd = nextEnd + 1
     end
 
-    --print("nextValue:", next, type(next), nextEnd, str:sub(nextEnd, nextEnd + 10))
     return next, nextEnd
 end
 
@@ -135,112 +114,83 @@ function Encoder.DecodeTable(str, start)
     return table, start + 1
 end
 
+local decodingTable
+
+--[[ Retrieve/Generate the decoding table ]]
+local function getDecodingTable()
+    if (not decodingTable) then
+        decodingTable = {}
+
+        for i=0,63 do
+            decodingTable[string.byte(BASE64_CHARS[i])] = i
+        end
+
+        C_Timer.After(120, function()
+                decodingTable = nil
+            end)
+    end
+
+    return decodingTable
+end
+
+
 --[[ (private) Convert the given string to base64 ]]
 function Encoder.EncodeBase64(str)
     local encoded = ""
-
     local i = 1
     local n = string.len(str)
 
-    while (i <= n) do
-        local v = bit.lshift(string.byte(str, i, i + 1), 8)
+    while (i < n) do
+        local b1 = string.byte(str, i, i + 1) or 0
+        local b2 = string.byte(str, i + 1, i + 2) or 0
+        local b3 = string.byte(str, i + 2, i + 3) or 0
+        local octets = bit.lshift(b1, 0x10) + bit.lshift(b2, 0x08) + b3
 
-        if (i + 1 <= n) then
-            v = bit.bor(v, string.byte(str, i + 1, i + 2))
-        else
-            v = bit.lshift(v, 8)
-        end
-
-        if (i + 2 <= n) then
-            v = bit.bor(bit.lshift(v, 8), string.byte(str, i + 2, i + 3))
-        else
-            v = bit.lshift(v, 8)
-        end
-
-        encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(v, 18), 0x3f)]
-        encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(v, 12), 0x3f)]
-        
-        if (i + 1 <= n) then
-            encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(v, 6), 0x3f)]
-        else
-            encoded = encoded .. "="
-        end
-
-        if (i + 2 <= n) then
-            encoded = encoded .. BASE64_CHARS[bit.band(v, 0x3f)]
-        else
-            encoded = encoded .. "="
-        end
+        encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(octets, 18), 0x3f)]
+        encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(octets, 12), 0x3f)]
+        encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(octets, 6), 0x3f)]
+        encoded = encoded .. BASE64_CHARS[bit.band(octets, 0x3f)]
 
         i = i + 3
     end
+    encoded = encoded .. BASE64_PADDING[n % 3]
 
     return encoded
 end
 
---@debug@
-local function isValidChar(base64, i)
-    local c = string.byte(base64, i, i + 1)
-
-	if (c >= string.byte("0") and c <= string.byte("9")) then
-		return true
-    end
-
-    if (c >= string.byte('A') and c <= string.byte('Z')) then
-		return true;
-    end
-
-    if (c >= string.byte('a') and c <= string.byte('z')) then
-		return true;
-    end
-
-	if (c == string.byte('+') or c == string.byte('/') or c == BYTE_EQUAL) then
-		return true
-    end
-end
---@end-debug@
-
 --[[ (private) Convert the given string from base64 ]]
 function Encoder.DecodeBase64(base64)
+    local decoding = getDecodingTable()
     local n = string.len(base64)
-    local str = ""
+    local o = (n / 4 * 3)
+    local decoded = ""
     local i = 1
-
-    --@debug@
-    for k = 1,n do
-        assert(isValidChar(base64, k), "Received an invalid character '" .. base64:sub(k, k + 1) .. "' at " .. tostring(k))
-    end
-    --@end-debug@
+    local j = 1
 
     while (i < n) do
-        local v = BASE64_INV[string.byte(base64, i, i + 1) - 42]
-        v = bit.bor(bit.lshift(v, 6), BASE64_INV[string.byte(base64, i + 1, i + 2) - 42])
-        
-        local b2 = string.byte(base64, i + 2, i + 3)
-        if (b2 == BYTE_EQUAL) then
-            v = bit.lshift(v, 6)
-        else
-            v = bit.bor(bit.lshift(v, 6),(BASE64_INV[b2 - 42]))
+        local b1, b2, b3, b4 = string.byte(base64, i, i + 4)
+
+        if (b1 ~= nil and b1 ~= BYTE_EQUAL) then b1 = decoding[b1] else b1 = 0 end
+        if (b2 ~= nil and b2 ~= BYTE_EQUAL) then b2 = decoding[b2] else b2 = 0 end
+        if (b3 ~= nil and b3 ~= BYTE_EQUAL) then b3 = decoding[b3] else b3 = 0 end
+        if (b4 ~= nil and b4 ~= BYTE_EQUAL) then b4 = decoding[b4] else b4 = 0 end
+
+        local octets = bit.lshift(b1, 18) + bit.lshift(b2, 12) + bit.lshift(b3, 6) + b4
+        if (j <= o) then
+            decoded = decoded .. string.char(bit.band(bit.rshift(octets, 16), 0xff))
+        end
+        if (j + 1 <= o) then
+            decoded = decoded .. string.char(bit.band(bit.rshift(octets, 8), 0xff))
+        end
+        if (j + 2 <= o) then
+            decoded = decoded .. string.char(bit.band(octets, 0xff))
         end
 
-        local b3 = string.byte(base64, i + 3, i + 4)
-        if (b3 == BYTE_EQUAL) then
-            v = bit.lshift(v, 6)
-        else
-            v = bit.bor(bit.lshift(v, 6), (BASE64_INV[b3 - 42]))
-        end
-
-        str = str .. string.char(bit.band(bit.rshift(v, 16), 0xff))
-        if (b2 ~= BYTE_EQUAL) then
-            str = str .. string.char(bit.band(bit.rshift(v, 8), 0xff))
-        end
-        if (b3 ~= BYTE_EQUAL) then
-            str = str .. string.char(bit.band(v,  0xff))
-        end
         i = i + 4
+        j = j + 3
     end
-    
-    return str
+
+    return decoded
 end
 
 --[[ (public) Encode the provided value ]]

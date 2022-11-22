@@ -433,6 +433,10 @@ function EditRule:Update()
         save = {
             show = not readonly,
             enabled = editor:CanSave()
+        },
+        export = {
+            show = not readonly,
+            enabled = editor:CanExport()
         }
     })
 end
@@ -540,6 +544,7 @@ function EditRule:SaveRule()
     end
 end
 
+--[[ Called to delete the rule ]]
 function EditRule:DeleteRule()
     if (not self.editor:IsReadOnly()) then
         UI.MessageBox("DELETE_RULE_CAPTION",
@@ -554,6 +559,15 @@ function EditRule:DeleteRule()
                 "CANCEL_DELETE_RULE"
             }, self)
         end
+end
+
+--[[ Called to handle exporting the rule ]]
+function EditRule:ExportRule()
+    local export = Addon:GetFeature("import")
+    if (export) then
+        assert(self.editor:CanExport(), "This rule cannot be exported")
+        export:ShowExportDialog("EXPORT_RULE_CAPTION", self.editor:GetExportValue())
+    end
 end
 
 Dialogs.EditRule = EditRule

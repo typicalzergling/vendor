@@ -436,6 +436,22 @@ RULEITEM_UNHEALTHY_WARNING = "This rule has an invalid script and must be fixed 
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
+EXPORT_HELP_TEXT = "[revisit] Copy the text below",
+EXPORT_LIST_CAPTION = "Export List",
+EXPORT_CLOSE_BUTTON = "Close",
+IMPORTLIST_UNIQUE_NAME0 = "%s (Imported)",
+IMPORTLIST_UNIQUE_NAME1 = "%s (Imported %d)",
+IMPORTLIST_MARKDOWN_FMT = [[
+# Import List
+
+%s
+
+> %s
+
+You are importing a list from %s-%s which contains %d item%s are you sure you
+want to continue?
+]],
+
 -- List Pane / Dialog
 EDIT_LIST = "Edit",
 NEW_LIST = "Create",

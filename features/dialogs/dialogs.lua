@@ -12,6 +12,7 @@ end
 function Dialogs:GetEditRule()    
     if (not self.editRule) then
         local BUTTONS = {
+            export = { label = "Export", handler = "ExportRule" },
             cancel = { label = CANCEL, handler = "Toggle"  },
             save = { label = SAVE, handler = "SaveRule" },
             delete = { label = DELETE, handler = "DeleteRule" },

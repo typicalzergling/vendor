@@ -165,6 +165,41 @@ function RuleEditor:CanSave()
     return self.dirty
 end
 
+--[[ Check if we can export this rule ]]
+function RuleEditor:CanExport()
+    if (self:IsReadOnly()) then
+        return false
+    end
+    
+    if (type(self.name) ~= "string") or string.len(self.name) == 0 then
+        return false
+    end
+
+    if (type(self.script) ~= "string") or string.len(self.script) == 0 then
+        return false
+    end
+
+    if (type(self.description) ~= "string" or string.len(self.description) == 0) then
+        return false
+    end
+
+    return true
+end
+
+--[[ Get the exported value ]]
+function RuleEditor:GetExportValue()
+    return {
+        Content = "customrule",
+        Items = {
+            Name = self.name,
+            Description = self.description,
+            Script = self.script,
+            Type = self.type,
+            Params = nil,
+        }
+    }
+end
+
 --[[ Save the changes to this rule ]]
 function RuleEditor:Save()
     assert(self:GetSource() == RuleSource.CUSTOM, "Only custom rules are savable")

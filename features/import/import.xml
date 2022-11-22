@@ -3,5 +3,6 @@
     <Script file="encoder.lua"/>
     <Script file="importdialog.lua"/>
     <Script file="exportdialog.lua"/>
+    <Script file="importlist.lua"/>
     <Include file="importui.xml"/>
 </Ui>

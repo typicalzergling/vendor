@@ -119,7 +119,7 @@ end
 function EditListDialog:OnExport()
     assert(self.editor:CanExport(), "Expected the current list to be exportable")
     local import = Addon:GetFeature("import")
-    import:ShowExportDialog(self.editor:GetExportValue())
+    import:ShowExportDialog("EXPORT_LIST_CAPTION", self.editor:GetExportValue())
 end
 
 --[[ Called to update our UX state ]]
