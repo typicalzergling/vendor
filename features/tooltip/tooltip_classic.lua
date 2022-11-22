@@ -7,14 +7,15 @@ local _, Addon = ...
 local L = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("tooltip", ...) end
 
-local Tooltip = {}
-
 local Info = Addon.Systems.Info
 local ItemProperties = Addon.Systems.ItemProperties
 
-function Tooltip:GetDependencies()
-    return {"info", "itemproperties", "profile", "lists", "rules", "evaluation"}
-end
+local Tooltip = {
+    NAME = "Tooltip",
+    VERSION = 1,
+    DEPENDENCIES = {
+    },
+}
 
 -- We are tracking the location to which the tooltip is currently set. This is because blizzard does not expose
 -- a way to get the item location of the tooltip item. So we track the state and the location by hooking SetBagItem
@@ -32,7 +33,7 @@ end
 -- Hook for tooltip SetBagItem
 -- Since this is an insecure hook, we will wrap our actual work in a pcall so we try not to be bad
 -- for everyone else.
-function Addon:OnGameTooltipSetBagItem(tooltip, bag, slot)
+function Tooltip.OnGameTooltipSetBagItem(tooltip, bag, slot)
     local status, err = xpcall(
         function(b, s)
             tooltipLocation = ItemLocation:CreateFromBagAndSlot(b, s)
@@ -45,7 +46,7 @@ end
 
 -- Hook for SetInventoryItem
 -- Since this is an insecure hook, we will wrap our actual work in a pcall so we can't create taint to blizzard.
-function Addon:OnGameTooltipSetInventoryItem(tooltip, unit, slot)
+function Tooltip.OnGameTooltipSetInventoryItem(tooltip, unit, slot)
     local status, err = xpcall(
         function(u, s)
             if u == "player" then
@@ -62,44 +63,44 @@ end
 
 -- Hook for Hide
 -- This is a secure hook.
-function Addon:OnGameTooltipHide(tooltip)
+function Tooltip.OnGameTooltipHide(tooltip)
     clearTooltipState()
 end
 
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
-function Addon:AddTooltipItemToList(list)
+function Tooltip:AddTooltipItemToList(list)
     -- Get the item from
     name, link = GameTooltip:GetItem();
     if not link then
-        self:Print(string.format(L["TOOLTIP_ADDITEM_ERROR_NOITEM"], list))
+        Addon:Print(string.format(L["TOOLTIP_ADDITEM_ERROR_NOITEM"], list))
         return
     end
 
     -- Add the link to the specified blocklist.
-    local retval = self:ToggleItemInBlocklist(list, link)
+    local retval = Addon:ToggleItemInBlocklist(list, link)
     if retval == 1 then
-        self:Print(string.format(L["CMD_LISTTOGGLE_ADDED"], tostring(link), list))
+        Addon:Print(string.format(L["CMD_LISTTOGGLE_ADDED"], tostring(link), list))
     elseif retval == 2 then
-        self:Print(string.format(L["CMD_LISTTOGGLE_REMOVED"], tostring(link), list))
+        Addon:Print(string.format(L["CMD_LISTTOGGLE_REMOVED"], tostring(link), list))
     end
 end
 
 -- Called by keybinds to direct-add items to the blocklists
 function Addon:AddTooltipItemToSellList()
-    self:AddTooltipItemToList(Addon.SystemListId.ALWAYS)
+    Tooltip:AddTooltipItemToList(Addon.SystemListId.ALWAYS)
 end
 
 function Addon:AddTooltipItemToKeepList()
-    self:AddTooltipItemToList(Addon.SystemListId.NEVER)
+    Tooltip:AddTooltipItemToList(Addon.SystemListId.NEVER)
 end
 
 function Addon:AddTooltipItemToDestroyList()
-    self:AddTooltipItemToList(Addon.SystemListId.DESTROY)
+    Tooltip:AddTooltipItemToList(Addon.SystemListId.DESTROY)
 end
 
 -- Hooks for item tooltips
-function Addon:OnTooltipSetItem(tooltip, ...)
+function Tooltip.OnTooltipSetItem(tooltip, ...)
     -- Insecure hook, so wrap what we call in xpcall to prevent being bad to others.
     local status, err = xpcall(
         function(t, ...)
@@ -113,7 +114,6 @@ function Addon:OnTooltipSetItem(tooltip, ...)
         Addon:Debug("tooltiperrors", "Error executing OnTooltipSetItem: ", tostring(err))
     end
 end
-
 
 -- Result cache
 local itemGUID = nil
@@ -228,22 +228,15 @@ function Tooltip:AddItemTooltipLines(tooltip)
     --@end-debug@
 end
 
-
-function Tooltip:Startup()
-
-    -- Register for tooltip events
-    -- Tooltip hooks
-    Addon:PreHookWidget(GameTooltip, "OnTooltipSetItem", "OnTooltipSetItem")
-    Addon:PreHookFunction(GameTooltip, "SetBagItem", "OnGameTooltipSetBagItem")
-    Addon:PreHookFunction(GameTooltip, "SetInventoryItem", "OnGameTooltipSetInventoryItem")
-    Addon:SecureHookWidget(GameTooltip, "OnHide", "OnGameTooltipHide")
-
-    return {
-        -- None yet
-    }
+function Tooltip:OnInitialize()
+    -- Register tooltip hooks
+    Addon:PreHookWidget(GameTooltip, "OnTooltipSetItem", Tooltip.OnTooltipSetItem)
+    Addon:PreHookFunction(GameTooltip, "SetBagItem", Tooltip.OnGameTooltipSetBagItem)
+    Addon:PreHookFunction(GameTooltip, "SetInventoryItem", Tooltip.OnGameTooltipSetInventoryItem)
+    Addon:SecureHookWidget(GameTooltip, "OnHide", Tooltip.OnGameTooltipHide)
 end
 
-function Tooltip:Shutdown()
+function Tooltip:OnTerminate()
 end
 
-Addon.Systems.Tooltip = Tooltip
+Addon.Features.Tooltip = Tooltip

@@ -7,6 +7,7 @@ local Merchant = {
     NAME = "Merchant",
     VERSION = 1,
     DEPENDENCIES = {
+        "History",
     },
 }
 

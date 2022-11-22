@@ -1,27 +1,16 @@
 local _, Addon = ...
-local History = { NAME = "History", VERSION = 1, DEPENDENCIES = { "Rules" } }
-local EVENTS = { "OnHistoryChanged" }
+local debugp = function (...) Addon:Debug("historytab", ...) end
 
-function History:OnInitialize()
-    Addon:GenerateEvents(EVENTS)
+local History = Addon.Features.History
 
-    Addon.OnHistoryChanged:Add(function(...)
-        Addon:RaiseEvent("OnHistoryChanged", ...)
-    end)
-end
-
-function History:OnTerminate()
-    Addon:RemoveEvents(EVENTS)
-end
-
-function History:GetCharacterHistory()
+function History:GetCharacterHistoryEntries()
     local rules = Addon:GetFeature("rules")
     local items = {}
 
-    for _, item in pairs(Addon:GetCharacterHistory()) do
+    for _, item in pairs(History:GetCharacterHistory()) do
         local id = item.Id or 0
-        local ruleId, ruleName = Addon:GetRuleInfoFromHistoryId(item.Rule)
-        local profileId, profileName = Addon:GetProfileInfoFromHistoryId(item.Profile)
+        local ruleId, ruleName = History:GetRuleInfoFromHistoryId(item.Rule)
+        local profileId, profileName = History:GetProfileInfoFromHistoryId(item.Profile)
         
         -- Add common properties
         item.Quality = C_Item.GetItemQualityByID(id)
@@ -73,5 +62,3 @@ function History:CreateFilter(filters)
 
     return handler
 end
-
-Addon.Features.History = History

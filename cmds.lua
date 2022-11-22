@@ -34,7 +34,7 @@ function Addon:ListToggle_Cmd(list, item)
     end
 
     -- get item id
-    local id = self.GetItemIdFromString(item)
+    local id = select(1, GetItemInfoInstant(item))
 
     -- if id specified, add or remove it
     if id then

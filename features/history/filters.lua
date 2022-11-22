@@ -1,5 +1,6 @@
 local _, Addon = ...
 local ActionType = Addon.ActionType
+local debugp = function (...) Addon:Debug("historytab", ...) end
 
 Addon.Features.History.FILTER_CONSTANTS = {
     ACTION_SELL = ActionType.SELL,

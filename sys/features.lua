@@ -38,6 +38,10 @@ function Features:Startup()
         end
     end
 
+    Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+        Features:BeginInit()
+    end)
+
     return { "GetFeature", "IsFeatureEnabled", "EnableFeature", "DisableFeature",  "WithFeature" }
 end
 
@@ -65,11 +69,11 @@ end
 --[[ Called to start a single system ]]
 function Features:InitTarget(feature, complete)
     assert(feature, "Attempt to initialize a nil feature, this is a developer error.")
-    C_Timer.After(.03, function()
+    --C_Timer.After(.03, function()
         debugp("Initializing feature '%s'", feature.name)
             self:EnableFeature(feature.name)
             complete(feature.enabled)
-        end)
+    --    end)
 end
 
 function Features:EndInit(success)
@@ -247,11 +251,6 @@ function Features:OnAllSystemsReady()
 
         self:AddTarget(feature, feature.name, dependencies)
     end
-
-    -- TODO: Add delay load for features that don't need to be in right away.
-    --C_Timer.After(10, function()
-            self:BeginInit()
-    --    end)
 end
 
 Addon.Features = {}

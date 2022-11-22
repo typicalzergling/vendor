@@ -2,21 +2,43 @@ local _, Addon = ...
 local L = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("history", ...) end
 
+local History = { NAME = "History", VERSION = 1, DEPENDENCIES = { "Rules" } }
+local EVENTS = { "OnHistoryChanged" }
+
+-- History schema version
 local VERSION = 1
-Addon.OnHistoryChanged = Addon.CreateEvent("History.OnChanged")
+
+function History:OnInitialize()
+    Addon:GenerateEvents(EVENTS)
+
+    Addon.OnHistoryChanged = Addon.CreateEvent("History.OnChanged")
+
+    Addon.OnHistoryChanged:Add(function(...)
+        Addon:RaiseEvent("OnHistoryChanged", ...)
+    end)
+
+    -- Do a delayed pruning of history across all characters.
+    C_Timer.After(Addon.c_PruneHistoryDelay, function() History:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
+
+end
+
+function History:OnTerminate()
+    Addon:RemoveEvents(EVENTS)
+end
+
 
 local function getHistoryVariable()
     return Addon:CreateSavedVariable("History")
 end
 
 -- Called whenever a history entry is added, or history is pruned / cleared.
-function Addon:HistoryUpdated()
+function History:HistoryUpdated()
     Addon.OnHistoryChanged()
 end
 
 -- Root history variable tracks Version, Rules, and Profiles
 -- Rules and Profiles are lookup tables to save space for each entry.
-function Addon:ClearAllHistory()
+function History:ClearAllHistory()
     debugp("Clearing Entire History")
     getHistoryVariable():Replace({})
     local history = getHistoryVariable():GetOrCreate()
@@ -24,16 +46,16 @@ function Addon:ClearAllHistory()
     history.Version = VERSION
     history.Rules = {}
     history.Profiles = {}
-    Addon.Invoke(Addon, "HistoryUpdated")
+    Addon.Invoke(History, "HistoryUpdated")
 end
 
-function Addon:ClearCharacterHistory()
+function History:ClearCharacterHistory()
     debugp("Clearing History for character %s", Addon:GetCharacterFullName())
     local history = getHistoryVariable():GetOrCreate()
     if history.Characters then
         history.Characters[Addon:GetCharacterFullName()] = nil
     end
-    Addon.Invoke(Addon, "HistoryUpdated")
+    Addon.Invoke(History, "HistoryUpdated")
 end
 
 local function getOrCreateCharacterHistory()
@@ -54,13 +76,13 @@ local function getOrCreateCharacterHistory()
 end
 
 -- Returns the table of entries and the time window covering those entries.
-function Addon:GetCharacterHistory()
+function History:GetCharacterHistory()
     local charHistory = getOrCreateCharacterHistory()
     if not charHistory then return nil end
     return charHistory.Entries, charHistory.Window
 end
 
-function Addon:GetHistoryVersion()
+function History:GetHistoryVersion()
     local history = getHistoryVariable():GetOrCreate()
     if not history.Version then history.Version = VERSION end
     return history.Version
@@ -129,7 +151,7 @@ function Addon:AddEntryToHistory(link, action, rule, ruleid, count, value)
     local entry = {}
     entry.TimeStamp = time()
     entry.Action = action
-    entry.Id = Addon.GetItemIdFromString(link)
+    entry.Id = select(1, GetItemInfoInstant(link))
     entry.Count = count
     entry.Value = value
     entry.Profile = getOrCreateProfileId()
@@ -138,11 +160,11 @@ function Addon:AddEntryToHistory(link, action, rule, ruleid, count, value)
     debugp("Adding entry: [%s] %s (%s)", tostring(action), tostring(link), tostring(rule))
     local charHistory = getOrCreateCharacterHistory()
     table.insert(charHistory.Entries, entry)
-    Addon.Invoke(Addon, "HistoryUpdated")
+    Addon.Invoke(History, "HistoryUpdated")
 end
 
 local currentChar = nil
-function Addon:PruneHistory(hours, character)
+function History:PruneHistory(hours, character)
     local seconds = hours * 3600
 
     local history = nil
@@ -183,28 +205,23 @@ function Addon:PruneHistory(hours, character)
     return count
 end
 
-function Addon:PruneAllHistory(hours)
+function History:PruneAllHistory(hours)
     local history = getHistoryVariable():GetOrCreate()
     local total = 0
     if history.Characters then
         for char, _ in pairs(history.Characters) do
-            local count = Addon:PruneHistory(hours, char)
+            local count = History:PruneHistory(hours, char)
             total = total + count
         end
     end
 
     -- Prune the lookup tables when we are done.
-    Addon:PruneHistoryLookupTables()
+    History:PruneHistoryLookupTables()
 
     Addon:Debug("historystats", "Pruned %s history entries across all characters.", total)
-    Addon.Invoke(Addon, "HistoryUpdated")
+    Addon.Invoke(History, "HistoryUpdated")
     return total
 end
-
-function Addon:PostInitializePruneHistory()
-    C_Timer.After(Addon.c_PruneHistoryDelay, function() Addon:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
-end
-
 
 local function isLookupIdInUse(index, name)
     local history = getHistoryVariable():GetOrCreate()
@@ -225,7 +242,7 @@ end
 
 -- Loops through all lookup tables and sees if any are in use
 -- anywhere in the history
-function Addon:PruneHistoryLookupTables()
+function History:PruneHistoryLookupTables()
     local history = getHistoryVariable():GetOrCreate()
     if history.Rules then
         local toremove = {}
@@ -256,7 +273,7 @@ function Addon:PruneHistoryLookupTables()
     end
 end
 
-function Addon:GetActionTypeFromId(id)
+function History:GetActionTypeFromId(id)
     for k, v in pairs(Addon.ActionType) do
         if v == id then
             return k
@@ -265,7 +282,7 @@ function Addon:GetActionTypeFromId(id)
     return L.UNKNOWN
 end
 
-function Addon:GetRuleInfoFromHistoryId(id)
+function History:GetRuleInfoFromHistoryId(id)
     local history = getHistoryVariable():GetOrCreate()
     if history.Rules and history.Rules[id] then
         return history.Rules[id].Id, history.Rules[id].Name
@@ -273,7 +290,7 @@ function Addon:GetRuleInfoFromHistoryId(id)
     return tostring(id), L.UNKNOWN
 end
 
-function Addon:GetProfileInfoFromHistoryId(id)
+function History:GetProfileInfoFromHistoryId(id)
     local history = getHistoryVariable():GetOrCreate()
     if history.Profiles and history.Profiles[id] then
         return history.Profiles[id].Id, history.Profiles[id].Name
@@ -287,14 +304,14 @@ end
 -- Total items sold or destroyed
 -- Total gold from vendoring
 -- Time window for this information
-function Addon:GetCharacterHistoryStats()
+function History:GetCharacterHistoryStats()
     local stats = {}
     stats.sold = 0
     stats.destroyed = 0
     stats.value = 0
     stats.oldestTimestamp = time()
 
-    local entries, timeWindow = Addon:GetCharacterHistory()
+    local entries, timeWindow = History:GetCharacterHistory()
     for _, entry in pairs(entries) do
 
         -- Action type
@@ -319,11 +336,11 @@ function Addon:History_Cmd(arg1, arg2, arg3)
     if arg1 == "clear" then
         if arg2 == "all" then
             Addon:Print(L.CMD_CLEAR_ALL_HISTORY)
-            Addon:ClearAllHistory()
+            History:ClearAllHistory()
             return
         else
             Addon:Print(L.CMD_CLEAR_CHAR_HISTORY, Addon:GetCharacterFullName() or "")
-            Addon:ClearCharacterHistory()
+            History:ClearCharacterHistory()
             return
         end
     end
@@ -376,15 +393,15 @@ function Addon:History_Cmd(arg1, arg2, arg3)
                 total = total + entry.Value
                 local _, display = GetItemInfo(entry.Id)
                 if not display then display = entry.Id end
-                local ruleid, rule = Addon:GetRuleInfoFromHistoryId(entry.Rule)
-                local profileid, profile = Addon:GetProfileInfoFromHistoryId(entry.Profile)
+                local ruleid, rule = History:GetRuleInfoFromHistoryId(entry.Rule)
+                local profileid, profile = History:GetProfileInfoFromHistoryId(entry.Profile)
                 local debugextra = ""
                 if Addon.IsDebug then
                     debugextra = string.format(" {%s | %s}", ruleid, profile)
                 end
                 Addon:Print("  [%s] (%s) %s - %s %s",
                     date(L.CMD_HISTORY_DATEFORMAT,tonumber(entry.TimeStamp)),
-                    Addon:GetActionTypeFromId(entry.Action),
+                    History:GetActionTypeFromId(entry.Action),
                     display,
                     Addon:GetPriceString(entry.Value),
                     debugextra)
@@ -399,3 +416,5 @@ function Addon:History_Cmd(arg1, arg2, arg3)
         Addon:Print(L.CMD_PRINT_HISTORY_SUMMARY_ALL, tostring(allcount), Addon:GetPriceString(allvalue))
     end
 end
+
+Addon.Features.History = History

@@ -37,10 +37,10 @@ systems\interop\interop.xml
 systems\itemproperties\itemproperties.xml
 systems\itemproperties\itempropertytooltipscan.lua
 systems\evaluation\evaluation.xml
-systems\tooltip\tooltip.lua
 
 # Features
 #features\autoloot\autoloot.xml
+features\tooltip\tooltip.lua
 features\merchant\merchant.xml
 features\destroy\destroy.xml
 features\import\import.xml
@@ -49,7 +49,7 @@ features\ui_lists\lists.xml
 features\ui_dialogs\dialogs.xml
 features\ui_settings\settings.xml
 features\ui_vendor\vendor.xml
-features\ui_history\history.xml
+features\history\history.xml
 features\status\status.xml
 features\libdatabroker\libdatabroker.xml
 features\minimapbutton\minimapbutton.xml
