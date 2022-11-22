@@ -56,6 +56,10 @@ function AccountSettings:SetAccountSetting(name, value)
     self.changed[name] = true
 
     local current = self:GetAccountSetting(name)
+    debugp("Current")
+    Addon:DebugForEach("accountsettings", current)
+    debugp("New")
+    Addon:DebugForEach("accountsettings", value)
     if (value ~= current) then
         self.savedVariable:Set(name, value)
         debugp("The value '%s' as been changed to '%s", name, tostring(value))
@@ -72,6 +76,8 @@ function AccountSettings:SetAccountSetting(name, value)
                     self.changed = nil
                 end
             end)
+    else
+        debugp("Setting %s was not changed.", name)
     end
 end
 

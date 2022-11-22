@@ -8,8 +8,7 @@ local MinimapButton = {
     VERSION = 1,
     -- you can also use GetDependencies
     DEPENDENCIES = {
-        "LibDataBroker",
-        "LDBStatusPlugin",
+        "StatusPlugin",
     },
 }
 
@@ -30,15 +29,17 @@ function MinimapButton:Get()
 end
 
 local function updateMinimapButtonVisibility()
-    if not minimapButton then return end
+    if not minimapButton then
+        return 
+    end
     local accountMapData = Addon:GetAccountSetting(Addon.c_Config_MinimapData)
     assert(accountMapData and type(accountMapData.hide) == "boolean", "Error retrieving settings for MinimapButton")
     debugp("Updating button visibility. Hide = %s", tostring(accountMapData.hide ))
     if accountMapData.hide then
-        minimapButton.hide = true
+        minimapButton.db.hide = true
         minimapButton:Hide()
     else
-        minimapButton.hide = false
+        minimapButton.db.hide = false
         minimapButton:Show()
     end
 end
@@ -92,15 +93,8 @@ function MinimapButton:Create()
         return true
     end
 
-    -- We depend on LibDataBroker for this and the LDBIcon library.
-    local ldb = Addon:GetFeature("LibDataBroker")
-    if not ldb or not ldb:IsLDBIconAvailable() then
-        debugp("LDBIcon is not available.")
-        return false
-    end
-
-    -- We also require the LDBStatusPlugin to be enabled.
-    local ldbstatusplugin = Addon:GetFeature("LDBStatusPlugin")
+    -- We require the StatusPlugin to be enabled.
+    local ldbstatusplugin = Addon:GetFeature("StatusPlugin")
     if not ldbstatusplugin then
         debugp("LDBStatusPlugin is not available.")
         return false
@@ -110,9 +104,13 @@ function MinimapButton:Create()
     local accountMapData = Addon:GetAccountSetting(Addon.c_Config_MinimapData, mapdefault)
 
     -- Create the minimap button.
-    minimapButton = ldb:CreateLDBIcon(ldbstatusplugin:GetDataObjectName(), accountMapData)
+    --minimapButton = ldb:CreateLDBIcon(ldbstatusplugin:GetDataObjectName(), accountMapData)
 
-    debugp("MinimapButton Starting State = %s - %s", tostring(not minimapButton.db.hide), tostring(minimapButton.db.minimapPos))
+    if minimapButton then
+        debugp("MinimapButton Starting State = %s - %s", tostring(not minimapButton.db.hide), tostring(minimapButton.db.minimapPos))
+    else
+        debugp("No minimap button was created")
+    end
     return not not minimapButton
 end
 
@@ -133,7 +131,6 @@ function MinimapButton:OnTerminate()
 end
 
 function MinimapButton:OnAccountSettingChange(settings)
-    if not minimapButton then return end
     if (settings[Addon.c_Config_MinimapData]) then
         debugp("MinimapButton Settings Update")
         updateMinimapButtonVisibility()

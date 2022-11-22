@@ -3,7 +3,10 @@ local locale = Addon:GetLocale()
 local SettingsFeature = {
     NAME = "Settings", 
     VERSION = 1,
-    Categories = {}
+    Categories = {},
+    DEPENDENCIES = {
+        "MinimapButton",    -- Minimap button needs to be initialized to get correct state.
+    },
 }
 
 --[[

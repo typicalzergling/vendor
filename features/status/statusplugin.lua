@@ -3,11 +3,11 @@ local L = Addon:GetLocale()
 local function debugp(...) Addon:Debug("ldbstatus", ...) end
 
 -- Feature Definition
-local LDBStatusPlugin = {
-    NAME = "LDBStatusPlugin",
+local StatusPlugin = {
+    NAME = "StatusPlugin",
     VERSION = 1,
     DEPENDENCIES = { 
-        "LibDataBroker",
+        "LibDataBroker",     -- This is just for feature load order, we don't actually depend on it.
         "Status",
     },
 }
@@ -23,23 +23,25 @@ local totalCountStr = ""
 local sellCountStr = ""
 local sellValueStr = ""
 local deleteCountStr = ""
+local statusStr = ""
 local sellItems = {}
 local deleteItems = {}
-local function updateStats()
+local function updateStatus()
     totalCount, sellValue, sellCount, deleteCount, sellItems, deleteItems = Vendor.GetEvaluationStatus()
     totalCountStr = tostring(totalCount)
     sellCountStr = tostring(sellCount)
     deleteCountStr = tostring(deleteCount)
     sellValueStr = Addon:GetPriceString(sellValue)
+    statusStr = HIGHLIGHT_FONT_COLOR_CODE .. totalCountStr .. FONT_COLOR_CODE_CLOSE .. "  " .. sellValueStr
 
     if ldbstatusplugin then
-        ldbstatusplugin.text = HIGHLIGHT_FONT_COLOR_CODE .. totalCountStr .. FONT_COLOR_CODE_CLOSE .. "  " .. sellValueStr
-        debugp("Status Updated")
+        ldbstatusplugin.text = statusStr
     end
+    debugp("Status Updated")
 end
 
 local DATAOBJECT_NAME = AddonName
-local ldb_plugin_definition = {
+local plugin_definition = {
     type = "data source",
     text = "Updating...",
 	label = L.ADDON_NAME,
@@ -68,35 +70,43 @@ local ldb_plugin_definition = {
     end,
 }
 
-function LDBStatusPlugin:CreateLDBDataObject()
-    if ldbstatusplugin then return end
+-- We can use the same definition internally, with or without LDB there to consume it.
+function StatusPlugin:GetStatusPluginDefinition()
+    return plugin_definition
+end
+
+function StatusPlugin:CreateLDBDataObject()
+    if ldbstatusplugin then return true end
 
     local ldb = Addon:GetFeature("LibDataBroker")
     if (not ldb or not ldb:IsLDBAvailable()) then
-        debugp("LibDataBroker not availble: %s", tostring(ldb))
+        debugp("LibDataBroker not available: %s", tostring(ldb))
         return
     end
 
-    ldbstatusplugin = ldb:CreateLDBDataObject(DATAOBJECT_NAME, ldb_plugin_definition)
+    ldbstatusplugin = ldb:CreateLDBDataObject(DATAOBJECT_NAME, plugin_definition)
     debugp("Plugin Created: %s", tostring(not not ldbstatusplugin))
 end
 
-function LDBStatusPlugin:GetDataObjectName()
+function StatusPlugin:GetDataObjectName()
     return DATAOBJECT_NAME
 end
 
-function LDBStatusPlugin:Update()
+function StatusPlugin:Update()
     debugp("Updating...")
-    updateStats()
+    updateStatus()
 end
 
-function LDBStatusPlugin:OnInitialize()
+function StatusPlugin:OnInitialize()
     debugp("Initializing plugin")
+
+    -- We don't actually need this to be successful
     self:CreateLDBDataObject()
+
     Addon:RegisterCallback(Addon.Events.EVALUATION_STATUS_UPDATED, self, self.Update)
 
     -- This will set default values for the plugin data.
-    updateStats()
+    updateStatus()
 end
 
-Addon.Features.LDBStatusPlugin = LDBStatusPlugin
+Addon.Features.StatusPlugin = StatusPlugin
