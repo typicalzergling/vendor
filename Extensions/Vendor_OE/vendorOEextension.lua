@@ -22,11 +22,11 @@ local function region()
 end
 
 local function days()
-    return baseMarketInfo(Id,"days")
+    return baseMarketInfo(Id, "days")
 end
 
 local function age()
-    return baseMarketInfo(Id,"age")
+    return baseMarketInfo(Id, "age")
 end
 
 local function registerOEExtension()
