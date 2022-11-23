@@ -29,7 +29,6 @@ end
 
 function MainDialog:OnImport()
 	local feature = Addon:GetFeature("import")
-	print("onimport - ", feature)
 	if (feature) then
 		feature:ShowImportDialog()
 	end

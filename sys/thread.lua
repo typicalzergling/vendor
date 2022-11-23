@@ -38,7 +38,7 @@ function Addon:AddThread(func, name, throttle)
 
     if Addon:GetThread(name) then
         debugp("Thread named %s already exists.", name)
-        return
+        return false
     end
 
     local obj = {}
@@ -78,6 +78,7 @@ function Addon:AddThread(func, name, throttle)
     obj.timer = C_Timer.NewTicker(throttle or 0.1, doWorkOnThread)
     table.insert(threads, obj)
     debugp("Added thread: %s",tostring(name))
+    return true
 end
 
 -- Accessor for getting a thread from the processor

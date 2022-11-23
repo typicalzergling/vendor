@@ -51,10 +51,26 @@ investments!
 # Custom Rule Parameters
 
 Custom Rules can now have Parameters like some of our built-in rules have. This is intended for
-convenience so you dont need to change a rule to be useful to different characters which may desire
+convenience so you dont need to change a rule to be useful to different profiles which may desire
 slightly different parameters on what is otherwise the exact same rule. The Custom Rule Parameters
 are also helpful for the above mentioned Import/Export functionality so people with which you share
 your rules don't need to edit the rule settings in order to tweak the rule to do what they want.
+
+# Scanning Throttle Tuning when not-selling/destroying
+
+Tuned the status-scanning throttles and made them far more backed-off. We believe that information about
+what Vendor is going to sell is not critical information when you're out and about in the world, it's
+just an FYI. We always do an immediate scan when selling or destroying because that is critical
+information, but not when you're out gathering or questing or raiding. So we are treating it as
+low-priority data that should in no way interfere with your activities or performance. What it does
+mean is the minimap button and LibDataBroker consumers like ElvUI and Titan Panel will have delayed
+Vendor status information, moreso than already. The earliest time you can expect a Vendor status
+update is 15 seconds after a triggering event (rule or Vendor settings change, equipment change, or
+looting event), assuming you dont have further events or get into combat which will reset the timer.
+We still will not do any scanning in combat. If you feel the freshness is too delayed, let us know.
+If you don't even notice until reading this, that's also good feedback that we have struck a good
+balance. We are looking into adding an indicator to the tooltip when a refresh is pending but not
+yet completed so you at least know that it isn't current.
 
 
 # Notable Bugfixes
@@ -62,10 +78,13 @@ your rules don't need to edit the rule settings in order to tweak the rule to do
 * The "/vendor keys" command once again opens the Blizzard Keybindings page to Vendor. On Retail you
 may need to expand the menu for "Vendor Addon" due to the quirkiness of that UI. On Classic we open
 straight to the keybinds just like before.
+* The minimap button will now preserve enabled state across reloads and logouts. For real this time!
 * Slight tweak to the CurrentEquippedLevel() function to no longer check for Fury specialization and
 instead have that functionality for all warriors. This is because 2H weapons will have an empty 2nd
 slot if you can't Titan grip and so there's no reason not to check it. You shouldn't notice a difference
 here.
+* Removed a slight but noticable UI stutter when a background scan completed.
+
 
 
 ]]},

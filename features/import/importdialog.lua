@@ -67,7 +67,6 @@ function ImportDialog:OnImportText(text)
         frame:SetPoint("TOPLEFT", self, "TOPLEFT")
         frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
         frame:Show()
-        print("frame:", frame:GetWidth(), frame:GetHeight())
 
         local buttons = {}
         buttons.cancel = true
