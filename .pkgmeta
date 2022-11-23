@@ -19,6 +19,7 @@ move-folders:
  Vendor/Extensions/Vendor_AdiBags: Vendor_AdiBags
  Vendor/Extensions/Vendor_RulePack: Vendor_RulePack
  Vendor/Extensions/Vendor_TSM: Vendor_TSM
+ Vendor/Extensions/Vendor_OE: Vendor_OE
 
 
 

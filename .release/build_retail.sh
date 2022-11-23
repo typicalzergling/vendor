@@ -4,7 +4,7 @@
 . ".env"
 
 all_flavors="_retail_ _ptr_ _classic_ _beta_"
-all_extensions="_RulePack _Ark _AdiBags _TSM _Pawn"
+all_extensions="_RulePack _Ark _AdiBags _TSM _Pawn _OE"
 
 flavors=$all_flavors
 
