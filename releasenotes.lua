@@ -20,12 +20,13 @@ The Same Vendor addon works for both Wrath Classic and Retail - you do not need 
 versions!
 
 
-# New "Side-grade or Better" keep rule in the RulePack
+# New "Side-grade or Better" keep rule
 
-The Vendor RulePack now contains a "Side-grade or Better" keep rule that uses the new CurrentEquippedLevel()
+A new built-in rule contains a "Side-grade or Better" keep rule that uses the new CurrentEquippedLevel()
 function added in 6.0. This is a good sample rule to make sure you don't accidentally vendor or delete
 something that is equal or better itemlevel than your currently equipped gear. This works on both
-Classic and Retail versions. This rule is not enabled by default, but is available if you want it.
+Classic and Retail versions, though the Classic version may match unequippable gear. This rule is
+not enabled by default, but is available if you want it.
 
 
 # Rule Context Menu and Hide-Rule Functionality Restored
@@ -72,6 +73,23 @@ If you don't even notice until reading this, that's also good feedback that we h
 balance. We are looking into adding an indicator to the tooltip when a refresh is pending but not
 yet completed so you at least know that it isn't current.
 
+# RulePack extension removed
+
+With the addition of another extension, we have removed the RulePack extension, removed the old tabard
+rule entirely, and moved the Crafting Reagents keep rule into one of the new built-ins. That did change
+the rule's identity so if you had it enabled you will need to enable the new one. The purpose of the
+RulePack was initially to be a sample extension, but since we now have five extensions we feel there
+is plenty of good examples now that we do not need the RulePack cluttering your addon folder unnecessarily.
+
+
+# OribosExchange Extension Added
+
+Requested by one of the users of the addon, we have added a new extension for Oribos Exchange if you
+find that TSM is a bit too heavyweight but still want to factor in Auction value into your vendor rules
+If you have OribosExchange installed you can see the four new functions available that pull data
+from that addon. You msut also enable the Vendor extension addon for it, Vendor_OE, which has both
+addons as a dependency, meaning it won't load unless you actually have OribosExchange.
+
 
 # Notable Bugfixes
 
@@ -84,8 +102,6 @@ instead have that functionality for all warriors. This is because 2H weapons wil
 slot if you can't Titan grip and so there's no reason not to check it. You shouldn't notice a difference
 here.
 * Removed a slight but noticable UI stutter when a background scan completed.
-
-
 
 ]]},
 {

@@ -361,6 +361,10 @@ SYSRULE_KEEP_EQUIPMENTSET = "Equipment Sets",
 SYSRULE_KEEP_EQUIPMENTSET_DESC = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
 SYSRULE_KEEP_POTENTIALUPGRADES = "Potential Upgrades",
 SYSRULE_KEEP_POTENTIALUPGRADES_DESC = "Matches any gear that is within 5 item levels or 95% of your average item level (whichever is lower). This safeguards potential upgrades, side-grades, or gear for other specs.",
+SYSRULE_KEEP_CRAFTINGREAGENT = "Crafting Reagents",
+SYSRULE_KEEP_CRAFTINGREAGENT_DESC = "Matches all items that are considered Crafting Reagents.",
+SYSRULE_KEEP_SIDEGRADEORBETTER = "Side-grade or Better",
+SYSRULE_KEEP_SIDEGRADEORBETTER_DESC = "Matches any equipment that is equal to or higher item level than your currently equipped gear in that slot or slots.",
 
 -- Destroy Rules
 SYSRULE_DESTROYLIST = "Items in Destroy list",

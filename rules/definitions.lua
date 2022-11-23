@@ -117,7 +117,6 @@ Rules.SystemRules =
         }
     },
 
-    --@retail@
     {
         Id = "sell.knowntoys",
         Type = SELL_RULE,
@@ -239,7 +238,7 @@ Rules.SystemRules =
         Script = function()
                 return IsEquipment and IsSoulbound;
             end,
-        Order = 1100,
+        Order = 1250,
     },
 
     -- Safeguard rule - Keep BoE Equipment
@@ -382,6 +381,39 @@ Rules.SystemRules =
         ScriptText = "IsInEquipmentSet()",
         Script = function() return IsInEquipmentSet() end,
         Order = 1050,
+    },
+
+    -- Move from RulesPack
+    {
+        Id = "keep.craftingreagent",
+        Type = "Keep",
+        Name = L["SYSRULE_KEEP_CRAFTINGREAGENT"],
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Description = L["SYSRULE_KEEP_CRAFTINGREAGENT_DESC"],
+        Script = "IsCraftingReagent",
+        Order = 1350,
+    },
+
+    -- New upgrade check, probably better than the potential upgrade one, though that one is safer.
+    {
+        Id = "keep.sidegradeorbetter",
+        Type = "Keep",
+        Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
+        Script = "IsEquippable and (Level >= CurrentEquippedLevel())",
+        Order = 1225,
+    },
+
+    -- On classic we don't know if an item is equippable, so we will match all equipment instead.
+    {
+        Id = "keep.sidegradeorbetter_classic",
+        Type = "Keep",
+        Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
+        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true },
+        Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
+        Script = "IsEquipment and (Level >= CurrentEquippedLevel())",
+        Order = 1225,
     },
 
     --*****************************************************************************
