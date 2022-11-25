@@ -218,6 +218,11 @@ function EditRule:OnInitDialog(dialog)
     self.open = {}
 end
 
+--[[ Navigat to a specific tab ]]
+function EditRule:NavigateTo(tab)
+    self.tabs:ShowTab(tab)
+end
+
 function EditRule:OnHide()
     self.matches:Call("ClearMatches")
     for _, open in ipairs(self.open) do
@@ -254,13 +259,14 @@ function EditRule:GetCurrentParameters()
         local info = {}
 
         for _, param in ipairs(parameters) do
+            print("parm", param.Name, param.Key)
             local paramInfo = {
                 Name = param.Name,
                 Type = param.Type,
                 Key = param.Key,
             }
             
-            if (type(self.parameters) == "table") then
+            if (type(self.parameters) == "table" and self.parameters[param.Key]) then
                 params[param.Key] = self.parameters[param.Key]
                 paramInfo.Value = self.parameters[param.Key]
             else
@@ -276,6 +282,7 @@ function EditRule:GetCurrentParameters()
             table.insert(info, paramInfo)
         end
         Addon:DebugForEach("editrule", info)
+        Addon:DebugForEach("editrule", params)
         return params, info
     end
 
@@ -312,27 +319,32 @@ end
 function EditRule:OnScriptChanged(text)
     if (not self.editor:IsReadOnly()) then
         self.editor:SetScript(text)
+        self:ValidateScript()
+    end
+end
 
-        if (text and string.len(text) ~= 0) then
-            local rules = Addon:GetFeature("Rules")
-            local valid, msg = rules:ValidateRule(text, self:GetCurrentParameters())
-            Addon:Debug("editrule", "Validate script '%s' [%s, %s]", text, valid, msg or "")
+--[[ Validate our script ]]
+function EditRule:ValidateScript()
+    local text = self.editor:GetScript()
+    if (text and string.len(text) ~= 0) then
+        local rules = Addon:GetFeature("Rules")
+        local valid, msg = rules:ValidateRule(text, self:GetCurrentParameters())
+        Addon:Debug("editrule", "Validate script '%s' [%s, %s]", text, valid, msg or "")
 
-            if (valid) then
-                self.ruleStatus:SetStatus("ok")
-                self:Debounce(.75, self.UpdateMatches)
-                self.editor:SetScriptValid(true)
+        if (valid) then
+            self.ruleStatus:SetStatus("ok")
+            self:Debounce(.75, self.UpdateMatches)
+            self.editor:SetScriptValid(true)
+        else
+            local errorMessage = nil
+            local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
+            if (err) then
+                errorMessage = Addon.StringTrim(err)
             else
-                local errorMessage = nil
-                local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
-                if (err) then
-                    errorMessage = Addon.StringTrim(err)
-                else
-                    errorMessage = Addon.StringTrim(msg)
-                end
-                self.ruleStatus:SetStatus("invalid", errorMessage)
-                self.editor:SetScriptValid(false)
+                errorMessage = Addon.StringTrim(msg)
             end
+            self.ruleStatus:SetStatus("invalid", errorMessage)
+            self.editor:SetScriptValid(false)
         end
     end
 end
@@ -495,7 +507,7 @@ function EditRule:Setup()
         if (editor:IsNew()) then
             self.ruleStatus:SetStatus()
         else
-            self.ruleStatus:SetStatus()
+            self:ValidateScript()
         end
     elseif (source == RuleSource.SYSTEM) then
         self.ruleStatus:SetStatus("system")

@@ -32,7 +32,7 @@ function Dialogs:CreateRule()
     dialog:Show()
 end
 
-function Dialogs:ShowEditRule(ruleId, parameters)
+function Dialogs:ShowEditRule(ruleId, parameters, tab)
     local rules = Addon:GetFeature("Rules")
 
     local rule = rules:FindRule(ruleId)
@@ -42,6 +42,9 @@ function Dialogs:ShowEditRule(ruleId, parameters)
 
     local dialog = self:GetEditRule()
     dialog:SetRule(rule, parameters)
+    if (type(tab) == "string") then
+        dialog:NavigateTo(tab)
+    end
     dialog:Show()
 end
 

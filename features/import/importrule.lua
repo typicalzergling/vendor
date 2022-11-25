@@ -107,7 +107,7 @@ function ImportRule:Import(payload)
     local newRule = rules:SaveRule(ruleDef, true)
     local editDialog = Addon:GetFeature("dialogs")
     if (editDialog) then
-        editDialog:ShowEditRule(newRule.Id)
+        editDialog:ShowEditRule(newRule.Id, {}, "matches")
     end
 end
 
