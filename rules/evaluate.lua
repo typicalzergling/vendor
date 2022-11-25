@@ -64,13 +64,13 @@ end
     |   wrong with rule.  I am assuming that they want to match an item contained
     |   inside of their bags.
     ===========================================================================--]]
-function Addon:ValidateRuleAgainstBags(engine, script)
+function Addon:ValidateRuleAgainstBags(engine, script, parameters)
     Addon:Debug("rules", "Validating script against bags (no-cache)");
     local rulesEngine = engine or self:CreateRulesEngine();
     local message = "";
     local valid = withEachBagAndItem(
         function(item)
-            local r, m = engine:ValidateScript(item, script);
+            local r, m = engine:ValidateScript(item, script, parameters);
             if (not r) then message = m end;
             return r;
         end, 0, Addon:GetNumTotalEquippedBagSlots() );

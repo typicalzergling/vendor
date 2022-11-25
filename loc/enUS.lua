@@ -474,6 +474,14 @@ EDITPARAM_ERROR_DUPLICATE_KEY = [[
 A parameter with the script name '%s' already exists please use another
 name, or edit the existing one.
 ]],
+EDITPARM_REMOVE_PARAM_CAPTION = "Remve Parameter",
+EDITPARAM_REMOVE_PARAM = [[
+# Remove Parameter
+
+Are you sure you want to remove parameter '%s' [%s]?
+]],
+EDITPARAM_CONFIRM_REMOVE = "Yes, Remove",
+EDITPARAM_KEEP_PARAM = "Keep",
 
 EDITRULE_ITEM_LABEL = "Item:",
 EDITRULE_NO_ITEM = "<none>",
