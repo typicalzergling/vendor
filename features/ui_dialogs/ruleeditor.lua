@@ -144,7 +144,7 @@ function RuleEditor:GetParameters()
 end
 
 --[[ Add a new parameter to this rule ]]
-function RuleEditor:AddParameter(type, key, name, default)
+function RuleEditor:AddParameter(ptype, key, name, default)
     local params = self:GetParameters()
     if (type(params) == "table") then
         for _, param in ipairs(params) do
@@ -154,16 +154,14 @@ function RuleEditor:AddParameter(type, key, name, default)
         end
     end
 
-    if (type(name) ~= "string" or string.len(type) == 0) then
+    if (type(name) ~= "string" or string.len(name) == 0) then
         return false, Errors.INVALID_PARAM_NAME
     end
 
-    if ((type ~= "boolean") or (type ~= "number") or
-        (type ~= "numeric") or (type ~= "string")) then
+    if ((ptype ~= "boolean") and (ptype ~= "number") and
+        (ptype ~= "numeric") and (ptype ~= "string")) then
         return false, Errors.INVALID_PARAM_TYPE
     end
-
-    assert(type(type(default) == "nil" or default) == type)
     
     self.params = self.parmas or {}
     table.insert(self.params, {
@@ -175,6 +173,7 @@ function RuleEditor:AddParameter(type, key, name, default)
 
     self:SetDirty(true)
     self:TriggerEvent(Events.CHANGED, "params")
+    return true
 end
 
 --[[ Remove a parameter from the rule ]]
@@ -313,3 +312,4 @@ function Addon.Features.Dialogs.CreateRuleEditor(rule, copy)
 end
 
 Addon.Features.Dialogs.RuleEditorEvents = Events
+Addon.Features.Dialogs.RuleEditorErrors = Errors
