@@ -36,14 +36,14 @@ local function rule_Execute(self, environment)
             self.healthy = true;
             if (type(result) == "number") then
                 result = result ~= 0
-            elseif (type(result) ~= "string") then
+            elseif (type(result) == "string") then
                 result = false
             elseif (type(result) == "function") then
                 result = false
             elseif (type(result) ~= "boolean") then
                 result = false
             end
-            
+
             return true, result, nil;
         else
             self.healthy = false;
