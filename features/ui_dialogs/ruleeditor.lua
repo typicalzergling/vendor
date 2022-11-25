@@ -163,17 +163,51 @@ function RuleEditor:AddParameter(ptype, key, name, default)
         return false, Errors.INVALID_PARAM_TYPE
     end
     
-    self.params = self.parmas or {}
+    self.params = self.params or {}
     table.insert(self.params, {
             Key = string.upper(key),
             Name = name,
-            Type = type,
+            Type = ptype,
             Default = default
         })
 
     self:SetDirty(true)
     self:TriggerEvent(Events.CHANGED, "params")
     return true
+end
+
+--[[ Update an existing parameter ]]
+function RuleEditor:UpdateParameter(key, ptype, name, default)
+    assert(type(self.params) == "table", "We should have parameters to update")
+    if (not self.params) then
+        return
+    end
+
+    if (type(name) ~= "string" or string.len(name) == 0) then
+        return false, Errors.INVALID_PARAM_NAME
+    end
+
+    print("ptype=", ptype)
+    if ((ptype ~= "boolean") and (ptype ~= "number") and
+        (ptype ~= "numeric") and (ptype ~= "string")) then
+        return false, Errors.INVALID_PARAM_TYPE
+    end
+
+    for i, param in ipairs(self.params) do
+        if (string.upper(key) == param.Key) then
+            local newParam = Addon.DeepTableCopy(param)
+            newParam.Name = name
+            newParam.Default = default
+            newParam.Type = ptype
+            table.remove(self.params, i)
+            table.insert(self.params, i, newParam)
+            self:SetDirty(true)
+            self:TriggerEvent(Events.CHANGED, "params")
+            return true
+        end
+    end
+
+    return false
 end
 
 --[[ Remove a parameter from the rule ]]

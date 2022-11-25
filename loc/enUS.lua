@@ -462,6 +462,12 @@ EDITPARAM_ERROR_CREATE_GENERAL = [[
 An error occured while trying to create the rule parameter, please check
 you values and try again
 ]],
+EDITPARAM_ERROR_UPDATE_GENERAL = [[
+# Save Error
+
+An error occured while trying to save the rule parameter, please check
+you values and try again
+]],
 EDITPARAM_ERROR_DUPLICATE_KEY = [[
 # Duplicate Script name
 
