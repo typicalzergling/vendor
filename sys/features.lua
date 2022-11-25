@@ -39,7 +39,14 @@ function Features:Startup()
     end
 
     Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function()
-        Features:BeginInit()
+        if Addon.Systems.Info.IsClassicEra then
+            -- Classic has a saved variables race condition that does not occur on live where
+            -- the variables are not yet loaded. This is a dirty hack to delay the feature init
+            -- by 2s to let that nonsense settle.
+            C_Timer.NewTimer(2, function() Features:BeginInit() end)
+        else
+            Features:BeginInit()
+        end
     end)
 
     return { "GetFeature", "IsFeatureEnabled", "EnableFeature", "DisableFeature",  "WithFeature" }
