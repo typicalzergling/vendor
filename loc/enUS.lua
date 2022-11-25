@@ -56,6 +56,10 @@ MERCHANT_SELL_LIMIT_REACHED = "Reached the sell limit (%s), stopping auto-sell."
 MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL = "Auto-accepted confirmation of making %s non-tradeable.",
 MERCHANT_SELL_ITEMS = "Sell [%s]",
 MERCHANT_DESTROY_ITEMS = "Destroy [%s]",
+MERCHANT_SELL_BUTTON_TOOLTIP_TITLE = "Sell",
+MERCHANT_DESTROY_BUTTON_TOOLTIP_TITLE = "Destroy Next Item",
+MERCHANT_DESTROY_BUTTON_TOOLTIP_NEXT = "Will be destroyed:\n  ",
+MERCHANT_DESTROY_BUTTON_TOOLTIP_REMAINING = "Remaining:",
 
 -- Destroy
 ITEM_DESTROY_SUMMARY = "Destroyed %s items.",

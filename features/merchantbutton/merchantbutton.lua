@@ -126,7 +126,7 @@ function MerchantButtonFrame:OnLoad()
 
 	self.Sell.OnTooltip = function(self, tooltip)
 			debugp("Sell::OnTooltip")
-			tooltip:SetText("Auto-Sell", 1, 1, 0, 1, false)
+			tooltip:SetText(L.MERCHANT_SELL_BUTTON_TOOLTIP_TITLE, 1, 1, 0, 1, false)
 			tooltip:AddLine("  "..table.concat(MerchantButton.sellItems, "\n  "))
 		end
 
@@ -138,10 +138,10 @@ function MerchantButtonFrame:OnLoad()
 
 	self.Destroy.OnTooltip = function(self, tooltip)
 			debugp("Destroy::OnTooltip")
-			tooltip:SetText("Destroy Next Item", 1, 1, 0, 1, false)
-			tooltip:AddLine("Next to be destroyed:\n  "..MerchantButton.nextDestroy)
+			tooltip:SetText(L.MERCHANT_DESTROY_BUTTON_TOOLTIP_TITLE, 1, 1, 0, 1, false)
+			tooltip:AddLine(L.MERCHANT_DESTROY_BUTTON_TOOLTIP_NEXT..MerchantButton.nextDestroy)
 			if (MerchantButton.destroyCount > 1) then
-				tooltip:AddLine("Remaining:")
+				tooltip:AddLine(L.MERCHANT_DESTROY_BUTTON_TOOLTIP_REMAINING)
 				tooltip:AddLine("  "..table.concat(MerchantButton.destroyItems, "\n  ", 2))
 			end
 		end
