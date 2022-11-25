@@ -498,7 +498,13 @@ function EditRule:Setup()
 
     local readOnly = editor:IsReadOnly()
     if (not readOnly) then
-        editor:RegisterCallback(Dialogs.RuleEditorEvents.CHANGED, self.Update, self)
+        editor:RegisterCallback(Dialogs.RuleEditorEvents.CHANGED,
+            function(_, what)
+                if (what == "params") then
+                    self.paramList:Rebuild()
+                end
+                self:Update()
+            end)
     end
 
     if (readOnly) then
@@ -659,14 +665,14 @@ function EditRule:OnEditParam()
         if (self.editor:IsReadOnly()) then
             Dialogs:ViewRuleParam(param, currentValue)
         else 
-            Dialogs:EditRuleParam(param, currentValue)
+            Dialogs:EditRuleParam(self.editor, param, currentValue)
         end
     end
 end
 
 function EditRule:OnCreateParam()   
     assert(not self.editor:IsReadOnly(), "Why are trying to create a parameter on a read-only rule")
-    table.insert(self.open, Dialogs:CreateRuleParam())
+    table.insert(self.open, Dialogs:CreateRuleParam(self.editor))
 end
 
 Dialogs.EditRule = EditRule

@@ -180,7 +180,7 @@ function UI.MessageBox(title, markdown, buttons, parent)
     
     local params = {
         caption = title,
-        parent = UIParent, 
+        parent = parent or UIParent, 
         content = markdown,
         buttons = btns
     }
@@ -249,11 +249,21 @@ function DialogContent:GetFeature(feature)
 end
 
 --[[
-    Impltement a message box on the dialog, this disables all of the 
+    implement a message box on the dialog, this disables all of the 
     buttons and centers it on the dialog (parents it to the dialog) 
     when it's closed it return the button state.
 ]]
-function DialogContent:MessageBox(...)
+function DialogContent:MessageBox(title, markdown, buttons)
+    local dialog = rawget(self, DialogContent)
+
+    markdown = locale:GetString(markdown) or markdown
+    if (not buttons) then
+        buttons = { CLOSE }
+    end
+
+    local msgbox = UI.MessageBox(title, markdown, buttons, dialog)
+    msgbox:ClearAllPoints()
+    msgbox:SetPoint("CENTER", dialog)
 end
 
 --[[ Helper for debug output ]]

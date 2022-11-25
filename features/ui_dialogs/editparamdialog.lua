@@ -3,6 +3,10 @@ local locale = Addon:GetLocale()
 local Dialogs = Addon.Features.Dialogs
 local UI  = Addon.CommonUI.UI
 local EditParamDialog = Mixin({}, CallbackRegistryMixin)
+local RuleEditorErrors = Dialogs.RuleEditorErrors
+
+local function debugp(m, ...) Addon:Debug("parameditor", m, ...) end
+
 
 local DialogMode = {
     VIEW = 1,
@@ -29,7 +33,7 @@ local function getDefaultForType(type)
     assert(false, "Unknown parameter type :: " .. tostring(type))
 end
 
---[[ Compute the default value of a rule paramter 
+--[[ Compute the default value of a rule paramter
 TODO: move to rules system ]]
 local function getDefault(param)
     local default = param.Default
@@ -150,6 +154,58 @@ function ParameterEditor:CanSave()
     return self.dirty or self.new
 end
 
+--[[ Using the rule type convert the default value to an appropriate value 
+     if it isn't already, return false when the value cannot be converted ]]
+function ParameterEditor:ConvertDefault()
+    local defaultType = type(self.default)
+
+    if (self.type == ParameterType.BOOLEAN) then
+        if (defaultType == "nil") then
+            debugp("CD: Converting nil to boolean")
+            self.default = false
+        elseif (defaultType == "number") then
+            debugp("CD: Converting number to boolean")
+            self.default = self.default ~= 0
+        elseif (defaultType == "string") then
+            debugp("CD: Converting string to boolean")
+            if (string.lower(self.default) == "true") then
+                self.default = true
+            elseif (string.lower(self.default) == "false") then
+                self.default = false
+            else
+                return false
+            end
+        end
+    elseif (self.type == ParameterType.NUMBER) then
+        if (defaultType == "nil") then
+            debugp("CD: Converting nil to number")
+            self.default = 0
+        elseif (defaultType == "booolean") then
+            debugp("CD: Converting  boolean to number")
+            if (self.default) then
+                self.default = 1
+            else
+                self.default = 0
+            end
+        elseif (defaultType == "string") then
+            debugp("CD: Converting string to number")
+            local num = tonumber(self.default)
+            if (num == nil) then
+                return false
+            end
+            self.default = num
+        end
+    elseif (self.type == ParameterType.STRING) then
+        if (defaultType == nil) then
+            self.default = ""
+        else
+            self.default = tostring(self.default)
+        end
+    end
+
+    return true
+end
+
 --[[ Retrieve the value of the parameter being edited ]]
 function ParameterEditor:GetValue()
 
@@ -169,12 +225,13 @@ function ParameterEditor.Create(param)
 end
 
 --[[ Called to initialize the edit param dialog ]]
-function EditParamDialog:OnInitDialog(dialog, readonly, param, currentValue)
+function EditParamDialog:OnInitDialog(dialog, readonly, ruleEditor, param, currentValue)
     CallbackRegistryMixin.OnLoad(self)
     CallbackRegistryMixin.GenerateCallbackEvents(self, { "OnValidate", "OnClose", "OnSave", "OnCreate" })
 
     self.editor = ParameterEditor.Create(param)
     self.readonly = readonly
+    self.ruleEditor = ruleEditor
 
     self.paramType:AddChips({
         { id=ParameterType.BOOLEAN, text="EDITPARAM_BOOLEAN_LABEL", tooltip="EDITPARAM_BOOLEAN_HELP" },
@@ -197,6 +254,7 @@ function EditParamDialog:OnInitDialog(dialog, readonly, param, currentValue)
     UI.Enable(self.default, not readonly)
     UI.Enable(self.paramType, not readonly)
     UI.Enable(self.current, false)
+    UI.Show(self.current, not self.editor:IsNew())
 
     if (not readonly) then
         self.editor:RegisterCallback("OnChanged", GenerateClosure(self.Update, self), self)
@@ -253,8 +311,30 @@ end
 
 --[[ Handle creating a parameter ]]
 function EditParamDialog:OnCreate()
+    assert(self.editor:IsNew(), "Why does our editor not think we are new?")
+    assert(self.ruleEditor, "We should have a rule editor")
+
+    -- Make sure we can covnert the default value
+    if (not self.editor:ConvertDefault()) then
+        self:MessageBox("EEDITPARAM_ERROR_CAPTION", 
+            locale:FormatString("EDITPARAM_ERROR_CONVERT_DEFAULT", self.editor:GetDefault()))
+        return
+    end
+
     local param = self.editor:GetValue()
-    Addon:DebugForEach("dialogs", param)
+    Addon:DebugForEach("parameditor", param)
+    local success, code = self.ruleEditor:AddParameter(param.Type, param.Key, param.Name, param.Default)
+    
+    if (not success) then
+        local message = "EDITPARAM_ERROR_CREATE_GENERAL"
+        if (code == RuleEditorErrors.DUPLICATE_PARAM) then
+            message = locale:FormatString("EDITPARAM_ERROR_DUPLICATE_KEY", param.Key)
+        end
+        self:MessageBox("EEDITPARAM_ERROR_CAPTION", message)
+        return
+    end
+
+    self:Close()
 end
 
 --[[ Called to handle updates ]]
@@ -268,7 +348,7 @@ function EditParamDialog:Update()
 end
 
 --[[ static : Create a new edit param dialog ]]
-function EditParamDialog.Create(mode, param, currentValue)
+function EditParamDialog.Create(mode, ruleEditor, param, currentValue)
     local buttons = {}
 
     -- Determine what buttons we have
@@ -282,8 +362,8 @@ function EditParamDialog.Create(mode, param, currentValue)
         buttons.cancel = { label = "EDITPARAM_CANCEL_LABEL", handler = "Hide", default = true, order = 1 }
     end
 
-    local dialog = UI.Dialog("EDIT_RULE_PARAMETER", "Rule_EditParamDialog", EditParamDialog, 
-            buttons, mode == DialogMode.VIEW, param, currentValue)
+    local dialog = UI.Dialog("EDIT_RULE_PARAMETER", "Rule_EditParamDialog", EditParamDialog,
+            buttons, mode == DialogMode.VIEW, ruleEditor, param, currentValue)
 
     dialog:Show()
     dialog:Raise()
@@ -291,20 +371,20 @@ function EditParamDialog.Create(mode, param, currentValue)
 end
 
 --[[ Shows the read/write edit param dialog ]]
-function Dialogs:EditRuleParam(param, currentValue)
+function Dialogs:EditRuleParam(ruleEditor, param, currentValue)
     assert(type(param) == "table", "Expected a valid parameter to edit")
 
-    return EditParamDialog.Create(DialogMode.EDIT, param, currentValue)
+    return EditParamDialog.Create(DialogMode.EDIT, ruleEditor, param, currentValue)
 end
 
 --[[ Shows the read only dialog ]]
 function Dialogs:ViewRuleParam(param, currentValue)
     assert(type(param) == "table", "Expected a valid parameter to view")
 
-    return EditParamDialog.Create(DialogMode.VIEW, param, currentValue)
+    return EditParamDialog.Create(DialogMode.VIEW, nil, param, currentValue)
 end
 
 --[[ Show the create parameter dialog ]]
-function Dialogs:CreateRuleParam()
-    return EditParamDialog.Create(DialogMode.CREATE)
+function Dialogs:CreateRuleParam(ruleEditor)
+    return EditParamDialog.Create(DialogMode.CREATE, ruleEditor)
 end

@@ -450,6 +450,24 @@ EDITPARAM_CANCEL_LABEL = CANCEL,
 EDITPARAM_CLOSE_LABEL = "Close",
 EDITPARAM_DEFAULT_NAME = "New Paraemter",
 EDITPARAM_DEFAULT_SCRIPTNAME = "NEW_PARAM",
+EEDITPARAM_ERROR_CAPTION = "Parameter Error",
+EDITPARAM_ERROR_CONVERT_DEFAULT = [[
+# Invalid Default Value
+
+The default value '%s' is invalid for the type of parameter
+]],
+EDITPARAM_ERROR_CREATE_GENERAL = [[
+# Create Error
+
+An error occured while trying to create the rule parameter, please check
+you values and try again
+]],
+EDITPARAM_ERROR_DUPLICATE_KEY = [[
+# Duplicate Script name
+
+A parameter with the script name '%s' already exists please use another
+name, or edit the existing one.
+]],
 
 EDITRULE_ITEM_LABEL = "Item:",
 EDITRULE_NO_ITEM = "<none>",
