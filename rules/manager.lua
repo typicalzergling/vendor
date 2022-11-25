@@ -222,7 +222,7 @@ function RuleManager:Update()
     self:ApplyConfig(RULE_TYPE_SELL, RuleType.SELL);
 
     -- Clear the item cache and schedule a refresh.
-    Addon:ClearItemResultCache()
+    Addon:ClearItemResultCache("Rulemanager Update")
 end
 
 --*****************************************************************************

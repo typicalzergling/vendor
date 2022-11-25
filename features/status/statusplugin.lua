@@ -15,6 +15,7 @@ local StatusPlugin = {
 local ldbstatusplugin = nil
 
 -- Local data for the plugin
+local isUpdatePending = false
 local totalCount = 0
 local sellValue = 0
 local sellCount = 0
@@ -59,7 +60,11 @@ local plugin_definition = {
     OnTooltipShow = function(self)
         -- TODO: Build this a bit more efficiently.
         debugp("In OnTooltipShow Handler")
-        self:AddLine(L.LDB_BUTTON_TOOLTIP_TITLE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+        if isUpdatePending then
+            self:AddLine(L.LDB_BUTTON_TOOLTIP_TITLEREFRESH, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+        else
+            self:AddLine(L.LDB_BUTTON_TOOLTIP_TITLE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+        end
         self:AddDoubleLine(L.LDB_BUTTON_TOOLTIP_VALUE, sellValueStr)
         self:AddLine(" ")
         self:AddDoubleLine(L.LDB_BUTTON_TOOLTIP_TOSELL, sellCountStr)
@@ -97,13 +102,24 @@ function StatusPlugin:Update()
     updateStatus()
 end
 
+function StatusPlugin:OnStatusUpdated()
+    isUpdatePending = false
+    self:Update()
+end
+
+function StatusPlugin:OnRefreshTriggered()
+    isUpdatePending = true
+    self:Update()
+end
+
 function StatusPlugin:OnInitialize()
     debugp("Initializing plugin")
 
     -- We don't actually need this to be successful
     self:CreateLDBDataObject()
 
-    Addon:RegisterCallback(Addon.Events.EVALUATION_STATUS_UPDATED, self, self.Update)
+    Addon:RegisterCallback(Addon.Events.EVALUATION_STATUS_UPDATED, self, self.OnStatusUpdated)
+    Addon:RegisterCallback(Addon.Events.ITEMRESULT_REFRESH_TRIGGERED, self, self.OnRefreshTriggered)
 
     -- This will set default values for the plugin data.
     updateStatus()

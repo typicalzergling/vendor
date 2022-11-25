@@ -9,6 +9,9 @@ local Destroy = {
     },
 }
 
+local DESTROY_START = Addon.Events.DESTROY_START
+local DESTROY_COMPLETE = Addon.Events.DESTROY_COMPLETE
+
 function Destroy:OnInitialize()
 end
 
@@ -22,6 +25,7 @@ end
 -- to destroying it. This is not as performant as it could be, but lets be real, destruction is a rare thing, so lets err on
 -- the side of safety rather than performance.
 function Destroy:DestroyNextItem()
+    Addon:RaiseEvent(DESTROY_START)
     for bag=0, Addon:GetNumTotalEquippedBagSlots()  do
         for slot=1, Addon:GetContainerNumSlots(bag) do
 
@@ -44,10 +48,12 @@ function Destroy:DestroyNextItem()
                 end
 
                 -- Return now, because Blizzard only allows one deletion per action.
+                Addon:RaiseEvent(DESTROY_COMPLETE, entry.Item.Link)
                 return true
             end
         end
     end
+    Addon:RaiseEvent(DESTROY_COMPLETE)
     return false
 end
 
