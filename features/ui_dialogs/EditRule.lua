@@ -6,6 +6,7 @@ local RuleType = Addon.RuleType
 local Dialog = Addon.CommonUI.Dialog
 local UI  = Addon.CommonUI.UI
 local RuleSource = Addon.RuleSource
+local Colors = Addon.CommonUI.Colors
 
 Dialogs.EditRuleEvents = {
     HELP_CONTEXT = "set-help-context",
@@ -643,13 +644,13 @@ function EditRuleParamItem:OnModelChange(model)
     -- Set the type and color
     if (model.Type == "boolean") then
         self.type:SetText("B")
-        self.type:SetTextColor(EPIC_PURPLE_COLOR:GetRGBA())
+        self.type:SetTextColor(Colors.EPIC_PURPLE_COLOR:GetRGBA())
     elseif (model.Type == "number" or model.Type == "numeric") then
         self.type:SetText("N")
-        self.type:SetTextColor(ORANGE_FONT_COLOR:GetRGBA())
+        self.type:SetTextColor(Colors.LEGENDARY_ORANGE_COLOR:GetRGBA())
     elseif (model.Type == "string") then
         self.type:SetText("S")
-        self.type:GetTextColor(GREEN_FONT_COLOR:GetRGBA())
+        self.type:GetTextColor(Colors.UNCOMMON_GREEN_COLOR:GetRGBA())
     end
 
     if (self.ReadOnly) then

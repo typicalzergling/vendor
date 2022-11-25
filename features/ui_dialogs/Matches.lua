@@ -4,6 +4,7 @@ local MatchesTab = {}
 local Dialog = Addon.CommonUI.Dialog
 local EditRuleEvents = Addon.Features.Dialogs.EditRuleEvents
 local UI = Addon.CommonUI.UI
+local Colors = Addon.CommonUI.Colors
 
 --[[
     Called when the matches 
@@ -67,11 +68,11 @@ end
 
 local function formatValue(value)
     if (type(value) == "boolean") then
-        return EPIC_PURPLE_COLOR:WrapTextInColorCode(tostring(value))
+        return Colors.EPIC_PURPLE_COLOR:WrapTextInColorCode(tostring(value))
     elseif (type(value) == "number") then
-        return ORANGE_FONT_COLOR:WrapTextInColorCode(tostring(value))
+        return Colors.LEGENDARY_ORANGE_COLOR:WrapTextInColorCode(tostring(value))
     elseif (type(value) == "string") then
-        return GREEN_FONT_COLOR:WrapTextInColorCode("\"" .. value .. "\"")
+        return Colors.GREEN_FONT_COLOR:WrapTextInColorCode("\"" .. value .. "\"")
     end
 
     return value

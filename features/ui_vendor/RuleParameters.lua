@@ -145,7 +145,7 @@ function StringParameter:SetParam(param)
 end
 
 function StringParameter:SetValue(value)
-    assert(type(value) == "number")
+    assert(type(value) == "string")
     self.value:SetText(tostring(value))
 end
 

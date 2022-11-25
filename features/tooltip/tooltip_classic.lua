@@ -165,7 +165,7 @@ function Tooltip:AddItemTooltipLines(tooltip)
             ruleId = nil
             ruleName = nil
             ruleType = nil
-            Addon:Debug("tooltip", "Invalid item with valid GUID: %s - %s", tostring(guid))
+            Addon:Debug("tooltip", "Invalid item with valid GUID: %s", tostring(guid))
         else
             itemGUID = item.Item.GUID
             result = item.Result.Action
