@@ -110,7 +110,6 @@ function ParameterEditor:GetType()
 end
 
 function ParameterEditor:SetType(type)
-    print("setType", type)
     --@debug@
     local valid = false
     for k, v in pairs(ParameterType) do

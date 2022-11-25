@@ -45,8 +45,6 @@ function MerchantButton:ON_MERCHANT_SHOW()
 	debugp("merchant open")
 	MerchantButton.SetupButton()
 
-	print("self", self)
-
 	Addon:RegisterCallback(AUTO_SELL_START, self, self.OnAutoSellStarted)
 	Addon:RegisterCallback(AUTO_SELL_COMPLETE, self, self.OnAutoSellComplete)
 	Addon:RegisterCallback(PROFILE_CHANGED, MerchantButton, MerchantButton.SetupButton)
