@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-	<Script file="vendor/merchantbutton.lua"/>
+	<Script file="merchantbutton.lua"/>
 
-	<!-- Rules dialog Frame -->
+	<!-- Merchant Button Frame -->
 	<Frame name="Vendor_Merchant_Button" virtual="true" hidden="true" frameStrata="HIGH">
 		<Size x="132" y="76"/>
 		<Anchors>
@@ -54,7 +54,9 @@
 			</Button>			
 		</Frames>
 		<Scripts>
-			<OnLoad>Vendor.LoadImplementation(self, nil, "MerchantButton")</OnLoad>
+			<OnLoad>self.Invoke(self, "OnLoad")</OnLoad>
+			<OnShow>self.Invoke(self, "OnShow")</OnShow>
+			<OnHide>self.Invoke(self, "OnHide")</OnHide>
 		</Scripts>
 	</Frame>
 </Ui>

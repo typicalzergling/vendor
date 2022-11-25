@@ -52,6 +52,7 @@ features\ui_vendor\vendor.xml
 features\history\history.xml
 features\status\status.xml
 features\minimapbutton\minimapbutton.xml
+features\merchantbutton\merchantbutton.xml
 
 # public API export should be last
 publicAPI.lua

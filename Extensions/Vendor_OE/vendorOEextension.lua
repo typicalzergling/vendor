@@ -1,32 +1,30 @@
 -- Oribos Exchange Extension for Vendor
 local AddonName = select(1, ...);
 
--- Docs for OE say you can pass in a link but the lua error when I tried says otherwise.
--- After investigating it appears to expect ItemIds only. Author of OE needs to test the
--- input to his function and then strip out the info for more accurate results.
--- Item Id is not very good results, but alas I've come this far....
 local function baseMarketInfo(item, key)
-    if not OEMarketInfo then return -1 end
+    assert(item and key, string.format("Invalid input to baseMarketInfo. Item: %s  Key: %s", tostring(item), tostring(key)))
+    assert(OEMarketInfo, "OEMarketInfo is missing, should have detected that before now")
     local result = OEMarketInfo(item)
     if not result or type(result) ~= "table" then return -1 end
+    if not result['input'] == item then return -1 end
     if not result[key] then return -1 end
     return result[key]
 end
 
 local function market()
-    return baseMarketInfo(Id, "market")
+    return baseMarketInfo(Link, "market")
 end
 
 local function region()
-    return baseMarketInfo(Id, "region")
+    return baseMarketInfo(Link, "region")
 end
 
 local function days()
-    return baseMarketInfo(Id, "days")
+    return baseMarketInfo(Link, "days")
 end
 
 local function age()
-    return baseMarketInfo(Id, "age")
+    return baseMarketInfo(Link, "age")
 end
 
 local function registerOEExtension()

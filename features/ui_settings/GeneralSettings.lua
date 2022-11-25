@@ -47,7 +47,7 @@ function GeneralSettings:CreateSell(list)
 	setting.Margins = INDENT
 
 	local buyback = Settings.CreateSetting(Addon.c_Config_SellLimit, true)
-	setting = list:AddSetting(buyback, "OPTIONS_SETTINGNAME_BUYBACK", "OPTIONS_SETTINGDESC_BUYBACK", autosell)
+	setting = list:AddSetting(buyback, "OPTIONS_SETTINGNAME_BUYBACK", "OPTIONS_SETTINGDESC_BUYBACK")
 	setting.Margins = INDENT
 
 end
