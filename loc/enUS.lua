@@ -515,6 +515,15 @@ IMPORTLIST_MARKDOWN_FMT = [[
 You are importing a list from %s-%s which contains %d item%s are you sure you
 want to continue?
 ]],
+IMPORTRULE_MARKDOWN_FMT = [[
+#Import Rule
+
+%s
+
+> %s
+
+You are importing a rule shared by %s-%s, are you sure you want to continue?
+]],
 
 -- List Pane / Dialog
 EDIT_LIST = "Edit",

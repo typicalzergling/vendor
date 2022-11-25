@@ -302,13 +302,13 @@ end
 function RuleEditor:GetExportValue()
     return {
         Content = "customrule",
-        Items = {
+        Items = {{
             Name = self.name,
             Description = self.description,
             Script = self.script,
             Type = self.type,
             Params = self.params,
-        }
+        }}
     }
 end
 

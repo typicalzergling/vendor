@@ -4,5 +4,6 @@
     <Script file="importdialog.lua"/>
     <Script file="exportdialog.lua"/>
     <Script file="importlist.lua"/>
+    <Script file="importrule.lua"/>
     <Include file="importui.xml"/>
 </Ui>
