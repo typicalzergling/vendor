@@ -75,11 +75,11 @@ function BooleanParameter:SetParam(param)
     Mixin(value, Addon.CommonUI.Mixins.Border)
     value:OnBorderLoaded(nil, Colors.CHECKBOX_BORDER, Colors.CHECKBOX_BACK)
 
-    value:SetScript("OnClick", function(value)
-            if (value:GetChecked()) then
-                value.check:Show()
+    value:SetScript("OnClick", function(cb)
+            if (cb:GetChecked()) then
+                cb.check:Show()
             else
-                value.check:Hide()
+                cb.check:Hide()
             end
             self:InvokeCallback()
         end)
@@ -97,10 +97,10 @@ end
 
 --[[ Sets teh value of a boolean param ]]
 function BooleanParameter:SetValue(value)
-    if (value) then
+    if (value and not self.value:GetChecked()) then
         self.value:SetChecked(true)
         self.value.check:Show()
-    else
+    elseif (not value and self.value:GetChecked()) then
         self.value:SetChecked(true)
         self.value.check:Hide()
     end
