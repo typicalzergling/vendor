@@ -430,7 +430,7 @@ function Addon:ClearBlocklist(list)
     if (isSystemListType(list)) then
         SystemBlockList:New(listType):Clear()
         -- Clear the entire cache in this case.
-        Addon:ClearItemResultCache()
+        Addon:ClearItemResultCache("Blocklist Cleared")
         return
     end
 

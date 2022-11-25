@@ -179,7 +179,7 @@ function Evaluation:RemoveItemResultFromCacheByGUID(guid)
     debugp("Removed %s from cache from bag %s and slot %s", tostring(item.Item.Link), tostring(item.Item.Bag), tostring(item.Item.Slot))
     itemResultCache[guid] = nil
 
-    -- Wheneve we remove a cache entry it means something is likely stale, clear the tooltip so it refreshes.
+    -- Whenever we remove a cache entry it means something is likely stale, clear the tooltip so it refreshes.
     Addon:ClearTooltipResultCache()
 
     -- Signal the update
@@ -217,13 +217,13 @@ function Evaluation:GetItemResultFromItemResultCacheByGUID(guid)
 end
 
 -- Nuke the entire site from orbit; it's the only way to be sure.
-function Evaluation:ClearItemResultCache()
+function Evaluation:ClearItemResultCache(reason)
     -- Clear it all
     itemResultCache = {}
     bagItemMap = {}
     -- Anytime the Result Cache gets cleared, the Tooltip Result Cache also needs clearing.
     Addon:ClearTooltipResultCache()
-    debugp("ItemResultCache cleared.")
+    debugp("ItemResultCache cleared. Reason: %s", tostring(reason) )
     Addon:RaiseEvent(ITEMRESULT_CACHE_CLEARED)
     return
 end

@@ -48,6 +48,7 @@
 
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
+local debugp = function (...) Addon:Debug("extensions", ...) end
 
 local Package = select(2, ...);
 local AddonName = select(1, ...);
@@ -404,6 +405,14 @@ function Extensions:Register(extension)
     if (not extension or (type(extension) ~= "table")) then
         error("An invalid argument was provided for the extension.", 2);
     end
+
+    -- Check version of the extension. Silently ignore old un-versioned extensions.
+    if not extension.Version then
+        debugp("Ignoring Unversioned Extension: %s", tostring(extension.Source))
+        return true
+    end
+
+
     local valid, name = validateExtension(extension);
     if (not valid) then
         error(name, 2);

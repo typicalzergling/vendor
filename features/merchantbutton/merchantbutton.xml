@@ -10,7 +10,7 @@
 		<Layers>
 			<Layer level="BACKGROUND" textureSubLevel="-2">
 				<Texture parentKey="Background">
-					<Color r="0.0" g="0.0" b="0.0" a="0.50"/>
+					<Color r="0.2" g="0.2" b="0.2" a="1"/>
 				<Anchors>
 					<Anchor point="TOPLEFT"/>
 					<Anchor point="BOTTOMRIGHT"/>
@@ -24,16 +24,17 @@
 						<KeyValue key="LocKey" value="ADDON_NAME" type="string"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOOPLEFT" x="8" y="-4"/>
+						<Anchor point="TOPLEFT" x="8" y="-4"/>
 						<Anchor point="TOPRIGHT" x="-8" y="-4"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button parentKey="Sell" inherits="CommonUI_CommandButton">				
+			<Button parentKey="Sell" inherits="CommonUI_CommandButton">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnSellClicked"/>
+					<KeyValue key="TooltipOffsetX" value="24" type="number"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Title" y="-6"/>
@@ -44,13 +45,14 @@
 			<Button parentKey="Destroy" inherits="CommonUI_CommandButton">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnDestroyClicked"/>
+					<KeyValue key="TooltipOffsetX" value="24" type="number"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="BOTTOM" y="6" />
 					<Anchor point="LEFT" relativeKey="$parent.Sell"/>
 					<Anchor point="RIGHT" relativeKey="$parent.Sell"/>
 				</Anchors>
-			</Button>			
+			</Button>
 		</Frames>
 	</Frame>
 </Ui>
