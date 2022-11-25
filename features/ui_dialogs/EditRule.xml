@@ -164,6 +164,7 @@
 				<Size x="100" y="20"/>
 				<KeyValues>
 					<KeyValue key="Label" value="EDITRULE_DELPARAM_LABEL"/>
+					<KeyValue key="Handler" value="OnRemoveParam"/>
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeKey="$parent.addParam" x="-4"/>

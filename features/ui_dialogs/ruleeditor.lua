@@ -28,6 +28,7 @@ function RuleEditor:Init(rule, copy)
     self:GenerateCallbackEvents(events)
     
     if (rule) then
+        self.scriptValid = true
         self.name = rule.Name
         self.description = rule.Description
         self.type = rule.Type
@@ -42,9 +43,14 @@ function RuleEditor:Init(rule, copy)
         else
             self.rule = rule
         end
+
+        if (type(rule.Params) == "table") then
+            self.params = Addon.DeepTableCopy(rule.Params)
+        end
     else
         self.name = locale.EDITRULE_DEFAULT_NAME
         self.type = RuleType.KEEP
+        self.scriptValid = false
     end
 end
 
@@ -88,6 +94,18 @@ end
 --[[ Retrieve the script for this rule ]]
 function RuleEditor:GetScript()
     return self.script
+end
+
+--[[ Check if the script is valid ]]
+function RuleEditor:IsScriptValid()
+    return self.scriptValid
+end
+
+--[[ Mark the script as valid ]]
+function RuleEditor:SetScriptValid(valid)
+    if (not self:IsReadOnly()) then
+        self.scriptValid = valid
+    end
 end
 
 --[[ Change the script ]]
@@ -187,7 +205,6 @@ function RuleEditor:UpdateParameter(key, ptype, name, default)
         return false, Errors.INVALID_PARAM_NAME
     end
 
-    print("ptype=", ptype)
     if ((ptype ~= "boolean") and (ptype ~= "number") and
         (ptype ~= "numeric") and (ptype ~= "string")) then
         return false, Errors.INVALID_PARAM_TYPE
@@ -290,7 +307,7 @@ function RuleEditor:GetExportValue()
             Description = self.description,
             Script = self.script,
             Type = self.type,
-            Params = nil,
+            Params = self.params,
         }
     }
 end
@@ -304,7 +321,8 @@ function RuleEditor:Save()
         Name = self.name,
         Description = self.description,
         Script = self.script,
-        Type = self.type
+        Type = self.type,
+        Params = self.params,
     }
 
     if (self.rule) then

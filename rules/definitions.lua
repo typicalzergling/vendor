@@ -523,6 +523,7 @@ function Rules.UpdateDefinition(ruleDef)
         custom.Type = (ruleDef.Type or SELL_RULE);
         custom.needsMigration = nil;
         custom.interfaceversion = INTERFACE_VERSION;
+        custom.Params = ruleDef.Params
         Rules.OnDefinitionsChanged("UPDATE", custom.Id);
     else
         Vendor_CustomRuleDefinitions = Vendor_CustomRuleDefinitions or {};
@@ -537,6 +538,7 @@ function Rules.UpdateDefinition(ruleDef)
                 Custom = true,
                 needsMigration = false,
                 interfaceversion = INTERFACE_VERSION,
+                Params = ruleDef.Params
             });
         Rules.OnDefinitionsChanged("CREATE", ruleDef.Id);
     end

@@ -289,14 +289,19 @@ function EditRule:UpdateMatches()
     Addon:Debug("editrule", "UpdateMatches :: START")
 
     local script = self.editor:GetScript()
-    local parameters, info = self:GetCurrentParameters()
-    local matches = rules:GetMatches(script, parameters)
+    if (self.editor:IsScriptValid()) then
+        local parameters, info = self:GetCurrentParameters()
+        local matches = rules:GetMatches(script, parameters)
 
-    if (matches) then        
-        Addon:Debug("editrule", "UpdateMatches :: %s", table.getn(matches))
-        self:RaiseEvent(Dialogs.EditRuleEvents.SHOW_MATCHES, matches, info)
+        if (matches) then        
+            Addon:Debug("editrule", "UpdateMatches :: %s", table.getn(matches))
+            self:RaiseEvent(Dialogs.EditRuleEvents.SHOW_MATCHES, matches, info)
+        else
+            Addon:Debug("editrule", "UpdateMatches :: no matches found")
+            self:RaiseEvent(Dialogs.EditRuleEvents.SHOW_MATCHES, {}, info)
+        end
     else
-        Addon:Debug("editrule", "UpdateMatches :: no matches found")
+        Addon:Debug("editrule", "UpdateMatches :: invalid script clearing matches")
         self:RaiseEvent(Dialogs.EditRuleEvents.SHOW_MATCHES, {}, info)
     end
 end
@@ -310,12 +315,13 @@ function EditRule:OnScriptChanged(text)
 
         if (text and string.len(text) ~= 0) then
             local rules = Addon:GetFeature("Rules")
-            local valid, msg = rules:ValidateRule(text)
+            local valid, msg = rules:ValidateRule(text, self:GetCurrentParameters())
             Addon:Debug("editrule", "Validate script '%s' [%s, %s]", text, valid, msg or "")
 
             if (valid) then
                 self.ruleStatus:SetStatus("ok")
                 self:Debounce(.75, self.UpdateMatches)
+                self.editor:SetScriptValid(true)
             else
                 local errorMessage = nil
                 local _, err = string.match(msg, "(%[.*%]:%d:)(.*)")
@@ -325,6 +331,7 @@ function EditRule:OnScriptChanged(text)
                     errorMessage = Addon.StringTrim(msg)
                 end
                 self.ruleStatus:SetStatus("invalid", errorMessage)
+                self.editor:SetScriptValid(false)
             end
         end
     end
@@ -501,6 +508,7 @@ function EditRule:Setup()
         editor:RegisterCallback(Dialogs.RuleEditorEvents.CHANGED,
             function(_, what)
                 if (what == "params") then
+                    self:Debounce(.25, self.UpdateMatches)
                     self.paramList:Rebuild()
                 end
                 self:Update()
@@ -673,6 +681,21 @@ end
 function EditRule:OnCreateParam()   
     assert(not self.editor:IsReadOnly(), "Why are trying to create a parameter on a read-only rule")
     table.insert(self.open, Dialogs:CreateRuleParam(self.editor))
+end
+
+function EditRule:OnRemoveParam()
+    local param = self.paramList:GetSelected()
+    if (param) then
+        self:MessageBox("EDITPARM_REMOVE_PARAM_CAPTION", 
+            locale:FormatString("EDITPARAM_REMOVE_PARAM", param.Name, param.Key),
+            {
+                { text = "EDITPARAM_CONFIRM_REMOVE", handler = function()
+                        self.editor:RemoveParameter(param.Key)
+                    end
+                },
+                { text = "EDITPARAM_KEEP_PARAM", default = true },
+            })
+    end
 end
 
 Dialogs.EditRule = EditRule

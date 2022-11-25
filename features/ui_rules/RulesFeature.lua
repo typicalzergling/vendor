@@ -19,7 +19,7 @@ end
 --[[
     Validate the sepcified script, returns true/false and a message. 
 ]]
-function RulesFeature:ValidateRule(script, engine, parameters)
+function RulesFeature:ValidateRule(script, parameters)
     Addon:Debug("rules", "Validating rule script (no cached values)")
 
     if (not engine and not self.validateEngine) then
