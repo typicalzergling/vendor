@@ -43,6 +43,10 @@ function RuleEditor:Init(rule, copy)
         else
             self.rule = rule
         end
+
+        if (type(rule.Params) == "table") then
+            self.params = Addon.DeepTableCopy(rule.Params)
+        end
     else
         self.name = locale.EDITRULE_DEFAULT_NAME
         self.type = RuleType.KEEP
@@ -303,7 +307,7 @@ function RuleEditor:GetExportValue()
             Description = self.description,
             Script = self.script,
             Type = self.type,
-            Params = nil,
+            Params = self.params,
         }
     }
 end
@@ -317,7 +321,8 @@ function RuleEditor:Save()
         Name = self.name,
         Description = self.description,
         Script = self.script,
-        Type = self.type
+        Type = self.type,
+        Params = self.params,
     }
 
     if (self.rule) then
