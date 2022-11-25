@@ -53,7 +53,7 @@ function QuickSettings:CreateList(parent)
             end
         end)
     local setting = list:AddSetting(sell, "QUICK_SELL_SETTING", "QUICK_SELL_SETTING_HELP")
-    setting.isNew = true
+    setting.isNew = false
 
     -- Quick repair setting, this also enables guild repair
     local repair = Settings.CreateSetting(nil, isAutorepairEnabled(self),
@@ -68,11 +68,16 @@ function QuickSettings:CreateList(parent)
             end
         end)
     setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "QUICK_REPAIR_SETTING_HELP")
-    setting.isNew = true
+    setting.isNew = false
 
     -- Quick setting for Minimapbutton
     local minimapbutton = Addon.Features.MinimapButton:CreateSettingForMinimapButton()
     setting = list:AddSetting(minimapbutton, "OPTIONS_SETTINGNAME_MINIMAP", "QUICK_MINIMAP_SETTING_HELP")
+    setting.isNew = false
+
+    -- Quick setting for Merchantbutton
+    local merchantbutton = Addon.Features.MerchantButton:CreateSettingForMerchantButton()
+    setting = list:AddSetting(merchantbutton, "OPTIONS_SETTINGNAME_MERCHANT", "QUICK_MERCHANT_SETTING_HELP")
     setting.isNew = true
 
 	return list;

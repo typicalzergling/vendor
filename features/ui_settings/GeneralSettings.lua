@@ -27,6 +27,10 @@ function GeneralSettings:CreateList(parent)
 	local minimapbutton = Addon.Features.MinimapButton:CreateSettingForMinimapButton()
 	list:AddSetting(minimapbutton, "OPTIONS_SETTINGNAME_MINIMAP", "OPTIONS_SETTINGDESC_MINIMAP")
 
+	-- merchant button
+	local merchantbutton = Addon.Features.MerchantButton:CreateSettingForMerchantButton()
+	list:AddSetting(merchantbutton, "OPTIONS_SETTINGNAME_MERCHANT", "OPTIONS_SETTINGDESC_MERCHANT")
+
 	self:CreateSell(list)
 	self:CreateRepair(list)
 	self:CreateTooltip(list)
