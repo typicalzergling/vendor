@@ -68,8 +68,7 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_Tooltip_Rule] = true,
     [Addon.c_Config_MaxSellItems] = false,
     [Addon.c_Config_MinimapData] = {},
-    [Addon.c_Config_MinimapButton] = true,
-    [Addon.c_Config_MerchantButton] = true,
+    [Addon.c_Config_MerchantData] = {},
 }
 
 --*****************************************************************************

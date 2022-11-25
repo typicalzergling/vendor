@@ -46,21 +46,21 @@ function MerchantButton:OnInitialize()
 	self.sellCount = 0
 	self.destroyCount = 0
 	self.nextDestroy = ""
-	self.enabled = true
+	self.isOpen = false
+	self.enabled = self.IsMerchantButtonEnabled()
 end
 
 function MerchantButton:OnTerminate()
+	self:SaveState()
 end
 
-function MerchantButton:ON_MERCHANT_SHOW()
-	debugp("merchant open")
-	MerchantButton.SetupButton()
+function MerchantButton:Enable()
+	MerchantButton:SetupButton()
 	if self.enabled then
 		Addon:RegisterCallback(AUTO_SELL_START, self, self.OnAutoSellStarted)
 		Addon:RegisterCallback(AUTO_SELL_COMPLETE, self, self.OnAutoSellComplete)
 		Addon:RegisterCallback(DESTROY_START, self, self.OnDestroyStarted)
 		Addon:RegisterCallback(DESTROY_COMPLETE, self, self.OnDestroyComplete)
-		Addon:RegisterCallback(PROFILE_CHANGED, MerchantButton, MerchantButton.SetupButton)
 		Addon:RegisterCallback(EVALUATION_STATUS_UPDATED, self, self.OnStatusUpdated)
 		Addon:RegisterCallback(ITEMRESULT_REFRESH_TRIGGERED, self, self.OnRefreshTriggered)
 
@@ -76,8 +76,7 @@ function MerchantButton:ON_MERCHANT_SHOW()
 	end
 end
 
-function MerchantButton:ON_MERCHANT_CLOSED()
-	debugp("merchant closed")
+function MerchantButton:Disable()
 	if (MerchantButton.frame) then
 		MerchantButton.frame:Hide()
 	end
@@ -88,6 +87,18 @@ function MerchantButton:ON_MERCHANT_CLOSED()
 	Addon:UnregisterCallback(DESTROY_COMPLETE, self)
 	Addon:UnregisterCallback(EVALUATION_STATUS_UPDATED, self)
 	Addon:UnregisterCallback(ITEMRESULT_REFRESH_TRIGGERED, self)
+end
+
+function MerchantButton:ON_MERCHANT_SHOW()
+	debugp("merchant open")
+	self.isOpen = true
+	self:Enable()
+end
+
+function MerchantButton:ON_MERCHANT_CLOSED()
+	debugp("merchant closed")
+	self.isOpen = false
+	self:Disable()
 end
 
 function MerchantButton:OnStatusUpdated()
@@ -199,26 +210,22 @@ function MerchantButtonFrame:OnDestroyClicked()
 	end
 end
 
-function MerchantButton.SetupButton()
-	--local state = Addon:GetProfile():GetValue(MERCHANT)
-	local state = true
-	debugp("Updating button state: %s", state)
-	if (state) then
-		if (not MerchantButton.frame) then
-			local frame = CreateFrame("Frame", MerchantButton.c_ButtonFrameName, MerchantFrame, "Vendor_Merchant_Button")
+function MerchantButton:SetupButton()
+	if (self.enabled) then
+		if (not self.frame) then
+			local frame = CreateFrame("Frame", self.c_ButtonFrameName, MerchantFrame, "Vendor_Merchant_Button")
 			Addon.CommonUI.UI.Attach(frame, MerchantButtonFrame)
 			frame:SetSellState(false, MERCHANT_SELL_ITEMS, 0)
 			frame:SetDestroyState(false, MERCHANT_DESTROY_ITEMS, 0)	
-			MerchantButton.frame = frame;
+			self.frame = frame;
 		end
-		MerchantButton.frame:Show()
+		self.frame:Show()
 	else
-		if (MerchantButton.frame) then
-			MerchantButton.frame:Hide()
+		if (self.frame) then
+			self.frame:Hide()
 		end
 	end
 end
-
 
 function MerchantButton:OnAutoSellStarted(limit)
 	debugp("Merchant button auto-sell started (limit: %d) [%d]", limit, self.total or 0)
@@ -243,5 +250,86 @@ function MerchantButton:OnDestroyComplete(item)
 	self:UpdateSellState()
 end   
 
+
+-- Default merchant settings
+merchantDefault = {
+	enabled = true,
+}
+
+local function resetMerchantDataToDefault()
+    debugp("Resetting MerchantButton data to defaults.")
+    Addon:SetAccountSetting(Addon.c_Config_MerchantData, merchantDefault)
+end
+
+local function updateMerchantButtonVisibility()
+    local accountMerchantData = Addon:GetAccountSetting(Addon.c_Config_MerchantData)
+    assert(accountMerchantData and type(accountMerchantData.enabled) == "boolean", "Error retrieving settings for MerchantButton")
+    debugp("Updating button visibility. Enabled = %s", tostring(accountMerchantData.enabled ))
+    if accountMerchantData.enabled then
+		if not MerchantButton.enabled then
+    	    MerchantButton.enabled = true
+			if MerchantButton.isOpen then
+				MerchantButton:Enable()
+			end
+		end
+    else
+		if MerchantButton.enabled then
+			MerchantButton.enabled = false
+			if MerchantButton.isOpen then
+				MerchantButton:Disable()
+			end
+		end
+    end
+end
+
+function MerchantButton:SaveState()
+    -- It's possible the minimap button wasn't created if the dependency is missing.
+    debugp("Saving MerchantButton Settings")
+    -- The button holds truth since it can be manipulated by other addons to manage how minimap buttons
+    -- appear. So another addon may disable our minimap button on the user's behalf so we will reflect
+    -- that state here.
+    -- It's possible the minimap button wasn't created if the dependency is missing.
+
+    -- Remove old bad data by creating new table.
+    local state = {
+        enabled = self.enabled,
+    }
+
+    debugp("State: Enabled = %s", tostring(state.enabled))
+    Addon:SetAccountSetting(Addon.c_Config_MerchantData, state)
+end
+
+function MerchantButton:CreateSettingForMerchantButton()
+    return Addon.Features.Settings.CreateSetting(nil, true, self.IsMerchantButtonEnabled, self.SetMerchantButtonEnabled)
+end
+
+function MerchantButton.IsMerchantButtonEnabled()
+    local accountMerchantData = Addon:GetAccountSetting(Addon.c_Config_MerchantData)
+    if accountMerchantData then
+        return accountMerchantData.enabled
+    else
+        -- Going to assume that if the data is corrupted or missing they want the minimap button.
+        -- this should help get back into a good state.
+        resetMerchantDataToDefault()
+        return true
+    end
+end
+
+function MerchantButton.SetMerchantButtonEnabled(value)
+    local accountMerchantData = Addon:GetAccountSetting(Addon.c_Config_MerchantData)
+    if value then
+        accountMerchantData.enabled = true
+    else
+        accountMerchantData.enabled = false
+    end
+    Addon:SetAccountSetting(Addon.c_Config_MerchantData, accountMerchantData)
+end
+
+function MerchantButton:OnAccountSettingChange(settings)
+    if (settings[Addon.c_Config_MerchantData]) then
+        debugp("MerchantButton Settings Update")
+        updateMerchantButtonVisibility()
+    end
+end
 
 Addon.Features.MerchantButton = MerchantButton
