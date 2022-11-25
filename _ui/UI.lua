@@ -305,3 +305,9 @@ function UI.Dialog(caption, template, implementation, buttons, ...)
 end
 
 Addon.CommonUI.UI = UI
+
+local function UIAttach(frame, target)
+    UI.Attach(frame, target)
+end
+
+Addon.Public.UIAttach = UIAttach

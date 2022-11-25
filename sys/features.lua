@@ -136,6 +136,11 @@ function Features:EnableFeature(name)
             if (type(value) == "function") then
                 if (Addon:RaisesEvent(name)) then
                     Addon:RegisterCallback(name, feature.instance, value)
+                elseif(string.find(name, "ON_") == 1) then
+                    Addon:RegisterEvent(string.sub(name, 4), 
+                        function(...)
+                            value(feature.instance, ...)
+                        end)
                 end
             end
         end

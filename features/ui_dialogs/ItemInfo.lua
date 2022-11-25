@@ -173,7 +173,6 @@ Addon.Features.Dialogs.ItemInfoTab = {
             local itemproperties = Addon:GetSystem("ItemProperties")
             for name, value in pairs(itemproperties:GetItemPropertiesFromItem(iteminfo.item)) do
                 if not itemproperties:IsPropertyHidden(name) then
-                    --print("Inserting "..name)
                     table.insert(models, {
                         Name = name,
                         Value = value

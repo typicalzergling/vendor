@@ -3,7 +3,7 @@
 
 	<!-- Merchant Button Frame -->
 	<Frame name="Vendor_Merchant_Button" virtual="true" hidden="true" frameStrata="HIGH">
-		<Size x="132" y="76"/>
+		<Size x="132" y="94"/>
 		<Anchors>
 			<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="MerchantFrameBg"/>
 		</Anchors>
@@ -31,32 +31,26 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button parentKey="Sell" inherits="UIPanelButtonTemplate">
-				<Size x="1" y="22"/>
+			<Button parentKey="Sell" inherits="CommonUI_CommandButton">				
+				<KeyValues>
+					<KeyValue key="Handler" value="OnSellClicked"/>
+				</KeyValues>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Title" y="-4"/>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Title" y="-6"/>
 					<Anchor point="RIGHT" relativeKey="$parent.Title"/>
 				</Anchors>
-				<Scripts>
-					<OnClick>self:GetParent().Invoke(self:GetParent(), "OnSellClicked")</OnClick>
-				</Scripts>
 			</Button>
 
-			<Button parentKey="Destroy" inherits="UIPanelButtonTemplate">
-				<Size x="1" y="22"/>
+			<Button parentKey="Destroy" inherits="CommonUI_CommandButton">
+				<KeyValues>
+					<KeyValue key="Handler" value="OnDestroyClicked"/>
+				</KeyValues>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.Sell" y="-4"/>
+					<Anchor point="BOTTOM" y="6" />
+					<Anchor point="LEFT" relativeKey="$parent.Sell"/>
 					<Anchor point="RIGHT" relativeKey="$parent.Sell"/>
 				</Anchors>
-				<Scripts>
-					<OnClick>self:GetParent().Invoke(self:GetParent(), "OnDestroyClicked")</OnClick>
-				</Scripts>
 			</Button>			
 		</Frames>
-		<Scripts>
-			<OnLoad>self.Invoke(self, "OnLoad")</OnLoad>
-			<OnShow>self.Invoke(self, "OnShow")</OnShow>
-			<OnHide>self.Invoke(self, "OnHide")</OnHide>
-		</Scripts>
 	</Frame>
 </Ui>
