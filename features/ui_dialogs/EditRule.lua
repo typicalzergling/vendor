@@ -215,10 +215,15 @@ function EditRule:OnInitDialog(dialog)
     tabs:ShowTab("matches")
     tabs:ShowTab("help")
     self.ruleStatus:SetStatus("unhealthy", "Empty rule")
+    self.open = {}
 end
 
 function EditRule:OnHide()
     self.matches:Call("ClearMatches")
+    for _, open in ipairs(self.open) do
+        open:Hide()
+    end
+    self.open = {}
 end
 
 --[[
@@ -415,7 +420,7 @@ function EditRule:Update()
     UI.Enable(self.name, not readonly)
     UI.Enable(self.description, not readonly)
     UI.Enable(self.script, not readonly)
-    --UI.Enable(self.ruleType, not readonly)
+    UI.Enable(self.ruleType, not readonly)
 
     self:SetButtonState({
         close = {
@@ -475,6 +480,7 @@ function EditRule:Setup()
     self.description:SetText(editor:GetDescription())
     self.script:SetText(editor:GetScript())
     self.ruleType:SetSelected({ [editor:GetType()] = true })
+    self.paramList:Rebuild()
 
     -- Setup the rule status if applicable
     local source, name = editor:GetSource()
@@ -490,9 +496,24 @@ function EditRule:Setup()
         self.ruleStatus:SetStatus("extension", tostring(name))
     end
 
-    if (not editor:IsReadOnly()) then
+    local readOnly = editor:IsReadOnly()
+    if (not readOnly) then
         editor:RegisterCallback(Dialogs.RuleEditorEvents.CHANGED, self.Update, self)
     end
+
+    if (readOnly) then
+        UI.Enable(self.viewParam, false)
+    else
+        UI.Enable(self.addParam, not readOnly)
+        UI.Enable(self.editParam, false)
+        UI.Enable(self.delParam, false)
+        UI.Show(self.viewParam, false)
+    end
+
+    UI.Show(self.addParam, not readOnly)
+    UI.Show(self.viewParam, readOnly)
+    UI.Show(self.delParam, not readOnly)
+    UI.Show(self.editParam, not readOnly)
 end
 
 --[[
@@ -568,6 +589,84 @@ function EditRule:ExportRule()
         assert(self.editor:CanExport(), "This rule cannot be exported")
         export:ShowExportDialog("EXPORT_RULE_CAPTION", self.editor:GetExportValue())
     end
+end
+
+--[[ Get the rule paramaters for this rule ]]
+function EditRule:GetParameters()
+    Addon:Debug("editrule", "Get rule parameters")
+    return self.editor:GetParameters()
+end
+
+--[[ Handle parameter selection change ]]
+function EditRule:OnParamSelected()
+    local  param = self.paramList:GetSelected()
+    if (self.editor:IsReadOnly()) then
+        UI.Enable(self.viewParam, param ~= nil)
+    else
+        UI.Enable(self.editParam, param ~= nil)
+        UI.Enable(self.delParam, param ~= nil)
+    end
+end
+
+local EditRuleParamItem = Mixin({}, Addon.CommonUI.SelectableItem)
+
+function EditRuleParamItem:OnModelChange(model)
+    self.name:SetText(model.Name)
+    self.key:SetText(string.upper(model.Key))
+
+    -- Set the type and color
+    if (model.Type == "boolean") then
+        self.type:SetText("B")
+        self.type:SetTextColor(EPIC_PURPLE_COLOR:GetRGBA())
+    elseif (model.Type == "number" or model.Type == "numeric") then
+        self.type:SetText("N")
+        self.type:SetTextColor(ORANGE_FONT_COLOR:GetRGBA())
+    elseif (model.Type == "string") then
+        self.type:SetText("S")
+        self.type:GetTextColor(GREEN_FONT_COLOR:GetRGBA())
+    end
+
+    if (self.ReadOnly) then
+        UI.SetColor(self.name, "BUTTON_DISABLED_TEXT")
+        UI.SetColor(self.key, "BUTTON_DISABLED_TEXT")
+        UI.SetColor(self.type, "BUTTON_DISABLED_TEXT")
+    end
+end
+
+--[[ Create a new parameter item ]]
+function EditRule:CreateParameterItem(model, parent)
+    local frame
+    if (self.editor:IsReadOnly()) then
+        frame = CreateFrame("Button", nil, parent, "Rule_ParamItem_ReadOnly")
+    else
+        frame = CreateFrame("Button", nil, parent, "Rule_ParamItem")
+    end
+
+    UI.Attach(frame, EditRuleParamItem)
+    return frame
+end
+
+function EditRule:OnEditParam()
+    local param = self.paramList:GetSelected()
+    if (param) then
+        local parameters = self:GetCurrentParameters()
+        local currentValue = nil
+
+        if (type(parameters) == "table") then
+            currentValue = parameters[param.Key]
+        end
+
+        if (self.editor:IsReadOnly()) then
+            Dialogs:ViewRuleParam(param, currentValue)
+        else 
+            Dialogs:EditRuleParam(param, currentValue)
+        end
+    end
+end
+
+function EditRule:OnCreateParam()   
+    assert(not self.editor:IsReadOnly(), "Why are trying to create a parameter on a read-only rule")
+    table.insert(self.open, Dialogs:CreateRuleParam())
 end
 
 Dialogs.EditRule = EditRule

@@ -6,6 +6,7 @@
 	<Script file="Matches.lua"/>
 	<Script file="HelpItem.lua"/>
     <Script file="ruleeditor.lua"/>
+    <Script file="editparamdialog.lua"/>
 
     <Include file="EditTabs.xml"/>
     <Include file="matches.xml"/>

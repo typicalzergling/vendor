@@ -11,6 +11,12 @@ local Events = {
     CHANGED = "rule-editor-changed"
 }
 
+local Errors  = {
+    DUPLICATE_PARAM = "duplicate-param",
+    INVALID_PARAM_TYPE = "invalid-param-type",
+    INVALID_PARAM_NAME = "invalid-param-name"
+}
+
 function RuleEditor:Init(rule, copy)
     self.dirty = false
 
@@ -122,11 +128,67 @@ end
 
 --[[ Gets the parameters for this rule ]]
 function RuleEditor:GetParameters()
-    if (not self.rule or type(self.rule.Params) ~= "table") then
-        return nil
+    if (not self:IsReadOnly()) then
+        if (type(self.params) == "table") then
+            return self.params
+        else
+            return nil
+        end
+    else
+        if (not self.rule or type(self.rule.Params) ~= "table") then
+            return nil
+        end
+
+        return self.rule.Params
+    end
+end
+
+--[[ Add a new parameter to this rule ]]
+function RuleEditor:AddParameter(type, key, name, default)
+    local params = self:GetParameters()
+    if (type(params) == "table") then
+        for _, param in ipairs(params) do
+            if (param.Key == string.upper(key)) then
+                return false, Errors.DUPLICATE_PARAM
+            end
+        end
     end
 
-    return self.rule.Params
+    if (type(name) ~= "string" or string.len(type) == 0) then
+        return false, Errors.INVALID_PARAM_NAME
+    end
+
+    if ((type ~= "boolean") or (type ~= "number") or
+        (type ~= "numeric") or (type ~= "string")) then
+        return false, Errors.INVALID_PARAM_TYPE
+    end
+
+    assert(type(type(default) == "nil" or default) == type)
+    
+    self.params = self.parmas or {}
+    table.insert(self.params, {
+            Key = string.upper(key),
+            Name = name,
+            Type = type,
+            Default = default
+        })
+
+    self:SetDirty(true)
+    self:TriggerEvent(Events.CHANGED, "params")
+end
+
+--[[ Remove a parameter from the rule ]]
+function RuleEditor:RemoveParameter(key)
+    if (type(self.params) == "table") then
+        for i, param in ipairs(self.params) do
+            if (param.Key == string.upper(key)) then
+                table.remove(self.params, i)
+                self:SetDirty(true)
+                self:TriggerEvent(Events.CHANGED, "params")
+                break
+            end
+        end
+    end
 end
 
 --[[ Returns true if the rule is read-only ]]

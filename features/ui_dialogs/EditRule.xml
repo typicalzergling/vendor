@@ -55,14 +55,24 @@
 						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelDescr" y="-76"/>
 					</Anchors>
 				</FontString>
+				<FontString parentKey="labelParam" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITFULE_PARAMETERS_LABEL"/>>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-116"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelScript" y="-116"/>
+					</Anchors>
+				</FontString>
 				<FontString parentKey="labelType" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
 					<KeyValues>
 						<KeyValue key="LocText" value="EDITRULE_TYPE_LABEL"/>>
 						<KeyValue key="Color" value="TEXT"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-116"/>
-						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelScript" y="-116"/>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelParam" y="-116"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelParam" y="-116"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -113,9 +123,62 @@
 				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-4"/>
-					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelType" y="12"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelParam" y="12"/>
 				</Anchors>
 			</Frame>
+
+			<Frame inherits="CommonUI_List" parentKey="paramList">
+				<KeyValues>
+					<KeyValue key="EmptyText" value="EDITRULE_NOPARAMS_TEXT"/>
+					<KeyValue key="ItemSource" value="GetParameters"/>
+					<KeyValue key="ItemCreator" value="CreateParameterItem"/>
+					<KeyValue key="OnSelection" value="OnParamSelected"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelParam" x="0" y="-6"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelType" x="0" y="32"/>
+				</Anchors>
+			</Frame>
+
+			<Button inherits="CommonUI_CommandButton" parentKey="addParam">
+				<Size x="100" y="20"/>
+				<KeyValues>
+					<KeyValue key="Label" value="EDITRULE_ADDPARAM_LABEL"/>
+					<KeyValue key="Handler" value="OnCreateParam"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.paramList" x="0" y="-4"/>
+				</Anchors>
+			</Button>
+			<Button inherits="CommonUI_CommandButton" parentKey="viewParam" hidden="true">
+				<Size x="100" y="20"/>
+				<KeyValues>
+					<KeyValue key="Label" value="EDITRULE_VIEWPARAM_LABEL"/>
+					<KeyValue key="Handler" value="OnEditParam"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.paramList" x="0" y="-4"/>
+				</Anchors>
+			</Button>
+			<Button inherits="CommonUI_CommandButton" parentKey="delParam">
+				<Size x="100" y="20"/>
+				<KeyValues>
+					<KeyValue key="Label" value="EDITRULE_DELPARAM_LABEL"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeKey="$parent.addParam" x="-4"/>
+				</Anchors>
+			</Button>
+			<Button inherits="CommonUI_CommandButton" parentKey="editParam">
+				<Size x="100" y="20"/>
+				<KeyValues>
+					<KeyValue key="Label" value="EDITRULE_EDITPARAM_LABEL"/>
+					<KeyValue key="Handler" value="OnEditParam"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeKey="$parent.delParam" x="-4"/>
+				</Anchors>
+			</Button>
 
 			<Frame inherits="CommonUI_Chips" parentKey="ruleType">
 				<KeyValues>
@@ -138,5 +201,152 @@
 
         </Frames>
     </Frame>
+
+	<Button name="Rule_ParamItem" virtual="true">
+		<Size x="1" y="20"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="type" maxLines="1" justifyH="RIGHT" justifyV="MIDDLE" inherits="GameFontNormalSmall">
+					<Size x="24" y="1"/>
+					<KeyValues>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="key" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormalSmall">
+					<Size x="128" y="1"/>
+					<KeyValues>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.type" relativePoint="TOPLEFT" x="-2"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.type" relativePoint="BOTTOMLEFT" x="-2"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="name" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormalSmall">
+					<KeyValues>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.key" relativePoint="BOTTOMLEFT" x="-2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<Button name="Rule_ParamItem_ReadOnly" virtual="true" inherits="Rule_ParamItem">
+		<KeyValues>
+			<KeyValue key="ReadOnly" value="true" type="boolean"/>
+		</KeyValues>
+	</Button>
+
+	<Frame name="Rule_EditParamDialog" virtual="true">
+		<Size x="280" y="280"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="labelName" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="RDITPARAM_NAME_LABEL"/>>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="labelKey" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITPARAM_KEY_LABEL"/>>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-48"/>
+						<Anchor point="TOPRIGHT"  relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-48"/>
+					</Anchors>
+				</FontString>				
+				<FontString parentKey="labelType" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITPARAM_TYPE_LABEL"/>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.labelKey" relativePoint="BOTTOMLEFT" y="-48"/>
+						<Anchor point="TOPRIGHT"  relativeKey="$parent.labelKey" relativePoint="BOTTOMRIGHT" y="-48"/>
+					</Anchors>
+				</FontString>				
+				<FontString parentKey="labelDefault" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITPARAM_DEFAULT_LABEL"/>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.labelType" relativePoint="BOTTOMLEFT" y="-48"/>
+						<Anchor point="TOPRIGHT"  relativeKey="$parent.labelType" relativePoint="BOTTOMRIGHT" y="-48"/>
+					</Anchors>
+				</FontString>			
+				<FontString parentKey="labelCurrent" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
+					<KeyValues>
+						<KeyValue key="LocText" value="EDITPARAM_CURRENT_LABEL"/>
+						<KeyValue key="Color" value="TEXT"/>
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.labelDefault" relativePoint="BOTTOMLEFT" y="-48"/>
+						<Anchor point="TOPRIGHT"  relativeKey="$parent.labelDefault" relativePoint="BOTTOMRIGHT" y="-48"/>
+					</Anchors>
+				</FontString>				
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="name" inherits="CommonUI_Edit">
+				<KeyValues>
+					<KeyValue key="Handler" value="OnNameChanged"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-6"/>
+					<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.labelKey" relativePoint="TOPRIGHT" y="12"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="key" inherits="CommonUI_Edit">
+				<KeyValues>
+					<KeyValue key="Handler" value="OnKeyChanged"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.labelKey" relativePoint="BOTTOMLEFT" y="-6"/>
+					<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.labelType" relativePoint="TOPRIGHT" y="12"/>
+				</Anchors>
+			</Frame>
+			<Frame inherits="CommonUI_Chips" parentKey="paramType">
+				<KeyValues>
+					<KeyValue key="IsExclusive" value="true" type="boolean"/>
+					<KeyValue key="OneSize" value="true" type="boolean"/>
+					<KeyValue key="Handler" value="OnParamTypeChange"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelType" x="0" y="-8"/>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelType" x="0" y="-8"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="default" inherits="CommonUI_Edit">
+				<KeyValues>
+					<KeyValue key="Handler" value="OnDefaultChanged"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.labelDefault" relativePoint="BOTTOMLEFT" y="-6"/>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelCurrent" x="0" y="-6"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="current" inherits="CommonUI_Edit">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.labelCurrent" relativePoint="BOTTOMLEFT" y="-6"/>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelCurrent" x="0" y="-6"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
 </Ui>
 

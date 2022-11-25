@@ -268,7 +268,7 @@ end
 --[[ 
     Create a new dialog from the specified paramaters
 ]]
-function UI.Dialog(caption, template, implementation, buttons, params)
+function UI.Dialog(caption, template, implementation, buttons, ...)
     local dialog = CreateFrame("Frame", nil, UIParent, "DialogBox_Base")
     local content = CreateFrame("Frame", nil, dialog, template)
 
@@ -286,7 +286,7 @@ function UI.Dialog(caption, template, implementation, buttons, params)
     end
 
     if (type(content.OnInitDialog) == "function") then
-        content:OnInitDialog(dialog, params)
+        content:OnInitDialog(dialog, ...)
     end
 
     -- Any non-event handler on the content should be promoted to the dialog

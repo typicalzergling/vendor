@@ -18,6 +18,11 @@ local CHIP_COLORS = {
         border = "BUTTON_DISABLED_BORDER",
         text = "BUTTON_DISABLED_BORDER"
     },
+    disabled_selected = {
+        back = "BUTTON_HOVER_BACK",
+        border = "BUTTON_DISABLED_BORDER",
+        text = "BUTTON_TEXT"
+    },
     checked = {
         back = "BUTTON_CHECKED_BACK",
         border = "BUTTON_CHECKED_BORDER",
@@ -61,7 +66,11 @@ end
 function Chip:SetColors()
     local colors = CHIP_COLORS.normal
     if (not self:IsEnabled()) then
-        colors = CHIP_COLORS.disabled
+        if (self:GetChecked()) then
+            colors = CHIP_COLORS.disabled_selected
+        else
+            colors = CHIP_COLORS.disabled
+        end
     elseif (self:GetChecked()) then
         colors = CHIP_COLORS.checked
     elseif (self:IsMouseOver()) then
@@ -132,8 +141,32 @@ end
 
 function Chips:OnLoad()
     self.chips = {}
+    self.enabled = true
     self.radio = (self.IsExclusive == true)
     self.onesize = (self.OneSize == true)
+end
+
+--[[ Query the enabled state ]]
+function Chips:IsEnabled()
+    return self.enabled
+end
+
+--[[ Disabl the chips ]]
+function Chips:Disable()
+    if (self.enabled) then
+        for _, chip in pairs(self.chips) do
+            chip:Disable()
+        end
+    end
+end
+
+--[[ Enable these chips ]]
+function Chips:Enable()
+    if (not self.enabled) then
+        for _, chip in pairs(self.chips) do
+            chip:Enable()
+        end
+    end
 end
 
 --[[ Adds a new chip to the list and setups a re-layout ]]
@@ -201,6 +234,10 @@ end
 
 --[[ Invoked when the state of a chip changes ]]
 function Chips:OnChipStateChanged(chip, state)
+    if (not self.enabled) then
+        return
+    end
+
     local id = rawget(chip, "chipId")
 
     if (self.radio) then
