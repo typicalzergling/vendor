@@ -29,8 +29,8 @@ MerchantButton.c_TooltipFrameName = string.format("%s_MerchantTooltip", AddonNam
 
 function MerchantButton:OnInitialize()
 	debugp("OnInitialize")
-    Addon:SecureHookWidget(MerchantFrame, "OnShow", MerchantButton.OnMerchantOpened)
-    Addon:SecureHookWidget(MerchantFrame, "OnHide", MerchantButton.OnMerchantClosed)
+    Addon:RegisterEvent("MERCHANT_SHOW", MerchantButton.OnMerchantShow)
+    Addon:RegisterEvent("MERCHANT_CLOSED", MerchantButton.OnMerchantClosed)
 	self.limit = 0
 	self.sold = 0
 	self.total = 0
@@ -39,7 +39,7 @@ end
 function MerchantButton:OnTerminate()
 end
 
-function MerchantButton.OnMerchantOpened()
+function MerchantButton.OnMerchantShow()
 	debugp("merchant open")
 	Addon:RegisterCallback(PROFILE_CHANGED, MerchantButton, MerchantButton.SetupButton)
 	MerchantButton.SetupButton()
@@ -187,5 +187,4 @@ function MerchantButton:OnAutoSellItem(link, sold, limit)
 	end
 end
 
-Addon.MerchantButton = MerchantButton
 Addon.Features.MerchantButton = MerchantButton
