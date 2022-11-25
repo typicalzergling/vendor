@@ -644,13 +644,13 @@ function EditRuleParamItem:OnModelChange(model)
     -- Set the type and color
     if (model.Type == "boolean") then
         self.type:SetText("B")
-        self.type:SetTextColor(Colors.EPIC_PURPLE_COLOR:GetRGBA())
+        self.type:SetTextColor(Colors:Get("EPIC_PURPLE_COLOR"):GetRGBA())
     elseif (model.Type == "number" or model.Type == "numeric") then
         self.type:SetText("N")
-        self.type:SetTextColor(Colors.LEGENDARY_ORANGE_COLOR:GetRGBA())
+        self.type:SetTextColor(Colors:Get("ORANGE_FONT_COLOR"):GetRGBA())
     elseif (model.Type == "string") then
         self.type:SetText("S")
-        self.type:GetTextColor(Colors.UNCOMMON_GREEN_COLOR:GetRGBA())
+        self.type:GetTextColor(Colors:Get("GREEN_FONT_COLOR"):GetRGBA())
     end
 
     if (self.ReadOnly) then
