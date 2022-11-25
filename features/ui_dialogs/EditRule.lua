@@ -512,7 +512,7 @@ function EditRule:Setup()
                     self.paramList:Rebuild()
                 end
                 self:Update()
-            end)
+            end, self)
     end
 
     if (readOnly) then
