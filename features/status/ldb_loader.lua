@@ -24,13 +24,6 @@ function LibDataBroker:IsLDBAvailable()
     return false
 end
 
-function LibDataBroker:IsLDBIconAvailable()
-    if (self.ldbi) then
-        return true
-    end
-    return false
-end
-
 function LibDataBroker:OnInitialize()
     debugp("Initializing LibDataBroker")
     self.ldbObjects = {}
@@ -42,10 +35,10 @@ function LibDataBroker:OnInitialize()
             function()
                 self.ldb = LibStub:GetLibrary("LibDataBroker-1.1", true)
                 debugp("Loaded LibDataBroker-1.1: %s", tostring(not not self.ldb))
-                self.ldbi = LibStub:GetLibrary("LibDBIcon-1.0", true)
-                debugp("Loaded LibDBIcon-1.0: %s", tostring(not not self.ldbi))
             end,
             CallErrorHandler)
+    else
+        debugp("LibStub not present, skipping loading of LDB.")
     end
 end
 
@@ -79,45 +72,6 @@ function LibDataBroker:GetLDBDataObject(name)
     if not self:IsLDBAvailable() then return nil end
     if not name then error("Must provide a name to GetLDBDataObject") end
     return self.ldbObjects[name]
-end
-
-function LibDataBroker:SetButtonToPosition(button, position)
-    if (not self:IsLDBIconAvailable()) then
-        debugp("LDBIcon is not available.")
-        return false
-    end
-    
-    local success, result = xpcall(
-        function()
-            self.ldbi:SetButtonToPosition(button, position)
-        end,
-        CallErrorHandler)
-    debugp("SetButtonToPosition success = %s", not not success)
-    return success
-end
-
--- A note about this one. minimaptable should be in a saved variable table.
--- It uses a 'hide' member variable to control state, but adds other members for positioning.
--- This may cause problems depending on how it is stored.
-function LibDataBroker:CreateLDBIcon(name, icontable)
-    if (not self:IsLDBIconAvailable()) then
-        debugp("LDBIcon is not available.")
-        return nil
-    end
-    assert(type(name) == "string" and type(icontable) == "table", "Invalid arguments to CreateLDBIcon.")
-    if not self.ldbObjects[name] then error("Data object not defined") end
-
-    local success, result = xpcall(
-        function()
-            self.ldbi:Register(name, self.ldbObjects[name], icontable)
-        end,
-        CallErrorHandler)
-    if not success then
-        debugp("Failed to register the Icon with LDBIcon")
-        return nil
-    end
-    -- return the button
-    return self.ldbi:GetMinimapButton(name)
 end
 
 Addon.Features.LibDataBroker = LibDataBroker

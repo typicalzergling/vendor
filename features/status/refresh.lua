@@ -11,6 +11,11 @@ local debugp = function (...) Addon:Debug("refresh", ...) end
 
 local Status = Addon.Features.Status
 
+Status.c_RefreshThrottleRate = .05
+Status.c_RefreshItemsPerCycle = 4
+Status.c_RefreshThreadName = "ItemRefresh"
+Status.c_RefreshDelayAfterUpdate = 10        -- Seconds after an update before we kick off a refresh
+
 -- Refresh Events
 local ITEMRESULT_REFRESH_TRIGGERED = Addon.Events.ITEMRESULT_REFRESH_TRIGGERED
 local ITEMRESULT_REFRESH_START = Addon.Events.ITEMRESULT_REFRESH_START
@@ -19,7 +24,6 @@ local ITEMRESULT_REFRESH_COMPLETE = Addon.Events.ITEMRESULT_REFRESH_COMPLETE
 
 -- Refresh data initialization
 local refresh = {}
-refresh.threadName = Addon.c_RefreshThreadName
 refresh.delayTimer = nil
 
 local function cancelDelayTimer()
@@ -72,6 +76,7 @@ local function doStartItemRefresh(forceUpdate)
         local refreshThrottle = profile:GetValue(Addon.c_Config_RefreshThrottle) or 1
         debugp("Starting bag scan")
         local numProcessed = 0
+        local start = GetTime()
         for bag=0, Addon:GetNumTotalEquippedBagSlots() do
             for slot=1, Addon:GetContainerNumSlots(bag) do
 
@@ -87,23 +92,22 @@ local function doStartItemRefresh(forceUpdate)
 
                 if forceUpdate or Addon:IsBagAndSlotRefreshNeeded(bag, slot) then
                     Addon:RefreshBagAndSlot(bag, slot, true)
-                    numProcessed = numProcessed + 1
                 end
 
                 -- Yield per throttling setting.
-                if numProcessed % refreshThrottle == 0 then
-                    numProcessed = 0
+                numProcessed = numProcessed + 1
+                if numProcessed % Status.c_RefreshItemsPerCycle == 0 then
                     coroutine.yield()
                 end
             end
         end
 
-        debugp("Refresh Completed")
+        debugp("Refresh Completed. Elapsed: %ss", tostring(GetTime()-start))
         Addon:RaiseEvent(ITEMRESULT_REFRESH_COMPLETE)
     end -- Coroutine End
 
     -- Add thread to the thread list and start it.
-    Addon:AddThread(thread, refresh.threadName, Addon.c_RefreshThrottleTime)
+    Addon:AddThread(thread, Status.c_RefreshThreadName, Status.c_RefreshThrottleRate)
 end
 
 -- ItemResultRefresh has optional argument for delay in seconds.
@@ -136,7 +140,7 @@ function Status:OnItemResultCacheCleared()
 
     -- Rules changed or something else significant, lets give it a few seconds
     -- for more changes to occur before we do the refresh.
-    Status:StartItemResultRefresh(4)
+    Status:StartItemResultRefresh(Status.c_RefreshDelayAfterUpdate)
 end
 
 function Status:OnPlayerLeavingCombat()
@@ -146,7 +150,7 @@ function Status:OnPlayerLeavingCombat()
     if abortedScanDueToCombat then
         debugp("Retriggering scan now that combat has ended.")
         abortedScanDueToCombat = false
-        Status:StartItemResultRefresh(4)
+        Status:StartItemResultRefresh(Status.c_RefreshDelayAfterUpdate)
     end
 end
 
@@ -159,12 +163,12 @@ function Status:OnBagUpdate(bagID)
     -- Using delayed refresh means we will not do any work on a looting event or when items
     -- first appear in the inventory unless players specifically mouse over those items before
     -- we refresh them.
-    Status:StartItemResultRefresh(4)
+    Status:StartItemResultRefresh(Status.c_RefreshDelayAfterUpdate)
 end
 
 function Status:OnPlayerEquipmentChanged(slotID)
     -- When player equipment changes, we could likely have some rule evaluations changed, so
     -- we should start a refresh with force function flagged so we always rebuild the cache
     -- after such an event.
-    Status:StartItemResultRefresh(4, true)
+    Status:StartItemResultRefresh(Status.c_RefreshDelayAfterUpdate, true)
 end

@@ -253,7 +253,7 @@ function ScrollingMarkdown:OnSizeChanged(width,  height)
     self.host:SetWidth(width)
     local height = Layouts.Stack(self.host, self.contents, 0, 10)
     self.host:SetPoint("TOPLEFT")
-    self.host:SEtPoint("BOTTOMRIGHT")
+    self.host:SetPoint("BOTTOMRIGHT")
 end
 
 function Addon.CommonUI.CreateMarkdownFrames(parent, markdown, callback)

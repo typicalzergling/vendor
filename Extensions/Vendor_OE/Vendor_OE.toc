@@ -1,0 +1,8 @@
+## Interface: 100002
+## Title: Vendor_OE
+## Notes: Oribos Exchange extension for Vendor. Requires both Oribos Exchange and Vendor.
+## Version: 1.0.0
+## Author: Thoekh of Sargeras & Buskin of Lightbringer
+## Dependencies: Vendor, OribosExchange
+
+vendorOEextension.lua

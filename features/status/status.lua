@@ -13,6 +13,9 @@ local Status = {
     },
 }
 
+Status.c_GenerateThreadName = "GenerateStatus"
+Status.c_GenerateThrottleRate = .01
+Status.c_GenerateItemsPerCycle = 10
 
 -- Setup the evaluation status cache.
 local escache = {}
@@ -61,47 +64,62 @@ end
 -- This will make it very fast to create the status.
 -- Results of the status will be cached until the next time GenerateEvaluationStatus() is called.
 function Status.GenerateEvaluationStatus(force)
-    debugp("Generating Evaluation Status")
-    local count = 0
-    local value = 0
-    local tosell = 0
-    local todestroy = 0
-    local sellitems = {}
-    local destroyitems = {}
-    for bag=0, Addon:GetNumTotalEquippedBagSlots() do
-        for slot=1, Addon:GetContainerNumSlots(bag) do
-            -- If the item has not changed this should be just pulling data from the cache.
-            -- If it has changed, it will refresh the item, so calling this outside refresh is OK,
-            -- however it does a lot more work and is bad for performance. Let Refresh efficiently
-            -- update the cache while this piggybacks on that effort to give timely status updates.
-            local entry = Addon:GetItemResultForBagAndSlot(bag, slot, force)
-            if entry then
-                if entry.Result.Action ~= Addon.ActionType.NONE then
-                    count = count + 1
+    -- To remove a slight UI stutter of scannign the entire bags, adding a very fast thread
+    -- that will yield frequently to allow the UI to update.
+    local thread = function()   -- Coroutine Begin
+        debugp("Generating Evaluation Status")
+        local processed = 0
+        local start = GetTime()
+        local count = 0
+        local value = 0
+        local tosell = 0
+        local todestroy = 0
+        local sellitems = {}
+        local destroyitems = {}
+        for bag=0, Addon:GetNumTotalEquippedBagSlots() do
+            for slot=1, Addon:GetContainerNumSlots(bag) do
+                -- If the item has not changed this should be just pulling data from the cache.
+                -- If it has changed, it will refresh the item, so calling this outside refresh is OK,
+                -- however it does a lot more work and is bad for performance. Let Refresh efficiently
+                -- update the cache while this piggybacks on that effort to give timely status updates.
+                local entry = Addon:GetItemResultForBagAndSlot(bag, slot, force)
+                if entry then
+                    if entry.Result.Action ~= Addon.ActionType.NONE then
+                        count = count + 1
+                    end
+
+                    if entry.Result.Action == Addon.ActionType.SELL then
+                        value = value + entry.Item.TotalValue
+                        tosell = tosell + 1
+                        table.insert(sellitems, entry.Item.Link)
+                    elseif entry.Result.Action == Addon.ActionType.DESTROY then
+                        todestroy = todestroy + 1
+                        Addon:Debug("destroy", "Marking item: %s for Destroy", entry.Item.Link)
+                        table.insert(destroyitems, entry.Item.Link)
+                    end
                 end
 
-                if entry.Result.Action == Addon.ActionType.SELL then
-                    value = value + entry.Item.TotalValue
-                    tosell = tosell + 1
-                    table.insert(sellitems, entry.Item.Link)
-                elseif entry.Result.Action == Addon.ActionType.DESTROY then
-                    todestroy = todestroy + 1
-                    Addon:Debug("destroy", "Marking item: %s for Destroy", entry.Item.Link)
-                    table.insert(destroyitems, entry.Item.Link)
+                processed = processed + 1
+                if processed % Status.c_GenerateItemsPerCycle then
+                    coroutine.yield()
                 end
             end
         end
+
+        -- Update the cache with the data.
+        escache = {}
+        escache.count = count
+        escache.value = value
+        escache.tosell = tosell
+        escache.todestroy = todestroy
+        escache.sellitems = sellitems
+        escache.destroyitems = destroyitems
+        debugp("Evaluation Status Updated, elapsed: %ss", tostring(GetTime()-start))
+        Addon:RaiseEvent(Addon.Events.EVALUATION_STATUS_UPDATED)
     end
 
-    -- Update the cache with the data.
-    escache = {}
-    escache.count = count
-    escache.value = value
-    escache.tosell = tosell
-    escache.todestroy = todestroy
-    escache.sellitems = sellitems
-    escache.destroyitems = destroyitems
-    Addon:RaiseEvent(Addon.Events.EVALUATION_STATUS_UPDATED)
+    -- Add thread to the thread list and start it.
+    Addon:AddThread(thread, Status.c_GenerateThreadName, Status.c_GenerateThrottleRate)
 end
 
 function Status:OnInitialize()

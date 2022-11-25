@@ -8,6 +8,10 @@ local EVENTS = { "OnHistoryChanged" }
 -- History schema version
 local VERSION = 1
 
+-- History constants
+History.c_PruneHistoryDelay = 30  -- Time in seconds after intializing addon before prune history is run
+History.c_HoursToKeepHistory = 24*30 -- 24*30 = max blizzard item restoration window (30 days)
+
 function History:OnInitialize()
     Addon:GenerateEvents(EVENTS)
 
@@ -18,8 +22,9 @@ function History:OnInitialize()
     end)
 
     -- Do a delayed pruning of history across all characters.
-    C_Timer.After(Addon.c_PruneHistoryDelay, function() History:PruneAllHistory(Addon.c_HoursToKeepHistory) end)
-
+    -- This is delayed so we do not compete with other things starting up when the character first logs in.
+    -- let things settle so we dont contribute to resource fighting.
+    C_Timer.After(History.c_PruneHistoryDelay, function() History:PruneAllHistory(History.c_HoursToKeepHistory) end)
 end
 
 function History:OnTerminate()
@@ -182,6 +187,7 @@ function History:PruneHistory(hours, character)
         history = getOrCreateCharacterHistory()
     end
     assert(history, "Error loading history for character "..tostring(character))
+    if not history then return 0 end
     
     -- Find entries to remove that are older than seconds
     local toremove = {}
