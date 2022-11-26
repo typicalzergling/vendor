@@ -298,11 +298,30 @@ Addon.CommonUI.Mixins.Debounce =
         end
 
         if (time ~= 0) and handler then
+            debounce.__handler = GenerateClosure(handler, debounce, ...)
             local args = { ... }
             debounce.__dtimer = C_Timer.After(time, function()
                 debounce.__dtimer = nil
-                xpcall(handler, CallErrorHandler, debounce, unpack(args))
+                if (debounce.__handler) then
+                    debounce.__handler()
+                end
+                debounce.__handler = nil
             end)
+        end
+    end,
+
+    --[[
+        Execute the "delayed" operation now
+    ]]
+    DebounceNow = function(debounce)
+        if (debounce.__dtimer) then
+            debounce.__dtimer:Cancel()
+            debounce.__dtimer = nil
+        end
+
+        if (debounce.__handler) then
+            debounce.__handler()
+            debounce.__handler = nil
         end
     end
 }

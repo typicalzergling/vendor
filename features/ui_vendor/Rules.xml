@@ -110,7 +110,7 @@
             <Layer level="ARTWORK">
                 <FontString inherits="GameFontNormal" parentKey="name" justifyV="MIDDLE" justifyH="RIGHT" maxLines="1">
                     <KeyValues>
-                        <KeyValue key="Color" value="TEXT"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
                     </KeyValues>
                     <Anchors>
                         <Anchor point="TOPLEFT"/>
@@ -120,12 +120,20 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame inherits="CommonUI_Edit" parentKey="value">
+            <EditBox numeric="true" letters="32" multiLine="false" autoFocus="false" justifyH="RIGHT" justifyV="MIDDLE" parentKey="value">
+                <Scripts>
+                    <OnEscapePressed function="EditBox_ClearFocus"/>
+                    <OnTabPressed function="EditBox_ClearFocus"/>
+                </Scripts>
+                <TextInsets>
+                    <AbsInset left="10" right="10" top="8" bottom="8"/>
+                </TextInsets>
+                <FontString inherits="ChatFontNormal"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="TOPRIGHT" x="8"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="TOPRIGHT" x="10"/>
                     <Anchor point="BOTTOMRIGHT"/>
                 </Anchors>
-            </Frame>
+            </EditBox>            
         </Frames>
     </Frame>
 
@@ -135,7 +143,7 @@
             <Layer level="ARTWORK">
                 <FontString inherits="GameFontNormal" parentKey="name" justifyV="MIDDLE" justifyH="RIGHT" maxLines="1">
                     <KeyValues>
-                        <KeyValue key="Color" value="TEXT"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
                     </KeyValues>
                     <Anchors>
                         <Anchor point="TOPLEFT"/>
@@ -175,7 +183,7 @@
             <Layer level="ARTWORK">
                 <FontString inherits="GameFontNormal" parentKey="name" justifyV="MIDDLE" justifyH="RIGHT" maxLines="1">
                     <KeyValues>
-                        <KeyValue key="Color" value="TEXT"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
                     </KeyValues>
                     <Anchors>
                         <Anchor point="TOPLEFT"/>
@@ -185,15 +193,20 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame inherits="CommonUI_Edit" parentKey="value">
-                <KeyValues>
-                    <KeyValue key="Handler" value="OnParamChanged"/>
-                </KeyValues>
+            <EditBox letters="64" multiLine="false" autoFocus="false" justifyH="RIGHT" justifyV="MIDDLE" parentKey="value">
+                <Scripts>
+                    <OnEscapePressed function="EditBox_ClearFocus"/>
+                    <OnTabPressed function="EditBox_ClearFocus"/>
+                </Scripts>
+                <TextInsets>
+                    <AbsInset left="10" right="10" top="8" bottom="8"/>
+                </TextInsets>
+                <FontString inherits="ChatFontNormal"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="TOPRIGHT" x="8"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="TOPRIGHT" x="10"/>
                     <Anchor point="BOTTOMRIGHT"/>
                 </Anchors>
-            </Frame>
+            </EditBox>            
         </Frames>
     </Frame>
 
