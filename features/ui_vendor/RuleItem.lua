@@ -94,11 +94,13 @@ function RuleItem:OnClick(button)
 end
 
 function RuleItem:OnEnter()
+    self.hover = true
     self:SetColors()
     self:TooltipEnter()
 end
 
 function RuleItem:OnLeave()
+    self.hover = false
     self:SetColors()
     self:TooltipLeave()
 end
@@ -243,7 +245,7 @@ function RuleItem:SetColors()
     local migrate = self:NeedsMigration()
     local colors = COLORS.normal
 
-    if (self:IsMouseOver()) then
+    if (self.hover == true) then
         if (active) then
             colors = COLORS.activeHover
         elseif (unhealthy) then

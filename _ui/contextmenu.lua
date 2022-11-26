@@ -112,5 +112,7 @@ function Addon.CommonUI.ShowContextMenu(frame, entries)
     Addon:Debug("contextmenu", "Showing context menu for '%s' with %s items", frame:GetDebugName() or "<unamed>", table.getn(entries))
     menu:SetPoint("TOP", frame, "CENTER", 0, 0)
     menu:Show()
+    menu:EnableMouse(true)
+    menu:EnableKeyboard(true)
     menu:Raise()
 end
