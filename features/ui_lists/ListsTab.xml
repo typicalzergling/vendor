@@ -174,7 +174,7 @@
                     <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "_ItemList")</OnLoad>
                 </Scripts>
             </Frame>
-            <Frame inherits="CommonUI_Edit" parentKey="name">
+            <EditBox inherits="CommonUI_Edit" parentKey="name">
                 <Size x="1" y="32"/>
                 <KeyValues>
                     <KeyValue key="Handler" value="OnNameChanged"/>
@@ -184,8 +184,8 @@
                     <Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-4"/>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-4"/>
                 </Anchors>
-            </Frame>
-            <Frame inherits="CommonUI_TextArea" parentKey="description">
+            </EditBox>
+            <ScrollFrame inherits="CommonUI_TextArea" parentKey="description">
                 <Size x="1" y="72"/>
                 <KeyValues>
                     <KeyValue key="Handler" value="OnDescriptionChanged"/>
@@ -195,8 +195,8 @@
                     <Anchor point="TOPLEFT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMLEFT" y="-4"/>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-4"/>
                 </Anchors>
-            </Frame>
-            <Frame inherits="CommonUI_Edit" parentKey="itemId">
+            </ScrollFrame>
+            <EditBox inherits="CommonUI_Edit" parentKey="itemId">
                 <KeyValues>
                     <KeyValue key="Numeric" value="true" type="boolean"/>
                     <KeyValue key="Handler" value="OnItemIdChanged"/>
@@ -206,7 +206,7 @@
                     <Anchor point="TOPLEFT"  relativePoint="BOTTOMLEFT" relativeKey="$parent.labelItemId" y="-4"/>
                     <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelItemId" y="-4"/>
                 </Anchors>
-            </Frame>
+            </EditBox>
             <Button inherits="CommonUI_CommandButton" parentKey="addId">
                 <KeyValues>
                     <KeyValue key="Handler" value="InsertById"/>

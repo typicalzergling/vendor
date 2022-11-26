@@ -43,7 +43,7 @@
                     <Anchor point="RIGHT" relativeKey="$parent.rename" relativePoint="LEFT" x="-12"/>
                 </Anchors>
             </Button>
-            <Frame inherits="CommonUI_Edit" parentKey="name">
+            <EditBox inherits="CommonUI_Edit" parentKey="name">
                 <Size x="1" y="32"/>
                 <KeyValues>
                     <KeyValue key="Placeholder" value="OPTIONS_PROFILE_NAME_PLACEHOLDER"/>
@@ -53,7 +53,7 @@
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.copy" relativePoint="TOPRIGHT" y="12"/>
                     <Anchor point="LEFT"/>
                 </Anchors>
-            </Frame>
+            </EditBox>
             <Frame parentKey="createText">
                 <Layers>
                     <Layer level="ARTWORK">

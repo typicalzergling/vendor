@@ -61,8 +61,8 @@
 						<KeyValue key="Color" value="TEXT"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-116"/>
-						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelScript" y="-116"/>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-156"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelScript" y="-156"/>
 					</Anchors>
 				</FontString>
 				<FontString parentKey="labelType" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
@@ -71,8 +71,8 @@
 						<KeyValue key="Color" value="TEXT"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelParam" y="-116"/>
-						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelParam" y="-116"/>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelParam" y="-108"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelParam" y="-108"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -91,7 +91,7 @@
 				Rule Parameters
 			-->
 
-			<Frame parentKey="name" inherits="CommonUI_Edit">
+			<EditBox parentKey="name" inherits="CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_NAME_HELPTEXT" type="string"/>
 					<KeyValue key="Handler" value="OnNameChanged" type="string"/>
@@ -101,9 +101,9 @@
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelName" y="-4"/>
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelName" y="-4"/>
 				</Anchors>
-			</Frame>
+			</EditBox>
 
-			<Frame parentKey="description"  inherits="CommonUI_TextArea">
+			<ScrollFrame parentKey="description"  inherits="CommonUI_TextArea">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_DESCR_HELPTEXT" type="string"/>
 					<KeyValue key="Handler" value="OnDescriptionChanged" type="string"/>
@@ -113,9 +113,9 @@
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelDescr" y="-4"/>
 					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelScript" y="12"/>
 				</Anchors>
-			</Frame>
+			</ScrollFrame>
 
-			<Frame parentKey="script"  inherits="CommonUI_TextArea">
+			<ScrollFrame parentKey="script"  inherits="CommonUI_TextArea">
 				<Size x="1" y="120"/>
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
@@ -125,7 +125,7 @@
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-4"/>
 					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelParam" y="12"/>
 				</Anchors>
-			</Frame>
+			</ScrollFrame>
 
 			<Frame inherits="CommonUI_List" parentKey="paramList">
 				<KeyValues>
@@ -303,7 +303,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame parentKey="name" inherits="CommonUI_Edit">
+			<EditBox parentKey="name" inherits="CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnNameChanged"/>
 				</KeyValues>
@@ -311,8 +311,8 @@
 					<Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-6"/>
 					<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.labelKey" relativePoint="TOPRIGHT" y="12"/>
 				</Anchors>
-			</Frame>
-			<Frame parentKey="key" inherits="CommonUI_Edit">
+			</EditBox>
+			<EditBox parentKey="key" inherits="CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnKeyChanged"/>
 				</KeyValues>
@@ -320,7 +320,7 @@
 					<Anchor point="TOPLEFT" relativeKey="$parent.labelKey" relativePoint="BOTTOMLEFT" y="-6"/>
 					<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.labelType" relativePoint="TOPRIGHT" y="12"/>
 				</Anchors>
-			</Frame>
+			</EditBox>
 			<Frame inherits="CommonUI_Chips" parentKey="paramType">
 				<KeyValues>
 					<KeyValue key="IsExclusive" value="true" type="boolean"/>
@@ -332,7 +332,7 @@
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelType" x="0" y="-8"/>
 				</Anchors>
 			</Frame>
-			<Frame parentKey="default" inherits="CommonUI_Edit">
+			<EditBox parentKey="default" inherits="CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnDefaultChanged"/>
 				</KeyValues>
@@ -340,13 +340,13 @@
 					<Anchor point="TOPLEFT" relativeKey="$parent.labelDefault" relativePoint="BOTTOMLEFT" y="-6"/>
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelCurrent" x="0" y="-6"/>
 				</Anchors>
-			</Frame>
-			<Frame parentKey="current" inherits="CommonUI_Edit">
+			</EditBox>
+			<EditBox parentKey="current" inherits="CommonUI_Edit">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.labelCurrent" relativePoint="BOTTOMLEFT" y="-6"/>
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelCurrent" x="0" y="-6"/>
 				</Anchors>
-			</Frame>
+			</EditBox>
 		</Frames>
 	</Frame>
 </Ui>

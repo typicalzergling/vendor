@@ -47,7 +47,7 @@ Addon.CommonUI.Colors =
     EDIT_BORDER = CreateColor(1, 1, 1, .4),
     EDIT_BACK = CreateColor(.8, .8, .8, .1),
     EDIT_HIGHLIGHT = CreateColor(1, 1, 1, .7),
-    EDIT_REST = CreateColor(1, 1, 1, .9),
+    EDIT_REST = CreateColor(.9, .9, .9, .8),
     EDIT_DISABLED = CreateColor(.5, .5, .5, .5),
     EDIT_TEXT = WHITE_FONT_COLOR,
     

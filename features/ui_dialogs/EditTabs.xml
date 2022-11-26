@@ -182,7 +182,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame parentKey="filter" inherits="CommonUI_Edit">
+			<EditBox parentKey="filter" inherits="CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_FILTER_HELPTEXT" type="string"/>
 					<KeyValue key="Handler" value="ApplyFilters" type="string"/>					
@@ -192,7 +192,7 @@
 					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="TOPRIGHT"/>
 					<Anchor point="RIGHT"/>
 				</Anchors>
-			</Frame>
+			</EditBox>
             <Frame parentKey="filters" inherits="CommonUI_Chips">
                 <KeyValues>
                     <KeyValue key="Handler" value="ApplyFilters"/>

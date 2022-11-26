@@ -38,11 +38,13 @@ function UI.SetColor(item, name)
         color = RED_FONT_COLOR
     end
     
-    local type = item:GetObjectType()
-    if (type == "FontString") then
+    local itype = item:GetObjectType()
+    if (itype == "FontString") then
         item:SetTextColor(color:GetRGBA())
-    elseif (type == "Texture" or type == "Line") then
+    elseif (itype == "Texture" or itype == "Line") then
         item:SetColorTexture(color:GetRGBA())
+    elseif (type(item.SetTextColor) == "function") then
+        item:SetTextColor(color:GetRGBA())
     end
 end
 
@@ -106,7 +108,7 @@ function UI.Attach(item, class)
         object = resolveObject(Addon, class)
     end
 
-    if (type(class) ~= "table") then
+    if (type(object) ~= "table") then
         error("Unable to determine the implementation :: " .. tostring(class))
     end
 
@@ -315,9 +317,6 @@ function UI.Dialog(caption, template, implementation, buttons, ...)
 end
 
 Addon.CommonUI.UI = UI
-
-local function UIAttach(frame, target)
+Addon.Public.UIAttach = function(frame, target)
     UI.Attach(frame, target)
 end
-
-Addon.Public.UIAttach = UIAttach
