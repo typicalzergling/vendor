@@ -460,7 +460,6 @@ local RuleFunctions = {
             end
         end
 
-        --print("Lowest Level for ", Link ," is ", tostring(lowestlevel))
         return lowestlevel
     end,
 },

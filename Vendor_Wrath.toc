@@ -37,6 +37,7 @@ systems\interop\interop.xml
 systems\itemproperties\itemproperties.xml
 systems\itemproperties\itempropertytooltipscan_classic.lua
 systems\evaluation\evaluation.xml
+systems\extensionmanager\extensionmanager.xml
 
 # Features
 #features\autoloot\autoloot.xml

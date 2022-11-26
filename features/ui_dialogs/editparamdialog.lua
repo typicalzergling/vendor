@@ -320,7 +320,6 @@ function EditParamDialog:OnSave()
     local param = self.editor:GetValue()
     Addon:DebugForEach("parameditor", param)
     local success, code = self.ruleEditor:UpdateParameter(param.Key, param.Type, param.Name, param.Default)
-    print(success, code)
     if (not success) then
         local message = "EDITPARAM_ERROR_UPDATE_GENERAL"
         self:MessageBox("EEDITPARAM_ERROR_CAPTION", message)

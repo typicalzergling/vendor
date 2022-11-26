@@ -1,7 +1,0 @@
-## Interface: 100002
-## Title: Vendor_TSM
-## Notes: TradeSkillMaster extension for Vendor. Requires both TSM and Vendor.
-## Version: 2.0.0
-## Author: Thoekh of Sargeras & Buskin of Lightbringer
-## Dependencies: Vendor, TradeSkillMaster
-vendortsmextension.lua

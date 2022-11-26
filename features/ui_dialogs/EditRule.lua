@@ -260,7 +260,6 @@ function EditRule:GetCurrentParameters()
         local info = {}
 
         for _, param in ipairs(parameters) do
-            print("parm", param.Name, param.Key)
             local paramInfo = {
                 Name = param.Name,
                 Type = param.Type,

@@ -388,6 +388,21 @@ TOOLTIP_SCAN_COSMETIC = _G["ITEM_COSMETIC"],
 DATA_MIGRATION_SL_NOTICE = YELLOW_FONT_COLOR_CODE.. "Detected migration to Shadowlands! The settings for Vendor have been reset and custom rules require verification before they will be active!" ..FONT_COLOR_CODE_CLOSE,
 DATA_MIGRATION_ERROR = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration was detected, but no action taken. Please notify the addon authors here: https://www.curseforge.com/wow/addons/vendor/issues" ..FONT_COLOR_CODE_CLOSE,
 
+-- Extensions Loc
+
+-- Adibags extension
+ADIBAGS_FILTER_VENDOR_SELL_NAME = "Vendor: Sell",
+ADIBAGS_FILTER_VENDOR_SELL_DESC = "Put items that the Vendor addon will sell into this collection."..
+" This filter must be a very high priority to work correctly, as it can reclassify any item in your inventory.",
+ADIBAGS_CATEGORY_VENDOR_SELL = "Sell (Vendor)",
+
+ADIBAGS_FILTER_VENDOR_DESTROY_NAME = "Vendor: Destroy",
+ADIBAGS_FILTER_VENDOR_DESTROY_DESC = "Put items that the Vendor addon will destroy into this collection."..
+" This filter must be a very high priority to work correctly, as it can reclassify any item in your inventory.",
+ADIBAGS_CATEGORY_VENDOR_DESTROY = "Destroy (Vendor)",
+
+
+
 -- Edit Rule Dialog
 EDITRULE_CAPTION = "Edit Rule",
 CREATERULE_CAPTION = "Create Rule",
@@ -454,8 +469,8 @@ EDITPARAM_CREATE_LABEL = "Create",
 EDITPARAM_SAVE_LABEL = SAVE,
 EDITPARAM_CANCEL_LABEL = CANCEL,
 EDITPARAM_CLOSE_LABEL = "Close",
-EDITPARAM_DEFAULT_NAME = "New Paraemter",
-EDITPARAM_DEFAULT_SCRIPTNAME = "NEW_PARAM",
+EDITPARAM_DEFAULT_NAME = "New Parameter",
+EDITPARAM_DEFAULT_SCRIPTNAME = "PARAM",
 EEDITPARAM_ERROR_CAPTION = "Parameter Error",
 EDITPARAM_ERROR_CONVERT_DEFAULT = [[
 # Invalid Default Value
@@ -488,7 +503,7 @@ Are you sure you want to remove parameter '%s' [%s]?
 ]],
 EDITPARAM_CONFIRM_REMOVE = "Yes, Remove",
 EDITPARAM_KEEP_PARAM = "Keep",
-
+EDIT_RULE_PARAMETER = "Parameter",
 EDITRULE_ITEM_LABEL = "Item:",
 EDITRULE_NO_ITEM = "<none>",
 
@@ -502,7 +517,7 @@ RULEITEM_UNHEALTHY_WARNING = "This rule has an invalid script and must be fixed 
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
-EXPORT_HELP_TEXT = "[revisit] Copy the text below",
+EXPORT_HELP_TEXT = "Copy the text below for sharing this Vendor creation with others!",
 EXPORT_LIST_CAPTION = "Export List",
 EXPORT_CLOSE_BUTTON = "Close",
 IMPORTLIST_UNIQUE_NAME0 = "%s (Imported)",

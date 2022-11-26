@@ -5,7 +5,7 @@ local Colors = Addon.CommonUI.Colors
 --[[==== RuleParameter ========================================================]]
 local RuleParameter = {}
 
---[[ Default rule paraemter layout simply chooses the talest item ]]
+--[[ Default rule parameter layout simply chooses the talest item ]]
 function RuleParameter:Layout()
     local height = self:GetHeight()
 

@@ -1,6 +1,6 @@
 -- TSM Extension for Vendor
 -- This also doubles as a sample for how to create a Vendor extension with both functions for evaluating, and for adding rules.
-local AddonName = select(1, ...);
+local _, Addon = ...
 
 
 -- Function definition for the getCustomPriceValue from TSM
@@ -75,7 +75,8 @@ local function registerTSMExtension()
         -- Vendor will check this source is loaded prior to registration.
         -- It will also be displayed in the Vendor UI.
         Source = "TSM",
-        Addon = AddonName,
+        Addon = "TradeSkillMaster",
+        Version = 1.0,
 
         -- These are the set of functions that are being added that all Vendor rules can use.
         -- Players will have access to these functions for their own custom rules.
@@ -176,13 +177,8 @@ local function registerTSMExtension()
         --@end-retail@
     }
 
-    -- Register this extension with Vendor.
-    -- For safety, you should make sure both Vendor and the RegisterExtension method exist before
-    -- calling, as done below. If not a clean LUA error will be thrown that can be reported back to players.
-    assert(Vendor and Vendor.RegisterExtension, "Vendor RegisterExtension not found, cannot register extension: "..tostring(TSMExtension.Source))
-    if (not Vendor.RegisterExtension(TSMExtension)) then
-        -- something went wrong
-    end
+    local extmgr = Addon.Systems.ExtensionManager
+    extmgr:AddInternalExtension("TradeSkillMaster", TSMExtension)
 end
 
 -- The only function call this addon does.

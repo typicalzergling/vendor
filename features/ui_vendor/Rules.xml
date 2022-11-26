@@ -129,7 +129,7 @@
         </Frames>
     </Frame>
 
-    <!-- Boolean paraemter template -->
+    <!-- Boolean parameter template -->
     <Frame name="RuleParam_Boolean" virtual="true">
         <Layers>
             <Layer level="ARTWORK">

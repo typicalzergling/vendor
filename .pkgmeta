@@ -13,12 +13,6 @@ ignore:
  - .release/*
  - *.sh
 
-move-folders:
- Vendor/Extensions/Vendor_Pawn: Vendor_Pawn
- Vendor/Extensions/Vendor_Ark: Vendor_Ark
- Vendor/Extensions/Vendor_AdiBags: Vendor_AdiBags
- Vendor/Extensions/Vendor_TSM: Vendor_TSM
- Vendor/Extensions/Vendor_OE: Vendor_OE
 
 
 

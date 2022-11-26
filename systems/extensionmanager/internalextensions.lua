@@ -7,8 +7,13 @@ local ExtensionManager = Addon.Systems.ExtensionManager
 
 local internalExtensions = {}
 
-function ExtensionManager:GetAllInternalExtensions()
-    return internalExtensions
+function ExtensionManager:GetAllAddonNamesForInternalExtensions()
+    local list = {}
+    for k, v in pairs(internalExtensions) do
+        assert(v.addonName and type(k == "string"), "Name must exist")
+        table.insert(list, v.addonName)
+    end
+    return list
 end
 
 function ExtensionManager:GetInternalExtension(addonName)
@@ -29,12 +34,14 @@ function ExtensionManager:AddInternalExtension(addonName, extensionDefinition)
     extension.addonName = addonName
     extension.definition = extensionDefinition
     extension.enabled = false
-    table.insert(internalExtensions, extension)
+    internalExtensions[addonName] = extension
+    debugp("Added internal extension for: %s", addonName)
 end
 
 -- Register the extension for a particular addon.
 function ExtensionManager:RegisterInternalExtension(addonName)
     assert(type(addonName) == "string", "Invalid input to RegisterInternalExtension: "..type(addonName))
+    debugp("Attempting to register extension for %s", tostring(addonName))
     local ext = internalExtensions[addonName]
     if not ext then
         debugp("Attempted to register an extension for %s, which does not exist.", addonName)
@@ -53,12 +60,29 @@ function ExtensionManager:RegisterInternalExtension(addonName)
     end
 
     -- Verify the Addon is actually present
-    if not _G[addonName] then
-        debugp("Addon %s is not present yet, extension registration failed.")
+    local addonInfo = {GetAddOnInfo(addonName)}
+    -- 1 = name (folder)
+    -- 2 = title
+    -- 3 = description
+    -- 4 = loadable
+    -- 5 = reason (if 4 is false)
+    -- 6 = security (always insecure)
+    -- 7 = not used
+    Addon:DebugForEach("extensionmanager", addonInfo)
+    if not addonInfo[4] then
+        debugp("Addon %s is not loadable, extension registration failed.", tostring(addonName))
         return false
     end
 
     -- Register the extension
-    return true
-
+    debugp("About to register extension for  %s.", tostring(addonName))
+    if Addon.Extensions:Register(ext.definition) then
+        -- run registration code for that addon
+        if ext.definition.Register and type(ext.definition.Register) == "function" then
+            debugp("Executing registration with %s", tostring(addonName))
+            return ext.definition.Register()
+        end
+        return true
+    end
+    return false
 end

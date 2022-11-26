@@ -4,7 +4,6 @@
 . ".env"
 
 all_flavors="_retail_ _ptr_ _classic_ _beta_"
-all_extensions="_Ark _AdiBags _TSM _Pawn _OE"
 
 flavors=$all_flavors
 
@@ -22,15 +21,6 @@ do
     # Remove existing junction for main addon
     $JUNCTION_TOOL -d -nobanner "$addon_path"
 
-    # Remove junctions for all extension addons
-    for extension in $all_extensions
-    do
-        addon_extension="$ADDON_NAME$extension"
-        addon_extensiondest="$addons_folder$addon_extension"
-
-        # Remove junction
-        $JUNCTION_TOOL -d -nobanner "$addon_extensiondest"
-    done
 done
 
 # Now recursively delete the old folder.
@@ -55,14 +45,4 @@ do
     # Replace junction for main addon
     $JUNCTION_TOOL -nobanner "$addon_path" "$addon_src$ADDON_NAME"
 
-    # Replace junctions for all extension addons
-    for extension in $all_extensions
-    do
-        addon_extension="$ADDON_NAME$extension"
-        addon_extensiondest="$addons_folder$addon_extension"
-        addon_extensionsource="$addon_src$addon_extension"
-
-        # Replace junction
-        $JUNCTION_TOOL -nobanner "$addon_extensiondest" "$addon_extensionsource"
-    done
 done
