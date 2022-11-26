@@ -202,6 +202,7 @@ OPTIONS_RULES_N_HIDDEN = " (%s rules)",
 SETTINGS_HIDDENRULES_HELP = "[revisit] The list below contains the list of hidden rules, you can select on an unhide the rule to restore it.",
 SETTINGS_HIDDENRULES_EMPTY = "[revisit] There are currently no hidden rules",
 SETTINGS_HIDDENRULES_UNHIDE = "Unhide Rule",
+SETTINGS_HIDDENRULES_TYPE_FMT = "(%s)",
 
 RULE_TOOLTIP_SOURCE = "Source: %s",
 RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",

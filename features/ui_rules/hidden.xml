@@ -9,10 +9,10 @@
                 </FontString>
             </Layer>
             <Layer level="ARTWORK">
-                <FontString parentKey="ruleTYpe" justifyH="RIGHT" justifyV="TOP" maxLines="1" inherits="GameFontNormal" text="(ruletype)">
+                <FontString parentKey="ruleType" justifyH="RIGHT" justifyV="TOP" maxLines="1" inherits="GameFontNormal" text="(ruletype)">
                     <Size x="60"/>
                     <KeyValues>
-                        <KeyValue key="Color" value="TEXT"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
                     </KeyValues>
                     <Anchors>
                         <Anchor point="TOP" relativeKey="$parent.text"/>

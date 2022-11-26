@@ -44,7 +44,13 @@ end
 
 --[[ Sets the value of this setting ]]
 function Setting:SetValue(value)
+    -- Catch nil for false
+    if (self:GetType() == "boolean") and value == nil then
+        value = false
+    end
+
     assert(type(value) == self:GetType(), "Type mismatch, Expected "..self:GetType()..", got "..type(value))
+
     local current = self.getValue()
     if (value ~= current) then
         self.setValue(value)

@@ -239,15 +239,16 @@ function EditRule:InsertText(_, text)
     local script = self.script
 
     if (script:IsEnabled()) then
-        if script:HasText() then
-            if (string.find(text, "[\t ]")) then
-                script:Insert(" (" .. text .. ") ")
-            else
-                script:Insert(" " .. text)
-            end
-        else
-            script:SetText(text)
+        if (script:HasText()) then
+            text = " " .. text
         end
+
+        if (string.find(text, "[\t ]")) then
+            script:Insert("(" .. text .. ") ")
+        else
+            script:Insert(text)
+        end
+        
         script:SetFocus()
     end
 end

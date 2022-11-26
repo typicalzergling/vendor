@@ -169,7 +169,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame parentKey="search" inherits="CommonUI_Edit">
+            <EditBox parentKey="search" inherits="CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="OPTIONS_AUDIT_SEARCH_PLACEHOLDER"/>
 					<KeyValue key="Handler" value="ApplyFilter"/>
@@ -179,7 +179,7 @@
                     <Anchor point="BOTTOMLEFT" relativeKey="$parent.labelSearch" relativePoint="BOTTOMRIGHT"/>
                     <Anchor point="RIGHT"/>
                 </Anchors>
-            </Frame>
+            </EditBox>
             <Frame parentKey="filters" inherits="CommonUI_Chips">
                 <KeyValues>
                     <KeyValue key="Handler" value="ApplyFilter"/>

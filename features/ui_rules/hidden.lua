@@ -1,7 +1,9 @@
 local _, Addon = ...
+local L = Addon:GetLocale()
 local HiddenRuleSettings = {}
 local UI = Addon.CommonUI.UI
 local Layouts = Addon.CommonUI.Layouts
+local RuleType = Addon.RuleType
 local PAGE_PADDING = 0
 local PAGE_SPACING = 10
 
@@ -101,6 +103,16 @@ function HiddenRuleItem:OnModelChange(model)
         self.secondary:Show()
     else
         self.secondary:Hide()
+    end
+
+    if (model.Type == RuleType.SELL) then
+        self.ruleType:SetFormattedText(L.SETTINGS_HIDDENRULES_TYPE_FMT, L.RULE_TYPE_SELL_NAME)
+    elseif (model.Type == RuleType.KEEP) then
+        self.ruleType:SetFormattedText(L.SETTINGS_HIDDENRULES_TYPE_FMT, L.RULE_TYPE_KEEP_NAME)
+    elseif (model.Type == RuleType.Destroy) then
+        self.ruleType:SetFormattedText(L.SETTINGS_HIDDENRULES_TYPE_FMT, L.RULE_TYPE_DESTORY_NAME)
+    else
+        self.ruleType:Hide()
     end
 end
 

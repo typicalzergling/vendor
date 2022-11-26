@@ -13,7 +13,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame inherits="CommonUI_Edit" parentKey="Data">
+            <EditBox inherits="CommonUI_Edit" parentKey="Data">
                 <KeyValues>
                     <KeyValue key="Placeholder" value="Paster you import text here" type="string"/>
                 </KeyValues>
@@ -21,7 +21,7 @@
                     <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-8"/>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.help" relativePoint="BOTTOMRIGHT" y="-8"/>
                 </Anchors>
-            </Frame>
+            </EditBox>
         </Frames>
 	</Frame>
 
@@ -42,7 +42,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame inherits="CommonUI_TextArea" parentKey="import">
+            <ScrollFrame inherits="CommonUI_TextArea" parentKey="import">
                 <KeyValues>
                     <KeyValue key="Placeholder" value="Import place holder"/>
                     <KeyValue key="Handler" value="OnImportText"/>
@@ -51,7 +51,7 @@
                     <Anchor point="BOTTOMRIGHT"/>
                     <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
                 </Anchors>
-            </Frame>
+            </ScrollFrame>
         </Frames>
     </Frame>    
 
@@ -72,7 +72,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame inherits="CommonUI_TextArea" parentKey="export">
+            <ScrollFrame inherits="CommonUI_TextArea" parentKey="export">
                 <KeyValues>
                     <KeyValue key="ReadOnly" value="true" type="boolean"/>
                 </KeyValues>
@@ -80,7 +80,7 @@
                     <Anchor point="BOTTOMRIGHT"/>
                     <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
                 </Anchors>
-            </Frame>
+            </ScrollFrame>
         </Frames>
     </Frame>
 
