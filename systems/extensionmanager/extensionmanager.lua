@@ -7,7 +7,7 @@
 
 local _, Addon = ...
 local L = Addon:GetLocale()
-local debugp = function (...) Addon:Debug("extensionmanager", ...) end
+local function debugp(...) Addon:Debug("extensionmanager", ...) end
 
 local ExtensionManager = {}
 
@@ -42,8 +42,11 @@ end
 function ExtensionManager:Shutdown()
 end
 
-
+-- For addons that load after we do, if one of them is an internal extension, register it.
 function ExtensionManager.OnAddonLoaded(addonName)
+    if ExtensionManager:GetInternalExtension(addonName) then
+        ExtensionManager:RegisterInternalExtension(addonName)
+    end
 end
 
 

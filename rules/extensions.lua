@@ -48,7 +48,7 @@
 
 local AddonName, Addon = ...
 local L = Addon:GetLocale()
-local debugp = function (...) Addon:Debug("extensions", ...) end
+local function debugp(...) Addon:Debug("extensions", ...) end
 
 local Package = select(2, ...);
 local AddonName = select(1, ...);
@@ -487,6 +487,8 @@ end
 -- to update before our addons, it also, allows us to not require special handling 
 -- for our addons.
 function Extensions:ChangeCallback()
+    debugp("Calling callback...")
+
     if (self.timer) then
         self.timer:Cancel();
         self.timer = nil;
@@ -512,6 +514,7 @@ function Addon:RegisterExtension(extension)
     local result = Extensions:Register(extension);
     if (result) then
         if (not Extensions.registeredCallbacks) then
+            debugp("Registering callbacks...")
             Extensions.registeredCallbacks = true;
             Addon:GetProfileManager():RegisterCallback("OnProfileChanged", Extensions.ChangeCallback, Extensions);
             Addon.Rules.OnDefinitionsChanged:Add(

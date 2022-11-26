@@ -3,11 +3,7 @@ local locale = Addon:GetLocale()
 local UI = Addon.CommonUI.UI
 local ImportList = {}
 
---@debug@
-local function debugp(m,...) 
-    Addon:Debug("importlist", m, ...)
-end
---@debug-end@
+local function debugp(...) Addon:Debug("importlist", ...) end
 
 --[[ Validate the list payload ]]
 function ImportList:Validate(payload)

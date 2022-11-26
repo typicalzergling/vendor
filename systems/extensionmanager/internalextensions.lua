@@ -1,7 +1,7 @@
 
 local _, Addon = ...
 local L = Addon:GetLocale()
-local debugp = function (...) Addon:Debug("extensionmanager", ...) end
+local function debugp(...) Addon:Debug("extensionmanager", ...) end
 
 local ExtensionManager = Addon.Systems.ExtensionManager
 
@@ -27,7 +27,8 @@ end
 -- Adds extension definition that will be loaded if addonName is present.
 function ExtensionManager:AddInternalExtension(addonName, extensionDefinition)
     if internalExtensions[addonName] then
-        error("Extension for "..addonName.." already exists. Use that one.")
+        debugp("Extension for "..addonName.." already exists. Carrying on silently.")
+        return true
     end
 
     local extension = {}
@@ -74,15 +75,24 @@ function ExtensionManager:RegisterInternalExtension(addonName)
         return false
     end
 
-    -- Register the extension
+    -- Register the extension with Vendor
     debugp("About to register extension for  %s.", tostring(addonName))
-    if Addon.Extensions:Register(ext.definition) then
-        -- run registration code for that addon
-        if ext.definition.Register and type(ext.definition.Register) == "function" then
-            debugp("Executing registration with %s", tostring(addonName))
-            return ext.definition.Register()
-        end
-        return true
+    local success, result =  xpcall(Addon.RegisterExtension, CallErrorHandler, Addon, ext.definition)
+    if not success then
+        debugp("Registering with extension %s failed with %s", tostring(addonName), tostring(success))
+        return false
     end
-    return false
+
+    -- Some extensions have bi-directional registration.
+    if ext.definition.Register and type(ext.definition.Register) == "function" then
+        success, result = xpcall(ext.definition.Register, CallErrorHandler, nil)
+        if not success then
+            debugp("Registering with extension %s failed with %s", tostring(addonName), tostring(success))
+            return false
+        else
+            debugp("Register of extension succeeded with: %s", tostring(result))
+        end
+    end
+    debugp("Extension registration with %s completed successfully.", tostring(addonName))
+    return true
 end

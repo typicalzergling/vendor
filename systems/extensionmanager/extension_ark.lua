@@ -1,5 +1,5 @@
 local AddonName, Addon = ...
-
+local function debugp(...) Addon:Debug("extensionmanager", ...) end
 
 -- The following is the plugin to Ark itself to add a function that runs vendor rules against an item Ark is evaluating.
 
@@ -52,6 +52,7 @@ end
 
 local function registerWithArk()
     if (ArkInventoryRules and Vendor) then
+        debugp("Registering Vendor functions with Ark")
         local rules = ArkInventoryRules:NewModule(AddonName)
         function rules:OnEnable()
             ArkInventoryRules.Register(self, "vensell", Vendor_AutoSell)
@@ -74,6 +75,7 @@ local function registerArkExtension()
 
         -- This is called by Vendor whenever its rules change and Ark needs to redo its classification of items into buckets.
         OnRuleUpdate = function()
+            debugp("In OnRuleUpdate Callback in Ark")
             assert(ArkInventory and ArkInventory.ItemCacheClear and ArkInventory.Frame_Main_Generate)
             -- Clear the Ark Inventory item cache, becuase this also caches rule results, which are now invalid becuase our rules changed.
             ArkInventory.ItemCacheClear()
