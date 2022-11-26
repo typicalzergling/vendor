@@ -74,13 +74,10 @@ function BooleanParameter:SetParam(param)
     local value = self.value
     Mixin(value, Addon.CommonUI.Mixins.Border)
     value:OnBorderLoaded(nil, Colors.CHECKBOX_BORDER, Colors.CHECKBOX_BACK)
+    self.checked = false
 
-    value:SetScript("OnClick", function(cb)
-            if (cb:GetChecked()) then
-                cb.check:Show()
-            else
-                cb.check:Hide()
-            end
+    value:SetScript("OnClick", function()
+            self:SetValue(not self.checked)
             self:InvokeCallback()
         end)
 
@@ -97,18 +94,18 @@ end
 
 --[[ Sets teh value of a boolean param ]]
 function BooleanParameter:SetValue(value)
-    if (value and not self.value:GetChecked()) then
-        self.value:SetChecked(true)
+    if (value and not self.checked) then
+        self.checked = value
         self.value.check:Show()
-    elseif (not value and self.value:GetChecked()) then
-        self.value:SetChecked(true)
+    elseif (not value and self.checked) then
+        self.checked = value
         self.value.check:Hide()
     end
 end
 
 --[[ Get the value of a boolean param ]]
 function BooleanParameter:GetValue()
-    return self.value:GetChecked()
+    return self.checked
 end
 
 --[[==== NumberParameter ======================================================]]
@@ -142,15 +139,35 @@ local StringParameter = Addon.DeepTableCopy(RuleParameter)
 
 function StringParameter:SetParam(param)
     self.name:SetFormattedText("%s:", param.Name)
+    self.value.control:SetJustifyH("RIGHT")
+
+    self.value.control:SetScript("OnEscapePressed", EditBox_ClearFocus)
+    self.value.control:SetScript("OnEditFocusGained", EditBox_HighlightText)
+    self.value.control:SetScript("OnEditFocusLost", EditBox_ClearHighlight)
 end
 
 function StringParameter:SetValue(value)
-    assert(type(value) == "string")
-    self.value:SetText(tostring(value))
+    print("stringparam", value)
+    if value == nil then
+        value = ""
+    elseif (type(value) ~= "string") then
+        value = tostring(value)
+    end
+
+    print("stringparam", value, self.value)
+    self.value:SetText(value)
+end
+
+function StringParameter:OnParamChanged(text)
+    self:InvokeCallback()
 end
 
 function StringParameter:GetValue()
-    return ""
+    local val = self.value:GetText()
+    if (val == nil) then
+        return ""
+    end
+    return val
 end
 
 --[[ Create a new rule parameter ]]

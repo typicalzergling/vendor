@@ -145,7 +145,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <CheckButton parentKey="value">
+            <Button parentKey="value">
                 <Size x="16" y="16"/>
                 <Layers>
                     <Layer level="OVERLAY">
@@ -164,7 +164,7 @@
                     <Anchor point="LEFT" relativeKey="$parent.name" relativePoint="RIGHT" x="8"/>
                     <Anchor point="RIGHT"/>
                 </Anchors>
-            </CheckButton>
+            </Button>
         </Frames>
     </Frame>
 
@@ -186,6 +186,9 @@
         </Layers>
         <Frames>
             <Frame inherits="CommonUI_Edit" parentKey="value">
+                <KeyValues>
+                    <KeyValue key="Handler" value="OnParamChanged"/>
+                </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="TOPRIGHT" x="8"/>
                     <Anchor point="BOTTOMRIGHT"/>

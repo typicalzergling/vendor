@@ -89,6 +89,7 @@ function BaseEdit:GetText()
 end
 
 function BaseEdit:SetText(text)
+    print("settext :: ", text, self.__lastText)
     if type(text) ~= "string" then
         self.control:SetText("")
         self.__lastText = ""
@@ -101,6 +102,7 @@ function BaseEdit:SetText(text)
     if (not self.control:HasFocus()) then
         self:ShowPlaceholder(not self:HasText())
     end
+    print("settext :: ", text, self.__lastText, self.control:GetText(), self)
 end
 
 function BaseEdit:Insert(text)
@@ -172,6 +174,11 @@ function Edit:OnLoad()
     self.control:SetScript("OnTextChanged", function()
         self:_HandleTextChange()
     end)
+
+    self:SetScript("OnSizeChanged", function()
+            self.control:ClearAllPoints()
+            self.control:SetAllPoints(self)
+        end)
 end
 
 --[[ Sets this edit to be number ]]

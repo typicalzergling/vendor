@@ -649,7 +649,7 @@ function EditRuleParamItem:OnModelChange(model)
         self.type:SetTextColor(Colors:Get("LEGENDARY_ORANGE_COLOR"):GetRGBA())
     elseif (model.Type == "string") then
         self.type:SetText("S")
-        self.type:GetTextColor(Colors:Get("GREEN_FONT_COLOR"):GetRGBA())
+        self.type:SetTextColor(Colors:Get("GREEN_FONT_COLOR"):GetRGBA())
     end
 
     if (self.ReadOnly) then

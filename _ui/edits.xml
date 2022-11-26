@@ -63,13 +63,13 @@
                 <Size x="200" y="100"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" y="-4" x="5"/>
-                    <Anchor point="BOTTOMRIGHT" x="-25" y="2"/>
+                    <Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
                 </Anchors>				
                 <Scripts>
                     <OnEscapePressed function="EditBox_ClearFocus"/>
                 </Scripts>
                 <TextInsets>
-                    <AbsInset left="4" right="4" top="4" bottom="4"/>
+                    <AbsInset left="8" right="8" top="8" bottom="8"/>
                 </TextInsets>
                 <FontString inherits="ChatFontNormal"/>
             </EditBox>

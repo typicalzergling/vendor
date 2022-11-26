@@ -65,8 +65,13 @@ end
 
 function RulesTab:OnConfigChanged(type, config)
 	Addon:Debug("rulestab", "Got rule config change '%s'", type)
-	self.rules:Rebuild()
-	self:ApplyFilers()
+	--self.rules:Refresh()
+	--self:ApplyFilers()
+
+	if (self.view) then
+		self.activeConfig = config
+		self:UpdateConfig(self.view)
+	end
 end
 
 function RulesTab:GetRules()
@@ -129,8 +134,8 @@ function RulesTab:ShowRules(category)
 end
 
 function RulesTab:UpdateConfig(view)
+	self.view = view
 	if (self.activeConfig) then
-		local config = self.activeConfig
 		local list = self.rules
 
 		for _, model in ipairs(view) do
