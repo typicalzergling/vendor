@@ -43,7 +43,11 @@ always disabled when hidden.
 # Rule and List Import / Export
 
 We have enabled a means to import and export rules and lists as strings for sharing with other
-players. This works pretty much like Weakauras Import/Export.
+players. This works pretty much like Weakauras Import/Export. If you use the "export" button in
+the rule or list editor you can copy the text and post it on discord or wherever to share your
+rule or list with others!  When you import lists and rules they are not enabled by default so there
+is no risk to adding them. You have to explicitly go enable a rule and add a rule for a list in the
+case of lists.
 
 We do not yet support chat-linking to share rules in-game like Weakauras but it is on our list of future
 investments!
@@ -57,6 +61,20 @@ slightly different parameters on what is otherwise the exact same rule. The Cust
 are also helpful for the above mentioned Import/Export functionality so people with which you share
 your rules don't need to edit the rule settings in order to tweak the rule to do what they want.
 
+
+# Merchant Button is back and working great!
+
+The merchant button, a long requested feature, is now available (again). Like the MiniMap Button,
+the merchant button is an account-wide setting so you do not need to set it on every profile. In
+addition to being a conveient way to trigger a sell, we also addded a Destroy button next to it for
+any destroyable items for convenience. Also the Sell and Destroy buttons themselves have a count of
+the number of items currently marked for auto-sell and destroy. If you mouseover the button, the
+tooltip will show you exactly what items those are. In the case of the Destroy button, since destroy
+is only 1 destroy per hardware event, each time you click the button one item will be destroyed.
+The tooltip reflects the next item that will be destroyed when you click, in addition to the other
+items also marked for destruction.
+
+
 # Scanning Throttle Tuning when not-selling/destroying
 
 Tuned the status-scanning throttles and made them far more backed-off. We believe that information about
@@ -65,30 +83,27 @@ just an FYI. We always do an immediate scan when selling or destroying because t
 information, but not when you're out gathering or questing or raiding. So we are treating it as
 low-priority data that should in no way interfere with your activities or performance. What it does
 mean is the minimap button and LibDataBroker consumers like ElvUI and Titan Panel will have delayed
-Vendor status information, moreso than already. The earliest time you can expect a Vendor status
-update is 15 seconds after a triggering event (rule or Vendor settings change, equipment change, or
-looting event), assuming you dont have further events or get into combat which will reset the timer.
-We still will not do any scanning in combat. If you feel the freshness is too delayed, let us know.
-If you don't even notice until reading this, that's also good feedback that we have struck a good
+Vendor status information, moreso than already. We still will not do any scanning in combat except
+when the merchant window is open. If you feel the freshness is too delayed, let us know. If you
+don't even notice until reading this, that's also good feedback that we have struck a good
 balance. We are looking into adding an indicator to the tooltip when a refresh is pending but not
 yet completed so you at least know that it isn't current.
 
-# RulePack extension removed
 
-With the addition of another extension, we have removed the RulePack extension, removed the old tabard
-rule entirely, and moved the Crafting Reagents keep rule into one of the new built-ins. That did change
-the rule's identity so if you had it enabled you will need to enable the new one. The purpose of the
-RulePack was initially to be a sample extension, but since we now have five extensions we feel there
-is plenty of good examples now that we do not need the RulePack cluttering your addon folder unnecessarily.
+# All Extensions moved to internal - no more separate folders
+
+To allow us to add more extensions without cluttering up your addons folder, we have moved our extensions internally.
+We still support external extensions, but the ones we will be directly contributing will be now built in
+and will automatically work when one of the addons that extends it/us is installed. You can safely
+delete any lingering Vendor_Extension folders in your Addons folder.
 
 
-# OribosExchange Extension Added
+# CanIMogIt Extension Added!
 
-Requested by one of the users of the addon, we have added a new extension for Oribos Exchange if you
-find that TSM is a bit too heavyweight but still want to factor in Auction value into your vendor rules
-If you have OribosExchange installed you can see the four new functions available that pull data
-from that addon. You msut also enable the Vendor extension addon for it, Vendor_OE, which has both
-addons as a dependency, meaning it won't load unless you actually have OribosExchange.
+A popular request was more robust transmog tracking, and we now support CanIMogIt. If you have CanIMogIt,
+Vendor will have a new rule for you which captures unknown transmogs using the CanIMogIt APIs. There are
+also several functions added which directly query the CanIMogIt APIs with which you can make your own
+custom rules using CanIMogIt.
 
 
 # Notable Bugfixes
@@ -102,6 +117,24 @@ instead have that functionality for all warriors. This is because 2H weapons wil
 slot if you can't Titan grip and so there's no reason not to check it. You shouldn't notice a difference
 here.
 * Removed a slight but noticable UI stutter when a background scan completed.
+
+
+# Known Issues
+
+* There are probably bugs with custom parameters, we've had some gnarly UI bugs with it. Please report
+what you find, we will fix them as soon as we can.
+* You may get a "saved variables" lua error on Wrath Classic. We believe we have a workaround for this, but
+if you do encounter it, just reload your UI again and it will go away. Sorry, there's a weird difference
+addon load sequence in Wrath not present on Retail.
+* If you are using AdiBags and you still have the old Vendor_AdiBags extension folder in your addons
+that is enabled, you will get some lua errors coming out of AdiBags becuase we attempt to register
+the extension twice. This is a harmless error and can be ignored, but you can also remove the offending
+old Vendor_AdiBags folder. It is no longer needed.
+* The Merchant Button does not work with TSM's Merchant UI, and probably others like ElveUI, only the 
+default WoW merchant frame. We will address attaching our button frame to their frames in a later
+release.
+
+
 
 ]]},
 {
