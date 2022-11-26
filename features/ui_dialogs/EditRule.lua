@@ -266,7 +266,7 @@ function EditRule:GetCurrentParameters()
                 Key = param.Key,
             }
             
-            if (type(self.parameters) == "table" and self.parameters[param.Key]) then
+            if (type(self.parameters) == "table" and self.parameters[param.Key] ~= nil) then
                 params[param.Key] = self.parameters[param.Key]
                 paramInfo.Value = self.parameters[param.Key]
             else

@@ -96,7 +96,7 @@ function BooleanParameter:SetParam(param)
         end)
 end
 
---[[ Sets teh value of a boolean param ]]
+--[[ Sets the value of a boolean param ]]
 function BooleanParameter:SetValue(value)
     if (value and not self.checked) then
         self.checked = value
@@ -116,6 +116,7 @@ end
 
 local NumberParameter = Mixin({}, RuleParameter, Addon.CommonUI.Mixins.Debounce)
 
+--[[ Handle one time initialization of a numeric perameter ]]
 function NumberParameter:OnLoad()
     local value = self.value    
     Mixin(value, Addon.CommonUI.Mixins.Border)
@@ -128,6 +129,7 @@ function NumberParameter:OnLoad()
     value:SetScript("OnTextChanged", GenerateClosure(self.OnValueChanged, self))
 end
 
+--[[ Handle this parameter gaining focus ]]
 function NumberParameter:OnFocus()
     local value = self.value
 
@@ -137,6 +139,7 @@ function NumberParameter:OnFocus()
     value:HighlightText()
 end
 
+--[[ Handle this parameter losing focus ]]
 function NumberParameter:OnBlur()
     local value = self.value
 
@@ -151,6 +154,7 @@ function NumberParameter:OnBlur()
     self.current = nil
 end
 
+--[[ Handle the value changing ]]
 function NumberParameter:OnValueChanged()
     local value = self.value:GetNumber()
     if (value ~= self.current) then
@@ -159,10 +163,12 @@ function NumberParameter:OnValueChanged()
     end
 end
 
+--[[ Initialize to the paramter ]]
 function NumberParameter:SetParam(param)
     self.name:SetFormattedText("%s:", param.Name)
 end
 
+--[[ Set the parameter to the current value ]]
 function NumberParameter:SetValue(value)
     assert(type(value) == "number", "Expected a number value")
 
@@ -172,6 +178,7 @@ function NumberParameter:SetValue(value)
     end
 end
 
+--[[ Retrieve the current value ]]
 function NumberParameter:GetValue()
     local value= self.value:GetNumber()
     if (type(value) ~= "number") then

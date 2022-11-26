@@ -215,7 +215,7 @@ function RuleItem:ShowContextMenu()
     local rule = self:GetModel()
     local menu = {}
 
-    if (rule.Source == RuleSource.SYSTEN) then
+    if (rule.Source == RuleSource.SYSTEM) then
         table.insert(menu, { text="RULE_CMENU_VIEW", handler=function() self:Edit() end })
     else
         table.insert(menu, { text="RULE_CMENU_EDIT", handler=function() self:Edit() end })
