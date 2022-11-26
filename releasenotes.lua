@@ -133,7 +133,9 @@ old Vendor_AdiBags folder. It is no longer needed.
 * The Merchant Button does not work with TSM's Merchant UI, and probably others like ElveUI, only the 
 default WoW merchant frame. We will address attaching our button frame to their frames in a later
 release.
-
+* If you use the context menu on rules, as you navigate the context menu other rules can be highlighted.
+in the UI. This is purely cosmetic - those rules are not being selected, but it can be a bit alarming
+when doing actions like "Delete". Only the rule you opened the context menu on is actually selected.
 
 
 ]]},

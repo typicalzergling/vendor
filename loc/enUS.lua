@@ -519,6 +519,7 @@ RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
 
 EXPORT_HELP_TEXT = "Copy the text below for sharing this Vendor creation with others!",
 EXPORT_LIST_CAPTION = "Export List",
+EXPORT_RULE_CAPTION = "Export Rule",
 EXPORT_CLOSE_BUTTON = "Close",
 IMPORTLIST_UNIQUE_NAME0 = "%s (Imported)",
 IMPORTLIST_UNIQUE_NAME1 = "%s (Imported %d)",
