@@ -12,6 +12,7 @@ function ListItem:OnLoad()
     ListType = Addon.Systems.Lists.ListType
     self:OnBorderLoaded("tbk", Colors.TRANSPARENT, Colors.TRANSPARENT)
     UI.SetColor(self.text, "TEXT")
+    self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 end
 
 --[[ Called to set the model ]]
@@ -44,9 +45,14 @@ function ListItem:OnListUpdate(list, change, what)
 end
 
 --[[ Called when the item is clicked ]]
-function ListItem:OnClick()
-    if (not self:IsSelected()) then
-        self:Select()
+function ListItem:OnClick(button)
+    if (button == "LeftButton") then
+        if (not self:IsSelected()) then
+            self:Select()
+        end
+    elseif (button == "RightButton") then
+        self:TooltipLeave()
+        self:ShowContextMenu()
     end
 end
 
@@ -145,6 +151,61 @@ function ListItem:OnUnselected()
         self:SetBackgroundColor(Colors:Get("HOVER_BACKGROUND"))
     end
     UI.SetColor(self.text, textColor)
+end
+
+function ListItem:Edit()
+    Addon.Features.Lists.ShowEditDialog(self:GetModel())
+end
+
+function ListItem:Copy()
+    Addon.Features.Lists.ShowEditDialog(self:GetModel(), true)
+end
+
+function ListItem:Delete()
+    local parent = Addon.CommonUI.Dialog.Find(self)
+    local list = self:GetModel()
+    UI.MessageBox("DELETE_LIST_CAPTION",
+        locale:FormatString("DELETE_LIST_FMT1", list:GetName()), {
+            {
+                text = "CONFIRM_DELETE_LIST",
+                handler = function()
+                    Addon:DeleteList(self:GetModel():GetId())
+                    self:Close()
+                end,
+            },
+            "CANCEL_DELETE_LIST"
+        }, parent)
+end
+
+function ListItem:CreateRule()
+end
+
+function ListItem:ShowContextMenu()
+    local list = self:GetModel()
+    local menu = {}
+    local isCustom = list:GetType() == ListType.CUSTOM
+    local editor = Addon.Features.Lists.CreateEditor(list)
+
+    table.insert(menu, { text="RULE_CMENU_EDIT", handler=function() self:Edit() end })
+    table.insert(menu, { text="RULE_CMENU_COPY", handler=function() self:Copy() end })
+
+    if (isCustom and editor:CanDelete()) then
+        table.insert(menu, { text="RULE_CMENU_DELETE", handler=function() self:Delete() end })
+    end
+
+    local export = Addon:GetFeature("import")
+    if (export ~= nil) then
+        if (editor:CanExport()) then
+            table.insert(menu, { text="RULE_CMENU_EXPORT", handler=function() 
+                export:ShowExportDialog("EXPORT_LIST_CAPTION", editor:GetExportValue())
+            end })
+        end
+    end
+
+    table.insert(menu, "-")
+    table.insert(menu, "RULE_CMENU_CLOSE")
+
+    Addon.CommonUI.ShowContextMenu(self, menu)
 end
 
 Addon.Features.Lists.ListItem = ListItem
