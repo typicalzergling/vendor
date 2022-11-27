@@ -32,7 +32,10 @@ function MatchItem:OnEnter()
             assert(location:IsBagAndSlot())
             GameTooltip:SetBagItem(location:GetBagAndSlot())
         else
-            GameTooltip:SetHyperlink(self:GetItemLink())
+            local link = self:GetItemLink()
+            if link then
+                GameTooltip:SetHyperlink(link)
+            end
         end
 
         GameTooltip:Show()

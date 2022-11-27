@@ -170,7 +170,7 @@ function ListItem:Delete()
                 text = "CONFIRM_DELETE_LIST",
                 handler = function()
                     Addon:DeleteList(self:GetModel():GetId())
-                    self:Close()
+                    --self:Close()
                 end,
             },
             "CANCEL_DELETE_LIST"

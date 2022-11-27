@@ -601,7 +601,7 @@ function EditRule:DeleteRule()
                     text = "CONFIRM_DELETE_RULE",
                     handler = function()
                         self.editor:Delete()
-                        self:Close()
+                        --self:Close()
                     end,
                 },
                 "CANCEL_DELETE_RULE"

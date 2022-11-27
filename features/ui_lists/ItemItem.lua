@@ -67,7 +67,9 @@ end
 
 --[[ Called to show the tooltip for this item ]]
 function ItemItem:OnTooltip(tooltip)
-    tooltip:SetHyperlink(self:GetItemLink())
+    local link = self:GetItemLink()
+    if not link then return end
+    tooltip:SetHyperlink(link)
 end
 
 --[[ Called when the mouse clicked, if there is item notify the parent ]]
