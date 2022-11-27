@@ -42,7 +42,6 @@ function ImportDialog:OnImportText(text)
         text = Addon.StringTrim(text)
     end
 
-    print("sttring->", string.len(text), string.len(text) % 4)
     if (type(text) ~= "string" or string.len(text) == 0) then
         self:ShowInvalidPayload(false)
         return
