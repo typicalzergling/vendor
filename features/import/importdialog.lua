@@ -86,9 +86,9 @@ end
 
 --[[ Show the export dialog with the contents provided ]]
 function Addon.Features.Import:ShowImportDialog(importString)
-    local dialog = UI.Dialog("IMPORT_DIALOG_CPATION", "Import_ImportDialog", ImportDialog, {
+    local dialog = UI.Dialog("IMPORT_DIALOG_CAPTION", "Import_ImportDialog", ImportDialog, {
             cancel = { label = L["EXPORT_CLOSE_BUTTON"], handler = "Hide" },
-            confirm = { label = "confirm", handler="DoImport", enabled=false }
+            confirm = { label = L["DIALOG_TEXT_CONFIRM"], handler="DoImport", enabled=false }
         }, importString)
 
     dialog:Show()

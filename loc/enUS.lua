@@ -184,6 +184,7 @@ OPTIONS_CONFIRM_PROFILE_DELETE_CONFIRM = "Confirm",
 OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = [[
 # Delete Profile
 
+
 Are you sure you want to delete profile '%s'?"
 ]],
 OPTIONS_PROFILE_DUPLICATE_NAME_CAPTION = "Duplicate Name",
@@ -457,7 +458,13 @@ EDITRULE_EXTENSION_RULE_TEXT = "This rule comes from '%s' extension and cannot b
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
 
-RDITPARAM_NAME_LABEL = "Name:",
+
+DIALOG_TEXT_CONFIRM="Confirm",
+IMPORT_HELP_TEXT="Paste in the encoded text string below for Vendor rules or lists from other players to import them.",
+IMPORT_DIALOG_CAPTION="Import Rules and Lists",
+IMPORT_HELP_TEXT_PASTE_HERE="Paste in Vendor export strings here from exporting rules or lists.",
+
+EDITPARAM_NAME_LABEL = "Name:",
 EDITPARAM_KEY_LABEL = "Script Name:",
 EDITPARAM_TYPE_LABEL = "Type:",
 EDITPARAM_DEFAULT_LABEL = "Default Value:",
