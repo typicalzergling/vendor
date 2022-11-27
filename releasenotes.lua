@@ -136,7 +136,7 @@ what you find, we will fix them as soon as we can.
 if you do encounter it, just reload your UI again and it will go away. Sorry, there's a weird difference
 addon load sequence in Wrath not present on Retail.
 * If you are using AdiBags and you still have the old Vendor_AdiBags extension folder in your addons
-that is enabled, you will get some lua errors coming out of AdiBags becuase we attempt to register
+that is enabled, you will get some lua errors coming out of AdiBags because we attempt to register
 the extension twice. This is a harmless error and can be ignored, but you can also remove the offending
 old Vendor_AdiBags folder. It is no longer needed.
 * The Merchant Button does not work with TSM's Merchant UI, and probably others like ElveUI, only the 
