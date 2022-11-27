@@ -204,6 +204,7 @@ end
 
 --[[ Prompts the user to hide the then hides the rule if needed ]]
 function RuleItem:HideRule()
+    local parent = Addon.CommonUI.Dialog.Find(self)
     UI.MessageBox("HIDE_RULE_CAPTION",
         locale:FormatString("HIDE_RULE_FMT1", self:GetModel().Name), {
         {
@@ -218,7 +219,7 @@ function RuleItem:HideRule()
             end,
         },
         "CANCEL_HIDE_RULE"
-    }, self)
+    }, parent)
 end
 
 function RuleItem:ShowContextMenu()
