@@ -4,6 +4,8 @@ local ListItem = Mixin({}, Addon.CommonUI.Mixins.Tooltip, Addon.CommonUI.Mixins.
 local UI = Addon.CommonUI.UI
 local Colors = Addon.CommonUI.Colors
 local ListType = nil
+local ChangeType = Addon.Systems.Lists.ChangeType
+local ListEvents = Addon.Systems.Lists.ListEvents
 
 
 --[[ Handle loading ]]
@@ -22,6 +24,23 @@ function ListItem:OnModelChange(list)
         UI.SetColor(self.text, "CUSTOMLIST_TEXT")
     else
         UI.SetColor(self.text, "TEXT")
+    end
+end
+
+function ListItem:OnShow()
+    Addon:RegisterCallback(ListEvents.CHANGED, self, self.OnListUpdate)
+end
+
+function ListItem:OnHide()
+    Addon:UnregisterCallback(ListEvents.CHANGED, self)
+end
+
+--[[ When the list name changes update our name ]]
+function ListItem:OnListUpdate(list, change, what)
+    if (change == ChangeType.OTHER and what == "name") then
+        if (list:GetId() == self:GetModel():GetId()) then
+            UI.SetText(self.text, list:GetName())
+        end
     end
 end
 

@@ -39,7 +39,7 @@ function CustomList:SetName(name)
 
     if (name ~= self:GetName()) then
         self.manager:Update(self.listId, { Name = name })
-        Addon:RaiseEvent(ListEvents.CHANGED, self, ChangeType.OTHER, item)
+        Addon:RaiseEvent(ListEvents.CHANGED, self, ChangeType.OTHER, "name")
     end
 end
 

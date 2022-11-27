@@ -178,6 +178,7 @@ local function list_CreateItem(self, state, model)
             end
         end)
 
+    litem:Hide()
     return litem
 end
 

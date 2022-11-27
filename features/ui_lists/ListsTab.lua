@@ -5,6 +5,7 @@ local UI = nil
 local ListEvents = nil
 local ListType = nil
 local SystemListId = nil
+local ChangeType = nil
 local SYSTEM_ORDER = nil
 
 local ListsTab = {}
@@ -17,6 +18,7 @@ function ListsTab:OnLoad()
     ListEvents = Addon.Systems.Lists.ListEvents
     ListType = Addon.Systems.Lists.ListType
     SystemListId = Addon.SystemListId
+    ChangeType = Addon.Systems.Lists.ChangeType
 
     SYSTEM_ORDER = {
         [SystemListId.NEVER] = 1,
@@ -34,8 +36,8 @@ function ListsTab:OnLoad()
         end)
 
     Addon:RegisterCallback(ListEvents.REMOVED, self, function()
-        self.lists:Rebuild()
-    end)
+            self.lists:Rebuild()
+        end)
 
     self.lists:Sort(function (a, b)
             local typeA = a:GetType()
