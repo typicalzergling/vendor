@@ -130,7 +130,7 @@ function EditListDialog:Update()
     buttons.cancel = true
     buttons.delete = { show = not editor:IsNew(), enabled = not editor:IsNew() and editor:CanDelete() }
     buttons.save =  { show = true, enabled = editor:IsDirty() and editor:CanCommit() }
-    buttons.export = { show = true, enabled = editor:CanExport() }
+    buttons.export = editor:CanExport()
     -- 
     local canEditProperties = editor:CanChangeProperties()
     UI.Enable(self.name, canEditProperties)
@@ -168,10 +168,10 @@ function Addon.Features.Lists.ShowEditDialog(list, copy)
     ListType = Addon.Systems.Lists.ListType
 
     local dialog = UI.Dialog("EditList", "Lists_Editor", EditListDialog, {
-            save = { label = SAVE, handler = "OnSave" },
-            cancel = { label = CANCEL, handler = "Hide", default = true },
-            delete = { label = DELETE, handler = "OnDelete" },
-            export = { label = "Export", handler = "OnExport" },
+            { id="cancel", label = CANCEL, handler = "Hide", default = true },
+            { id="save", label = SAVE, handler = "OnSave" },
+            { id="delete", label = DELETE, handler = "OnDelete" },
+            { id="export", label = "Export", handler = "OnExport" },
         })
 
     dialog:SetList(list, copy)

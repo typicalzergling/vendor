@@ -19,7 +19,8 @@ local function layoutButtons(dialog)
         local last = nil
         local buttonsWidth  = 0
 
-        for _, button in pairs(dialog.__buttons) do
+        for _, button in ipairs(dialog.__buttons) do
+            print("laying out button:", button.buttonId)
             if (button:IsShown()) then
                 if (buttonsWidth == 0) then
                     buttonsWidth = 2 * DIALOG_PADDING_X
@@ -70,6 +71,7 @@ local function layoutDialog(dialog)
     if (dialog.__buttons) then
         local last = nil
         local buttonsWidth, last  = layoutButtons(dialog)
+        print("last:", last.buttonId)
 
         cy = cy + DIALOG_BUTTON_HEIGHT + DIALOG_PADDING_Y
         host:SetPoint("BOTTOM", last, "TOP", 0, DIALOG_BUTTON_GAP)
@@ -207,9 +209,10 @@ function DialogBox:SetButtons(buttons)
     assert(type(buttons) == "table", "expected the buttons to be a table")
 
     self.__buttons = {}
-    for key, button in pairs(buttons) do
+    for _, button in pairs(buttons) do
         local frame = CreateFrame("Button", nil, self, "CommandButton")
         frame:SetLabel(button.label)
+        frame.buttonId = button.id
         if (button.help) then
             frame:SetHelp(button.help)
         end
@@ -217,44 +220,55 @@ function DialogBox:SetButtons(buttons)
         if (button.handler) then
             frame:SetScript("OnClick", function(this)
                     if (type(button.handler) == "string") then
-                        Addon.Invoke(self, button.handler, this)
+                        local func = self[button.handler]
+                        if (type(func) == "function") then
+                            func(self, this)
+                        end
                     elseif (type(button.handler) == "function") then
-                        xpcall(button.handler, CallErrorHandler, this)
+                        button.handler(this)
                     end
                 end)
         end
 
-        self.__buttons[key] = frame
+        table.insert(self.__buttons, frame)
         layout(self)
     end
 end
 
+--[[ Find the button with the specified name ]]
+function DialogBox:FindButton(id)
+    if (self.__buttons) then
+        for _, button in ipairs(self.__buttons) do
+            if (button.buttonId == id) then
+                return button
+            end
+        end
+    end
+    return nil
+end
+
 -- Sets the enabled/disabled state of the button
 function DialogBox:SetButtonEnabled(id, enabled)
-    if (self.__buttons) then
-        local button = self.__buttons[id]
-        if (button) then
-            if (enabled) then
-                button:Enable()
-            else
-                button:Disable()
-            end
+    local button = self:FindButton(id)
+    if (button) then
+        if (enabled) then
+            button:Enable()
+        else
+            button:Disable()
         end
     end
 end
 
 -- Show or hide the dialog button
 function DialogBox:SetButtonVisiblity(id, show)
-    if (self.__buttons) then
-        local button = self.__buttons[id]
-        if (button) then
-            if (not button:IsShown() and show) then
-                button:Show()
-                layout(self)
-            elseif (button:IsShown() and not show) then
-                button:Hide()
-                layout(self)
-            end
+    local button = self:FindButton(id)
+    if (button) then
+        if (not button:IsShown() and show) then
+            button:Show()
+            layout(self)
+        elseif (button:IsShown() and not show) then
+            button:Hide()
+            layout(self)
         end
     end
 end
@@ -266,8 +280,9 @@ end
 function DialogBox:SetButtonState(buttons)
     assert(type(buttons) == "table", "Expected the button state to be a table")
     if self.__buttons then
-        for id, button in pairs(self.__buttons) do
-            local state = buttons[id]
+        for _, button in pairs(self.__buttons) do
+            print("checking button:", button.buttonId, buttons[button.buttonId])
+            local state = buttons[button.buttonId]
             if (not state) then
                 button:Hide()
                 button:Disable()

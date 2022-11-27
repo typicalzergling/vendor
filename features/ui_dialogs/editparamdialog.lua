@@ -373,13 +373,13 @@ function EditParamDialog.Create(mode, ruleEditor, param, currentValue)
 
     -- Determine what buttons we have
     if (mode == DialogMode.EDIT) then
-        buttons.save = { label = "EDITPARAM_SAVE_LABEL", handler = "OnSave" }
-        buttons.cancel = { label = "EDITPARAM_CANCEL_LABEL", handler = "Hide", default = true, order = 1 }
+        table.insert(buttons, { id="cancel", label = "EDITPARAM_CANCEL_LABEL", handler = "Hide", default = true, })
+        table.insert(buttons, { id="save", label = "EDITPARAM_SAVE_LABEL", handler = "OnSave" })
     elseif (mode == DialogMode.VIEW) then
-        buttons.close = { label = "EDITPARAM_CLOSE_LABEL", handler="Hide" }
+        table.insert(buttons, { id="close", label = "EDITPARAM_CLOSE_LABEL", handler="Hide" })
     elseif (mode == DialogMode.CREATE) then
-        buttons.create = { label = "EDITPARAM_CREATE_LABEL", handler = "OnCreate" }
-        buttons.cancel = { label = "EDITPARAM_CANCEL_LABEL", handler = "Hide", default = true, order = 1 }
+        table.insert(buttons, { id="cancel", label = "EDITPARAM_CANCEL_LABEL", handler = "Hide", default = true, order = 1 })
+        table.insert(buttons, { id="create", label = "EDITPARAM_CREATE_LABEL", handler = "OnCreate" })
     end
 
     local dialog = UI.Dialog("EDIT_RULE_PARAMETER", "Rule_EditParamDialog", EditParamDialog,

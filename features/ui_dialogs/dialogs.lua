@@ -12,11 +12,11 @@ end
 function Dialogs:GetEditRule()    
     if (not self.editRule) then
         local BUTTONS = {
-            export = { label = "Export", handler = "ExportRule" },
-            cancel = { label = CANCEL, handler = "Toggle"  },
-            save = { label = SAVE, handler = "SaveRule" },
-            delete = { label = DELETE, handler = "DeleteRule" },
-            close = { label = CLOSE, handler = "Toggle" }
+            close = { id="close", label = CLOSE, handler = "Toggle" },
+            cancel = { id="cancel", label = CANCEL, handler = "Toggle"  },
+            save = { id="save", label = SAVE, handler = "SaveRule" },
+            delete = { id="delete", label = DELETE, handler = "DeleteRule" },
+            export = { id="export", label = "Export", handler = "ExportRule" },
         }
     
         self.editRule = UI.Dialog(nil, "Vendor_Dialogs_EditRule", self.EditRule, BUTTONS)

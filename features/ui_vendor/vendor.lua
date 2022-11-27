@@ -19,11 +19,11 @@ end
 function MainFeature:GetDialog()
 	if (not self.dialog) then
 		local BUTTONS = {
-			close = { label = CLOSE, handler = "Hide" },
-		}	
+			{ id="close", label = CLOSE, handler = "Hide" },
+		}
 
 		if (Addon:IsFeatureEnabled("import")) then
-			BUTTONS.import = { label = "Import", handler = "OnImport" }
+			table.insert(BUTTONS, { id="import", label = "Import", handler = "OnImport" })
 		end
 
 		self.dialog = UI.Dialog(nil, "Vendor_MainDialog", self.MainDialog, BUTTONS)
