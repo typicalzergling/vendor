@@ -14,7 +14,10 @@ function RulesFeature:OnInitialize()
     Addon:GenerateEvents(EVENTS)
 
     local settings = Addon:GetFeature("Settings")
-    settings:RegisterPage(L.OPTIONS_CATEGORY_HIDDENRULES, L.OPTIONS_DESC_HIDDENRULES, self.CreateHiddenRulePage)
+    -- TODO: Investigate why hiding rules behaves incorrectly on Classic
+    if Addon.Systems.Info.IsRetailEra then
+        settings:RegisterPage(L.OPTIONS_CATEGORY_HIDDENRULES, L.OPTIONS_DESC_HIDDENRULES, self.CreateHiddenRulePage)
+    end
 end
 
 --[[

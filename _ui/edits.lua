@@ -76,7 +76,9 @@ function Edit:SetEditText(text)
         if (type(text) == "string" and string.len(text) ~= 0) then
             self:ShowPlaceholder(false)
         end
-        self.setText(self, text)
+        if text then
+            self.setText(self, text)
+        end
     end
 end
 

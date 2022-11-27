@@ -255,7 +255,10 @@ function RuleItem:ShowContextMenu()
         table.insert(menu, { text="RULE_CMENU_ENABLE", handler=function() self:SetActive(true) end })
     end
 
-    table.insert(menu, { text="RULE_CMENU_HIDE", handler=function() self:HideRule() end })
+    -- TODO: Investigate why hiding rules behaves incorrectly on Classic
+    if Addon.Systems.Info.IsRetailEra then
+        table.insert(menu, { text="RULE_CMENU_HIDE", handler=function() self:HideRule() end })
+    end
     table.insert(menu, "-")
     table.insert(menu, "RULE_CMENU_CLOSE")
 

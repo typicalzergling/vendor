@@ -140,7 +140,8 @@ local HelpTab = {
         local types = self.filters:GetSelected()
         
         local term = nil
-        if self.filter:HasText() then
+        -- TODO: Investigate why HasText is missing on classic.
+        if self.filter.HasText and self.filter:HasText() then
             term = string.lower(self.filter:GetText())
             if (string.len(term) == 0) then
                 term = nil

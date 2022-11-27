@@ -142,6 +142,8 @@ old Vendor_AdiBags folder. It is no longer needed.
 * The Merchant Button does not work with TSM's Merchant UI, and probably others like ElveUI, only the 
 default WoW merchant frame. We will address attaching our button frame to their frames in a later
 release.
+* Classic may have a few bugs. We have disabled Rule Hiding in Wrath due to unexpected behavior and
+will re-enable rule hiding on Classic in a subsequent patch to Vendor.
 
 
 ]]},

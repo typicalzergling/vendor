@@ -93,7 +93,7 @@ function ItemList:OnDropItem()
         if (item ~= nil) then
             local itemId
             if (type(item) == "table") then
-                local itemId = C_Item.GetItemID(item)
+                itemId = C_Item.GetItemID(item)
             elseif (type(item) == "string") then
                 itemId = GetItemInfoInstant(item)
             end
