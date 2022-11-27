@@ -8,6 +8,7 @@ local ProfileEvents = Addon.Systems.Profile.ProfileEvents
 
 function RulesTab:OnLoad()
 	self.ruleFeature = Addon:GetFeature("Rules")
+	Addon:RegisterCallback(ProfileEvents.ACTIVE_CHANGED, self, self.OnActiveProfileChange)
 end
 
 --[[ Retreive the categories for the rules ]]
@@ -39,8 +40,8 @@ function RulesTab:OnActivate()
 
 	self.ruleType:EnsureSelection()
 	Addon:RegisterCallback(RuleEvents.CONFIG_CHANGED, self, self.OnConfigChanged)
-	Addon:RegisterCallback(ProfileEvents.ACTIVE_CHANGED, self, self.OnActiveProfileChange)
-	self:ApplyFilers()
+	
+	self:ApplyFilters()
 	self.rules:Rebuild()
 end
 
@@ -76,7 +77,7 @@ end
 
 function RulesTab:OnActiveProfileChange(newProfile, oldProfile)
 	Addon:Debug("rulestab", "Profile changed '%s' => '%s'", oldProfile:GetId(), newProfile:GetId())
-	self:ApplyFilers()
+	self:ApplyFilters()
 	self.rules:Rebuild()
 end
 
@@ -85,7 +86,7 @@ function RulesTab:GetRules()
 end
 
 --[[ Apply our filters ]]
-function RulesTab:ApplyFilers()
+function RulesTab:ApplyFilters()
 	if (self.activeConfig) then
 		self.rules:Filter(self:CreateFilter())
 	else
@@ -103,7 +104,7 @@ end
 
 function RulesTab:ShowRules(category)
 	self.activeConfig = self.ruleFeature:GetConfig(category.Type)
-	self:ApplyFilers()
+	self:ApplyFilters()
 	self.rules:Sort(function(ruleA, ruleB)
 
 			local hasA = ruleA and self.activeConfig:Contains(ruleA.Id)
