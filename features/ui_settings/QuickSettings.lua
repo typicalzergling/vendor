@@ -1,4 +1,5 @@
 local _, Addon = ...
+local L = Addon:GetLocale()
 local Settings = Addon.Features.Settings
 local QuickSettings =  Mixin({}, Addon.UseProfile)
 
@@ -9,12 +10,12 @@ end
 
 --[[ Gets the text of this setting page ]]
 function QuickSettings:GetText()
-	return "Quick"
+	return L.OPTIONS_CATEGORY_QUICK
 end
 
 --[[ Gets the summary of his setting list (opttional) ]]
 function QuickSettings:GetSummary()
-	return "quick settings summary"
+	return L.OPTIONS_DESC_QUICK
 end
 
 function QuickSettings:GetOrder()

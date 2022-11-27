@@ -16,7 +16,7 @@ end
 
 --[[ Gets the summary of his setting list (opttional) ]]
 function GeneralSettings:GetSummary()
-	return nil
+	return locale["OPTIONS_DESC_GENERAL"]
 end
 
 --[[ Creates the list for this settings page ]]
