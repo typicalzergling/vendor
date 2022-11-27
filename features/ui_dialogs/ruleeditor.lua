@@ -3,6 +3,7 @@ local locale = Addon:GetLocale()
 local RuleEditor = Mixin({}, CallbackRegistryMixin)
 local RuleSource = Addon.RuleSource
 local RuleType = Addon.RuleType
+local function debugp(m, ...) Addon:Debug("ruleeditor", m, ...) end
 
 local Events = {
     DIRTY = "rule-editor-dirty",
@@ -19,8 +20,8 @@ local Errors  = {
 
 function RuleEditor:Init(rule, copy)
     self.dirty = false
-
     CallbackRegistryMixin.OnLoad(self)
+
     local events = {}
     for _, event in pairs(Events) do
         table.insert(events, event)
@@ -39,7 +40,8 @@ function RuleEditor:Init(rule, copy)
         end
 
         if (copy) then
-            self.name = locale:FormatString("EDITRULE_DEFAULT_COPY_NAME_FMT1", rule.name)
+            self.name = locale:FormatString("EDITRULE_DEFAULT_COPY_NAME_FMT1", rule.Name)
+            self.dirty = true
         else
             self.rule = rule
         end
@@ -262,7 +264,7 @@ end
 
 --[[ Checks if we can save this rule ]]
 function RuleEditor:CanSave()
-    if (self:IsReadOnly()) then
+    if (self:IsReadOnly()) then        
         return false
     end
 
@@ -280,18 +282,22 @@ end
 --[[ Check if we can export this rule ]]
 function RuleEditor:CanExport()
     if (self:IsReadOnly()) then
+        debugp("Cannot export a read-only rule (%s)", tostring(self:GetSource()))
         return false
     end
     
     if (type(self.name) ~= "string") or string.len(self.name) == 0 then
+        debugp("Cannot export a rule without a name")
         return false
     end
 
     if (type(self.script) ~= "string") or string.len(self.script) == 0 then
+        debugp("Cannot export a rule without script")
         return false
     end
 
     if (type(self.description) ~= "string" or string.len(self.description) == 0) then
+        debugp("Cannot export a rule without a description")
         return false
     end
 
@@ -359,7 +365,7 @@ function RuleEditor:SetDirty(dirty)
 end
 
 --[[ Create a new rule editor ]]
-function Addon.Features.Dialogs.CreateRuleEditor(rule, copy)
+function Addon.Features.Dialogs:CreateRuleEditor(rule, copy)
     return CreateAndInitFromMixin(RuleEditor, rule, copy)
 end
 

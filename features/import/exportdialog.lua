@@ -23,13 +23,6 @@ function ExportDialog:OnInitDialog(dialog, export)
 
     self.exportText = Encoder.Encode(export)
     self.export:SetText(self.exportText)
-
-    local edit = self.export.control
-    rawset(edit, "exportText", self.exportText)
-    edit:SetScript("OnEditFocusGained", self.EditOnEditFocusGained)
-    edit:SetScript("OnEditFocusLost", self.EditOnEditFocusGained)
-    edit:SetScript("OnTextChanged", self.EditOnTextChanged)
-    edit:SetScript("OnChar", self.EditOnEditFocusGained)
 end
 
 function ExportDialog:OnShow()

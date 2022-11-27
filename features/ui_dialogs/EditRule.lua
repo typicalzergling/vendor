@@ -473,7 +473,7 @@ function EditRule:SetRule(rule, parameters)
     assert(type(rule) == "table", "Expected the rule definition to be a table")
 
     self:SetCaption("EDITRULE_CAPTION")
-    self.editor = Dialogs.CreateRuleEditor(rule)
+    self.editor = Dialogs:CreateRuleEditor(rule)
     self.parameters = parameters
 
     self:Setup()
@@ -547,7 +547,7 @@ end
     Sets the dialog to create a new rule
 ]]
 function EditRule:NewRule()    
-    self.editor = Dialogs.CreateRuleEditor()
+    self.editor = Dialogs:CreateRuleEditor()
     self:Setup()
     self:RaiseEvent(Dialogs.EditRuleEvents.CLEAR_MATCHES)
     self:Update()
@@ -556,7 +556,7 @@ end
 function EditRule:CopyRule(rule, parameters)
     assert(type(rule) == "table", "Expected the rule definition to be a table")
 
-    self.editor = Dialogs.CreateRuleEditor(rule, true)
+    self.editor = Dialogs:CreateRuleEditor(rule, true)
     self.parameters = parameters
 
     self:Setup()

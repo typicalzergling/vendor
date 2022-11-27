@@ -180,6 +180,13 @@ function RuleItem:Edit()
     editDialog:ShowEditRule(self:GetRuleId(), params)
 end
 
+--[[ Called to copy the rule to a new rule ]]
+function RuleItem:Copy()
+    local params = self:GetParameters()
+    local editDialog = Addon:GetFeature("dialogs")
+    editDialog:CopyRule(self:GetRuleId(), params)
+end
+
 --[[ Prompts the user to delete this rule, deletes it if desired  ]]
 function RuleItem:Delete()
     UI.MessageBox("DELETE_RULE_CAPTION",
@@ -222,6 +229,20 @@ function RuleItem:ShowContextMenu()
     else
         table.insert(menu, { text="RULE_CMENU_EDIT", handler=function() self:Edit() end })
         table.insert(menu, { text="RULE_CMENU_DELETE", handler=function() self:Delete() end })
+        table.insert(menu, { text="RULE_CMENU_COPY", handler=function() self:Copy() end })
+
+        local export = Addon:GetFeature("import")        
+        if (export ~= nil) then
+            local rule = Addon:GetFeature("rules"):FindRule(self:GetRuleId())
+            assert(rule ~= nil)
+            local editor = Addon:GetFeature("dialogs"):CreateRuleEditor(rule)
+
+            if (editor:CanExport()) then
+                table.insert(menu, { text="RULE_CMENU_EXPORT", handler=function() 
+                    export:ShowExportDialog("EXPORT_RULE_CAPTION", editor:GetExportValue())
+                end })
+            end
+        end
     end
     table.insert(menu, "-")
 

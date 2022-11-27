@@ -218,6 +218,8 @@ RULE_CMENU_VIEW = "View",
 RULE_CMENU_EDIT = "Edit",
 RULE_CMENU_DELETE = "Delete",
 RULE_CMENU_CLOSE = "Close",
+RULE_CMENU_COPY = "Copy",
+RULE_CMENU_EXPORT = "Export",
 
 -- Console Commands
 CMD_HELP_HEADER = "Command Reference: ",

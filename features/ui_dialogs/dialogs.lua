@@ -37,11 +37,30 @@ function Dialogs:ShowEditRule(ruleId, parameters, tab)
 
     local rule = rules:FindRule(ruleId)
     if (not rule) then
-        error("Unable to locate rule: " .. ruleId)
+        error("Unable to locate rule : " .. tostring(ruleId))
+        return
     end
 
     local dialog = self:GetEditRule()
     dialog:SetRule(rule, parameters)
+    if (type(tab) == "string") then
+        dialog:NavigateTo(tab)
+    end
+    dialog:Show()
+end
+
+--[[ Show a dialog with a copied rule ]]
+function Dialogs:CopyRule(ruleId, parameters, tab)
+    local rules = Addon:GetFeature("rules")
+
+    local rule = rules:FindRule(ruleId)
+    if (not rule) then
+        error("Unable to locate rule : " .. tostring(ruleId))
+        return
+    end
+
+    local dialog = self:GetEditRule()
+    dialog:CopyRule(rule, parameters)
     if (type(tab) == "string") then
         dialog:NavigateTo(tab)
     end

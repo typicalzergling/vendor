@@ -119,10 +119,25 @@ function TextArea:OnLoad()
     edit:SetScript("OnEnable", GenerateClosure(self.OnEnable, self))
     edit:SetScript("OnDisable", GenerateClosure(self.OnDisable, self))
     ScrollFrame_OnLoad(self)
+
+    if (self.ReadOnly == true) then
+        self.readonly = true
+        edit:SetScript("OnChar", GenerateClosure(self.RestoreText, self))
+    end
 end
 
 function TextArea:OnMouseDown()
     self.editbox:SetFocus()
+end
+
+function TextArea:RestoreText()
+    assert(type(self.current) == "string")
+    assert(self.ReadOnly)
+    self.editbox:SetText(self.current)
+
+    if (self.HighlightOnFocus == true) then
+        self.editbox:HighlightText()
+    end
 end
 
 function TextArea:OnDisable()
@@ -163,6 +178,10 @@ function TextArea:OnFocus()
     self:SetBorderColor("EDIT_HIGHLIGHT")
     UI.SetColor(self, "EDIT_TEXT")
     self:ShowPlaceholder(false)
+
+    if (self.HighlightOnFocus == true) then
+        self.editbox:HighlightText()
+    end
 end
 
 function TextArea:OnBlur()
@@ -171,6 +190,10 @@ function TextArea:OnBlur()
     self:DebounceNow()
     if (not self:HasText()) then
         self:ShowPlaceholder(true)
+    end
+
+    if (self.HighlightOnFocus == true) then
+        self.editbox:ClearHighlightText()
     end
 end
 

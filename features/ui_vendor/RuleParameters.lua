@@ -255,7 +255,6 @@ function StringParameter:SetValue(value)
 
     if (value ~= self.current) then
         self.current = value
-        print("stringparam", value, self.value, self.current)
         self.value:SetText(value)
     end
 end
