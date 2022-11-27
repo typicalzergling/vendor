@@ -7,7 +7,6 @@ local ListType = nil
 local ChangeType = Addon.Systems.Lists.ChangeType
 local ListEvents = Addon.Systems.Lists.ListEvents
 
-
 --[[ Handle loading ]]
 function ListItem:OnLoad()
     ListType = Addon.Systems.Lists.ListType
@@ -52,6 +51,7 @@ function ListItem:OnClick()
 end
 
 function ListItem:OnEnter()
+    self.hover = true
     if (not self:IsSelected()) then
         self:SetBorderColor(Colors.TRANSPARENT)
         self:SetBackgroundColor(Colors:Get("HOVER_BACKGROUND"))
@@ -67,6 +67,7 @@ function ListItem:OnEnter()
 end
 
 function ListItem:OnLeave()
+    self.hover = false
     if (not self:IsSelected()) then
         self:SetBorderColor(Colors.TRANSPARENT)
         self:SetBackgroundColor(Colors.TRANSPARENT)
@@ -119,7 +120,7 @@ end
 
 --[[ Called when the item is unselected ]]
 function ListItem:OnUnselected()
-    local mouseOver = self:IsMouseOver()
+    local mouseOver = self.hover == true
     local textColor = "TEXT"
 
     if (self:GetModel():GetType() == ListType.CUSTOM) then

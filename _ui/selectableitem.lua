@@ -35,6 +35,7 @@ end
 
 --[[ Enter the selectable item ]]
 function SelectableItem:OnEnter()
+    self.hover = true
     if (self:IsEnabled()) then
         if not self:IsSelected() then
             self:SetColors("hover")
@@ -45,6 +46,7 @@ end
 
 --[[ Leave the selectable item ]]
 function SelectableItem:OnLeave()
+    self.hover = false
     if (self:IsEnabled()) then
         if not self:IsSelected() then
             self:SetColors("normal")
@@ -60,7 +62,7 @@ end
 
 --[[ Handle un-selection ]]
 function SelectableItem:OnUnselected()
-    if (self:IsMouseOver()) then
+    if (self.hover) then
         self:SetColors("hover")
     else
         self:SetColors("normal")
@@ -74,7 +76,7 @@ end
 
 --[[ Toggles us out of disabled state ]]
 function SelectableItem:OnEnable()
-    if (self:IsMouseOver()) then
+    if (self.hover == true) then
         self:SetColors("hover")
     else
         self:SetColors("normal")

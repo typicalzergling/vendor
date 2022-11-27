@@ -4,6 +4,7 @@ local Vendor = Addon.Features.Vendor
 local RuleType = nil
 local RuleEvents = nil
 local RulesTab = {}
+local ProfileEvents = Addon.Systems.Profile.ProfileEvents
 
 function RulesTab:OnLoad()
 	self.ruleFeature = Addon:GetFeature("Rules")
@@ -38,12 +39,14 @@ function RulesTab:OnActivate()
 
 	self.ruleType:EnsureSelection()
 	Addon:RegisterCallback(RuleEvents.CONFIG_CHANGED, self, self.OnConfigChanged)
+	Addon:RegisterCallback(ProfileEvents.ACTIVE_CHANGED, self, self.OnActiveProfileChange)
 	self:ApplyFilers()
 	self.rules:Rebuild()
 end
 
 function RulesTab:OnDeactivate()
 	Addon:UnregisterCallback(RuleEvents.CONFIG_CHANGED, self)
+	--Addon:UnregisterCallback(ProfileEvents.ACTIVE_CHANGED, self)
 end
 
 function RulesTab:CreateRule()
@@ -65,13 +68,16 @@ end
 
 function RulesTab:OnConfigChanged(type, config)
 	Addon:Debug("rulestab", "Got rule config change '%s'", type)
-	--self.rules:Refresh()
-	--self:ApplyFilers()
-
 	if (self.view) then
 		self.activeConfig = config
 		self:UpdateConfig(self.view)
 	end
+end
+
+function RulesTab:OnActiveProfileChange(newProfile, oldProfile)
+	Addon:Debug("rulestab", "Profile changed '%s' => '%s'", oldProfile:GetId(), newProfile:GetId())
+	self:ApplyFilers()
+	self.rules:Rebuild()
 end
 
 function RulesTab:GetRules()
