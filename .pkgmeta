@@ -3,7 +3,7 @@ package-as: Vendor
 ignore:
  - README.md
  - LICENSE.txt
- - CHANGES.txt
+ - bugs.md
  - Vendor_Work.txt
  - features/settings/DebugSettings.lua
  - sys/debug.lua
