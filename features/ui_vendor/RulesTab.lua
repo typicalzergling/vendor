@@ -40,14 +40,20 @@ function RulesTab:OnActivate()
 
 	self.ruleType:EnsureSelection()
 	Addon:RegisterCallback(RuleEvents.CONFIG_CHANGED, self, self.OnConfigChanged)
+	Addon:RegisterCallback(ProfileEvents.ACTIVE_CHANGED, self, self.OnActiveProfileChange)
 	
+	local selected = self.ruleType:GetSelected()
+	if (selected) then
+		self.activeConfig = self.ruleFeature:GetConfig(selected.Type)
+	end
+
 	self:ApplyFilters()
 	self.rules:Rebuild()
 end
 
 function RulesTab:OnDeactivate()
 	Addon:UnregisterCallback(RuleEvents.CONFIG_CHANGED, self)
-	--Addon:UnregisterCallback(ProfileEvents.ACTIVE_CHANGED, self)
+	Addon:UnregisterCallback(ProfileEvents.ACTIVE_CHANGED, self)
 end
 
 function RulesTab:CreateRule()
@@ -77,6 +83,12 @@ end
 
 function RulesTab:OnActiveProfileChange(newProfile, oldProfile)
 	Addon:Debug("rulestab", "Profile changed '%s' => '%s'", oldProfile:GetId(), newProfile:GetId())
+
+	local selected = self.ruleType:GetSelected()
+	if (selected) then
+		self.activeConfig = self.ruleFeature:GetConfig(selected.Type)
+	end
+
 	self:ApplyFilters()
 	self.rules:Rebuild()
 end
