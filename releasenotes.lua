@@ -29,15 +29,11 @@ Classic and Retail versions, though the Classic version may match unequippable g
 not enabled by default, but is available if you want it.
 
 
-# Rule Context Menu and Hide-Rule Functionality Restored
+# Rule and List Context Menu
 
-We've added a right-click menu for the rules lists. Previously right-click would automatical go to
-show or edit a rule. Now show/edit is one option but there are several others.
-
-The new UX once again has "Hide Rule" option, for built-in or extension rules you don't want to have
-cluttering up your rule list. Rules can be un-hidden from the Settings page, where there is a new
-"Hidden Rules" page where you can see all hidden rules and choose to un-hide them. Hidden rules are
-always disabled when hidden.
+We've added a right-click menu for the rules lists. Previously right-click would go to
+show or edit a rule. Now show/edit is one option but there are several others, including copy and
+export! 
 
 
 # Rule and List Import / Export
@@ -106,13 +102,17 @@ We still support external extensions, but the ones we will be directly contribut
 and will automatically work when one of the addons that extends it/us is installed. You can safely
 delete any lingering Vendor_Extension folders in your Addons folder.
 
-
 # CanIMogIt Extension Added!
 
 A popular request was more robust transmog tracking, and we now support CanIMogIt. If you have CanIMogIt,
 Vendor will have a new rule for you which captures unknown transmogs using the CanIMogIt APIs. There are
 also several functions added which directly query the CanIMogIt APIs with which you can make your own
 custom rules using CanIMogIt.
+
+# Hidden rule feature being restored soon
+
+We have the Hidden rule feature back, but there were a few significant bugs with it that we want to
+iron out before we turn it on. We will release a patch that fixes this feature and...unhides it. :)
 
 
 # Notable Bugfixes
