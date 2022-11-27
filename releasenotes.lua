@@ -62,6 +62,15 @@ are also helpful for the above mentioned Import/Export functionality so people w
 your rules don't need to edit the rule settings in order to tweak the rule to do what they want.
 
 
+# Copy Rules and Lists
+
+You can now copy rules and lists, even default ones! Want to turn your Keep list on a profile into
+a custom list so it can be shared across all your profiles? Now you can very easily by copying
+the list. Want to modify a built-in rule slightly to your tastes? Easy to do now, just copy it and
+the rule dialog comes up and you can save your modification as a new rule. Copying rules also copies
+any parameters specified in the rules and their default states.
+
+
 # Merchant Button is back and working great!
 
 The merchant button, a long requested feature, is now available (again). Like the MiniMap Button,
