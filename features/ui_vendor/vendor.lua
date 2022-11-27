@@ -23,7 +23,7 @@ function MainFeature:GetDialog()
 		}
 
 		if (Addon:IsFeatureEnabled("import")) then
-			table.insert(BUTTONS, { id="import", label = "Import", handler = "OnImport" })
+			table.insert(BUTTONS, { id="import", label = "Import", handler = "OnImport", near=true })
 		end
 
 		self.dialog = UI.Dialog(nil, "Vendor_MainDialog", self.MainDialog, BUTTONS)

@@ -16,7 +16,7 @@ function Dialogs:GetEditRule()
             cancel = { id="cancel", label = CANCEL, handler = "Toggle"  },
             save = { id="save", label = SAVE, handler = "SaveRule" },
             delete = { id="delete", label = DELETE, handler = "DeleteRule" },
-            export = { id="export", label = "Export", handler = "ExportRule" },
+            export = { id="export", label = "Export", handler = "ExportRule", near = true },
         }
     
         self.editRule = UI.Dialog(nil, "Vendor_Dialogs_EditRule", self.EditRule, BUTTONS)

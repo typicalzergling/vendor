@@ -171,7 +171,7 @@ function Addon.Features.Lists.ShowEditDialog(list, copy)
             { id="cancel", label = CANCEL, handler = "Hide", default = true },
             { id="save", label = SAVE, handler = "OnSave" },
             { id="delete", label = DELETE, handler = "OnDelete" },
-            { id="export", label = "Export", handler = "OnExport" },
+            { id="export", label = "RULE_CMENU_EXPORT", handler = "OnExport", near=true },
         })
 
     dialog:SetList(list, copy)

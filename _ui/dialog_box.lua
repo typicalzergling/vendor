@@ -16,32 +16,44 @@ local DIALOG_CONTENT_PADDING_Y = 12
 local function layoutButtons(dialog)
     -- Position the buttons if needed
     if (dialog.__buttons) then
-        local last = nil
+        local lastNear = nil
+        local lastFar = nil
         local buttonsWidth  = 0
 
         for _, button in ipairs(dialog.__buttons) do
             if (button:IsShown()) then
-                if (buttonsWidth == 0) then
-                    buttonsWidth = 2 * DIALOG_PADDING_X
-                end
 
                 button:ClearAllPoints()
-
                 button:SetHeight(DIALOG_BUTTON_HEIGHT)
                 button:SetWidth(DIALOG_BUTTON_WIDTH)
-                if (not last) then
-                    button:SetPoint("BOTTOMRIGHT", dialog, "BOTTOMRIGHT", -DIALOG_PADDING_X, DIALOG_PADDING_Y)
+
+                if (button.near == true) then
+                    if (not lastNear) then
+                        button:SetPoint("BOTTOMLEFT", dialog, "BOTTOMLEFT", DIALOG_PADDING_X, DIALOG_CONTENT_PADDING_Y)
+                    else
+                        button:SetPoint("RIGHT", lastNear, "LEFT", DIALOG_BUTTON_GAP, 0)
+                    end
+
+                    lastNear = button
                 else
-                    button:SetPoint("BOTTOMRIGHT", last, "BOTTOMLEFT", -DIALOG_BUTTON_GAP, 0)
-                    buttonsWidth = buttonsWidth + DIALOG_BUTTON_GAP
+                    if (not lastFar) then
+                        button:SetPoint("BOTTOMRIGHT", dialog, "BOTTOMRIGHT", -DIALOG_PADDING_X, DIALOG_PADDING_Y)
+                    else
+                        button:SetPoint("RIGHT", lastFar, "LEFT", -DIALOG_BUTTON_GAP, 0)
+                    end
+
+                    lastFar = button
                 end
 
-                last = button
-                buttonsWidth = buttonsWidth + DIALOG_BUTTON_WIDTH
+                if (buttonsWidth ~= 0) then
+                    buttonsWidth = buttonsWidth + DIALOG_BUTTON_GAP
+                end
+                buttonsWidth = buttonsWidth + button:GetWidth()
             end
         end
 
-        return buttonsWidth, last
+        buttonsWidth = 2 * DIALOG_PADDING_X
+        return buttonsWidth, lastFar
     end
 
     return 0
@@ -211,6 +223,7 @@ function DialogBox:SetButtons(buttons)
         local frame = CreateFrame("Button", nil, self, "CommandButton")
         frame:SetLabel(button.label)
         frame.buttonId = button.id
+        frame.near = button.near
         if (button.help) then
             frame:SetHelp(button.help)
         end
