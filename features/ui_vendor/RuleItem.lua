@@ -247,7 +247,7 @@ function RuleItem:ShowContextMenu()
             end
         end
     end
-    
+
     table.insert(menu, "-")
     if (self:IsActive()) then
         table.insert(menu, { text="RULE_CMENU_DISABLE", handler=function() self:SetActive(false) end })
@@ -255,8 +255,7 @@ function RuleItem:ShowContextMenu()
         table.insert(menu, { text="RULE_CMENU_ENABLE", handler=function() self:SetActive(true) end })
     end
 
-    -- TODO: Investigate why hiding rules behaves incorrectly
-    --table.insert(menu, { text="RULE_CMENU_HIDE", handler=function() self:HideRule() end })
+    table.insert(menu, { text="RULE_CMENU_HIDE", handler=function() self:HideRule() end })
     table.insert(menu, "-")
     table.insert(menu, "RULE_CMENU_CLOSE")
 

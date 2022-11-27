@@ -71,15 +71,30 @@ end
 --[[ Override the set text for our behavior ]]
 function Edit:SetEditText(text)
     local current = self:GetText() or ""
+    if (type(text) ~= "string") then
+        text = ""
+    else
+        text = Addon.StringTrim(text)
+    end
+
     if (current ~= text) then
         self.current = text
-        if (type(text) == "string" and string.len(text) ~= 0) then
+        if (string.len(text) ~= 0) then
             self:ShowPlaceholder(false)
         end
-        if text then
-            self.setText(self, text)
-        end
+        self.setText(self, text)
     end
+end
+
+--[[ Check if this control has text ]]
+function Edit:HasText()
+    local text = self:GetText()
+    if (type(text) ~= "string") then
+        return false
+    end
+
+    text  = Addon.StringTrim(text)
+    return string.len(text) ~= 0
 end
 
 --[[ Handle notifying the the change for this edit field ]]

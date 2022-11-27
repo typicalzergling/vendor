@@ -75,7 +75,12 @@ end
 
 function RulesTab:OnConfigChanged(type, config)
 	Addon:Debug("rulestab", "Got rule config change '%s'", type)
-	if (self.view) then
+	local visible = self.ruleType:GetSelected()
+
+	if (type == RuleType.HIDDEN) then
+		self:ApplyFilters()
+		self.rules:Rebuild()
+	elseif (visible and (visible.Type == type) and self.view) then
 		self.activeConfig = config
 		self:UpdateConfig(self.view)
 	end
