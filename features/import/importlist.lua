@@ -67,7 +67,9 @@ function ImportList:CreateUI(parent, payload)
     
     local items = 0
     for id, _ in pairs(list.Items) do
-        items = items + 1
+        if (C_Item.DoesItemExistByID(id)) then
+            items = items + 1
+        end
     end
 
     -- 1 is the name of the list
@@ -97,6 +99,11 @@ function ImportList:Import(payload)
         if (v) then
             newList:Add(id)
         end
+    end
+
+    local editDialog = Addon:GetFeature("lists")
+    if (editDialog) then
+        Addon.Features.Lists.ShowEditDialog(newList)
     end
 end
 

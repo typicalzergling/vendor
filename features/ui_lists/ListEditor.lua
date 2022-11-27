@@ -267,7 +267,22 @@ end
 
 --[[ True if we can export this list ]]
 function ListEditor:CanExport()
-    return self.list and self:GetType() == ListType.CUSTOM
+    -- You can export system lists
+    if (self.list and self.list:GetType() ~= ListType.CUSTOM) then
+        return true
+    end
+
+    -- For custom lists, they need to have a valid name
+    -- and description to be exportable
+    if (type(self.name) ~= "string" or string.len(self.name) == 0) then
+        return false
+    end
+
+    if (type(self.description) ~= "string") or string.len(self.description) == 0 then
+        return false
+    end
+
+    return true
 end
 
 --[[ Retruns the export value for this list ]]
