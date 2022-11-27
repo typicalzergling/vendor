@@ -252,7 +252,7 @@
 			<Layer level="ARTWORK">
 				<FontString parentKey="labelName" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
 					<KeyValues>
-						<KeyValue key="LocText" value="RDITPARAM_NAME_LABEL"/>>
+						<KeyValue key="LocText" value="EDITPARAM_NAME_LABEL"/>>
 						<KeyValue key="Color" value="TEXT"/>
 					</KeyValues>
 					<Anchors>
