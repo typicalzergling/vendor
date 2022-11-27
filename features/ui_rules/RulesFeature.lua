@@ -1,4 +1,5 @@
 local _, Addon = ...
+local L = Addon:GetLocale()
 local RulesFeature = { NAME = "Rules", VERSION = 1, DEPENDENCIES = { "Settings"} }
 local TEST_CATEGORY = 1
 local TEST_ID = "test.id"
@@ -13,7 +14,7 @@ function RulesFeature:OnInitialize()
     Addon:GenerateEvents(EVENTS)
 
     local settings = Addon:GetFeature("Settings")
-    settings:RegisterPage("Hidden Rules", "tooltip", self.CreateHiddenRulePage)
+    settings:RegisterPage(L.OPTIONS_CATEGORY_HIDDENRULES, L.OPTIONS_DESC_HIDDENRULES, self.CreateHiddenRulePage)
 end
 
 --[[

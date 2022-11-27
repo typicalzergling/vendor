@@ -118,9 +118,12 @@ RULES_DIALOG_CONFIG_TAB = "Settings",
 SETTINGS_CATEGORY_LABEL = "Category",
 
 -- Setting categories and descriptions.
+OPTIONS_CATEGORY_QUICK = "Quick",
+OPTIONS_DESC_QUICK = "Quick access to the commonly used settings",
 OPTIONS_CATEGORY_GENERAL = "General",
-OPTIONS_CATEGORY_QUICK = "Common",
-OPTIONS_DESC_GENERAL = "These are the quick high-level set of common settings to govern overall Vendor behavior. Use the drop-down menu for more refined setting adjustment.",
+OPTIONS_DESC_GENERAL = "All general settings for Vendor",
+OPTIONS_CATEGORY_HIDDENRULES = "Hidden Rules",
+OPTIONS_DESC_HIDDENRULES = "Management of hidden rules",
 OPTIONS_CATEGORY_SELLING = "Selling",
 OPTIONS_DESC_SELLING = "Controls what Vendor does when you are selling at a merchant. ",
 OPTIONS_CATEGORY_REPAIR = "Repairing",
@@ -200,8 +203,8 @@ OPTIONS_RULES_SHOW_HIDDEN = "Show Hidden",
 OPTIONS_RULES_ONE_HIDDEN = " (1 rule)",
 OPTIONS_RULES_N_HIDDEN = " (%s rules)",
 
-SETTINGS_HIDDENRULES_HELP = "[revisit] The list below contains the list of hidden rules, you can select on an unhide the rule to restore it.",
-SETTINGS_HIDDENRULES_EMPTY = "[revisit] There are currently no hidden rules",
+SETTINGS_HIDDENRULES_HELP = "These are all the rules you have hidden. They can be unhidden by using the selection and button below.",
+SETTINGS_HIDDENRULES_EMPTY = "There are currently no hidden rules.",
 SETTINGS_HIDDENRULES_UNHIDE = "Unhide Rule",
 SETTINGS_HIDDENRULES_TYPE_FMT = "(%s)",
 
@@ -602,14 +605,12 @@ CONFIRM_DELETE_RULE = "Yes, DELETE",
 CANCEL_DELETE_RULE = "Cancel",
 HIDE_RULE_CAPTION = "Hide Rule",
 HIDE_RULE_FMT1 = [[
-# Hide rule %s?
+# Hide rule:  %s?
 
-[revisit] If you hide this rule it will no longer show up in the rules list, and will not be used
-to compute sell, keep, destroy
+If you hide this rule it will be disabled and no longer show up in the rules list. You can choose
+to unhide it at any time by going into the settings tab under the "Hidden Rules" category.
 
-You can unhide the rule by going into the settings tab.
-
-Are you sure?
+Are you sure you want to hide this rule?
 ]],
 CONFIRM_HIDE_RULE = "Yes, HIDE",
 CANCEL_HIDE_RULE = "Cancel",
