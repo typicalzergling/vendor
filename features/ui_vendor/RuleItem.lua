@@ -226,8 +226,9 @@ function RuleItem:ShowContextMenu()
     local rule = self:GetModel()
     local menu = {}
 
-    if (rule.Source == RuleSource.SYSTEM) then
+    if (rule.Source ~= RuleSource.CUSTOM) then
         table.insert(menu, { text="RULE_CMENU_VIEW", handler=function() self:Edit() end })
+        table.insert(menu, { text="RULE_CMENU_COPY", handler=function() self:Copy() end })
     else
         table.insert(menu, { text="RULE_CMENU_EDIT", handler=function() self:Edit() end })
         table.insert(menu, { text="RULE_CMENU_DELETE", handler=function() self:Delete() end })
@@ -246,8 +247,8 @@ function RuleItem:ShowContextMenu()
             end
         end
     end
+    
     table.insert(menu, "-")
-
     if (self:IsActive()) then
         table.insert(menu, { text="RULE_CMENU_DISABLE", handler=function() self:SetActive(false) end })
     else
