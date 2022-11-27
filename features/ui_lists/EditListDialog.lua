@@ -130,7 +130,7 @@ function EditListDialog:Update()
     buttons.cancel = true
     buttons.delete = { show = not editor:IsNew(), enabled = not editor:IsNew() and editor:CanDelete() }
     buttons.save =  { show = true, enabled = editor:IsDirty() and editor:CanCommit() }
-    buttons.export = { show = true, enabled = true }
+    buttons.export = { show = true, enabled = editor:CanExport() }
     -- 
     local canEditProperties = editor:CanChangeProperties()
     UI.Enable(self.name, canEditProperties)
