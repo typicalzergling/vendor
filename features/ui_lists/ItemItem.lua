@@ -74,9 +74,11 @@ end
 function ItemItem:OnMouseDown(...)
     if (Addon.CommonUI.ItemLink.GetCursorItem()) then
         self:Notify("OnDropItem")
-    else
+    elseif (not self:IsSelected()) then
         self:Select()
-    end
+	elseif (not self:IsItemEmpty()) then
+		PickupItem(self:GetItemLink());
+	end
 end
 
 Addon.Features.Lists.ItemItem = ItemItem

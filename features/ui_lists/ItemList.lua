@@ -91,8 +91,15 @@ function ItemList:OnDropItem()
     if (self.list and not self.list:IsReadOnly()) then
         local item = Addon.CommonUI.ItemLink.GetCursorItem()
         if (item ~= nil) then
-            local itemId = C_Item.GetItemID(item)
-            self.list:Add(itemId)
+            local itemId
+            if (type(item) == "table") then
+                local itemId = C_Item.GetItemID(item)
+            elseif (type(item) == "string") then
+                itemId = GetItemInfoInstant(item)
+            end
+            if (type(itemId) == "number") then
+                self.list:Add(itemId)
+            end
             ClearCursor()
         end
     end
