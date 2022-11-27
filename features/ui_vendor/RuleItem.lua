@@ -189,6 +189,7 @@ end
 
 --[[ Prompts the user to delete this rule, deletes it if desired  ]]
 function RuleItem:Delete()
+    local parent = Addon.CommonUI.Dialog.Find(self)
     UI.MessageBox("DELETE_RULE_CAPTION",
         locale:FormatString("DELETE_RULE_FMT1", self:GetModel().Name), {
         {
@@ -198,7 +199,7 @@ function RuleItem:Delete()
             end,
         },
         "CANCEL_DELETE_RULE"
-    }, self)
+    }, parent)
 end
 
 --[[ Prompts the user to hide the then hides the rule if needed ]]
