@@ -115,11 +115,21 @@ function Info:GetPriceString(price, all)
     return table.concat(str)
 end
 
+--[[ Validate the release is acceptable for this client ]]
+function Info:CheckReleaseForClient(release)
+    if (release == Info.ReleaseType.RetailNext or release == Info.ReleaseType.Retail) then
+        return self.IsRetailEra
+    elseif (relase == Info.ReleaseType.Classic or release == Info.ReleaseType.ClassicNext) then
+        return self.IsClassicEra
+    end
+    return false
+end
 
 function Info:Startup()
     populateBuildInfo()
     return {
         "GetPriceString",
+        "CheckReleaseForClient"
     }
 end
 

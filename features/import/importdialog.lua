@@ -2,6 +2,7 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local UI = Addon.CommonUI.UI
 local Encoder = Addon.Features.Import.Encoder
+local Info = Addon.Systems.Info
 local ImportDialog = {}
 
 --@debug@
@@ -26,33 +27,70 @@ end
 function ImportDialog:OnHide()
 end
 
+--[[ Shows the invalid text string ]]
+function ImportDialog:ShowInvalidPayload(show)
+    if (show) then
+        self.invalid:Show()
+        self.import:SetPoint("BOTTOMRIGHT", self.invalid, "TOPRIGHT", 0, 12)
+    else
+        self.invalid:Hide()
+        self.import:SetPoint("BOTTOMRIGHT")
+    end
+end
 function ImportDialog:OnImportText(text)
-    debugp("Got import text: ", text or "")
+    if (type(text)) == "string" then
+        text = Addon.StringTrim(text)
+    end
+
+    print("sttring->", string.len(text), string.len(text) % 4)
+    if (type(text) ~= "string" or string.len(text) == 0) then
+        self:ShowInvalidPayload(false)
+        return
+    end
+    
+    debugp("Got import text: [%s]", text or "")
+    if (not Encoder.VerifyString(text)) then
+        debugp("The import string failed validate")
+        self:ShowInvalidPayload(true)
+    else
+        self:ShowInvalidPayload(false)
+    end
 
     local import = Encoder.Decode(text)
     if (type(import) == "table") then
         assert(AddonName == import.Source, "The source does not match the expected source : " .. AddonName)
-
         Addon:DebugForEach("importdialog", import)
+
+        if (not Info:CheckReleaseForClient(import.Release)) then
+            debugp("TThe stamped release '%s' is not acceptable for this client", import.Release)
+            self:MessageBox("IMPORT_ERROR_CAPTION", "IMPORT_MISMATCH_RELEASE", { CLOSE })
+            return
+        end
+
+        if (import.Version ~= Addon.Features.Import.CURRENT_EXPORT_VERSION) then
+            debugp("TThe stamped width verison '%s' which does not match '%s'", import.Version, Addon.Features.Import.CURRENT_EXPORT_VERSION)
+            self:MessageBox("IMPORT_ERROR_CAPTION", "IMPORT_OUTDATED_VERSION", { CLOSE })
+            return
+        end
         
         local handler = ImportHandlers[import.Content]
         debugp("Using import handler : %s", handler or "<unknown>")
         if (not handler) then
             debugp("There is no import handler for '%s'", import.Content)
-            -- error 1
+            self:MessageBox("IMPORT_ERROR_CAPTION", "IMPORT_UNKNOWN_CONTENT", { CLOSE })
             return
         end
 
         handler = UI.Resolve(handler)
         if (not handler) then
             debugp("Unable to resolve import handler '%s'", ImportDialog[import.Content] or "<unknown>")
-            -- error 2 
+            self:MessageBox("IMPORT_ERROR_CAPTION", "IMPORT_UNKNOWN_CONTENT", { CLOSE })
             return
         end
 
         if (not handler:Validate(import)) then
             debugp("Failed to validate import payload")
-            -- error 4
+            self:MessageBox("IMPORT_ERROR_CAPTION", "IMPORT_PAYLOAD_ERROR", { CLOSE })
             return
         else
             debugp("Resolved import handler")
@@ -64,6 +102,7 @@ function ImportDialog:OnImportText(text)
 
         self.import:Hide()
         self.help:Hide()
+        self.invalid:Hide()
         frame:SetPoint("TOPLEFT", self, "TOPLEFT")
         frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
         frame:Show()

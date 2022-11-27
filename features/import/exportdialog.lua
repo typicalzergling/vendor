@@ -20,6 +20,7 @@ function ExportDialog:OnInitDialog(dialog, export)
     export.Player = character
     export.Realm = realm
     export.InterfaceVersion = Info.Build.InterfaceVersion
+    export.Release = Info.Release
 
     self.exportText = Encoder.Encode(export)
     self.export:SetText(self.exportText)
@@ -62,3 +63,5 @@ function Addon.Features.Import:ShowExportDialog(caption, export)
 
     dialog:Show()
 end
+
+Addon.Features.Import.CURRENT_EXPORT_VERSION = CURRENT_EXPORT_VERSION

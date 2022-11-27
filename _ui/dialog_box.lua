@@ -20,7 +20,6 @@ local function layoutButtons(dialog)
         local buttonsWidth  = 0
 
         for _, button in ipairs(dialog.__buttons) do
-            print("laying out button:", button.buttonId)
             if (button:IsShown()) then
                 if (buttonsWidth == 0) then
                     buttonsWidth = 2 * DIALOG_PADDING_X
@@ -71,7 +70,6 @@ local function layoutDialog(dialog)
     if (dialog.__buttons) then
         local last = nil
         local buttonsWidth, last  = layoutButtons(dialog)
-        print("last:", last.buttonId)
 
         cy = cy + DIALOG_BUTTON_HEIGHT + DIALOG_PADDING_Y
         host:SetPoint("BOTTOM", last, "TOP", 0, DIALOG_BUTTON_GAP)
@@ -281,7 +279,6 @@ function DialogBox:SetButtonState(buttons)
     assert(type(buttons) == "table", "Expected the button state to be a table")
     if self.__buttons then
         for _, button in pairs(self.__buttons) do
-            print("checking button:", button.buttonId, buttons[button.buttonId])
             local state = buttons[button.buttonId]
             if (not state) then
                 button:Hide()

@@ -14,6 +14,16 @@
                         <Anchor point="TOPRIGHT"/>
                     </Anchors>
                 </FontString>
+                <FontString hidden="true" parentKey="invalid" inherits="GameFontNormal" justifyV="BOTTOM" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="Color" value="ERROR_TEXT"/>
+                        <KeyValue key="LocText" value="IMPORT_INVALID_STRING"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </FontString>
             </Layer>
         </Layers>
         <Frames>

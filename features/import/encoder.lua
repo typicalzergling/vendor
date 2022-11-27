@@ -23,8 +23,8 @@ local BASE64_CHARS = {
 local BASE64_PADDING = {
     [0] = "",
     [1] = "==",
-    [2] = "="
-}
+    [2] = "=",
+ }
 
 --[[ (private) Given a LUA value this encoded is to a persitable string ]]
 function Encoder.EncodeValue(value)
@@ -140,11 +140,9 @@ function Encoder.EncodeBase64(str)
     local i = 1
     local n = string.len(str)
 
-    while (i < n) do
-        local b1 = string.byte(str, i, i + 1) or 0
-        local b2 = string.byte(str, i + 1, i + 2) or 0
-        local b3 = string.byte(str, i + 2, i + 3) or 0
-        local octets = bit.lshift(b1, 0x10) + bit.lshift(b2, 0x08) + b3
+    while (i <= n) do
+        local b1, b2, b3 = string.byte(str, i, i + 3)
+        local octets = bit.lshift(b1 or 0, 0x10) + bit.lshift(b2 or 0, 0x08) + (b3 or 0)
 
         encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(octets, 18), 0x3f)]
         encoded = encoded .. BASE64_CHARS[bit.band(bit.rshift(octets, 12), 0x3f)]
@@ -153,9 +151,63 @@ function Encoder.EncodeBase64(str)
 
         i = i + 3
     end
-    encoded = encoded .. BASE64_PADDING[n % 3]
 
+    local en = 4 * ((n + 2) / 3)
+    local padding = BASE64_PADDING[n % 3]
+    encoded = string.sub(encoded, 1, en - string.len(padding)) .. padding
     return encoded
+end
+
+local function isValidChar(ch)
+    local A, Z = string.byte("AZ", 1, 2)
+    if (ch >= A and ch <= Z) then
+        return true
+    end
+
+    local a, z = string.byte("az", 1, 2)
+    if (ch >= a and ch <= z) then
+        return true
+    end
+
+    local _0, _9 = string.byte("09", 1, 2)
+    if (ch >= _0 and ch <= _9) then
+        return true
+    end
+
+    ch = string.char(ch)
+    if (ch == "=" or ch == "/" or ch == "+") then
+        return true
+    end
+
+    return false
+end
+
+--[[ Verify the base64 string only contains acceptable characters ]]
+function Encoder.VerifyString(base64)
+    -- Must be a string
+    if (type(base64) ~= "string") then
+        return false
+    end
+
+    -- Must be non-empty
+    base64 = Addon.StringTrim(base64)
+    if (string.len(base64) == 0) then
+        return false
+    end
+
+    -- Must be divisble by 4
+    if (string.len(base64) % 4 ~= 0) then
+        return false
+    end
+
+    -- This is not effecient but it isn't a common operation
+    for i = 1,string.len(base64) do
+        if (not isValidChar(string.byte(base64, i, i+1))) then
+            return false
+        end
+    end
+
+    return true
 end
 
 --[[ (private) Convert the given string from base64 ]]
