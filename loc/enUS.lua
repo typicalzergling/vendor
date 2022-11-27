@@ -312,7 +312,7 @@ CONFIG_DIALOG_LISTS_TAB = "Lists",
 CONFIG_DIALOG_AUDIT_TAB = "Audit",
 CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, Sold, or Destroyed.|n"..
     "Drag items onto the list area to add it to that list.|n"..
-    "You can drag an item from one list to another.",
+    "You can create custom lists that can be referenced in custom rules.",
 ALWAYS_SELL_LIST_NAME = "Sell",
 ALWAYS_SELL_LIST_TOOLTIP = "Items that will always be sold whenever you visit a merchant.",
 NEVER_SELL_LIST_NAME = "Keep",
