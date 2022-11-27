@@ -2,7 +2,7 @@ local AddonName, Addon = ...
 
 Addon.ReleaseNotes = {
 {
-Release ="6.1 (November ?, 2022)",
+Release ="6.1 (November 27, 2022)",
 Notes = [[
 # Wrath of the Lich King Classic now supported!
 
