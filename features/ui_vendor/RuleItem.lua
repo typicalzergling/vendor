@@ -74,6 +74,11 @@ function RuleItem:OnModelChange(model)
     else
         self.description:Hide()
     end
+
+    if (model.IsExtension) then
+        self.source:SetText(locale:FormatString("EDITRULE_RULE_SOURCE_FMT", model.ExtensionName))
+        self.source:Show()
+    end
     
     local rules = Addon:GetFeature("rules")
     if (not rules:IsRuleHealthy(model.Id)) then

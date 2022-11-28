@@ -99,6 +99,15 @@
                         <Anchor point="TOPRIGHT"/>
                     </Anchors>
                 </FontString>
+                <FontString hidden="true" inherits="GameFontNormal" parentKey="source" justifyV="TOP" justifyH="LEFT" parentArray="stack">
+                    <KeyValues>
+                        <KeyValue key="Color" value="HEIRLOOM_BLUE_COLOR"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
             </Layer>
         </Layers>
     </Button>
