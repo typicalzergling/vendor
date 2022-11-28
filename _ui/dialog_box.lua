@@ -132,6 +132,17 @@ function DialogBox:OnLoad()
 end
 
 function DialogBox:OnShow()
+    local template = rawget(self, "template")
+    if (type(template) == "string") then
+        local points = Addon:GetAccountSetting(template)
+        if (type(points) == "table") then
+            self:ClearAllPoints()
+            for _, point in ipairs(points) do
+                self:SetPoint(unpack(point))
+            end
+        end
+    end
+
     if (self.__needsLayout) then 
         layoutDialog(self)
     end
@@ -164,6 +175,16 @@ function DialogBox:OnHide()
         if type(self.__content.OnClose) == "function" then
             self.__content:OnClose(self)
         end
+    end
+    
+    -- Save our location
+    local template = rawget(self, "template")
+    if (type(template) == "string") then
+        local points = {}
+        for i=1,self:GetNumPoints() do
+            table.insert(points, { self:GetPoint(i) })
+        end
+        Addon:SetAccountSetting(template, points)
     end
 end
 

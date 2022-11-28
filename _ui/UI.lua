@@ -288,6 +288,7 @@ function UI.Dialog(caption, template, implementation, buttons, ...)
     UI.Prepare(dialog)
     UI.Attach(content, implementation or {})
     rawset(content, DialogContent, dialog)
+    rawset(dialog, "template", template)
     Mixin(content, DialogContent)
     dialog:SetContent(content)
     if (type(buttons) == "table") then
