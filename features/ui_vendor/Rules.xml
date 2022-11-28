@@ -67,7 +67,7 @@
                         <Anchor point="TOPLEFT" x="2" y="-2"/>
                     </Anchors>
                 </Texture>
-                <Texture parentKey="cross" file="Interface\Addons\Vendor\assets\Cross" hidden="true">
+                <Texture parentKey="unhealthy" file="Interface\Addons\Vendor\assets\Cross" hidden="true">
                     <Size x="16" y="16"/>
                     <Anchors>
                         <Anchor point="CENTER" relativeKey="$parent.check"/>

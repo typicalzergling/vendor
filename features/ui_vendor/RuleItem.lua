@@ -36,13 +36,13 @@ local COLORS = {
         back = "ACTIVE_RULE_HOVER_BACK",
     },
     unhealty = {
-        name = "SECONDARY_TEXT",
-        description = "SECONDARY_TEXT",
+        name = "DISABLED_TEXT",
+        description = "DISABLED_TEXT",
         back = "UNHEALTHY_RULE_BACK",
     },
     unhealthyHover = {
-        name = "SECONDARY_TEXT",
-        description = "SECONDARY_TEXT",
+        name = "DISABLED_TEXT",
+        description = "DISABLED_TEXT",
         back = "UNHEALTHY_RULE_HOVER_BACK",
     },
     migrate = {
@@ -79,11 +79,6 @@ function RuleItem:OnModelChange(model)
         self.source:SetText(locale:FormatString("EDITRULE_RULE_SOURCE_FMT", model.ExtensionName))
         self.source:Show()
     end
-    
-    local rules = Addon:GetFeature("rules")
-    if (not rules:IsRuleHealthy(model.Id)) then
-        self.unhealthy = true
-    end
 
     self:CreateParams()
     self:ShowParams(self:IsActive())
@@ -91,18 +86,13 @@ end
 
 --[[ When we are shown make sure out colors up to date ]]
 function RuleItem:OnShow()
-    local rules = Addon:GetFeature("rules")
-    if (not rules:IsRuleHealthy(self:GetRuleId())) then
-        self.unhealthy = true
-    end
-    self:SetActive(self:IsActive())
 end
 
 --[[ Handle clicks on this rule itme ]]
 function RuleItem:OnClick(button)
     if (button == "RightButton") then
         self:ShowContextMenu()
-    elseif (not self:IsUnhealthy()) then
+    else
         self:SetActive(not self:IsActive())
         self:Save()
     end
@@ -122,21 +112,13 @@ end
 
 function RuleItem:SetActive(active)
     self.active = (active == true)
-    self:ShowParams(active and not self:IsUnhealthy())
+    self:ShowParams(active)
 
-    self.cross:Hide()
-    self.check:Hide()
-
-    if (not self:IsUnhealthy()) then
-        if (self.active) then
-            self.check:Show()
-        else
-            self.check:Hide()
-        end
+    if (self.active) then
+        self.check:Show()
     else
-        self.cross:Show()
+        self.check:Hide()
     end
-
     self:SetColors()
 end
 
@@ -146,7 +128,7 @@ function RuleItem:IsActive()
 end
 
 function RuleItem:IsUnhealthy()
-    return self.unhealthy
+    return false
 end
 
 function RuleItem:NeedsMigration()
@@ -248,19 +230,14 @@ end
 function RuleItem:ShowContextMenu()
     local rule = self:GetModel()
     local menu = {}
-    local unhealty = self:IsUnhealthy()
 
     if (rule.Source ~= RuleSource.CUSTOM) then
         table.insert(menu, { text="RULE_CMENU_VIEW", handler=function() self:Edit() end })
-        if (not unhealty) then
-            table.insert(menu, { text="RULE_CMENU_COPY", handler=function() self:Copy() end })
-        end
+        table.insert(menu, { text="RULE_CMENU_COPY", handler=function() self:Copy() end })
     else
         table.insert(menu, { text="RULE_CMENU_EDIT", handler=function() self:Edit() end })
         table.insert(menu, { text="RULE_CMENU_DELETE", handler=function() self:Delete() end })
-        if (not unhealty) then
-            table.insert(menu, { text="RULE_CMENU_COPY", handler=function() self:Copy() end })
-        end
+        table.insert(menu, { text="RULE_CMENU_COPY", handler=function() self:Copy() end })
 
         local export = Addon:GetFeature("import")        
         if (export ~= nil) then
@@ -277,12 +254,10 @@ function RuleItem:ShowContextMenu()
     end
 
     table.insert(menu, "-")
-    if (not unhealty) then
-        if (self:IsActive()) then
-            table.insert(menu, { text="RULE_CMENU_DISABLE", handler=function() self:SetActive(false) end })
-        else
-            table.insert(menu, { text="RULE_CMENU_ENABLE", handler=function() self:SetActive(true) end })
-        end
+    if (self:IsActive()) then
+        table.insert(menu, { text="RULE_CMENU_DISABLE", handler=function() self:SetActive(false) end })
+    else
+        table.insert(menu, { text="RULE_CMENU_ENABLE", handler=function() self:SetActive(true) end })
     end
 
     table.insert(menu, { text="RULE_CMENU_HIDE", handler=function() self:HideRule() end })
@@ -300,22 +275,22 @@ function RuleItem:SetColors()
     local colors = COLORS.normal
 
     if (self.hover == true) then
-        if (unhealthy) then
+        if (active) then
+            colors = COLORS.activeHover
+        elseif (unhealthy) then
             colors = COLORS.unhealthyHover
         elseif (migrate) then
             colors = COLORS.migrateHover
-        elseif (active) then
-            colors = COLORS.activeHover
         else
             colors = COLORS.hover
         end
     else
-        if (unhealthy) then
+        if (active) then
+            colors = COLORS.active
+        elseif (unhealthy) then
             colors = COLORS.unhealty
         elseif (migrate) then
             colors = COLORS.migrate
-        elseif (active) then
-            colors = COLORS.active
         else
             colors = COLORS.normal
         end

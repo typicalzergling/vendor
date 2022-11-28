@@ -503,11 +503,8 @@ function EditRule:Setup()
     self.paramList:Rebuild()
 
     -- Setup the rule status if applicable
-    local rules = Addon:GetFeature("rules")
     local source, name = editor:GetSource()
-    if (not editor:IsNew() and not rules:IsRuleHealthy(editor:GetId())) then
-        self:ValidateScript()
-    elseif (source == RuleSource.CUSTOM) then
+    if (source == RuleSource.CUSTOM) then
         if (editor:IsNew()) then
             self.ruleStatus:SetStatus()
         else

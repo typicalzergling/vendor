@@ -114,13 +114,6 @@ function RulesFeature:FindRule(ruleId)
     return rule
 end
 
---[[ Checks if this rule is unhealthy ]]
-function RulesFeature:IsRuleHealthy(ruleId)
-    local rule = self:FindRule(ruleId)
-    local manager = Addon:GetRuleManager()
-    return manager:CheckRuleHealth(rule.Id) == true
-end
-
 --[[
     Called to delete a rule from the custom definitions, the rule MUST be a 
     custom rule for this to do anything.
