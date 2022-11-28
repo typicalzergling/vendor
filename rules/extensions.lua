@@ -325,7 +325,7 @@ local function validateExtension(extension)
         return false, string.format("Unable to get information about '%s' addon", extension.Addon);
     end
 
-    return true, string.format("%s[%s]", title, version);
+    return true, string.format("%s [%s]", title, version);
 end
 
 --[[===========================================================================
