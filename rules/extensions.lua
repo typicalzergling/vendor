@@ -172,7 +172,7 @@ local function addRuleDefinition(ext, rdef)
         Extension = ext,
         Params = rdef.Params,
         Order = tonumber(rdef.Order) or nil,
-        ExtensionName = ext.Addon,
+        ExtensionName = ext.Name,
     };
     if (not rdef.Supported or rdef.Supported[Addon.Systems.Info.ReleaseName]) then
         table.insert(Extensions._rules, r);
@@ -325,7 +325,7 @@ local function validateExtension(extension)
         return false, string.format("Unable to get information about '%s' addon", extension.Addon);
     end
 
-    return true, string.format("%s - %s[%s]", extension.Source, title, version);
+    return true, string.format("%s[%s]", title, version);
 end
 
 --[[===========================================================================
