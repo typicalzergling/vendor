@@ -161,7 +161,6 @@ function ProfilesTab:Update()
     UI.Enable(self.copy, selected)
     UI.Enable(self.set, selected and not activeProfile:Equals(selected))
     UI.Enable(self.delete, selected and not activeProfile:Equals(selected))
-    -- TODO: Investigate why HasText is missing on classic.
     UI.Enable(self.rename, selected and self.name.HasText and self.name:HasText())
 end
 

@@ -172,7 +172,7 @@ local function addRuleDefinition(ext, rdef)
         Extension = ext,
         Params = rdef.Params,
         Order = tonumber(rdef.Order) or nil,
-        ExtensionName = ext.Source,
+        ExtensionName = ext.Addon,
     };
     if (not rdef.Supported or rdef.Supported[Addon.Systems.Info.ReleaseName]) then
         table.insert(Extensions._rules, r);
