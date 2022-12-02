@@ -16,32 +16,44 @@ local DIALOG_CONTENT_PADDING_Y = 12
 local function layoutButtons(dialog)
     -- Position the buttons if needed
     if (dialog.__buttons) then
-        local last = nil
+        local lastNear = nil
+        local lastFar = nil
         local buttonsWidth  = 0
 
-        for _, button in pairs(dialog.__buttons) do
+        for _, button in ipairs(dialog.__buttons) do
             if (button:IsShown()) then
-                if (buttonsWidth == 0) then
-                    buttonsWidth = 2 * DIALOG_PADDING_X
-                end
 
                 button:ClearAllPoints()
-
                 button:SetHeight(DIALOG_BUTTON_HEIGHT)
                 button:SetWidth(DIALOG_BUTTON_WIDTH)
-                if (not last) then
-                    button:SetPoint("BOTTOMRIGHT", dialog, "BOTTOMRIGHT", -DIALOG_PADDING_X, DIALOG_PADDING_Y)
+
+                if (button.near == true) then
+                    if (not lastNear) then
+                        button:SetPoint("BOTTOMLEFT", dialog, "BOTTOMLEFT", DIALOG_PADDING_X, DIALOG_CONTENT_PADDING_Y)
+                    else
+                        button:SetPoint("RIGHT", lastNear, "LEFT", DIALOG_BUTTON_GAP, 0)
+                    end
+
+                    lastNear = button
                 else
-                    button:SetPoint("BOTTOMRIGHT", last, "BOTTOMLEFT", -DIALOG_BUTTON_GAP, 0)
-                    buttonsWidth = buttonsWidth + DIALOG_BUTTON_GAP
+                    if (not lastFar) then
+                        button:SetPoint("BOTTOMRIGHT", dialog, "BOTTOMRIGHT", -DIALOG_PADDING_X, DIALOG_PADDING_Y)
+                    else
+                        button:SetPoint("RIGHT", lastFar, "LEFT", -DIALOG_BUTTON_GAP, 0)
+                    end
+
+                    lastFar = button
                 end
 
-                last = button
-                buttonsWidth = buttonsWidth + DIALOG_BUTTON_WIDTH
+                if (buttonsWidth ~= 0) then
+                    buttonsWidth = buttonsWidth + DIALOG_BUTTON_GAP
+                end
+                buttonsWidth = buttonsWidth + button:GetWidth()
             end
         end
 
-        return buttonsWidth, last
+        buttonsWidth = 2 * DIALOG_PADDING_X
+        return buttonsWidth, lastFar
     end
 
     return 0
@@ -207,9 +219,11 @@ function DialogBox:SetButtons(buttons)
     assert(type(buttons) == "table", "expected the buttons to be a table")
 
     self.__buttons = {}
-    for key, button in pairs(buttons) do
+    for _, button in pairs(buttons) do
         local frame = CreateFrame("Button", nil, self, "CommandButton")
         frame:SetLabel(button.label)
+        frame.buttonId = button.id
+        frame.near = button.near
         if (button.help) then
             frame:SetHelp(button.help)
         end
@@ -217,44 +231,55 @@ function DialogBox:SetButtons(buttons)
         if (button.handler) then
             frame:SetScript("OnClick", function(this)
                     if (type(button.handler) == "string") then
-                        Addon.Invoke(self, button.handler, this)
+                        local func = self[button.handler]
+                        if (type(func) == "function") then
+                            func(self, this)
+                        end
                     elseif (type(button.handler) == "function") then
-                        xpcall(button.handler, CallErrorHandler, this)
+                        button.handler(this)
                     end
                 end)
         end
 
-        self.__buttons[key] = frame
+        table.insert(self.__buttons, frame)
         layout(self)
     end
 end
 
+--[[ Find the button with the specified name ]]
+function DialogBox:FindButton(id)
+    if (self.__buttons) then
+        for _, button in ipairs(self.__buttons) do
+            if (button.buttonId == id) then
+                return button
+            end
+        end
+    end
+    return nil
+end
+
 -- Sets the enabled/disabled state of the button
 function DialogBox:SetButtonEnabled(id, enabled)
-    if (self.__buttons) then
-        local button = self.__buttons[id]
-        if (button) then
-            if (enabled) then
-                button:Enable()
-            else
-                button:Disable()
-            end
+    local button = self:FindButton(id)
+    if (button) then
+        if (enabled) then
+            button:Enable()
+        else
+            button:Disable()
         end
     end
 end
 
 -- Show or hide the dialog button
 function DialogBox:SetButtonVisiblity(id, show)
-    if (self.__buttons) then
-        local button = self.__buttons[id]
-        if (button) then
-            if (not button:IsShown() and show) then
-                button:Show()
-                layout(self)
-            elseif (button:IsShown() and not show) then
-                button:Hide()
-                layout(self)
-            end
+    local button = self:FindButton(id)
+    if (button) then
+        if (not button:IsShown() and show) then
+            button:Show()
+            layout(self)
+        elseif (button:IsShown() and not show) then
+            button:Hide()
+            layout(self)
         end
     end
 end
@@ -266,8 +291,8 @@ end
 function DialogBox:SetButtonState(buttons)
     assert(type(buttons) == "table", "Expected the button state to be a table")
     if self.__buttons then
-        for id, button in pairs(self.__buttons) do
-            local state = buttons[id]
+        for _, button in pairs(self.__buttons) do
+            local state = buttons[button.buttonId]
             if (not state) then
                 button:Hide()
                 button:Disable()

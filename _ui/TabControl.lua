@@ -153,11 +153,6 @@ function TabControl:OnLoad()
     self.tabsFar:SetThickness(1)
     self.tabsFar:SetEndPoint("TOPRIGHT", self.frames, 0, -1)
     self.tabsFar:Show()
-
-    self.tabsMiddle = self:CreateLine("BORDER")
-    UI.SetColor(self.tabsFar, "TABCONTROL_BORDER")
-    self.tabsMiddle:SetThickness(1)
-    self.tabsMiddle:Hide()
 end
 
 --[[ Find a tab with the specified id ]]
@@ -182,6 +177,11 @@ function TabControl:AddTab(id, name, template, class, far)
     end
 
     table.insert(self.__tabs, tab)
+
+    if (far) then
+        tab.far = true
+    end
+
     tab:SetScript("OnClick", function(target)
         if (target ~= self.__active) then
             self:ActivateTab(target)
@@ -205,8 +205,6 @@ function TabControl:ActivateTab(tab)
     local host = self.frames
 
     frame:ClearAllPoints()
-    --frame:SetWidth(host:GetWidth() - (2 * CONTENT_PADDING_X))
-    --frame:SetHeight(host:GetHeight() - ( 2 * CONTENT_PADDING_Y))
     frame:SetPoint("TOPLEFT", self.frames, CONTENT_PADDING_X, -CONTENT_PADDING_Y)
     frame:SetPoint("BOTTOMRIGHT", self.frames, -CONTENT_PADDING_X, CONTENT_PADDING_Y)
     
@@ -233,19 +231,30 @@ function TabControl:ShowTab(id)
 end
 
 function TabControl:Layout()
-   local last = nil
+   local lastNear = nil
+   local lastFar = nil
    for _, tab in ipairs(self.__tabs) do
         tab:ClearAllPoints()
 
-        if (not last) then
-            tab:SetPoint("TOPLEFT", self, "TOPLEFT", 10, 0)
-            self.frames:SetPoint("TOP", tab, "BOTTOM", 0, 1)
+        if (tab.far == true) then
+            if (not lastFar) then
+                tab:SetPoint("TOPRIGHT", self, "TOPRIGHT", -10, 0)
+                self.frames:SetPoint("TOP", tab, "BOTTOM", 0, 1)
+            else
+                tab:SetPoint("BOTTOMRIGHT", lastFar, "BOTTOMLEFT", -4, 0)
+            end
+            lastFar = tab
         else
-            tab:SetPoint("BOTTOMLEFT", last, "BOTTOMRIGHT", 4, 0)
+            if (not lastNear) then
+                tab:SetPoint("TOPLEFT", self, "TOPLEFT", 10, 0)
+                self.frames:SetPoint("TOP", tab, "BOTTOM", 0, 1)
+            else
+                tab:SetPoint("BOTTOMLEFT", lastNear, "BOTTOMRIGHT", 4, 0)
+            end
+            lastNear = tab
         end
 
         tab:Show()
-        last = tab
     end
 end
 

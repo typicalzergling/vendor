@@ -9,12 +9,8 @@ Addon.c_APIMethodColorCode = YELLOW_FONT_COLOR_CODE
 Addon.c_ThrottleTime = .15  -- Default Throttle Time
 
 -- Addon Constants
-Addon.c_RefreshThrottleTime = .04
-Addon.c_PruneHistoryDelay = 30  -- Time in seconds after intializing addon before prune history is run
-Addon.c_HoursToKeepHistory = 30*24 -- 30*24 = max blizzard item restoration window
 Addon.c_BuybackLimit = 12
 Addon.c_ItemSellerThreadName = "ItemSeller"
-Addon.c_RefreshThreadName = "ItemRefresh"
 
 -- Config Constants
 Addon.c_Config_AutoSell = "autosell"
@@ -28,8 +24,7 @@ Addon.c_Config_ThrottleTime = "throttle_time"
 Addon.c_Config_AutoRepair = "autorepair"
 Addon.c_Config_GuildRepair = "guildrepair"
 Addon.c_Config_MinimapData = "minimapdata"
-Addon.c_Config_MinimapButton = "minimapbutton"
-Addon.c_Config_MerchantButton = "merchantbutton"
+Addon.c_Config_MerchantData = "merchantdata"
 
 -- Merchant button
 Addon.MerchantButton = {
@@ -71,6 +66,8 @@ Addon.Events = {
     AUTO_SELL_START = "auto-sell-start",
     AUTO_SELL_COMPLETE = "auto-sell-end",
     AUTO_SELL_ITEM = "auto-sell-item",
+    DESTROY_START = "destroy-start",
+    DESTROY_COMPLETE = "destroy-complete",
     PROFILE_CHANGED = "profile-changed",
     ITEMRESULT_REFRESH_START = "itemresult-refresh-start",
     ITEMRESULT_REFRESH_STOP = "itemresult-refresh-stop",
@@ -113,4 +110,12 @@ Addon.Colors = {
 
     MIGRATE_RULE_BACK = CreateColor(0.90196, 0.8, 0.50196, .05),
     MIGRATE_RULE_HOVER_BACK = CreateColor(0.90196, 0.8, 0.50196, 0.1),
+
+    COMMON_GRAY_COLOR		    = Addon.COMMON_GRAY_COLOR,
+    UNCOMMON_GREEN_COLOR	    = Addon.UNCOMMON_GREEN_COLOR,
+    RARE_BLUE_COLOR			    = Addon.RARE_BLUE_COLOR,
+    EPIC_PURPLE_COLOR		    = Addon.EPIC_PURPLE_COLOR,
+    LEGENDARY_ORANGE_COLOR	    = Addon.LEGENDARY_ORANGE_COLOR,
+    ARTIFACT_GOLD_COLOR		    = Addon.ARTIFACT_GOLD_COLOR,
+    HEIRLOOM_BLUE_COLOR		    = Addon.HEIRLOOM_BLUE_COLOR,
 }

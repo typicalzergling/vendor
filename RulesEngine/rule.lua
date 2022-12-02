@@ -23,7 +23,7 @@ local function rule_Execute(self, environment)
         end
 
         setfenv(self.script, environment)
-        local status, result = pcall(self.script)
+        local status, result = pcall(self.script)        
         rawset(environment, RULE_PARAMS_KEY, nil);
 
         if (type(self.params) == "table") then
@@ -34,6 +34,16 @@ local function rule_Execute(self, environment)
 
         if status then
             self.healthy = true;
+            if (type(result) == "number") then
+                result = result ~= 0
+            elseif (type(result) == "string") then
+                result = false
+            elseif (type(result) == "function") then
+                result = false
+            elseif (type(result) ~= "boolean") then
+                result = false
+            end
+
             return true, result, nil;
         else
             self.healthy = false;

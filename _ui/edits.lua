@@ -2,206 +2,281 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local CommonUI = Addon.CommonUI
 local Colors = Addon.CommonUI.Colors
-local BaseEdit = Mixin({}, CommonUI.Mixins.Border, CommonUI.Mixins.Placeholder, CommonUI.Mixins.Debounce)
+local UI = Addon.CommonUI.UI
 
-local EDIT_BORDER_COLOR = CreateColor(1, 1, 1, .4)
-local EDIT_BACK_COLOR = CreateColor(.8, .8, .8, .1)
-local EDIT_HIGHLIGHT_COLOR = CreateColor(1, 1, 1, .7)
-local EDIT_DISABLED_COLOR = CreateColor(.5, .5, .5, .5)
-local EDIT_COLOR = WHITE_FONT_COLOR
+--[[=========================================================================]]
 
-function BaseEdit:OnEditLoaded()
-    self:InitializePlaceholder()
-    self:OnBorderLoaded(nil, EDIT_BORDER_COLOR, EDIT_BACK_COLOR)
+local Edit = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.Debounce, Addon.CommonUI.Mixins.Placeholder)
+local function debugp(m, ...) Addon:Debug("edit", m, ...) end
 
-    -- If we have a label then set it
-    if (self.labelText) then
-        if (type(self.Label) == "string") then
-            local loc = locale[self.Label]
-            self.labelText:SetText(loc or self.Label)
-        else
-            self.labelText:Hide()
-        end
-    end
-
-    -- Hook to our edit
-    self.control:SetScript("OnEditFocusGained", function (_) self:_OnFocus() end)
-    self.control:SetScript("OnEditFocusLost", function (_) self:_OnBlur() end)
-    self.control:SetTextColor(Colors.TEXT:GetRGBA())
+--[[ One time edit initialization ]]
+function Edit:OnLoad()
+    debugp("Edit[%s] loaded", self:GetDebugName())
+    self:InitializePlaceholder("LEFT")
+    self:OnBorderLoaded(nil, "EDIT_BORDER", "EDIT_BACK")
+    UI.SetColor(self, "EDIT_REST")
+    self.setText = self.SetText
+    self.SetText = function(_, text) self:SetEditText(text) end
 end
 
-function BaseEdit:ShowHighlight(show)
-    if (show) then
-        self.highlight = (self.highlight or 0) + 1
+--[[ Handle hiding the edit (clearing any pending changes) ]]
+function Edit:OnHide()
+    self:DebounceNow()
+end
+
+function Edit:OnDisable()
+    UI.SetColor(self, Colors.EDIT_DISABLED)
+    self:SetBorderColor(Colors.EDIT_DISABLED)
+end
+
+function Edit:OnEnable()
+    if (not self:HasFocus()) then
+        UI.SetColor(self, Colors.EDIT_REST)
+        self:SetBorderColor(Colors.EDIT_BORDER)
     else
-        self.highlight = (self.highlight or 1) - 1
+        UI.SetColor(self, Colors.EDIT_TEXT)
+        self:SetBorderColor(Colors.EDIT_HIGHLIGHT)
     end
-
-    if (self.highlight == 0) then
-        self:SetBorderColor(EDIT_BORDER_COLOR)
-    else
-        self:SetBorderColor(EDIT_HIGHLIGHT_COLOR)
-    end        
 end
 
-function BaseEdit:OnEnter()
+--[[ Handle the text in the edit changing ]]
+function Edit:OnTextChanged()
+    debugp("Edit[%s] - OnTextChanged :: %s (%s)", self:GetDebugName(), self:GetText(), self.current or "")
+
+    local value = self:GetText()
+    if (value ~= self.current) then
+        self.current = value
+        self:Debounce(.75, GenerateClosure(self.NotifyChange, self))
+    end
 end
 
-function BaseEdit:OnLeave()
-end
-
-function BaseEdit:_OnFocus()
-    self:ShowHighlight(true)
+--[[ Handle gaining focus ]]
+function Edit:OnEditFocusGained()
+    self:SetBorderColor("EDIT_HIGHLIGHT")
+    UI.SetColor(self, "EDIT_TEXT")
     self:ShowPlaceholder(false)
 end
 
-function BaseEdit:_OnBlur()
-    self:ShowHighlight(false)
-    self:ShowPlaceholder(not self:HasText())
+--[[ Handle losing focus ]]
+function Edit:OnEditFocusLost()
+    self:SetBorderColor("EDIT_BORDER")
+    UI.SetColor(self, "EDIT_REST")
+    self:DebounceNow()
+    local value = self:GetText()
+    if (type(value) ~= "string" or string.len(value) == 0) then
+        self:ShowPlaceholder(true)
+    end
 end
 
-function BaseEdit:OnDisable()
-end
-
-function BaseEdit:OnEnable()
-end
-
-function BaseEdit:OnMouseDown()
-    self.control:SetFocus()
-end
-
-function BaseEdit:HasText()
-    local text = self.control:GetText()
-    if (type(text) == "string") then
+--[[ Override the set text for our behavior ]]
+function Edit:SetEditText(text)
+    local current = self:GetText() or ""
+    if (type(text) ~= "string") then
+        text = ""
+    else
         text = Addon.StringTrim(text)
     end
 
-    return (type(text) == "string") and (string.len(text) ~= 0)
+    if (current ~= text) then
+        self.current = text
+        if (string.len(text) ~= 0) then
+            self:ShowPlaceholder(false)
+        end
+        self.setText(self, text)
+    end
 end
 
-function BaseEdit:GetText()
-    local text = self.control:GetText()
+--[[ Check if this control has text ]]
+function Edit:HasText()
+    local text = self:GetText()
     if (type(text) ~= "string") then
-        return nil
+        return false
     end
 
+    text  = Addon.StringTrim(text)
+    return string.len(text) ~= 0
+end
+
+--[[ Handle notifying the the change for this edit field ]]
+function Edit:NotifyChange()
+    local value = self:GetText() or ""
+    if (value == nil) then
+        value = ""
+    elseif (type(value) == "string") then
+        value = Addon.StringTrim(value)
+    end
+
+    debugp("Edit[%s] - Notify changes :: %s", self:GetDebugName(), tostring(value))
+
+    if (type(self.Handler) == "string") then
+        local parent = self:GetParent()
+        local func = parent[self.Handler]
+        if (type(func) == "function") then
+            func(parent, value)
+        end
+    elseif (type(self.Handler) == "function") then
+        self.Handler(value)
+    end
+end
+
+--[[=========================================================================]]
+
+local TextArea = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.Debounce, Addon.CommonUI.Mixins.Placeholder, Addon.CommonUI.Mixins.ScrollView)
+
+function TextArea:OnLoad()
+    self:InitializeScrollView(self, 4)
+    self:InitializePlaceholder("LEFT", "TOP")
+    self:OnBorderLoaded(nil, "EDIT_BORDER", "EDIT_BACK")
+    UI.SetColor(self.editbox, Colors.EDIT_REST)
+
+    local edit = self.editbox
+    edit:SetScript("OnEditFocusGained", GenerateClosure(self.OnFocus, self))
+    edit:SetScript("OnEditFocusLost", GenerateClosure(self.OnBlur, self))
+    edit:SetScript("OnTextChanged", GenerateClosure(self.OnTextChanged, self))
+    edit:SetScript("OnEnable", GenerateClosure(self.OnEnable, self))
+    edit:SetScript("OnDisable", GenerateClosure(self.OnDisable, self))
+    ScrollFrame_OnLoad(self)
+
+    if (self.ReadOnly == true) then
+        self.readonly = true
+        edit:SetScript("OnChar", GenerateClosure(self.RestoreText, self))
+    end
+end
+
+function TextArea:OnMouseDown()
+    self.editbox:SetFocus()
+end
+
+function TextArea:RestoreText()
+    assert(type(self.current) == "string")
+    assert(self.ReadOnly)
+    self.editbox:SetText(self.current)
+
+    if (self.HighlightOnFocus == true) then
+        self.editbox:HighlightText()
+    end
+end
+
+function TextArea:OnDisable()
+    UI.SetColor(self.editbox, Colors.EDIT_DISABLED)
+    self:SetBorderColor(Colors.EDIT_DISABLED)
+end
+
+function TextArea:OnEnable()
+    if (not self.editbox:HasFocus()) then
+        UI.SetColor(self.editbox, Colors.EDIT_REST)
+        self:SetBorderColor(Colors.EDIT_BORDER)
+    else
+        UI.SetColor(self.editbox, Colors.EDIT_TEXT)
+        self:SetBorderColor(Colors.EDIT_HIGHLIGHT)
+    end
+end
+
+function TextArea:SetText(text)
+    debugp("TextArea[%s] : Set text '%s' [%s]",  self:GetDebugName(), text or "", self.current or "")
+    if (type(text) ~= "string") then
+        text = ""
+    else
+        text = Addon.StringTrim(text)
+    end
+
+    local current = self:GetText()
+    if (text ~= current) then
+        self.current = text
+        self.editbox:SetText(text)
+        self:SetVerticalScroll(0)
+        if (string.len(text) ~= 0) then
+            self:ShowPlaceholder(false)
+        end
+    end
+end
+
+function TextArea:OnFocus()
+    self:SetBorderColor("EDIT_HIGHLIGHT")
+    UI.SetColor(self, "EDIT_TEXT")
+    self:ShowPlaceholder(false)
+
+    if (self.HighlightOnFocus == true) then
+        self.editbox:HighlightText()
+    end
+end
+
+function TextArea:OnBlur()
+    self:SetBorderColor("EDIT_BORDER")
+    UI.SetColor(self, "EDIT_REST")
+    self:DebounceNow()
+    if (not self:HasText()) then
+        self:ShowPlaceholder(true)
+    end
+
+    if (self.HighlightOnFocus == true) then
+        self.editbox:ClearHighlightText()
+    end
+end
+
+function TextArea:OnTextChanged()
+    local text = self:GetText()
+    if (text ~= self.current) then
+        debugp("TextArea[%s] - text changed '%s'", self:GetDebugName(), text)
+        self:Debounce(0.5, GenerateClosure(self.NotifyChange, self))
+    end
+end
+
+function TextArea:NotifyChange()
+    local value = self:GetText()
+    debugp("TextArea[%s] - Notify changes :: '%s'", self:GetDebugName(), tostring(value))
+
+    if (type(self.Handler) == "string") then
+        local parent = self:GetParent()
+        local func = parent[self.Handler]
+        if (type(func) == "function") then
+            func(parent, value)
+        end
+    elseif (type(self.Handler) == "function") then
+        self.Handler(value)
+    end
+end
+
+function TextArea:IsEnabled()
+    return self.editbox:IsEnabled()
+end
+
+function TextArea:Enable()
+    self.editbox:Enable()
+end
+
+function TextArea:Disable()
+    self.editbox:Disable()
+end
+
+function TextArea:HasText()
+    local text = self.editbox:GetText()
+    if (type(text) ~= "string") then
+        return false
+    end
+
+    text = Addon.StringTrim(text)
+    return string.len(text) ~= 0
+end
+
+function TextArea:GetText()
+    local text = self.editbox:GetText()
+    if (type(text) ~= "string") then
+        return ""
+    end
     return Addon.StringTrim(text)
 end
 
-function BaseEdit:SetText(text)
-    if type(text) ~= "string" then
-        self.control:SetText("")
-        self.__lastText = ""
-    else
-        text = Addon.StringTrim(text)
-        self.control:SetText(text)
-        self.__lastText = text
-    end
-
-    if (not self.control:HasFocus()) then
-        self:ShowPlaceholder(not self:HasText())
-    end
-end
-
-function BaseEdit:Insert(text)
+function TextArea:Insert(text)
     if (type(text) == "string") and (string.len(text) ~= 0) then
-        self.control:Insert(text)
+        self.editbox:Insert(text)
+        self:Debounce(.5, GenerateClosure(self.NotifyChange, self))
     end
 end
 
-function BaseEdit:IsEnabled()
-    return self.control:IsEnabled()
+function TextArea:SetFocus()
+    self.editbox:SetFocus()
 end
 
-function BaseEdit:SetFocus()
-    return self.control:SetFocus()
-end
-
-function BaseEdit:Enable()
-    -- enable the label
-    self.control:Enable()
-	self.control:SetTextColor(Colors.TEXT:GetRGBA())
-end
-
-function BaseEdit:Disable()
-    -- disable the label
-    self.control:Disable()
-    self.control:SetTextColor(EDIT_DISABLED_COLOR:GetRGBA())
-end
-
---[[ On hide clear the last text ]]
-function BaseEdit:OnHide()
-    self.__lastText = nil
-end
-
-function BaseEdit:_HandleTextChange()
-    if (self.__timer) then
-        self.__timer:Cancel()
-        self.__timer = nil
-    end
-
-    self.__timer = C_Timer.NewTimer(0.25, function() 
-        self.__timer = nil
-        if (self.Handler) then
-            local text = self.control:GetText()         
-            if (type(text) == "string") then
-                text = Addon.StringTrim(text)
-            else
-                text = nil
-            end
-
-            if (text ~= self.__lastText) then
-                self.__lastText = text
-                Addon.Invoke(self:GetParent(), self.Handler, text)
-            end
-        end
-    end)
-end
-
---[[=========================================================================]]
-
-local Edit = {}
-
-function Edit:OnLoad()
-    self:OnEditLoaded()
-
-    if (type(self.Numeric) == "boolean") then
-        self.control:SetNumeric(self.Numeric)
-    end
-
-    self.control:SetScript("OnTextChanged", function()
-        self:_HandleTextChange()
-    end)
-end
-
---[[ Sets this edit to be number ]]
-function Edit:SetNumeric()
-    self.control:SetNumeric(true)
-end
-
---[[ Gets the number value of the edit ]]
-function Edit:GetNumber()
-    return self.control:GetNumber()
-end
-
---[[=========================================================================]]
-
-local TextArea = {}
-
-function TextArea:OnLoad()
-    self.control = self.scrollingEdit:GetScrollChild()
-    ScrollingEdit_OnLoad(self.scrollingEdit)
-    self:OnEditLoaded()
-
-    self.scrollingEdit:SetScript("OnSizeChanged", function(_, width)
-            self.control:SetWidth(width)
-        end)
-
-    self.control:SetScript("OnTextChanged", function(edit)
-            self:_HandleTextChange()
-            ScrollingEdit_OnTextChanged(edit, edit:GetParent())
-        end)
-end
-
-CommonUI.Edit = Mixin(Edit, BaseEdit)
-CommonUI.TextArea = Mixin(TextArea, BaseEdit)
+CommonUI.Edit = Edit
+CommonUI.TextArea = TextArea

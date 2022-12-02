@@ -13,6 +13,14 @@ function Addon:SetupConsoleCommands()
     self:AddConsoleCommand("api", L.CMD_API_HELP, "PrintAPI_Cmd")
     self:AddConsoleCommand("history", L.CMD_HISTORY_HELP, "History_Cmd")
     self:AddConsoleCommand("destroy", L.CMD_DESTROY_HELP, "Destroy_Cmd")
+    self:AddConsoleCommand("import", "imports", "Import_Cmd")
+end
+
+function Addon:Import_Cmd(text)
+    local feature = Addon:GetFeature("import")
+    if (feature) then
+        feature:ShowImportDialog(text)
+    end
 end
 
 -- Add or remove items from the blacklist or whitelist.
@@ -34,7 +42,7 @@ function Addon:ListToggle_Cmd(list, item)
     end
 
     -- get item id
-    local id = self:GetItemIdFromString(item)
+    local id = select(1, GetItemInfoInstant(item))
 
     -- if id specified, add or remove it
     if id then
@@ -81,33 +89,37 @@ end
 
 
 function Addon:OpenKeybindings_Cmd()
-    -- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
-    if not KeyBindingFrame then
-        KeyBindingFrame_LoadUI()
-    end
+    if Addon.Systems.Info.IsClassicEra then
+        -- Blizzard delay-loads the keybinding frame. If it doesn't exist, load it.
+        if not KeyBindingFrame then
+            KeyBindingFrame_LoadUI()
+        end
 
-    -- If we still don't have it, bail.
-    if not KeyBindingFrame then
-        return
-    end
+        -- If we still don't have it, bail.
+        if not KeyBindingFrame then
+            return
+        end
 
-    -- Make sure the buttons and categories exist, and enumerate them.
-    if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
-        -- Find our category in the list of categories.
-        for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
-            if button.element and button.element.name and button.element.name == _G["BINDING_CATEGORY_VENDOR"] then
-                -- Found it. Click it to set the category.
-                if Addon.IsClassic then
-                    KeybindingsCategoryListButton_OnClick(button)
-                else
-                    button:OnClick()
+        -- Make sure the buttons and categories exist, and enumerate them.
+        if KeyBindingFrameCategoryList and KeyBindingFrameCategoryList.buttons then
+            -- Find our category in the list of categories.
+            for i, button in pairs(KeyBindingFrameCategoryList.buttons) do
+                if button.element and button.element.name and button.element.name == "Vendor Addon" then
+                    -- Found it. Click it to set the category.
+                    if Addon.Systems.Info.IsClassicEra then
+                        KeybindingsCategoryListButton_OnClick(button)
+                    else
+                        button:OnClick()
+                    end
                 end
             end
         end
-    end
 
-    -- Show the keybinding frame. Even if we dont' find it, its closer.
-    KeyBindingFrame:Show()
+        -- Show the keybinding frame. Even if we dont' find it, its closer.
+        KeyBindingFrame:Show()
+    else
+        Settings.OpenToCategory(54, "Vendor Addon")
+    end
 end
 
 function Addon:OpenConfigDialog_Cmd()
@@ -118,27 +130,29 @@ end
 
 -- Initiates a manual Auto-Sell. This ignores the auto-sell configuration setting.
 function Addon:AutoSell_Cmd()
+
+    local merchant = Addon:GetFeature("Merchant")
     -- Check for merchant not being open.
-    if not self:IsMerchantOpen() then
+    if not merchant:IsMerchantOpen() then
         self:Print(L["CMD_AUTOSELL_MERCHANTNOTOPEN"])
         return
     end
 
     -- Check for sell in progress.
-    if self:IsAutoSelling() then
+    if merchant:IsAutoSelling() then
         self:Print(L["CMD_AUTOSELL_INPROGRESS"])
         return
     end
 
     -- OK to do the auto-sell.
     self:Print(L["CMD_AUTOSELL_EXECUTING"])
-    self:AutoSell()
+    merchant:AutoSell()
 end
 
 -- Withdraws all items which match your currently enabled rules set
 function Addon:Withdraw_Cmd()
     local function findBagWithSpace()
-        for i=0,NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
+        for i=0,Addon:GetNumTotalEquippedBagSlots()  do
             if C_Container.GetContainerNumFreeSlots(i) ~= 0 then
                 return i;
             end
@@ -172,7 +186,8 @@ end
 
 function Addon:Destroy_Cmd()
     Addon:Print(L.CMD_RUNDESTROY)
-    Addon:DestroyItems()
+    local destroy = Addon:GetFeature("Destroy")
+    destroy:DestroyItems()
 end
 
 -- Prints the public API

@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="Settings.lua"/>
+    <Script file="Setting.lua"/>
+    <Script file="Group.lua"/>
+    <Script file="widgets.lua"/>
+    <Include file="widgets.xml"/>
+    <Script file="GeneralSettings.lua"/>
+    <Script file="QuickSettings.lua"/>
+    <!--@do-not-package@-->
+    <Script file="DebugSettings.lua"/>
+    <!--@end-do-not-package@-->
+</Ui>

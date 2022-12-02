@@ -145,6 +145,11 @@ function RuleConfigObject:Commit()
 	local profile = assert(Addon:GetProfileManager():GetProfile(), "Expected a valid active profile");
 	profile:SetRules(self.type, self.rules);
 	debugp("Commited rules '%s' to the profile", tostring(self.type))
+	Addon:RaiseEvent(Addon.Systems.Rules.RuleEvents.CONFIG_CHANGED, self.type, self)
+end
+
+function RuleConfigObject:GetType()
+	return self.type
 end
 
 Addon.RuleConfig = {

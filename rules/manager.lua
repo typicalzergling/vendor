@@ -42,18 +42,13 @@ local ruleDocumenation = {}
     |   Create and initialize a RulesEngine object.
     =======================================================================--]]
 function Addon:CreateRulesEngine(verbose)
-    local rulesEngine = CreateRulesEngine(Addon.RuleFunctions, verbose);
+    local rulesEngine = CreateRulesEngine(Addon:GetRuleEnvironmentVariables(), verbose);
 
     -- Import constants
     rulesEngine:ImportGlobals(unpack(ITEM_CONSTANTS));
 
     -- Add the functions
     rulesEngine:AddFunctions(Addon:GetRuleFunctions())
-
-    -- Check for extension functions
-    if (Package.Extensions) then
-        rulesEngine:AddFunctions(Package.Extensions:GetFunctions());
-    end
 
     return rulesEngine;
 end
@@ -227,7 +222,7 @@ function RuleManager:Update()
     self:ApplyConfig(RULE_TYPE_SELL, RuleType.SELL);
 
     -- Clear the item cache and schedule a refresh.
-    Addon:ClearItemResultCache()
+    Addon:ClearItemResultCache("Rulemanager Update")
 end
 
 --*****************************************************************************

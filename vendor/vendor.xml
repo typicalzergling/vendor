@@ -1,19 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="profileimpl.lua"/>
-    <Script file="history.lua"/>
-    <Script file="items.lua"/>
     <Script file="blocklists.lua"/>
-    <Script file="tooltipscan.lua"/>
-    <Script file="itemproperties.lua"/>
-    <Script file="itemresultcache.lua"/>	
-    <Script file="evaluation.lua"/>
-    <!--<Include file="merchantbutton.xml"/>-->
-    <Script file="merchant.lua"/>
-    <Script file="destroy.lua"/>
-    <Script file="releasenotes.lua"/>
     <Script file="extensionmanager.lua"/>
     <Script file="listmanager.lua"/>
-    <Script file="tooltip.lua"/>
-    <Script file="refresh.lua"/>
-    <Script file="status.lua"/>
 </Ui>

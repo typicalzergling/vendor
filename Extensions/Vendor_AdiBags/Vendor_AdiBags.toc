@@ -1,9 +1,0 @@
-## Interface: 100002
-## Dependencies: Vendor, AdiBags
-## Title: Vendor_AdiBags
-## Notes: AdiBags extension. Requires both Vendor and AdiBags
-## Version: @project-version@
-## Author: Thoekh of Sargeras & Buskin of Lightbringer
-loc\locale.lua
-loc\enUS.lua
-vendoradibags.lua

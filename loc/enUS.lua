@@ -54,8 +54,12 @@ MERCHANT_SOLD_ITEMS = "Sold %s items for %s",
 MERCHANT_WITHDRAWN_ITEMS = "Withdrew %s items.",
 MERCHANT_SELL_LIMIT_REACHED = "Reached the sell limit (%s), stopping auto-sell.",
 MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL = "Auto-accepted confirmation of making %s non-tradeable.",
-MERCHANT_SELL_ITEMS = "Sell [%d]",
-MERCHANT_DESTROY_ITEMS = "Destroy [%d]",
+MERCHANT_SELL_ITEMS = "Sell [%s]",
+MERCHANT_DESTROY_ITEMS = "Destroy [%s]",
+MERCHANT_SELL_BUTTON_TOOLTIP_TITLE = "Sell",
+MERCHANT_DESTROY_BUTTON_TOOLTIP_TITLE = "Destroy Next Item",
+MERCHANT_DESTROY_BUTTON_TOOLTIP_NEXT = "Will be destroyed:\n  ",
+MERCHANT_DESTROY_BUTTON_TOOLTIP_REMAINING = "Remaining:",
 
 -- Destroy
 ITEM_DESTROY_SUMMARY = "Destroyed %s items.",
@@ -114,9 +118,12 @@ RULES_DIALOG_CONFIG_TAB = "Settings",
 SETTINGS_CATEGORY_LABEL = "Category",
 
 -- Setting categories and descriptions.
+OPTIONS_CATEGORY_QUICK = "Quick",
+OPTIONS_DESC_QUICK = "Quick access to the commonly used settings",
 OPTIONS_CATEGORY_GENERAL = "General",
-OPTIONS_CATEGORY_QUICK = "Common",
-OPTIONS_DESC_GENERAL = "These are the quick high-level set of common settings to govern overall Vendor behavior. Use the drop-down menu for more refined setting adjustment.",
+OPTIONS_DESC_GENERAL = "All general settings for Vendor",
+OPTIONS_CATEGORY_HIDDENRULES = "Hidden Rules",
+OPTIONS_DESC_HIDDENRULES = "Management of hidden rules",
 OPTIONS_CATEGORY_SELLING = "Selling",
 OPTIONS_DESC_SELLING = "Controls what Vendor does when you are selling at a merchant. ",
 OPTIONS_CATEGORY_REPAIR = "Repairing",
@@ -153,8 +160,8 @@ OPTIONS_SETTINGNAME_CYCLE_RATE = "Cycle Rate",
 OPTIONS_SETTINGDESC_CYCLE_RATE = "Interval in seconds between attempts to sell the throttled number of items specified above. Lower is faster. Increase this to slow down sell rate if you notice throttling from Blizzard.",
 OPTIONS_SETTINGNAME_MINIMAP = "Show Minimap Button",
 OPTIONS_SETTINGDESC_MINIMAP = "Vendor will show a minimap button for quickly accessing rules and profiles, and mousing over it shows a summary of matching items.\n\nThis is an account-wide setting.",
-OPTIONS_SETTINGNAME_SELLBUTTON = "Show Auto-Sell Button on Merchant Window",
-OPTIONS_SETTINGDESC_SELLBUTTON = "Add an 'Auto-Sell' button to the merchant's sell window to run the Vendor Auto-sell.",
+OPTIONS_SETTINGNAME_MERCHANT = "Show Merchant Buttons",
+OPTIONS_SETTINGDESC_MERCHANT = "Adds buttons when interacting with a merchant to trigger autoselling and destruction of items Vendor has identified for selling and/or destruction.\n\nThis is an account-wide setting.",
 
 QUICK_SELL_SETTING = "Auto-Sell items at merchant",
 QUICK_SELL_SETTING_HELP = "Automatically sell items when interacting with a merchant. If this is disabled you can still manually trigger an autosell by setting a hotkey.\n\nThis also enables the 12-item limit on selling, which is the buyback limit for safety.",
@@ -162,6 +169,8 @@ QUICK_REPAIR_SETTING = "Auto-Repair at repair merchants",
 QUICK_REPAIR_SETTING_HELP = "Automatically repair when visiting a repair-capable vendor.\n\nThis also enables using guild repair when available.",
 QUICK_MINIMAP_SETTING = "Show Minimap Button",
 QUICK_MINIMAP_SETTING_HELP = "Enable the Vendor Minimap button on the minimap. On mouseover the button displays items that will be sold/destroyed. Left click brings up the rules configuration page, while right-click brings up profiles.\n\nThis is an account-wide setting.",
+QUICK_MERCHANT_SETTING = "Show Merchant Buttons",
+QUICK_MERCHANT_SETTING_HELP = "Enable the Vendor Sell & Destroy buttons to the merchant frame when interacting with a merchant. This enables easy triggering of Vendor Sell and Destroy rules. If you disable auto-selling this is a convenient way to manually trigger selling.\n\nThis is an account-wide setting.",
 
 -- Profiles Page
 OPTIONS_PROFILE_TITLE = "Profiles",
@@ -178,6 +187,7 @@ OPTIONS_CONFIRM_PROFILE_DELETE_CONFIRM = "Confirm",
 OPTIONS_CONFIRM_PROFILE_DELETE_FMT1 = [[
 # Delete Profile
 
+
 Are you sure you want to delete profile '%s'?"
 ]],
 OPTIONS_PROFILE_DUPLICATE_NAME_CAPTION = "Duplicate Name",
@@ -193,6 +203,11 @@ OPTIONS_RULES_SHOW_HIDDEN = "Show Hidden",
 OPTIONS_RULES_ONE_HIDDEN = " (1 rule)",
 OPTIONS_RULES_N_HIDDEN = " (%s rules)",
 
+SETTINGS_HIDDENRULES_HELP = "These are all the rules you have hidden. They can be unhidden by using the selection and button below.",
+SETTINGS_HIDDENRULES_EMPTY = "There are currently no hidden rules.",
+SETTINGS_HIDDENRULES_UNHIDE = "Unhide Rule",
+SETTINGS_HIDDENRULES_TYPE_FMT = "(%s)",
+
 RULE_TOOLTIP_SOURCE = "Source: %s",
 RULE_TOOLTIP_HIDDEN = "This rule is currently hidden from the view",
 RULE_TOOLTIP_CUSTOM_RULE = "Custom Rule",
@@ -207,6 +222,8 @@ RULE_CMENU_VIEW = "View",
 RULE_CMENU_EDIT = "Edit",
 RULE_CMENU_DELETE = "Delete",
 RULE_CMENU_CLOSE = "Close",
+RULE_CMENU_COPY = "Copy",
+RULE_CMENU_EXPORT = "Export",
 
 -- Console Commands
 CMD_HELP_HEADER = "Command Reference: ",
@@ -298,7 +315,7 @@ CONFIG_DIALOG_LISTS_TAB = "Lists",
 CONFIG_DIALOG_AUDIT_TAB = "Audit",
 CONFIG_DIALOG_LISTS_TEXT = "Items in the associated lists will always be Kept, Sold, or Destroyed.|n"..
     "Drag items onto the list area to add it to that list.|n"..
-    "You can drag an item from one list to another.",
+    "You can create custom lists that can be referenced in custom rules.",
 ALWAYS_SELL_LIST_NAME = "Sell",
 ALWAYS_SELL_LIST_TOOLTIP = "Items that will always be sold whenever you visit a merchant.",
 NEVER_SELL_LIST_NAME = "Keep",
@@ -357,6 +374,10 @@ SYSRULE_KEEP_EQUIPMENTSET = "Equipment Sets",
 SYSRULE_KEEP_EQUIPMENTSET_DESC = "Matches any item that is a member of an equipment set created by the built-in "..ITEM_QUALITY_COLORS[8].hex.."Blizzard"..FONT_COLOR_CODE_CLOSE.." equipment manager",
 SYSRULE_KEEP_POTENTIALUPGRADES = "Potential Upgrades",
 SYSRULE_KEEP_POTENTIALUPGRADES_DESC = "Matches any gear that is within 5 item levels or 95% of your average item level (whichever is lower). This safeguards potential upgrades, side-grades, or gear for other specs.",
+SYSRULE_KEEP_CRAFTINGREAGENT = "Crafting Reagents",
+SYSRULE_KEEP_CRAFTINGREAGENT_DESC = "Matches all items that are considered Crafting Reagents.",
+SYSRULE_KEEP_SIDEGRADEORBETTER = "Side-grade or Better",
+SYSRULE_KEEP_SIDEGRADEORBETTER_DESC = "Matches any equipment that is equal to or higher item level than your currently equipped gear in that slot or slots.",
 
 -- Destroy Rules
 SYSRULE_DESTROYLIST = "Items in Destroy list",
@@ -374,6 +395,21 @@ TOOLTIP_SCAN_COSMETIC = _G["ITEM_COSMETIC"],
 DATA_MIGRATION_SL_NOTICE = YELLOW_FONT_COLOR_CODE.. "Detected migration to Shadowlands! The settings for Vendor have been reset and custom rules require verification before they will be active!" ..FONT_COLOR_CODE_CLOSE,
 DATA_MIGRATION_ERROR = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration was detected, but no action taken. Please notify the addon authors here: https://www.curseforge.com/wow/addons/vendor/issues" ..FONT_COLOR_CODE_CLOSE,
 
+-- Extensions Loc
+
+-- Adibags extension
+ADIBAGS_FILTER_VENDOR_SELL_NAME = "Vendor: Sell",
+ADIBAGS_FILTER_VENDOR_SELL_DESC = "Put items that the Vendor addon will sell into this collection."..
+" This filter must be a very high priority to work correctly, as it can reclassify any item in your inventory.",
+ADIBAGS_CATEGORY_VENDOR_SELL = "Sell (Vendor)",
+
+ADIBAGS_FILTER_VENDOR_DESTROY_NAME = "Vendor: Destroy",
+ADIBAGS_FILTER_VENDOR_DESTROY_DESC = "Put items that the Vendor addon will destroy into this collection."..
+" This filter must be a very high priority to work correctly, as it can reclassify any item in your inventory.",
+ADIBAGS_CATEGORY_VENDOR_DESTROY = "Destroy (Vendor)",
+
+
+
 -- Edit Rule Dialog
 EDITRULE_CAPTION = "Edit Rule",
 CREATERULE_CAPTION = "Create Rule",
@@ -383,6 +419,12 @@ EDITRULE_DEFAULT_NAME = "New Rule",
 EDITRULE_DEFAULT_COPY_NAME_FMT1 = "%s (Copy)",
 EDITRULE_NAME_LABEL = "Name:",
 EDITRULE_TYPE_LABEL = "Type:",
+EDITFULE_PARAMETERS_LABEL = "Parameters",
+EDITRULE_ADDPARAM_LABEL = "Add",
+EDITRULE_DELPARAM_LABEL = "Remove",
+EDITRULE_EDITPARAM_LABEL = "Edit",
+EDITRULE_VIEWPARAM_LABEL = "View",
+EDITRULE_NOPARAMS_TEXT = "This rule currently has no parameters",
 EDITRULE_NAME_HELPTEXT = "type the name of your rule here",
 EDITRULE_FILTER_LABEL = "Filter:",
 EDITRULE_FILTER_HELPTEXT = "click here to filter the help",
@@ -410,15 +452,93 @@ EDITRULE_RULEOK_TEXT = "Your rule passed validation; check the matches tab to be
 EDITRULE_SCRIPT_ERROR = "The following error was found validating your rule:|n%s",
 EDITRULE_NO_MATCHES = "This rule does not match anything in your inventory.",
 EDITRULE_MATCHES_HEADER_FMT = "<h1>This rule matched %s items in your inventory</h1>",
-EDITRULE_RULE_SOURCE_FMT = "Source: %s",
+EDITRULE_RULE_SOURCE_FMT = "Uses: %s",
 EDITRULE_MIGRATE_RULE_TITLE ="Verify Rule",
 EDITRULE_MIGRATE_RULE_TEXT ="Rule requires review before it can be used. Please verify that it matches what you expect and save.",
 EDITRULE_UNHEALTHY_TEXT = "The following error occured while trying to evaulate this rule:|n%s",
 EDITRULE_EXTENSION_RULE = "Extension Rule",
-EDITRULE_EXTENSION_RULE_TEXT = "This rule comes from '%s' extension and cannot be edited or deleted. ",
+EDITRULE_EXTENSION_RULE_TEXT = "This rule is a built-in extension using '%s' and cannot be edited or deleted. ",
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
 EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
 
+
+DIALOG_TEXT_CONFIRM="Confirm",
+IMPORT_HELP_TEXT="Paste in the encoded text string below for Vendor rules or lists from other players to import them.",
+IMPORT_DIALOG_CAPTION="Import Rules and Lists",
+IMPORT_HELP_TEXT_PASTE_HERE="Paste in Vendor export strings here from exporting rules or lists.",
+IMPORT_INVALID_STRING = "[revisit] The specified string is not a valid import payload",
+IMPORT_ERROR_CAPTION="Import Error",
+IMPORT_PAYLOAD_ERROR = [[
+# Import Error
+
+[revisit] The contents of the import data appear to be invalid
+]],
+IMPORT_UNKNOWN_CONTENT = [[
+# Import Error
+
+[revisit] The contents of the import data do not appear to be a vendor object
+]],
+IMPORT_MISMATCH_RELEASE = [[
+# Import Error
+
+[revisit] The contents of the import data are for a different flavor of World of Warcraft
+]],
+IMPORT_OUTDATED_VERSION = [[
+# Import Error
+
+[revisit] The contents of the import data are for an older version of vendor
+]],
+
+EDITPARAM_NAME_LABEL = "Name:",
+EDITPARAM_KEY_LABEL = "Script Name:",
+EDITPARAM_TYPE_LABEL = "Type:",
+EDITPARAM_DEFAULT_LABEL = "Default Value:",
+EDITPARAM_CURRENT_LABEL = "Current Value:",
+EDITPARAM_BOOLEAN_LABEL = "Boolean",
+EDITPARAM_BOOLEAN_HELP = "",
+EDITPARAM_NUMBER_LABEL = "Number",
+EDITPARAM_NUMBER_HELP = "",
+EDITPARAM_STRING_LABEL = "String",
+EDITPARAM_STRING_HELP = "",
+EDITPARAM_CREATE_LABEL = "Create",
+EDITPARAM_SAVE_LABEL = SAVE,
+EDITPARAM_CANCEL_LABEL = CANCEL,
+EDITPARAM_CLOSE_LABEL = "Close",
+EDITPARAM_DEFAULT_NAME = "New Parameter",
+EDITPARAM_DEFAULT_SCRIPTNAME = "PARAM",
+EEDITPARAM_ERROR_CAPTION = "Parameter Error",
+EDITPARAM_ERROR_CONVERT_DEFAULT = [[
+# Invalid Default Value
+
+The default value '%s' is invalid for the type of parameter
+]],
+EDITPARAM_ERROR_CREATE_GENERAL = [[
+# Create Error
+
+An error occured while trying to create the rule parameter, please check
+you values and try again
+]],
+EDITPARAM_ERROR_UPDATE_GENERAL = [[
+# Save Error
+
+An error occured while trying to save the rule parameter, please check
+you values and try again
+]],
+EDITPARAM_ERROR_DUPLICATE_KEY = [[
+# Duplicate Script name
+
+A parameter with the script name '%s' already exists please use another
+name, or edit the existing one.
+]],
+EDITPARM_REMOVE_PARAM_CAPTION = "Remve Parameter",
+EDITPARAM_REMOVE_PARAM = [[
+# Remove Parameter
+
+Are you sure you want to remove parameter '%s' [%s]?
+]],
+EDITPARAM_CONFIRM_REMOVE = "Yes, Remove",
+EDITPARAM_KEEP_PARAM = "Keep",
+EDIT_RULE_PARAMETER = "Parameter",
 EDITRULE_ITEM_LABEL = "Item:",
 EDITRULE_NO_ITEM = "<none>",
 
@@ -431,6 +551,32 @@ RULEHELP_EXAMPLES = "Examples:",
 RULEITEM_UNHEALTHY_WARNING = "This rule has an invalid script and must be fixed before it will work.",
 RULEITEM_MIGRATE_WARNING = "This rule was created before an expansion itemlevel squish. For safety this rule has been disabled until it is reviewed by you. Right-click to open the context menu and select \"Edit\" to review.",
 RULEITEM_SOURCE = HIGHLIGHT_FONT_COLOR_CODE .. "Source: |r",
+
+EXPORT_HELP_TEXT = "Copy the text below for sharing this Vendor creation with others!",
+EXPORT_LIST_CAPTION = "Export List",
+EXPORT_RULE_CAPTION = "Export Rule",
+EXPORT_CLOSE_BUTTON = "Close",
+IMPORTLIST_UNIQUE_NAME0 = "%s (Imported)",
+IMPORTLIST_UNIQUE_NAME1 = "%s (Imported %d)",
+IMPORTLIST_MARKDOWN_FMT = [[
+# Import List
+
+%s
+
+> %s
+
+You are importing a list from %s-%s which contains %d item%s are you sure you
+want to continue?
+]],
+IMPORTRULE_MARKDOWN_FMT = [[
+#Import Rule
+
+%s
+
+> %s
+
+You are importing a rule shared by %s-%s, are you sure you want to continue?
+]],
 
 -- List Pane / Dialog
 EDIT_LIST = "Edit",
@@ -479,6 +625,17 @@ Are you sure?
 ]],
 CONFIRM_DELETE_RULE = "Yes, DELETE",
 CANCEL_DELETE_RULE = "Cancel",
+HIDE_RULE_CAPTION = "Hide Rule",
+HIDE_RULE_FMT1 = [[
+# Hide rule:  %s?
+
+If you hide this rule it will be disabled and no longer show up in the rules list. You can choose
+to unhide it at any time by going into the settings tab under the "Hidden Rules" category.
+
+Are you sure you want to hide this rule?
+]],
+CONFIRM_HIDE_RULE = "Yes, HIDE",
+CANCEL_HIDE_RULE = "Cancel",
 DUPLICATE_RULE_NAME_CAPTION = "Existing Name",
 DUPLICATE_RULE_FMT1 = [[
 # Duplicate Rule Name
@@ -506,6 +663,7 @@ LDB_BUTTON_TOOLTIP_TITLE = "Vendor",
 LDB_BUTTON_TOOLTIP_TOSELL = "To Sell",
 LDB_BUTTON_TOOLTIP_TODESTROY = "To Destroy",
 LDB_BUTTON_TOOLTIP_VALUE = "Value",
+LDB_BUTTON_TOOLTIP_TITLEREFRESH = "Vendor (Update In Progress)",
 LDB_BUTTON_MENU_NEW_RULE = "New Rule",
 LDB_BUTTON_MENU_SETTINGS = "Settings",
 LDB_BUTTON_MENU_KEYBINDINGS = "Keybindings",

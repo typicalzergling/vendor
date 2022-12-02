@@ -1,0 +1,144 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+    <Frame name="Vendor_ProfilesTab" virtual="true" hidden="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString inherits="GameFontNormal" parentKey="help" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="OPTIONS_PROFILE_HELPTEXT"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button inherits="CommonUI_CommandButton" parentKey="copy">
+                <KeyValues>
+                    <KeyValue key="Label" value="OPTIONS_PROFILE_COPY"/>
+                    <KeyValue key="Handler" value="CopyProfile"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_CommandButton" parentKey="rename">
+                <KeyValues>
+                    <KeyValue key="Label" value="OPTIONS_PROFILE_RENAME"/>
+                    <KeyValue key="Handler" value="RenameProfile"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.copy" relativePoint="LEFT" x="-12"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_CommandButton" parentKey="create">
+                <KeyValues>
+                    <KeyValue key="Label" value="OPTIONS_PROFILE_CREATE"/>
+                    <KeyValue key="Handler" value="CreateProfile"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.rename" relativePoint="LEFT" x="-12"/>
+                </Anchors>
+            </Button>
+            <EditBox inherits="CommonUI_Edit" parentKey="name">
+                <Size x="1" y="32"/>
+                <KeyValues>
+                    <KeyValue key="Placeholder" value="OPTIONS_PROFILE_NAME_PLACEHOLDER"/>
+                    <KeyValue key="Handler" value="OnProfileSelected"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.copy" relativePoint="TOPRIGHT" y="12"/>
+                    <Anchor point="LEFT"/>
+                </Anchors>
+            </EditBox>
+            <Frame parentKey="createText">
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString inherits="GameFontNormal" justifyH="LEFT" parentArray="stack">
+                            <KeyValues>
+                                <KeyValue key="LocText" value="OPTIONS_PROFILE_CREATE_LABEL"/>
+                                <KeyValue key="Color" value="TEXT"/>
+                            </KeyValues>
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString inherits="GameFontNormal" justifyH="LEFT" parentArray="stack">
+                            <KeyValues>
+                                <KeyValue key="LocText" value="OPTIONS_PROFILE_CREATETEXT"/>
+                                <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                            </KeyValues>
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.name" relativePoint="TOPLEFT" y="12"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.name" relativePoint="TOPRIGHT" y="12"/>
+                </Anchors>
+            </Frame>
+            <Button inherits="CommonUI_CommandButton" parentKey="set">
+                <KeyValues>
+                    <KeyValue key="Label" value="OPTIONS_PROFILE_SET"/>
+                    <KeyValue key="Handler" value="SetProfile"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.createText" relativePoint="TOPRIGHT" y="24"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_CommandButton" parentKey="delete">
+                <KeyValues>
+                    <KeyValue key="Label" value="DELETE" type="global"/>
+                    <KeyValue key="Handler" value="DeleteProfile"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.set" relativePoint="LEFT" x="-12"/>
+                </Anchors>
+            </Button>
+            <Frame inherits="CommonUI_List" parentKey="profiles">
+                <KeyValues>
+                    <KeyValue key="ItemSource" value="GetProfiles" />
+                    <KeyValue key="ItemTemplate" value="ProfileItem" />
+                    <KeyValue key="ItemClass" value="Features.Vendor.ProfileItem" />
+                    <KeyValue key="OnSelection" value="OnProfileSelected" />
+                    <KeyValue key="OnViewCreated" value="OnProfileSelected" />
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.set" relativePoint="TOPRIGHT" y="12"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+    </Frame>
+
+    <Button name="ProfileItem" virtual="true">
+        <Size x="1" y="22"/>
+        <Layers>
+			<Layer level="ARTWORK">
+                <Texture parentKey="check" file="Interface\Addons\Vendor\assets\Check">
+                    <Size x="20" y="20"/>
+                   <Anchors>
+                        <Anchor point="LEFT" x="8"/>
+                    </Anchors>
+                </Texture>
+                <FontString inherits="GameFontNormal" parentKey="name" justifyV="MIDDLE" justifyH="LEFT" maxLines="1">
+                    <Size x="1" y="22"/>
+                    <KeyValues>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeKey="$parent.check" relativePoint="RIGHT" x="8"/>
+                        <Anchor point="TOP"/>
+                        <Anchor point="BOTTOMRIGHT" x="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Button>
+
+</Ui>

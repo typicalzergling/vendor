@@ -29,10 +29,14 @@ function Addon:SetupDebugConsoleCommands()
     Addon:RegisterDebugChannel("extensions")
     Addon:RegisterDebugChannel("history")
     Addon:RegisterDebugChannel("historystats")
+    Addon:RegisterDebugChannel("historytab")
+    Addon:RegisterDebugChannel("info")
+    Addon:RegisterDebugChannel("interop")
     Addon:RegisterDebugChannel("itemerrors")
     Addon:RegisterDebugChannel("items")
     Addon:RegisterDebugChannel("itemcache")
     Addon:RegisterDebugChannel("itemproperties")
+    Addon:RegisterDebugChannel("itempropertyinfo")
     Addon:RegisterDebugChannel("ldbstatus")
     Addon:RegisterDebugChannel("libdatabroker")
     Addon:RegisterDebugChannel("minimapbutton")
@@ -46,6 +50,7 @@ function Addon:SetupDebugConsoleCommands()
     Addon:RegisterDebugChannel("threads")
     Addon:RegisterDebugChannel("tooltip")
     Addon:RegisterDebugChannel("tooltiperrors")
+    Addon:RegisterDebugChannel("tooltipscan")
 end
 
 -- Debug Commands
@@ -70,7 +75,7 @@ function Addon:ToggleSimulate_Cmd()
 end
 
 function Addon:ClearCache_Cmd()
-    Addon:ClearItemResultCache()
+    Addon:ClearItemResultCache("Debug Command")
     Addon:Print("Item cache and result cache cleared.")
 end
 
@@ -183,6 +188,25 @@ end
 
 function Addon:DumpItemPropertiesFromTooltip()
     Addon:DumpTooltipItemProperties()
+end
+
+-- Assumes link
+function Addon:GetLinkFromString(link)
+    if link and type(link) == "string" then
+        local _, _, lstr = link:find('|H(.-)|h')
+        return lstr
+    else
+        return nil
+    end
+end
+
+function Addon:GetLinkPropertiesFromString(link)
+    local lstr = self:GetLinkFromString(link)
+    if lstr then
+        return {strsplit(':', lstr)}
+    else
+        return {}
+    end
 end
 
 Addon:MakePublic(

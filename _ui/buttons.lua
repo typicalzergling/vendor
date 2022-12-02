@@ -1,7 +1,7 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
 local Colors = Addon.CommonUI.Colors
-local CommandButton = Mixin({}, Addon.CommonUI.Mixins.Border)
+local CommandButton = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.Tooltip)
 local UI = Addon.CommonUI.UI
 
 --[[===========================================================================
@@ -36,31 +36,27 @@ function CommandButton:SetHelp(help)
     self.Help = help
 end
 
+function CommandButton:HasTooltip()
+    return type(self.Help) == "string" and string.len(self.Help) ~= 0
+end
+
 function CommandButton:OnEnter()
     self:SetBorderColor(Colors.BUTTON_HOVER_BORDER)
     self:SetBackgroundColor(Colors.BUTTON_HOVER_BACK)
     self.text:SetTextColor(Colors.BUTTON_HOVER_TEXT:GetRGBA())
+    self:TooltipEnter()
+end
 
-    -- If we have a tooltop then show it
-    if (type(self.Help) == "string") then
-        local tooltip = locale[button.Help] or self.Help
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        GameTooltip:ClearAllPoints()
-        GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -4)
-        GameTooltip:SetText(tooltip, Colors.BUTTON_TEXT:GetRGBA())
-        GameTooltip:Show()
-    end
+function CommandButton:OnTooltip(tooltip)
+    local text = locale:GetString(self.Help) or self.Help
+    tooltip:SetText(text, Colors.BUTTON_TEXT:GetRGBA())
 end
 
 function CommandButton:OnLeave()
     self:SetBackgroundColor(Colors.BUTTON_BACK)
     self:SetBorderColor(Colors.BUTTON_BORDER)
     self.text:SetTextColor(Colors.BUTTON_TEXT:GetRGBA())
-
-    -- If we are the owner of the tooltip hide it
-    if (GameTooltip:GetOwner() == self) then
-        GameTooltip:Hide()
-    end
+    self:TooltipLeave()
 end
 
 function CommandButton:OnDisable()
@@ -229,10 +225,20 @@ function Layouts.Stack(panel, children, padding, spacing, panelWidth)
                 height = height + mt
             end
 
-            child:ClearAllPoints()
-            child:SetWidth(width - (mr + ml))
-            child:SetPoint("TOPLEFT", panel, "TOPLEFT", ml + paddingLeft, -height)
-            --child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -paddingRight, -height)
+            if (objectType ~= "Line") then
+                child:ClearAllPoints()
+                if (child.Align == "far") then
+                    child:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -(mr + paddingRight), -height)
+                elseif (child.Align == "near") then
+                    child:SetPoint("TOPLEFT", panel, "TOPLEFT", ml + paddingLeft, -height)
+                else
+                    child:SetWidth(width - (mr + ml))
+                    child:SetPoint("TOPLEFT", panel, "TOPLEFT", ml + paddingLeft, -height)
+                end
+            else
+                child:SetStartPoint("TOPLEFT", panel, "TOPLEFT", 0, -height)
+                child:SetEndPoint("TOPRIGHT", panel, "TOPRIGHT", 0, -height)
+            end
 
             if (objectType == "FontString") then
                 child:SetHeight(0)

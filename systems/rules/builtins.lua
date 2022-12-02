@@ -171,10 +171,48 @@ local function checkMap(map, expectedValue, values)
     return false
 end
 
+local function getEnvironmentVariables()
+    local RuleEnvironmentVariables = {}
+    if Addon.Systems.Info.IsRetailEra then
+        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_DRAGONFLIGHT
+    else
+        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_WRATH_OF_THE_LICH_KING
+    end
+    RuleEnvironmentVariables.CLASSIC = LE_EXPANSION_CLASSIC                                 -- 0
+    RuleEnvironmentVariables.BURNING_CRUSADE = LE_EXPANSION_BURNING_CRUSADE                 -- 1
+    RuleEnvironmentVariables.WRATH_OF_THE_LICH_KING = LE_EXPANSION_WRATH_OF_THE_LICH_KING   -- 2
+    RuleEnvironmentVariables.CATACLYSM = LE_EXPANSION_CATACLYSM                             -- 3
+    RuleEnvironmentVariables.MISTS_OF_PANDARIA = LE_EXPANSION_MISTS_OF_PANDARIA             -- 4
+    RuleEnvironmentVariables.WARLORDS_OF_DRAENOR = LE_EXPANSION_WARLORDS_OF_DRAENOR         -- 5
+    RuleEnvironmentVariables.LEGION = LE_EXPANSION_LEGION                                   -- 6
+    RuleEnvironmentVariables.BATTLE_FOR_AZEROTH = LE_EXPANSION_BATTLE_FOR_AZEROTH           -- 7
+    RuleEnvironmentVariables.SHADOWLANDS = LE_EXPANSION_SHADOWLANDS                         -- 8
+    RuleEnvironmentVariables.DRAGONFLIGHT = LE_EXPANSION_DRAGONFLIGHT                       -- 9
+    RuleEnvironmentVariables.POOR = 0
+    RuleEnvironmentVariables.COMMON = 1
+    RuleEnvironmentVariables.UNCOMMON = 2
+    RuleEnvironmentVariables.RARE = 3
+    RuleEnvironmentVariables.EPIC = 4
+    RuleEnvironmentVariables.LEGENDARY = 5
+    RuleEnvironmentVariables.ARTIFACT = 6
+    RuleEnvironmentVariables.HEIRLOOM = 7
+    RuleEnvironmentVariables.TOKEN = 8
+    RuleEnvironmentVariables.KEEP_LIST = Addon.ListType.KEEP
+    RuleEnvironmentVariables.SELL_LIST = Addon.ListType.SELL
+    RuleEnvironmentVariables.DESTROY_LIST = Addon.ListType.DESTROY
+    return RuleEnvironmentVariables
+end
+
+function Addon.Systems.Rules:GetRuleEnvironmentVariables()
+    return getEnvironmentVariables()
+end
+
+
 local RuleFunctions = {
 {
     Name = "PlayerLevel",
     Documentation = locale["HELP_PLAYERLEVEL"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function()
         return tonumber(UnitLevel("player"))
     end,
@@ -183,6 +221,7 @@ local RuleFunctions = {
 {
     Name = "PlayerClass",
     Documentation = locale["HELP_PLAYERCLASS"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function()
         local localizedClassName, englishClass = UnitClass("player")
         return englishClass --This is intentional to avoid passing back extra args
@@ -192,6 +231,7 @@ local RuleFunctions = {
 {
     Name = "PlayerClassId",
     Documentation = locale["HELP_PLAYERCLASSID"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function()
         return select(3, UnitClass("player"))
     end,
@@ -200,6 +240,7 @@ local RuleFunctions = {
 {
     Name = "PlayerSpecialization",
     Documentation = locale["HELP_PLAYERSPECIALIZATION"],
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
     Function = function()
         return select(2, GetSpecializationInfo(GetSpecialization()))
     end,
@@ -208,27 +249,27 @@ local RuleFunctions = {
 {
     Name = "PlayerSpecializationId",
     Documentation = locale["HELP_PLAYERSPECIALIZATIONID"],
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
     Function = function()
         return select(1, GetSpecializationInfo(GetSpecialization()))
     end,
 },
 
---@retail@
 {
     Name = "PlayerItemLevel",
     Documentation = locale["HELP_PLAYERITEMLEVEL"],
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
     Function = function()
-        assert(not Addon.IsClassic);
         local itemLevel = GetAverageItemLevel();
 	    return floor(itemLevel);
     end,
 
 },
---@end-retail@
 
 {
     Name = "IsInEquipmentSet",
     Documentation = locale["HELP_ISINEQUIPMENTSET_TEXT"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function(...)
         -- Checks the item set for the specified item
         local function check(itemId, setId)
@@ -281,19 +322,37 @@ local RuleFunctions = {
 {
     Name = "TooltipContains",
     Documentation = locale["HELP_TOOLTIPCONTAINS_TEXT"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function(...)
         local str, side, line = ...
         assert(str and type(str) == "string", "Text must be specified.")
         assert(not side or (side == "left" or side == "right"), "Side must be 'left' or 'right' if present.")
         assert(not line or type(line) == "number", "Line must be a number if present.")
-        if side then
-            if side == "left" then
-                return Addon:IsStringInTooltipLeftText(OBJECT.TooltipData, str)
+        if Addon.Systems.Info.IsRetailEra then
+            if side then
+                if side == "left" then
+                    return Addon.Systems.ItemProperties:IsStringInTooltipLeftText(OBJECT.TooltipData, str)
+                else
+                    return Addon.Systems.ItemProperties:IsStringInTooltipRightText(OBJECT.TooltipData, str)
+                end
             else
-                return Addon:IsStringInTooltipRightText(OBJECT.TooltipData, str)
+                return Addon.Systems.ItemProperties:IsStringInTooltip(OBJECT.TooltipData, str)
             end
         else
-            return Addon:IsStringInTooltip(OBJECT.TooltipData, str)
+            -- Classic scan used pre-cached tooltip text.
+            local function checkSide(textSide, textTable)
+                if not side or side == textSide then
+                    for lineNumber, text in ipairs(textTable) do
+                        if not line or line == lineNumber then
+                            if text and string.find(text, str) then
+                                return true
+                            end
+                        end
+                    end
+                end
+            end
+        
+            return checkSide("left", OBJECT.TooltipLeft) or checkSide("right", OBJECT.TooltipRight)
         end
     end
 },
@@ -301,6 +360,7 @@ local RuleFunctions = {
 {
     Name = "HasStat",
     Documentation = locale["HELP_HASSTAT_TEXT"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function(...)
         local stats = {...};
         local itemStats = {};
@@ -334,6 +394,7 @@ local RuleFunctions = {
 {
     Name = "TotalItemCount",
     Documentation = locale["HELP_TOTALITEMCOUNT_TEXT"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function(...)
         local includeBank, includeUses = ...
         -- Assuming if you care to know about the bank you also want reagent bank.
@@ -344,6 +405,7 @@ local RuleFunctions = {
 {
     Name = "CurrentEquippedLevel",
     Documentation = locale["HELP_CURRENTEQUIPPEDLEVEL_TEXT"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
     Function = function(...)
 
         -- Return 0 if this is a non-equippable item.
@@ -374,12 +436,15 @@ local RuleFunctions = {
         end
 
         -- Warriors can Dual-Wield 2H weapons.
+        -- Note there is a chance that a 2h weapon can be compared against a 1h weapon
+        -- This is not a perfect rule but intended for keep rules to protect your
+        -- best / side-grade gear.
         if EquipLoc == "INVTYPE_2HWEAPON" and (select(3, UnitClass("player"))== 1) then
-            -- Only fury warriors have titan grip
-            local specId = GetSpecializationInfo(GetSpecialization()) 
-            if specId == 72 then
-                slots = {16,17}
-            end
+            -- Only fury warriors have titan grip, but they may not be in fury spec
+            -- If they can't dual wield 2h weapons then the slot will be empty anyway
+            -- and there is no harm in checking. And not checking means this function
+            -- will work on Classic!
+            slots = {16,17}
         end
 
         local lowestlevel = 0
@@ -395,7 +460,6 @@ local RuleFunctions = {
             end
         end
 
-        --print("Lowest Level for ", Link ," is ", tostring(lowestlevel))
         return lowestlevel
     end,
 },
@@ -403,5 +467,5 @@ local RuleFunctions = {
 }
 
 function Addon.Systems.Rules:RegisterSystemFunctions()
-    self:RegisterFunctions(RuleFunctions, AddonName)
+    self:RegisterFunctions(RuleFunctions)
 end

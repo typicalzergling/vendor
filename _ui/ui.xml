@@ -13,9 +13,11 @@
     <Script file="Url.lua"/>
     <Script file="ListItem.lua"/>
     <Script file="ItemLink.lua"/>
+    <Script file="selectableitem.lua"/>
     <Script file="CategoryItem.lua"/>
     <Script file="Markdown.lua"/>
     <Script file="chips.lua"/>
+    <Script file="contextmenu.lua"/>
     
     <!-- UX -->
     <Include file="buttons.xml"/>

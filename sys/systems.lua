@@ -1,4 +1,6 @@
 local AddonName, Addon = ...
+local debugp = function (...) Addon:Debug("systems", ...) end
+
 local systems = {}
 
 --[[ Checks the local list for a dependency ]]
@@ -60,24 +62,25 @@ function DependencyInit:Next()
             pending = true
             if (target.target == nil) then
                 Addon:DebugForEach("systems", target)
-            end
-            self:InitTarget(target.target, function(success)
-                    target.success = success
-                    target.complete = true
+            else
+                self:InitTarget(target.target, function(success)
+                        target.success = success
+                        target.complete = true
 
-                    for _, notify in ipairs(self.targets) do
-                        if (notify ~= target) then
-                            if (notify.deps and notify.deps[target.name]) then
-                                notify.pending = notify.pending - 1
-                                self:DependencyReady(notify.target, target.name, success)
+                        for _, notify in ipairs(self.targets) do
+                            if (notify ~= target) then
+                                if (notify.deps and notify.deps[target.name]) then
+                                    notify.pending = notify.pending - 1
+                                    self:DependencyReady(notify.target, target.name, success)
+                                end
                             end
                         end
-                    end
 
-                    self:InitComplete(target.target, success)
-                    self:Next()
-                end)
-            break
+                        self:InitComplete(target.target, success)
+                        self:Next()
+                    end)
+                break
+            end
         elseif (target.complete and not target.success) then
             errors = errors + 1
         end
@@ -150,7 +153,9 @@ function Systems:Terminate()
         -- Remove the APIs
         if (system.api) then
             for _, name in ipairs(system.api) do
-                Addon[name] = nil
+                -- On classic this is firing before Features OnTerminate
+                -- Doesn't seem to be necessary so commenting out for now.
+                --Addon[name] = nil
             end
         end
 
@@ -193,10 +198,8 @@ function Systems:InitTarget(system, complete)
         if (type(api) == "table") then
             system.api = api
             for _, funcname in ipairs(api) do
-                --@debug@
                 assert(not Addon[funcname], "An API with the name '" .. funcname .. "' already exists")
-                assert(type(source[funcname]) == "function", "The API referres to an invalid functon : " .. funcname)
-                --@end-debug@
+                assert(type(source[funcname]) == "function", "The API refers to an invalid functon : " .. funcname)
 
                 Addon[funcname] = function(_, ...)
                         local ret = { xpcall(source[funcname], CallErrorHandler, source, ...) }
@@ -247,16 +250,20 @@ function Systems:InitTarget(system, complete)
     system.instance = setmetatable({}, {
             __metatable = string.format("System:%s", name),
             __newindex = function(_, key)
-                    error("System '" .. name .. "' cannot be modified attempted to set '" .. key .. "'")
+                    assert(false, "System '" .. name .. "' cannot be modified attempted to set '" .. key .. "'")
                 end,
             __index =  function(_, key)
-                    local func = source[key]
-                    if (not key or type(key) ~= "string" or type(func) ~= "function") then
-                        error("System '" .. name .. "' does not have a function : " .. tostring(key))
-                    end
-
-                    return function(_, ...)
-                        xpcall(func, CallErrorHandler, source, ...)
+                    assert(key and type(key) == "string", "System "..name.." invalid key "..tostring(key))
+                    local value = source[key]
+                    if type(value) == "function" then
+                        return function(_, ...)
+                            local result = { xpcall(source[key], CallErrorHandler, source, ...) }
+                            assert(result[1], "Error occurred while trying to invoke "..name.." function "..tostring(key))
+                            table.remove(result, 1)
+                            return unpack(result)
+                        end
+                    else
+                        return value
                     end
                 end
         })
@@ -286,7 +293,7 @@ end
 
 --[[ Get the specified system ]]
 function Systems:Get(system)
-    local data = systems[string.lower(system)]
+    local data = self.systems[string.lower(system)]
     if (data) then
         assert(data.ready, "Attempting to retrieve a system that isn't initialized")
         return data.instance

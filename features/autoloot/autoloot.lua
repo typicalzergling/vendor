@@ -65,8 +65,8 @@ end
 local function CountEmptySlots()
     local free = {}
     local count = 0
-    for bag=0,NUM_TOTAL_EQUIPPED_BAG_SLOTS  do 
-        C_Container.GetContainerFreeSlots(bag, free);
+    for bag=0, Addon:GetNumTotalEquippedBagSlots()  do 
+        Addon:GetContainerFreeSlots(bag, free);
         count = count + #free
     end
     return count
@@ -114,10 +114,10 @@ end
 function AutolootFeature:ON_LOOT_READY(autoloot)
     debugp("Loot ready : %s", tostring(autoloot))
 
-    print(pcall(function()
+    --print(pcall(function()
         self:CreateLootTable()
         self:StartLooting()
-    end))
+    --end))
 end
 
 function AutolootFeature:ON_LOOT_SLOT_CHANGED(slot)
@@ -385,7 +385,8 @@ function AutolootFeature:CreateLootItemProperties(slot, link)
     end
 
     -- If we can't figure out what it is then loot it always
-    local itemInfo = Addon:GetItemPropertiesFromItemLink(link) 
+    local itemproperties = Addon:GetSystem("ItemProperties")
+    local itemInfo = itemproperties:GetItemPropertiesFromItemLink(link) 
     if (questItem or currencyId or not itemInfo) then
         return nil
     end

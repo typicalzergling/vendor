@@ -85,7 +85,7 @@ local function list_DiscardFrames(self, state)
         end
 
         state.frames = frames
-        Addon:Debug("list", "Discarded unused frames for list '%s'", self:GetParentKey() or "<unknown>")
+        Addon:Debug("list", "Discarded unused frames for list '%s'", self:GetDebugName() or "<unknown>")
     end
 end
 
@@ -119,13 +119,13 @@ local function list_EnsureCreateItem(self, state)
             Addon:DebugForEach("list", parent)
             state.itemCreator = list_ErrorItemCreator
         else
-            Addon:Debug("list", "Using '%s' as the item creator provided by '%s'", self.ItemCreator, target:GetParentKey() or "<unknown>")
+            Addon:Debug("list", "Using '%s' as the item creator provided by '%s'", self.ItemCreator, target:GetDebugName() or "<unknown>")
             state.itemCreator = function(parent, model)
                     return creator(target,model)
                 end
         end    
     elseif (type(self.OnCreateItem) == "function") then
-        Addon:Debug("list", "Using self.OnCreateItem as the item creator for '%s'", self:GetParentKey() or "<unknown>")
+        Addon:Debug("list", "Using self.OnCreateItem as the item creator for '%s'", self:GetDebugName() or "<unknown>")
         state.itemCreator = self.OnCreateItem
     elseif (type(self.ItemTemplate) == "string") then
         local template = self.ItemTemplate
@@ -139,7 +139,7 @@ local function list_EnsureCreateItem(self, state)
         if (type(self.ItemClass) == "string") then
             class = UI.Resolve(self.ItemClass)
             if (not class) then
-                Addon:Debug("list", "The list '%s' specified an invalid item class : %s", self:GetParentKey() or "<unknown>", self.ItemClass)
+                Addon:Debug("list", "The list '%s' specified an invalid item class : %s", self:GetDebugName() or "<unknown>", self.ItemClass)
             end
         elseif (type(self.ItemClass) == "table") then
             class = self.ItemClass
@@ -147,7 +147,7 @@ local function list_EnsureCreateItem(self, state)
             class = {}
         end
 
-        Addon:Debug("list", "Using type=%s, template=%s to create items for '%s'", frameType, template, self:GetParentKey() or "<unknown>")
+        Addon:Debug("list", "Using type=%s, template=%s to create items for '%s'", frameType, template, self:GetDebugName() or "<unknown>")
         state.itemCreator = function(parent, model)
                 local frame = CreateFrame(frameType, nil, parent, template)
                 UI.Attach(frame, class)
@@ -156,7 +156,7 @@ local function list_EnsureCreateItem(self, state)
     end
 
     if (not state.itemCreator) then
-        Addon:Debug("list", "Unable to determine how to create items for lsit '%s'", self:GetParentKey() or "<unknown>")
+        Addon:Debug("list", "Unable to determine how to create items for lsit '%s'", self:GetDebugName() or "<unknown>")
         state.itemCreator = list_ErrorItemCreator
     end
 end
@@ -178,6 +178,7 @@ local function list_CreateItem(self, state, model)
             end
         end)
 
+    litem:Hide()
     return litem
 end
 
@@ -216,7 +217,7 @@ local function list_PopulateItems(self, state)
                 end
             end
 
-            Addon:Debug("listitems", "Created frame for item '%s' on list '%s'", modelName, self:GetParentKey() or "<unknown>")
+            Addon:Debug("listitems", "Created frame for item '%s' on list '%s'", modelName, self:GetDebugName() or "<unknown>")
             --@end-debug@
         else
             -- This frame  can live in the view frames
@@ -239,7 +240,7 @@ local function list_PopulateItems(self, state)
     state.viewFrames = viewFrames
     state.pendingSelection = state.selection
 
-    Addon:Debug("list", "Created %s frames for '%s' (new=%d)", table.getn(state.viewFrames), self:GetParentKey() or "<unknown>", misses)
+    Addon:Debug("list", "Created %s frames for '%s' (new=%d)", table.getn(state.viewFrames), self:GetDebugName() or "<unknown>", misses)
 end
 
 --[[ Construct the view for this list ]]
@@ -275,7 +276,7 @@ local function list_BuildView(self, state)
         end
 
         state.view = view
-        Addon:Debug("list", "Created view %s/%s items for '%s'", table.getn(state.view or {}), table.getn(state.items or {}), self:GetParentKey() or "<unknown>")
+        Addon:Debug("list", "Created view %s/%s items for '%s'", table.getn(state.view or {}), table.getn(state.items or {}), self:GetDebugName() or "<unknown>")
 
         list_PopulateItems(self, state)        
         list_callHandler(self, "OnViewCreated", view)
@@ -298,10 +299,10 @@ local function list_Layout(self, state)
     local scroller = state.scroller:GetScrollChild()
     local width = scroller:GetWidth()
     if (not state.viewFrames) then
-        Addon:Debug("list", "List '%s' has no frames (%s)", self:GetParentKey() or "<unknown>", table.getn(state.view or {}))
+        Addon:Debug("list", "List '%s' has no frames (%s)", self:GetDebugName() or "<unknown>", table.getn(state.view or {}))
     else
         Layouts.Stack(scroller, state.viewFrames, padding, spacing, width)
-        Addon:Debug("list", "List '%s' has finshed layout %s x %s (%s frames)", self:GetParentKey() or "<unknown>", width, scroller:GetHeight(), table.getn(state.viewFrames or {}))    
+        Addon:Debug("list", "List '%s' has finshed layout %s x %s (%s frames)", self:GetDebugName() or "<unknown>", width, scroller:GetHeight(), table.getn(state.viewFrames or {}))    
     end
 end
 
@@ -321,7 +322,7 @@ local function list_showEmpty(list, show)
         empty:SetTextColor(Colors.LIST_EMPTY_TEXT:GetRGBA())
     end
 
-    Addon:Debug("list", "Showing empty text '%s' for list '%s'", text or "", list:GetParentKey() or "<unknown>")
+    Addon:Debug("list", "Showing empty text '%s' for list '%s'", text or "", list:GetDebugName() or "<unknown>")
     UI.Show(scroller, not show)
     UI.Show(empty, show)
 end
@@ -352,14 +353,14 @@ local function list_GetItems(list)
         local target = list.ItemSource
 
         if (type(target) == "string") then
-            Addon:Debug("list", "Getting items from parent using '%s' for list '%s'", list.ItemSource or "<error>", list:GetParentKey() or "<unknown>")
+            Addon:Debug("list", "Getting items from parent using '%s' for list '%s'", list.ItemSource or "<error>", list:GetDebugName() or "<unknown>")
             func = parent[target]
             if (func) then
                 local success, items = xpcall(func, CallErrorHandler, parent, list)
                 if (success) then
                     return items or {}
                 else
-                    Addon:Debug("list", "Failed to retrieve the items for list '%s'", list:GetParentKey() or "<unknown>")
+                    Addon:Debug("list", "Failed to retrieve the items for list '%s'", list:GetDebugName() or "<unknown>")
                 end
             end
         end
@@ -416,7 +417,7 @@ end
 --[[ Handler for size changed ]]
 function List:OnSizeChanged(width, height)
     local state = rawget(self, STATE_KEY)
-    Addon:Debug("List '%s' size has changed %d x %d", self:GetParentKey() or "<unknown>", width, height)
+    Addon:Debug("List '%s' size has changed %d x %d", self:GetDebugName() or "<unknown>", width, height)
     state.layout = true
 end
 
@@ -555,7 +556,7 @@ function List:Rebuild()
     state.update = true
     state.items = nil
     state.view = nil
-    Addon:Debug("list", "Issuing a rebuild for list '%s'", self:GetParentKey() or "<unknown")
+    Addon:Debug("list", "Issuing a rebuild for list '%s'", self:GetDebugName() or "<unknown")
     self:Update()
 end
 
@@ -570,7 +571,7 @@ function List:Update()
     local container = scroller:GetScrollChild()
     local width = self:GetWidth() - scroller.ScrollBar:GetWidth() - 6
 
-    Addon:Debug("list", "Performing update for list '%s'", self:GetParentKey() or "<unknown>")
+    Addon:Debug("list", "Performing update for list '%s'", self:GetDebugName() or "<unknown>")
 
     -- Populate the items
     if (not state.items) then

@@ -191,4 +191,48 @@
         </Layers>
     </Frame>    
 
+    <Frame virtual="true" name="CommonUI_ContextMenu_Separator">
+        <Size x="3" y="5"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Line thickness="1">
+                    <KeyValues>
+                        <KeyValue key="Color" value="DIALOG_BORDER_COLOR"/>
+                    </KeyValues>
+                    <StartAnchor point="LEFT"/>
+                    <EndAnchor point="RIGHT"/>
+                </Line>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Button virtual="true" name="CommonUI_ContextMenu_Item">
+        <Size x="3"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="backdrop" hidden="true">
+                    <KeyValues>
+                        <KeyValue key="Color" value="BUTTON_HOVER_BACK"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="4"/>
+                        <Anchor point="TOPRIGHT" x="-4"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Button>
+
 </Ui>

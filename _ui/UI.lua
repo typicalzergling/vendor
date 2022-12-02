@@ -38,11 +38,13 @@ function UI.SetColor(item, name)
         color = RED_FONT_COLOR
     end
     
-    local type = item:GetObjectType()
-    if (type == "FontString") then
+    local itype = item:GetObjectType()
+    if (itype == "FontString") then
         item:SetTextColor(color:GetRGBA())
-    elseif (type == "Texture" or type == "Line") then
+    elseif (itype == "Texture" or itype == "Line") then
         item:SetColorTexture(color:GetRGBA())
+    elseif (type(item.SetTextColor) == "function") then
+        item:SetTextColor(color:GetRGBA())
     end
 end
 
@@ -106,7 +108,7 @@ function UI.Attach(item, class)
         object = resolveObject(Addon, class)
     end
 
-    if (type(class) ~= "table") then
+    if (type(object) ~= "table") then
         error("Unable to determine the implementation :: " .. tostring(class))
     end
 
@@ -180,7 +182,7 @@ function UI.MessageBox(title, markdown, buttons, parent)
     
     local params = {
         caption = title,
-        parent = UIParent, 
+        parent = parent or UIParent, 
         content = markdown,
         buttons = btns
     }
@@ -249,11 +251,21 @@ function DialogContent:GetFeature(feature)
 end
 
 --[[
-    Impltement a message box on the dialog, this disables all of the 
+    implement a message box on the dialog, this disables all of the 
     buttons and centers it on the dialog (parents it to the dialog) 
     when it's closed it return the button state.
 ]]
-function DialogContent:MessageBox(...)
+function DialogContent:MessageBox(title, markdown, buttons)
+    local dialog = rawget(self, DialogContent)
+
+    markdown = locale:GetString(markdown) or markdown
+    if (not buttons) then
+        buttons = { CLOSE }
+    end
+
+    local msgbox = UI.MessageBox(title, markdown, buttons, dialog)
+    msgbox:ClearAllPoints()
+    msgbox:SetPoint("CENTER", dialog)
 end
 
 --[[ Helper for debug output ]]
@@ -268,7 +280,7 @@ end
 --[[ 
     Create a new dialog from the specified paramaters
 ]]
-function UI.Dialog(caption, template, implementation, buttons)
+function UI.Dialog(caption, template, implementation, buttons, ...)
     local dialog = CreateFrame("Frame", nil, UIParent, "DialogBox_Base")
     local content = CreateFrame("Frame", nil, dialog, template)
 
@@ -281,9 +293,12 @@ function UI.Dialog(caption, template, implementation, buttons)
     if (type(buttons) == "table") then
         dialog:SetButtons(buttons)
     end
+    if (type(caption) == "string") then
+        dialog:SetCaption(caption)
+    end
 
     if (type(content.OnInitDialog) == "function") then
-        content:OnInitDialog(dialog)
+        content:OnInitDialog(dialog, ...)
     end
 
     -- Any non-event handler on the content should be promoted to the dialog
@@ -302,3 +317,6 @@ function UI.Dialog(caption, template, implementation, buttons)
 end
 
 Addon.CommonUI.UI = UI
+Addon.Public.UIAttach = function(frame, target)
+    UI.Attach(frame, target)
+end

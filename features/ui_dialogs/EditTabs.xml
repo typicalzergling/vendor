@@ -1,0 +1,238 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Frame name="Vendor_EditRule_ItemProperty" virtual="true" hidden="true">
+		<KeyValues>
+			<KeyValue key="PaddingY" value="8" type="number"/>
+		</KeyValues>
+		<Size x="1" y="1"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="hilite" hidden="true">
+					<Color r="1" g="1" b="1" a=".125"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="name" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" maxLines="1" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-4"/>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="130"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="equals" justifyH="CENTER" justifyV="TOP" inherits="GameFontHighlight" maxLines="1" text="=">
+					<Size x="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.name" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="value" justifyH="LEFT" justifyV="TOP" inherits="GameFontHighlight" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.equals" relativePoint="TOPRIGHT"/>
+						<Anchor point="RIGHT" x="-8" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+    <Frame name="Vendor_EditRule_ItemInfo" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontHighlight" justifyV="MIDDLE" justifyH="LEFT">
+					<Size x="50" y="30"/>
+					<KeyValues>
+						<KeyValue key="LocKey" value="EDITRULE_ITEM_LABEL" type="string"/>
+ 					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame inherits="CommonUI_ItemLink" parentKey="item">
+				<KeyValues>
+					<KeyValue key="AllowDrop" value="true" type="boolean"/>
+					<KeyValue key="OnItemChanged" value="ShowItemProperties" type="string"/>
+					<KeyValue key="Placeholder" value="EDITRULE_NO_ITEM" type="string"/>
+				</KeyValues>
+				<Size x="1" y="50"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.label"/>
+					<Anchor point="RIGHT"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.label"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="properties" inherits="CommonUI_List">
+				<Size x="10" y="100"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetItemProperties" type="string"/>
+					<KeyValue key="ItemCreator" value="CreatePropertyItem" type="string"/>
+					<KeyValue key="EmptyText" value="EDITRULE_ITEM_PROPERTIES_EMPTY" type="string"/>
+					<KeyValue key="OnInsertText" value="InsertScriptText" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="BOTTOMLEFT" y="-12"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+    </Frame>
+
+	<Frame name="EditRule_HelpEntry" virtual="true">
+		<Frames>
+			<Frame parentKey="header">
+				<KeyValues>
+					<KeyValue key="BorderParts" value="tbk"/>
+					<KeyValue key="BorderColor" value="TRANSPARENT"/>
+					<KeyValue key="BackgroundColor" value="TRANSPARENT"/>
+				</KeyValues>
+				<Size x="1" y="24"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT"/>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="etype" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontHighlight" maxLines="1">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="-10"/>
+								<Anchor point="BOTTOMRIGHT" x="-10"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="expand" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormalLarge" maxLines="1" text="-">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="10"/>
+								<Anchor point="BOTTOMLEFT" x="10"/>
+							</Anchors>
+						</FontString>						
+						<FontString parentKey="name" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontHighlight" maxLines="1">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.expand" relativePoint="TOPRIGHT" x="10"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.etype" relativePoint="BOTTOMRIGHT" x="-10"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Frame>
+
+	<Frame name="Vendor_EditRule_HelpItem" virtual="true">
+		<KeyValues>
+			<KeyValue key="baseHeight" value="38" type="number"/>
+		</KeyValues>		
+		<Size x="20" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="headerBackground">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="title" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontHighlight" maxLines="1">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.headerBackground" x="10"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.headerBackground" x="-10"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="contents">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.headerBackground" relativePoint="BOTTOM" y="-8"/>
+					<Anchor point="LEFT" relativeKey="$parent.title"/>
+					<Anchor point="BOTTOMRIGHT" y="10"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+
+    <Frame name="Vendor_EditRule_Help" virtual="true" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString  parentKey="label" inherits="GameFontHighlight" justifyV="MIDDLE" justifyH="LEFT">
+					<KeyValues>
+						<KeyValue key="LocKey" value="EDITRULE_FILTER_LABEL" type="string"/>
+					</KeyValues>
+					<Size x="50" y="30"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</FontString>
+				<FontString  parentKey="chipLabel" inherits="GameFontHighlight" justifyV="MIDDLE" justifyH="LEFT">
+					<KeyValues>
+						<KeyValue key="LocKey" value="Type:" type="string"/>
+					</KeyValues>
+					<Size x="1" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.label" y="-6"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.label" y="-6"/>
+					</Anchors>
+				</FontString>				
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="filter" inherits="CommonUI_Edit">
+				<KeyValues>
+					<KeyValue key="Placeholder" value="EDITRULE_FILTER_HELPTEXT" type="string"/>
+					<KeyValue key="Handler" value="ApplyFilters" type="string"/>					
+				</KeyValues>
+				<Size x="1" y="30"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.label" relativePoint="TOPRIGHT"/>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+			</EditBox>
+            <Frame parentKey="filters" inherits="CommonUI_Chips">
+                <KeyValues>
+                    <KeyValue key="Handler" value="ApplyFilters"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.chipLabel" relativePoint="TOPRIGHT"/>
+                    <Anchor point="RIGHT"/>
+                </Anchors>
+            </Frame>
+			<Frame parentKey="items" inherits="CommonUI_List">
+				<Size x="10" y="100"/>
+				<KeyValues>
+					<KeyValue key="ItemSource" value="GetHelpItems" type="string"/>
+					<KeyValue key="ItemClass" value="Features.EditRules.HelpItem"/>
+					<KeyValue key="ItemTemplate" value="EditRule_HelpEntry"/>
+					<KeyValue key="EmptyText" value="RULEHELP_NO_MATCHES" type="string"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.filters" relativePoint="BOTTOM" y="-12"/>
+					<Anchor point="LEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+    </Frame> 
+
+    <Frame name="Vendor_EditRule_Parameters" virtual="true" hidden="true">
+        <Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="label" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<KeyValues>
+						<KeyValue key="LocKey" value="RULE_PARAMETERS" />
+					</KeyValues>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>
+

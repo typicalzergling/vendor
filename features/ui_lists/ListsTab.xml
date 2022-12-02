@@ -1,0 +1,222 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+    <Frame name="Vendor_Lists_Tab" virtual="true" hidden="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString inherits="GameFontNormal" parentKey="help" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="CONFIG_DIALOG_LISTS_TEXT"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button inherits="CommonUI_CommandButton" parentKey="createList">
+                <KeyValues>
+                    <KeyValue key="Label" value="NEW_LIST"/>
+                    <KeyValue key="Handler" value="CreateList"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="224"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_CommandButton" parentKey="copyList">
+                <KeyValues>
+                    <KeyValue key="Label" value="COPY_LIST"/>
+                    <KeyValue key="Handler" value="CopyList"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.createList" relativePoint="TOPLEFT" y="6"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.createList" relativePoint="TOPRIGHT" y="6"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_CommandButton" parentKey="editList">
+                <KeyValues>
+                    <KeyValue key="Label" value="EDIT_LIST"/>
+                    <KeyValue key="Handler" value="EditList"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.copyList" relativePoint="TOPLEFT" y="6"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.copyList" relativePoint="TOPRIGHT" y="6"/>
+                </Anchors>
+            </Button>
+            <Frame parentKey="lists" inherits="CommonUI_CategoryList">
+                <KeyValues>
+                    <KeyValue key="OnSelection" value="ShowList"/>
+                    <KeyValue key="ItemClass" value="Features.Lists.ListItem"/>
+                </KeyValues>
+                <Size x="2" y="1"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+                    <Anchor point="BOTTOMRIGHT" y="12" relativePoint="TOPRIGHT" relativeKey="$parent.editList"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="items" inherits="CommonUI_List">
+                <Size x="224" y="1"/>
+                <KeyValues>
+                    <KeyValue key="EmptyText" value="RULES_DIALOG_EMPTY_LIST"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.lists" x="12"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "_ItemList")</OnLoad>
+                </Scripts>
+            </Frame>        
+        </Frames>
+    </Frame>
+
+    <Frame name="Vendor_Lists_Item" virtual="true" mixin="ItemMixin">
+        <KeyValues>
+            <KeyValue key="TooltipOffsetX" value="24" type="number"/>
+        </KeyValues>
+        <Size x="1" y="28"/>
+        <Layers>
+            <Layer level="BAKGROUND">
+                <Texture setAllPoints="true" parentKey="backdrop" hidden="true"/>
+            </Layer>
+			<Layer level="ARTWORK">
+                <FontString inherits="GameFontNormal" parentKey="name" justifyV="MIDDLE" justifyH="LEFT" maxLines="1">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="8"/>
+                        <Anchor point="BOTTOMRIGHT" x="-28"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="delete" inherits="CommonUI_IconButton" hidden="true">
+                <Size x="20" y="20"/>
+                <KeyValues>
+                    <KeyValue key="Icon" value="Interface/Addons/Vendor/assets/Cross"/>
+                    <KeyValue key="Handler" value="OnDelete"/>
+                    <KeyValue key="Help" value="Remove this item from the list"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="RIGHT" x="-8"/>
+                </Anchors>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <Frame name="Lists_Editor" virtual="true" hidden="true">
+        <Size x="600" y="400"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString inherits="GameFontNormal" parentKey="labelName" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_NAME_LABEL"/>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="254"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="labelContents" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_CONTENTS_LABEL"/>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="TOPRIGHT" x="12"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="labelDescr" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_DESCR_LABEL"/>
+                        <KeyValue key="Color" value="TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-50"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-50"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="labelItemId" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_ADDBYID_LABEL"/>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMLEFT" y="-110"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-110"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontNormal" parentKey="systemInfo" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_SYSTEM_INFO"/>
+                        <KeyValue key="Color" value="WARNING_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT"/>
+                        <Anchor point="RIGHT" relativeKey="$parent.labelName" relativePoint="RIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="items" inherits="CommonUI_List">
+                <KeyValues>
+                    <KeyValue key="EmptyText" value="ITEMLIST_EMPTY"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelContents" relativePoint="BOTTOMLEFT" y="-4"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "_ItemList")</OnLoad>
+                </Scripts>
+            </Frame>
+            <EditBox inherits="CommonUI_Edit" parentKey="name">
+                <Size x="1" y="32"/>
+                <KeyValues>
+                    <KeyValue key="Handler" value="OnNameChanged"/>
+                    <KeyValue key="Placeholder" value="LISTDIALOG_NAME_HELPTEXT"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelName" relativePoint="BOTTOMLEFT" y="-4"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-4"/>
+                </Anchors>
+            </EditBox>
+            <ScrollFrame inherits="CommonUI_TextArea" parentKey="description">
+                <Size x="1" y="72"/>
+                <KeyValues>
+                    <KeyValue key="Handler" value="OnDescriptionChanged"/>
+                    <KeyValue key="Placeholder" value="LISTDIALOG_DESCR_HELPTEXT"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMLEFT" y="-4"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-4"/>
+                </Anchors>
+            </ScrollFrame>
+            <EditBox inherits="CommonUI_Edit" parentKey="itemId">
+                <KeyValues>
+                    <KeyValue key="Numeric" value="true" type="boolean"/>
+                    <KeyValue key="Handler" value="OnItemIdChanged"/>
+                    <KeyValue key="Placeholder" value="LISTDIALOG_ADDBYID_HELP"/>                    
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT"  relativePoint="BOTTOMLEFT" relativeKey="$parent.labelItemId" y="-4"/>
+                    <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelItemId" y="-4"/>
+                </Anchors>
+            </EditBox>
+            <Button inherits="CommonUI_CommandButton" parentKey="addId">
+                <KeyValues>
+                    <KeyValue key="Handler" value="InsertById"/>
+                    <KeyValue key="Label" value="LISTDIALOG_ADDBYID"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.itemId" relativePoint="BOTTOMRIGHT" y="-6"/>
+                </Anchors>
+            </Button>
+        </Frames>
+    </Frame>
+
+</Ui>

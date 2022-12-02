@@ -1,0 +1,73 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
+
+    <Frame name="Import_ImportDialog" virtual="true" hidden="true">
+        <Size x="300" y="400"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="help" inherits="GameFontNormal" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                        <KeyValue key="LocText" value="IMPORT_HELP_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString hidden="true" parentKey="invalid" inherits="GameFontNormal" justifyV="BOTTOM" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="Color" value="ERROR_TEXT"/>
+                        <KeyValue key="LocText" value="IMPORT_INVALID_STRING"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <ScrollFrame inherits="CommonUI_TextArea" parentKey="import">
+                <KeyValues>
+                    <KeyValue key="Placeholder" value="IMPORT_HELP_TEXT_PASTE_HERE"/>
+                    <KeyValue key="Handler" value="OnImportText"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+                </Anchors>
+            </ScrollFrame>
+        </Frames>
+    </Frame>    
+
+    <Frame name="Import_ExportDialog" virtual="true" hidden="true">
+        <Size x="300" y="400"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="help" inherits="GameFontNormal" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="Color" value="SECONDARY_TEXT"/>
+                        <KeyValue key="LocText" value="EXPORT_HELP_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <ScrollFrame inherits="CommonUI_TextArea" parentKey="export">
+                <KeyValues>
+                    <KeyValue key="ReadOnly" value="true" type="boolean"/>
+                    <KeyValue key="HighlightOnFocus" value="true" type="boolean"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT"/>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
+                </Anchors>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+
+</Ui>

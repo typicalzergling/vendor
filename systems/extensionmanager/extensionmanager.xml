@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Include file="extensionmanager.lua"/>
+    <Include file="internalextensions.lua"/>
+    <Include file="extension_pawn.lua"/>
+    <Include file="extension_ark.lua"/>
+    <Include file="extension_tsm.lua"/>
+    <Include file="extension_adibags.lua"/>
+    <Include file="extension_cimi.lua"/>
+</Ui>

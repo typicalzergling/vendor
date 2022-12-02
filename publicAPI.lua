@@ -50,8 +50,7 @@ Addon:MakePublic(
 Addon:MakePublic(
     "ShowKeybindings",
     function () 
-        -- Blizzard really messed up keybindings so we won't try to direct open them for now.
-        --Addon:OpenKeybindings_Cmd()
+        Addon:OpenKeybindings_Cmd()
     end,
     L["API_OPENKEYBINDINGS_TITLE"],
     L["API_OPENKEYBINDINGS_DOCS"])
@@ -78,7 +77,9 @@ Addon:MakePublic(
 
 Addon:MakePublic(
     "GetEvaluationStatus",
-    function () return Addon:GetEvaluationStatus() end,
+    function ()
+        return Addon:GetEvaluationStatus()
+    end,
     L["API_GETEVALUATIONSTATUS_TITLE"],
     L["API_GETEVALUATIONSTATUS_DOCS"])
 
@@ -102,7 +103,11 @@ Addon:MakePublic(
 
 Addon:MakePublic(
     "DestroyItems",
-    function () Addon:DestroyItems() end,
+    function ()
+        Addon:WithFeature("Destroy", function(destroy)
+            destroy:DestroyItems()
+        end)
+    end,
     L["API_SETPROFILE_TITLE"],
     L["API_SETPROFILE_DOCS"])
 

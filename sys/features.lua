@@ -24,15 +24,30 @@ function Features:Startup()
     self.features = {}
     if (type(Addon.Features) == "table") then
         for name, feature in pairs(Addon.Features) do
-            local featureInfo = {
-                name = name,
-                instance = feature,
-                enabled = false,
-            }
 
-            self.features[string.lower(name)] = featureInfo
+            if (name == nil or feature == nil) then
+                debugp("Feature named %s is nil", tostring(name))
+            else
+                local featureInfo = {
+                    name = name,
+                    instance = feature,
+                    enabled = false,
+                }
+                self.features[string.lower(name)] = featureInfo
+            end
         end
     end
+
+    Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+        if Addon.Systems.Info.IsClassicEra then
+            -- Classic has a saved variables race condition that does not occur on live where
+            -- the variables are not yet loaded. This is a dirty hack to delay the feature init
+            -- by 2s to let that nonsense settle.
+            C_Timer.NewTimer(2, function() Features:BeginInit() end)
+        else
+            Features:BeginInit()
+        end
+    end)
 
     return { "GetFeature", "IsFeatureEnabled", "EnableFeature", "DisableFeature",  "WithFeature" }
 end
@@ -60,11 +75,12 @@ end
 
 --[[ Called to start a single system ]]
 function Features:InitTarget(feature, complete)
-    C_Timer.After(.25, function()
-        debugp("Initialing feature '%s'", feature.name)
+    assert(feature, "Attempt to initialize a nil feature, this is a developer error.")
+    --C_Timer.After(.03, function()
+        debugp("Initializing feature '%s'", feature.name)
             self:EnableFeature(feature.name)
             complete(feature.enabled)
-        end)
+    --    end)
 end
 
 function Features:EndInit(success)
@@ -127,6 +143,11 @@ function Features:EnableFeature(name)
             if (type(value) == "function") then
                 if (Addon:RaisesEvent(name)) then
                     Addon:RegisterCallback(name, feature.instance, value)
+                elseif(string.find(name, "ON_") == 1) then
+                    Addon:RegisterEvent(string.sub(name, 4), 
+                        function(...)
+                            value(feature.instance, ...)
+                        end)
                 end
             end
         end
@@ -140,11 +161,7 @@ function Features:EnableFeature(name)
                     if (type(value) == "function") then
                         return function(_, ...)
                                 local result = { xpcall(value, CallErrorHandler, instance, ...) }
-                                if (not result[1]) then
-                                    debugp("An error occured while trying to invoke %s::%s", feature.name, key)
-                                    return
-                                end
-
+                                assert(result[1], "An error occured while trying to invoke "..feature.name.."::"..key)
                                 table.remove(result, 1)
                                 return unpack(result)
                             end
@@ -246,11 +263,6 @@ function Features:OnAllSystemsReady()
 
         self:AddTarget(feature, feature.name, dependencies)
     end
-
-    -- TODO: Add delay load for features that don't need to be in right away.
-    --C_Timer.After(10, function()
-            self:BeginInit()
-    --    end)
 end
 
 Addon.Features = {}

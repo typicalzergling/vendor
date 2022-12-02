@@ -6,9 +6,10 @@ local Package = select(2, ...);
 -- Simple helper function which handles enumerating bags and running the function.
 local function withEachBagAndItem(func, startBag, endBag)
     assert(type(func) == "function");
+    local itemproperties = Addon:GetSystem("ItemProperties")
     for bag=startBag, endBag do
-        for slot=1, ContainerFrame_GetContainerNumSlots(bag) do
-            local item = Addon:GetItemPropertiesFromBagAndSlot(bag, slot);
+        for slot=1, Addon:GetContainerNumSlots(bag) do
+            local item = itemproperties:GetItemPropertiesFromBagAndSlot(bag, slot);
             if (item) then
                 if not func(item, bag, slot) then
                     return false;
@@ -48,7 +49,7 @@ function Addon:GetMatchesForRule(engine, ruleId, ruleScript, parameters)
                     table.insert(results, locationCopy);
                 end
                 return true;
-           end, 0, NUM_TOTAL_EQUIPPED_BAG_SLOTS );
+           end, 0, Addon:GetNumTotalEquippedBagSlots() );
     else
         Addon:Debug("rules", "The rule '%s' failed to parse: %s", ruleId, message);
     end
@@ -63,16 +64,16 @@ end
     |   wrong with rule.  I am assuming that they want to match an item contained
     |   inside of their bags.
     ===========================================================================--]]
-function Addon:ValidateRuleAgainstBags(engine, script)
+function Addon:ValidateRuleAgainstBags(engine, script, parameters)
     Addon:Debug("rules", "Validating script against bags (no-cache)");
     local rulesEngine = engine or self:CreateRulesEngine();
     local message = "";
     local valid = withEachBagAndItem(
         function(item)
-            local r, m = engine:ValidateScript(item, script);
+            local r, m = engine:ValidateScript(item, script, parameters);
             if (not r) then message = m end;
             return r;
-        end, 0, NUM_TOTAL_EQUIPPED_BAG_SLOTS );
+        end, 0, Addon:GetNumTotalEquippedBagSlots() );
 
     return valid, message;
 end
@@ -111,7 +112,7 @@ function Addon:LookForItemsInBank()
             end
             return true;
         end,
-        (NUM_TOTAL_EQUIPPED_BAG_SLOTS  + 1),  (NUM_TOTAL_EQUIPPED_BAG_SLOTS  + GetNumBankSlots()));
+        (Addon:GetNumTotalEquippedBagSlots()  + 1),  (Addon:GetNumTotalEquippedBagSlots()  + GetNumBankSlots()));
     return items;
 end
 

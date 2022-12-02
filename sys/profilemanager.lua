@@ -4,6 +4,10 @@ local PROFILE_KEY = {};
 local PMGR_KEY = {};
 local profilesVariable = Addon.ProfilesVariable;
 local CreateProfile = Addon.CreateProfile;
+local ProfileEvents = {
+    ACTIVE_CHANGED = "active-changed"
+}
+Addon.Systems.Profile.ProfileEvents = ProfileEvents
 
 -- Local helper function to determine the identifer from the argument
 local function getProfileId(profile)
@@ -93,7 +97,8 @@ function ProfileManager:SetProfile(profile)
             Addon:RaiseEvent("OnProfileChanged", profile);
         end, self)
     self:TriggerEvent("OnProfileChanged", prof)
-    Addon:RaiseEvent("OnProfileChanged", profile);
+    Addon:RaiseEvent("OnProfileChanged", prof);
+    Addon:RaiseEvent(ProfileEvents.ACTIVE_CHANGED, prof, active)
 end
 
 --[[===========================================================================
@@ -297,4 +302,4 @@ function Addon:GetCurrentProfile()
     return ""
 end
 
-Addon:GenerateEvents({"OnProfileChanged", "OnProfileCreated", "OnProfileDeleted"})
+Addon:GenerateEvents({"OnProfileChanged", "OnProfileCreated", "OnProfileDeleted", ProfileEvents.ACTIVE_CHANGED})

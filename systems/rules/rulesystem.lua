@@ -4,6 +4,7 @@ local RuleSystem = {}
 RuleEvents = {
     FUNCTIONS_CHANGED = "_OnRuleFunctionsChanged",
     DOCS_CHANGED = "_OnRFDocumenationChange",
+    CONFIG_CHANGED = "rule-config-changed",
 }
 
 RuleSource = {
@@ -14,7 +15,7 @@ RuleSource = {
 
 --[[ Retrieve our depenedencies ]]
 function RuleSystem:GetDependencies()
-    return { "savedvariables", "profile" }
+    return { "savedvariables", "profile", "info" }
 end
 
 --[[ Retrieves the events we produce ]]
@@ -28,7 +29,12 @@ function RuleSystem:Startup()
     xpcall(
     self.RegisterSystemFunctions, CallErrorHandler, self)
 
-    return { "GetRuleFunctions", "GetFunctionDocumentation", "RegisterFunctions", "UnregisterFunctions" }
+    return {    "GetRuleFunctions",
+                "GetFunctionDocumentation",
+                "RegisterFunctions",
+                "UnregisterFunctions",
+                "GetRuleEnvironmentVariables",
+            }
 end
 
 --[[ Shutdown our system ]]
@@ -51,10 +57,9 @@ function RuleSystem:GetFunctionDocumentation()
     local docs = {}
 
     for name, definition in pairs(self.functions) do
-        if (type(definition.Documentation) == "string") then
+        local supported = definition.Supported and definition.Supported[Addon.Systems.Info.ReleaseName]
+        if (type(definition.Documentation) == "string") and supported then
             docs[name] = definition.Documentation
-        else
-            docs[name] = 0
         end
     end
 
@@ -72,8 +77,10 @@ end
 ]]
 function RuleSystem:RegisterFunctions(functions, source)
     if (type(functions) ~= "table") then
-        error("Usage: RegisterFunctions( table [, source] )")
+        error("Usage: RegisterFunctions( table [, source])")
     end
+    source = source or RuleSource.SYSTEM
+    assert(source == RuleSource.SYSTEM or source == RuleSource.CUSTOM or source == RuleSource.EXTENSION)
 
     for _, definition in ipairs(functions) do
         if (type(definition.Name) ~= "string") then
@@ -88,8 +95,18 @@ function RuleSystem:RegisterFunctions(functions, source)
             error("A duplicate function name was found '" .. definition.Name .. "'")
         end
 
-        self.functions[definition.Name] = definition
-        Addon:Debug("rules", "Registering a new rule function '%s'", definition.Name)
+        if (definition.Documentation and type(definition.Documentation) ~= "string") then
+            error("Invalid function documentation format for "..definition.Name)
+        end
+
+        definition.Source = source
+        definition.SourceName = definition.SourceName or "<Missing SourceName>"
+
+        -- Skip unsupported functions
+        if not definition.Supported or definition.Supported[Addon.Systems.Info.ReleaseName] then
+            self.functions[definition.Name] = definition
+            Addon:Debug("rules", "Registering a new rule function '%s'", definition.Name)
+        end
     end
 
     --Addon:RaiseEvent(RuleEvents.FUNCTIONS_CHANGED)

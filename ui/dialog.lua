@@ -2,7 +2,7 @@ local AddonName, Addon = ...;
 local Dialog = {};
 local locale = Addon:GetLocale();
 
-local AUTO_HOOK_HANDLERS = { "OnHide", "OnShow", "OnDragStart", "OnDragStart", "OnMouseDown", "OnMouseUp", "OnLeave", "OnEnter", "OnClickl" }
+local AUTO_HOOK_HANDLERS = { "OnHide", "OnShow", "OnDragStart", "OnDragStart", "OnMouseDown", "OnMouseUp", "OnLeave", "OnEnter", "OnClick" }
 
 -- Locate and object/mixin from the addon.
 local function findObject(name, context)
@@ -54,7 +54,7 @@ function Addon.AttachImplementation(frame, mixin, hook)
 				-- TODO, in release build don't thunk
 				if (name ~= "OnLoad") and frame:HasScript(name) then
 					frame:SetScript(name, function (target, ...)
-						frame:Invoke(handler, ...)
+						handler(frame, ...)
 					end)
 				end
 
@@ -87,16 +87,21 @@ function Addon.AttachImplementation(frame, mixin, hook)
 				end
 
 				if (type(func) == "function") then
-					this:Invoke(func, ...)
+					func(this, ...)
 				end
 			end)
 		end
 	end
 
-		-- A wrapepr around invoke
+		-- A wrapper around invoke
 		frame.Invoke = function(target, handler, ...)
-			if (type(handler) == "string") or (type(handler) == "function") then
-				Addon.Invoke(target, handler, ...)
+			if (type(handler) == "string") then
+				local func = target[handler]
+				if (type(func) == "function") then
+					func(target, ...)
+				end
+			elseif (type(handler) == "function") then
+				handler(target, ...)
 			else
 				error("The handler argument to 'Invoke' must be a string or a table")	
 			end
@@ -132,7 +137,7 @@ end
 -- Toggle the visibility of this dialog
 function Dialog:Toggle()
 	if (not self:IsShown()) then
-		self:Show();		
+		self:Show();
 	else
 		self:Hide();
 	end

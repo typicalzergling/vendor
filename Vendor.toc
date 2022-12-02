@@ -1,14 +1,9 @@
-#@retail@
 ## Interface: 100002
-#@end-retail@
-#@non-retail@
-# ## Interface: 20501
-#@end-non-retail@
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: @project-version@
-## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History Vendor_AccountSettings Vendor_XX_InstanceInfo Vendor_XX_LootInfo
-## SavedVariablesPerCharacter: Vendor_RulesConfig Vendor_ActiveProfile Vendor_Character_Data
+## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_CustomLists, Vendor_History, Vendor_AccountSettings, Vendor_XX_InstanceInfo, Vendor_XX_LootInfo
+## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_ActiveProfile, Vendor_Character_Data
 ## Author: Thoekh of Sargeras & Buskin of Lightbringer
 ## X-Curse-Project-ID: 297511
 
@@ -26,6 +21,7 @@ sys\config.lua
 
 # Main addon
 addon.xml
+releasenotes.lua
 RulesEngine\rules.xml
 rules\rules.xml
 vendor\vendor.xml
@@ -34,9 +30,30 @@ vendor\vendor.xml
 _ui\ui.xml
 ui\ui.xml
 
-# Features/Systems
+# Systems
 systems\systems.xml
-features\features.xml
+systems\info\info.xml
+systems\interop\interop.xml
+systems\itemproperties\itemproperties.xml
+systems\itemproperties\itempropertytooltipscan.lua
+systems\evaluation\evaluation.xml
+systems\extensionmanager\extensionmanager.xml
+
+# Features
+#features\autoloot\autoloot.xml
+features\tooltip\tooltip.lua
+features\merchant\merchant.xml
+features\destroy\destroy.xml
+features\import\import.xml
+features\ui_rules\rules.xml
+features\ui_lists\lists.xml
+features\ui_dialogs\dialogs.xml
+features\ui_settings\settings.xml
+features\ui_vendor\vendor.xml
+features\history\history.xml
+features\status\status.xml
+features\minimapbutton\minimapbutton.xml
+features\merchantbutton\merchantbutton.xml
 
 # public API export should be last
 publicAPI.lua

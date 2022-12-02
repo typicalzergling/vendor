@@ -28,12 +28,29 @@ Addon.CommonUI.Mixins.Placeholder = {
     --[[
         Initialize a placeholder
     ]]
-    InitializePlaceholder = function(frame)
+    InitializePlaceholder = function(frame, justifyH, justifyV)
+        local sbWidth = 0
+        local sb = frame.ScrollBar
+        if (sb ~= nil) then
+            sbWidth = sb:GetWidth()
+        end
+
         local placeholder = frame:CreateFontString(nil, "BACKGROUND", "GameFontNormalSmall")
         placeholder:SetPoint("TOPLEFT", PLACEHOLDER_INSET, -PLACEHOLDER_INSET)
-        placeholder:SetPoint("BOTTOMRIGHT", -PLACEHOLDER_INSET, PLACEHOLDER_INSET)
+        placeholder:SetPoint("BOTTOMRIGHT", -(sbWidth + PLACEHOLDER_INSET), PLACEHOLDER_INSET)
         placeholder:SetDrawLayer("BACKGROUND", 10)
         placeholder:SetTextColor(Colors.PLACEHOLDER_COLOR:GetRGBA())
+
+        justifyH = justifyH or frame.PlaceholderJustifyH
+        if (type(justifyH) == "string") then
+            placeholder:SetJustifyH(justifyH)
+        end
+
+        justifyV = justifyV or frame.PlacehodlerJustifyV
+        if (type(justifyV) == "string") then
+            placeholder:SetJustifyV(justifyV)
+        end
+
         frame.__placeholder = placeholder
         frame:SetPlaceholder(frame.Placeholder)
     end,
@@ -93,10 +110,10 @@ Addon.CommonUI.Mixins.ScrollView = {
             local target = scroller:GetScrollChild()
 
             up:ClearAllPoints()
-            up:SetPoint("TOPRIGHT", scroller, "TOPRIGHT")
+            up:SetPoint("TOPRIGHT", scroller, "TOPRIGHT", -1, -2)
             
             down:ClearAllPoints()
-            down:SetPoint("BOTTOMRIGHT", scroller, "BOTTOMRIGHT")
+            down:SetPoint("BOTTOMRIGHT", scroller, "BOTTOMRIGHT", -1, 1)
 
 
             -- Move the scrollbar and it's parts
@@ -106,7 +123,7 @@ Addon.CommonUI.Mixins.ScrollView = {
 
             -- Add a background
             local bg = scrollbar:CreateTexture(nil, "BACKGROUND", nil, 1)
-            bg:SetColorTexture(0, 0, 0, 0.5)
+            bg:SetColorTexture(0, 0, 0, 0.33)
             bg:SetAllPoints(scrollbar)
             bg:Show()
 
@@ -121,6 +138,14 @@ Addon.CommonUI.Mixins.ScrollView = {
             -- If the scrollbar is showing we need to subtract it's width.
             scrollbar:SetScript("OnShow", function(this)
                     target:SetWidth(scroller:GetWidth() - (1 + offset + scrollbar:GetWidth()))
+                end)
+
+            frame:SetScript("OnSizeChanged", function(width)
+                    if (scrollbar:IsShown()) then
+                        target:SetWidth(scroller:GetWidth() - (1 + offset + scrollbar:GetWidth()))
+                    else
+                        target:SetWidth(scroller:GetWidth() - 1)
+                    end
                 end)
 
             scroller.scrollBarHideable = 1
@@ -298,11 +323,30 @@ Addon.CommonUI.Mixins.Debounce =
         end
 
         if (time ~= 0) and handler then
+            debounce.__handler = GenerateClosure(handler, debounce, ...)
             local args = { ... }
             debounce.__dtimer = C_Timer.After(time, function()
                 debounce.__dtimer = nil
-                xpcall(handler, CallErrorHandler, debounce, unpack(args))
+                if (debounce.__handler) then
+                    debounce.__handler()
+                end
+                debounce.__handler = nil
             end)
+        end
+    end,
+
+    --[[
+        Execute the "delayed" operation now
+    ]]
+    DebounceNow = function(debounce)
+        if (debounce.__dtimer) then
+            debounce.__dtimer:Cancel()
+            debounce.__dtimer = nil
+        end
+
+        if (debounce.__handler) then
+            debounce.__handler()
+            debounce.__handler = nil
         end
     end
 }

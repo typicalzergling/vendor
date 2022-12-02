@@ -117,7 +117,10 @@ end
 function Addon:Debug(channel, msg, ...)
     local name = string.upper(channel or "default");
     if (Addon:IsDebugChannelEnabled(name)) then
-        self:Print("%s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
+        local success = pcall(self.Print, self, "%s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
+        if (not success) then
+            print(RED_FONT_COLOR_CODE .. "Debug Failed|r :: ", channel, msg, ...)
+        end
     end
 end
 

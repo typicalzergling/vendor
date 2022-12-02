@@ -3,7 +3,7 @@ package-as: Vendor
 ignore:
  - README.md
  - LICENSE.txt
- - CHANGES.txt
+ - bugs.md
  - Vendor_Work.txt
  - features/settings/DebugSettings.lua
  - sys/debug.lua
@@ -13,12 +13,6 @@ ignore:
  - .release/*
  - *.sh
 
-move-folders:
- Vendor/Extensions/Vendor_Pawn: Vendor_Pawn
- Vendor/Extensions/Vendor_Ark: Vendor_Ark
- Vendor/Extensions/Vendor_AdiBags: Vendor_AdiBags
- Vendor/Extensions/Vendor_RulePack: Vendor_RulePack
- Vendor/Extensions/Vendor_TSM: Vendor_TSM
 
 
 

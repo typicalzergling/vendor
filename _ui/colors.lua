@@ -47,6 +47,7 @@ Addon.CommonUI.Colors =
     EDIT_BORDER = CreateColor(1, 1, 1, .4),
     EDIT_BACK = CreateColor(.8, .8, .8, .1),
     EDIT_HIGHLIGHT = CreateColor(1, 1, 1, .7),
+    EDIT_REST = CreateColor(.9, .9, .9, .8),
     EDIT_DISABLED = CreateColor(.5, .5, .5, .5),
     EDIT_TEXT = WHITE_FONT_COLOR,
     
@@ -91,6 +92,7 @@ Addon.CommonUI.Colors =
     TABCONTROL_ACTIVE_TEXT = YELLOW_FONT_COLOR,
     TABCONTROL_ACTIVE_BACK = CreateColor(.4, .4, .4, .1),
     
+    GREEN_FONT_COLOR        = GREEN_FONT_COLOR,
     COMMON_GRAY_COLOR		= CreateColor(0.65882,	0.65882,	0.65882),
     UNCOMMON_GREEN_COLOR	= CreateColor(0.08235,	0.70196,	0.0),
     RARE_BLUE_COLOR			= CreateColor(0.0,		0.56863,	0.94902),
