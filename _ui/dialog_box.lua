@@ -135,12 +135,23 @@ function DialogBox:OnShow()
     local template = rawget(self, "template")
     if (type(template) == "string") then
         local points = Addon:GetAccountSetting(template)
-        if (type(points) == "table") then
+        local defaultLoc = true
+        if (type(points) == "table") and (table.getn(points) ~= 0) then
+            defaultLoc = false
             self:ClearAllPoints()
             for _, point in ipairs(points) do
                 assert(table.getn(point) == 4, "There should be 4 entries for the point :: " .. tostring(table.getn(point)))
-                self:SetPoint(point[1], UIParent, point[2], point[3], point[4])
+                local success = pcall(self.SetPoint, self, point[1], UIParent, point[2], point[3], point[4])
+                if (not success) then
+                    defaultLoc = true
+                    break
+                end
             end
+        end
+
+        if (defaultLoc) then
+            self:ClearAllPoints()
+            self:SetPoint("CENTER", UIParent)
         end
     end
 
