@@ -15,7 +15,7 @@ function ItemProperties:GetDependencies()
 end
 
 
-function ItemProperties:Startup()
+function ItemProperties:Startup(onready)
     -- Populate the property list
     itemPropertiesList = self:GetPropertyList()
 
@@ -24,13 +24,13 @@ function ItemProperties:Startup()
     IS_RETAIL = Addon.Systems.Info.IsRetailEra
     IS_CLASSIC = Addon.Systems.Info.IsClassicEra
     itemproperties = self
-    return {
+    onready({
         "GetPropertyDocumentation",
         "GetPropertyList",
         "GetPropertyType",
         "GetPropertyDefault",
         "IsPropertyHidden",
-        }
+        })
 end
 
 --[[ Shutdown our system ]]

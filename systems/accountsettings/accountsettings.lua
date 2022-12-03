@@ -13,10 +13,10 @@ function AccountSettings:GetEvents()
 end
 
 --[[ Startup our system ]]
-function AccountSettings:Startup()
+function AccountSettings:Startup(onready)
     self.savedVariable = Addon:CreateSavedVariable("AccountSettings")
 
-    return { "GetAccountSetting", "SetAccountSetting" }
+    onready({ "GetAccountSetting", "SetAccountSetting" })
 end
 
 --[[ Shutdown our system ]]

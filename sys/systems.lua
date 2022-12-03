@@ -179,6 +179,72 @@ function Systems:InitComplete(target, success)
     Addon:Debug("systems", "System '%s' has been started [success=%s]", target.name, success)
 end
 
+--[[ Create the callbacks for system initialization ]]
+local function createStartupCallbacks(system, complete)
+    return function(api)
+            local source = system.source
+            local name = system.name            
+            Addon:Debug("syustems", "System '%s' has finished initialization", name)
+
+            -- todo: should this be a public api, shoudl we return
+            -- both and set it up?
+            if (type(api) == "table") then
+                system.api = api
+                for _, funcname in ipairs(api) do
+                    assert(not Addon[funcname], "An API with the name '" .. funcname .. "' already exists")
+                    assert(type(source[funcname]) == "function", "The API refers to an invalid functon : " .. funcname)
+
+                    Addon[funcname] = function(_, ...)
+                            local ret = { xpcall(source[funcname], CallErrorHandler, source, ...) }
+                            if (ret[1]) then
+                                table.remove(ret, 1)
+                                return unpack(ret)
+                            end
+                        end
+
+                    Addon:Debug("systems", "System '%s' registered API '%s'", name, funcname)
+                end
+            end
+
+        -- Create our shutdown proxy if necessary
+        if (type(source.Shutdown) == "function") then
+            system.shutdown = function(...)
+                    xpcall(source.Shutdown, CallErrorHandler, source, ...)
+                end
+        end
+
+        -- Create the system instance itself
+        system.instance = setmetatable({}, {
+                __metatable = string.format("System:%s", name),
+                __newindex = function(_, key)
+                        assert(false, "System '" .. name .. "' cannot be modified attempted to set '" .. key .. "'")
+                    end,
+                __index =  function(_, key)
+                        assert(key and type(key) == "string", "System "..name.." invalid key "..tostring(key))
+                        local value = source[key]
+                        if type(value) == "function" then
+                            return function(_, ...)
+                                local result = { xpcall(source[key], CallErrorHandler, source, ...) }
+                                assert(result[1], "Error occurred while trying to invoke "..name.." function "..tostring(key))
+                                table.remove(result, 1)
+                                return unpack(result)
+                            end
+                        else
+                            return value
+                        end
+                    end
+            })
+
+        system.ready = true
+        Addon:Debug("systems", "System '%s' is ready", system.name)
+        Addon:RaiseEvent("OnSystemReady", name, system.instance)
+        C_Timer.After(0.001, function() complete(true) end)
+    end,
+    function()
+        C_Timer.After(0.001, function() complete(false) end)
+    end
+end
+
 --[[ Called to start a single system ]]
 function Systems:InitTarget(system, complete)
     Addon:Debug("systems", "Finalizing system '%s'", system.name)
@@ -186,44 +252,9 @@ function Systems:InitTarget(system, complete)
     local source = system.source
     local name = system.name
 
-    -- If there is an initiailization handler then call it
-    if (type(source.Startup) == "function") then
-        local success, api = xpcall(source.Startup, CallErrorHandler, source)
-        if (not success) then
-            complete(false)
-        end
-
-        -- todo: should this be a public api, shoudl we return
-        -- both and set it up?
-        if (type(api) == "table") then
-            system.api = api
-            for _, funcname in ipairs(api) do
-                assert(not Addon[funcname], "An API with the name '" .. funcname .. "' already exists")
-                assert(type(source[funcname]) == "function", "The API refers to an invalid functon : " .. funcname)
-
-                Addon[funcname] = function(_, ...)
-                        local ret = { xpcall(source[funcname], CallErrorHandler, source, ...) }
-                        if (ret[1]) then
-                            table.remove(ret, 1)
-                            return unpack(ret)
-                        end
-                    end
-
-                Addon:Debug("systems", "System '%s' registered API '%s'", name, funcname)
-            end
-        end
-    end
-
-    -- Create our shutdown proxy if necessary
-    if (type(source.Shutdown) == "function") then
-        system.shutdown = function(...)
-                xpcall(source.Shutdown, CallErrorHandler, source, ...)
-            end
-    end
-
     -- Check if system generates events
     if (type(source.GetEvents) == "function") then
-        local success, events = xpcall(source.GetEvents, CallErrorHandler, source)        
+        local success, events = xpcall(source.GetEvents, CallErrorHandler, source)
         if (not success) then
             Addon:Debug("systems", "System '%s' failed to generate event list", name)
             complete(false)
@@ -246,33 +277,18 @@ function Systems:InitTarget(system, complete)
         end
     end
 
-    -- Create the system instance itself
-    system.instance = setmetatable({}, {
-            __metatable = string.format("System:%s", name),
-            __newindex = function(_, key)
-                    assert(false, "System '" .. name .. "' cannot be modified attempted to set '" .. key .. "'")
-                end,
-            __index =  function(_, key)
-                    assert(key and type(key) == "string", "System "..name.." invalid key "..tostring(key))
-                    local value = source[key]
-                    if type(value) == "function" then
-                        return function(_, ...)
-                            local result = { xpcall(source[key], CallErrorHandler, source, ...) }
-                            assert(result[1], "Error occurred while trying to invoke "..name.." function "..tostring(key))
-                            table.remove(result, 1)
-                            return unpack(result)
-                        end
-                    else
-                        return value
-                    end
-                end
-        })
-
-    system.ready = true
-    Addon:Debug("systems", "System '%s' is ready", system.name)
-    Addon:RaiseEvent("OnSystemReady", name, system.instance)
-
-    complete(true)
+    -- If there is an initiailization handler then call it
+    local systemReady, systemError = createStartupCallbacks(system, complete)
+    if (type(source.Startup) == "function") then
+        local success, api = xpcall(source.Startup, CallErrorHandler, source, systemReady, systemError)
+        Addon:Debug("systems", "System '%s' has Startup function [result=%s]", system.name, tostring(success))
+        if (not success) then
+            systemError()
+        end
+    else    
+        Addon:Debug("systems", "System '%s' is ready", system.name)
+        systemReady()
+    end
 end
 
 --[[ Called when a dependency is ready ]]
@@ -289,6 +305,7 @@ end
 function Systems:EndInit(success)
     Addon:Debug("systems", "Systems startup complete [success=%s]", success)
     self.complete = true
+    Addon:RaiseEvent("OnAllSystemsReady")
 end
 
 --[[ Get the specified system ]]
@@ -308,15 +325,6 @@ Addon:RegisterEvent("ADDON_LOADED", function(addon)
     if (addon == AddonName) then
         Systems:Init()
     end
-end)
-
---[[ When the player enters the world, check if our systems are ready ]]
-Addon:RegisterEvent("PLAYER_ENTERING_WORLD", function()
-    if (not Systems:IsReady()) then
-        Addon:Debug("systems", RED_FONT_COLOR_CODE .. "All our systems should be ready by now|r")
-    end
-
-    Addon:RaiseEvent("OnAllSystemsReady")
 end)
 
 --[[ Terminate our systems when the player is leaving ]]

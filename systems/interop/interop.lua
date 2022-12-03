@@ -109,7 +109,7 @@ function Interop:IsLocationValid(location)
     return isLocationValid(location)
 end
 
-function Interop:Startup()
+function Interop:Startup(onready)
     setupGetContainerItemInfo()
     setupGetContainerNumSlots()
     setupUseContainerItem()
@@ -117,14 +117,14 @@ function Interop:Startup()
     setupGetContainerFreeSlots()
     setupGetNumTotalEquippedBagSlots()
     setupIsLocationValid()
-    return {
+    onready({
         "GetContainerItemInfo",
         "GetContainerNumSlots",
         "UseContainerItem",
         "PickupContainerItem",
         "GetContainerFreeSlots",
         "GetNumTotalEquippedBagSlots",
-    }
+    })
 end
 
 function Interop:Shutdown()

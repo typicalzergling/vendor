@@ -106,8 +106,8 @@ function Evaluation:EvaluateItem(item, ignoreCache)
     return result
 end
 
-function Evaluation:Startup()
-    return {
+function Evaluation:Startup(onready)
+    onready({
         "EvaluateSource",                   -- Wrapped in Public API
         "ClearItemResultCacheByItemId",     -- Forced Cache Clear   - Used by Blocklists
         "ClearItemResultCache",             -- Forced Cache Clear   - Used in many places
@@ -117,7 +117,7 @@ function Evaluation:Startup()
         "GetItemResultForGUID",             -- Get Result - GUID
         "IsBagAndSlotRefreshNeeded",        -- Refresh Test         - Used by Refresh
         "RefreshBagAndSlot",                -- Refresh Bag item     - Used by Refresh
-    }
+    })
 end
 
 function Evaluation:Shutdown()

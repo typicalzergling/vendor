@@ -138,7 +138,8 @@ function DialogBox:OnShow()
         if (type(points) == "table") then
             self:ClearAllPoints()
             for _, point in ipairs(points) do
-                self:SetPoint(unpack(point))
+                assert(table.getn(point) == 4, "There should be 4 entries for the point :: " .. tostring(table.getn(point)))
+                self:SetPoint(point[1], UIParent, point[2], point[3], point[4])
             end
         end
     end
@@ -182,7 +183,9 @@ function DialogBox:OnHide()
     if (type(template) == "string") then
         local points = {}
         for i=1,self:GetNumPoints() do
-            table.insert(points, { self:GetPoint(i) })
+            local point, frame, relpoint, offx, offy = self:GetPoint(i)
+            assert(not frame or frame == UIParent, "The dialog should always be relative to the UIParent")
+            table.insert(points, { point, relpoint, offx, offy })
         end
         Addon:SetAccountSetting(template, points)
     end

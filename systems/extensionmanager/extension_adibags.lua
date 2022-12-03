@@ -7,6 +7,7 @@ local sellFilterEnabled = false
 local destroyFilterEnabled = false
 local adiBags = nil
 local LAdiBags = nil
+local filters = {}
 
 -- AdiBags Sell Filter for Vendor
 local function registerSellFilter()
@@ -85,6 +86,40 @@ local function registerDestroyFilter()
     -- No filter options at this time
     destroyFilter.GetFilterOptions = function(self)
         return
+    end
+end
+
+-- Create and registers a filter for each non-locked rule
+local function createRuleFilters()
+    for _, rule in ipairs(self.Rules:GetRules()) do
+        if (not rule.Locked) then
+            local filter = adiBags:RegisterFilter("Vendor:" .. rule.Id, 100, 'ABEvent-1.0')
+            filter.uiName = L.ADDON_NAME .. ": " .. rule.Name
+            filter.uiDesc = rule.Description
+        
+            filter.OnInitialize = function(self)
+                -- No settings, so nothing to initialize at this time.
+            end
+        
+            filter.OnEnable = function(self)
+                filter.enabled = true
+                adiBags:UpdateFilters()
+            end
+        
+            sellfilterFilter.OnDisable = function(self)
+                filter.eanbled = false
+                adiBags:UpdateFilters()
+            end
+
+            filter.Filter = function(self, slotData)
+                -- Get Item info for bag/slot
+                local item = {}
+                local result = filterEngine:EvaluateOne(rule.Id, item)
+                if (result == true) then
+                    return filter.uiName
+                end
+            end
+        end
     end
 end
 
