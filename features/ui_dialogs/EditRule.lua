@@ -485,6 +485,7 @@ end
 function EditRule:Setup()
     local editor = self.editor
     assert(editor, "we should have a valid editor")
+    local readOnly = editor:IsReadOnly()
 
     --- Determine our caption
     if (editor:IsNew()) then
@@ -500,6 +501,7 @@ function EditRule:Setup()
     self.description:SetText(editor:GetDescription())
     self.script:SetText(editor:GetScript())
     self.ruleType:SetSelected({ [editor:GetType()] = true })
+    UI.Enable(self.ruleType, not readOnly)
     self.paramList:Rebuild()
 
     -- Setup the rule status if applicable
@@ -516,7 +518,6 @@ function EditRule:Setup()
         self.ruleStatus:SetStatus("extension", tostring(name))
     end
 
-    local readOnly = editor:IsReadOnly()
     if (not readOnly) then
         editor:RegisterCallback(Dialogs.RuleEditorEvents.CHANGED,
             function(_, what)

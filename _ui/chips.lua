@@ -154,6 +154,7 @@ end
 --[[ Disabl the chips ]]
 function Chips:Disable()
     if (self.enabled) then
+        self.enabled = false
         for _, chip in pairs(self.chips) do
             chip:Disable()
         end
@@ -163,6 +164,7 @@ end
 --[[ Enable these chips ]]
 function Chips:Enable()
     if (not self.enabled) then
+        self.enabled = true
         for _, chip in pairs(self.chips) do
             chip:Enable()
         end
