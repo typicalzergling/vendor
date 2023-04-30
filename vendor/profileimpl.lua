@@ -19,7 +19,7 @@ local PROFILE_HIDDEN_RULES = "rules:hidden"
 local PROFILE_VERSION = "profile:version";
 local CURRENT_VERSION = 2;
 local PROFILE_INTERFACEVERSION = "profile:interface";
-local INTERFACE_VERSION = select(4, GetBuildInfo());
+local INTERFACE_VERSION = tonumber(GetBuildInfo()[4])
 
 local RuleType = Addon.RuleType;
 local ListType = Addon.ListType;

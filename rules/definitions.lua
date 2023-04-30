@@ -7,7 +7,7 @@ local Rules = Addon.Rules;
 local SELL_RULE = Addon.RuleType.SELL;
 local KEEP_RULE = Addon.RuleType.KEEP;
 local DESTROY_RULE = Addon.RuleType.DESTROY;
-local INTERFACE_VERSION = tonumber(select(4, GetBuildInfo()));
+local INTERFACE_VERSION = tonumber(GetBuildInfo()[4])
 local SHADOWLANDS_VERSION = 90000;
 
 local addon_Functions = {};

@@ -14,7 +14,7 @@ local function IsNewConfigVersion()
 end
 
 local function IsMigrationToShadowlands()
-    local ver = tonumber(select(4, GetBuildInfo()));
+    local ver = tonumber(GetBuildInfo()[4])
     local currV = tonumber(Vendor_RulesConfig.interfaceversion) or ver;
     if ((ver >= 90000) and (currV < 90000)) then
         return true;
@@ -80,7 +80,7 @@ Addon.DefaultConfig.Rules =
     version = 6,
     
     -- Current interface version of the client
-    interfaceversion = select(4, GetBuildInfo()),
+    interfaceversion = tonumber(GetBuildInfo()[4]),
 
     -- The default rules to enable which cause items to be kept
     keep = {

@@ -2,7 +2,7 @@
 local AddonName, Addon = ...
 
 function Addon:IsShadowlands()
-    return select(4, GetBuildInfo()) >= 90000
+    return tonumber(GetBuildInfo()[4]) >= 90000
 end
 
 -- Gets the version of the addon
