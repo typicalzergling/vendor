@@ -7,3 +7,4 @@
 
 * Create rule from the list context menu
 * Move Import and Export buttons to be anchored on the bottom left
+* somethiing else
