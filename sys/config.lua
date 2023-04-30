@@ -5,6 +5,8 @@ local L = Addon:GetLocale()
 Addon.Config = {}
 Addon.DefaultConfig = {}
 
+-- Dumb hack becuase config needs updating to modern design of this addon.
+local _, _, _, INTERFACE_VERSION = GetBuildInfo()
 
 local function IsNewConfigVersion()
     if (Vendor_RulesConfig.version ~= Addon.DefaultConfig.Rules.version) then
@@ -14,7 +16,7 @@ local function IsNewConfigVersion()
 end
 
 local function IsMigrationToShadowlands()
-    local ver = tonumber(GetBuildInfo()[4])
+    local ver = Info.Build.InterfaceVersion
     local currV = tonumber(Vendor_RulesConfig.interfaceversion) or ver;
     if ((ver >= 90000) and (currV < 90000)) then
         return true;
@@ -80,7 +82,7 @@ Addon.DefaultConfig.Rules =
     version = 6,
     
     -- Current interface version of the client
-    interfaceversion = tonumber(GetBuildInfo()[4]),
+    interfaceversion = INTERFACE_VERSION,
 
     -- The default rules to enable which cause items to be kept
     keep = {

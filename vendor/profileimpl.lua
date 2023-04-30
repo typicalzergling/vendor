@@ -19,7 +19,6 @@ local PROFILE_HIDDEN_RULES = "rules:hidden"
 local PROFILE_VERSION = "profile:version";
 local CURRENT_VERSION = 2;
 local PROFILE_INTERFACEVERSION = "profile:interface";
-local INTERFACE_VERSION = tonumber(GetBuildInfo()[4])
 
 local RuleType = Addon.RuleType;
 local ListType = Addon.ListType;
@@ -229,7 +228,7 @@ end
 function Addon:OnInitializeProfile(profile)
 
 	-- Set the version
-	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
+	profile:SetValue(PROFILE_INTERFACEVERSION, Info.Build.InterfaceVersion);
 	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
 
 	-- Lists start empty
