@@ -31,11 +31,55 @@ local function category_Add(self, rule)
 end
 
 --[[===========================================================================
+    | category_Removes
+    |   Removes the provided rule id from this category, if the rule was 
+    |   removed then true is returned otherwise false is returned
+    =======================================================================--]]
+local function category_Remove(self, ruleId)
+    assert(type(id) == "string" and string.len(id) ~= 0, "An invalid ruleId was provided")
+
+    for i, rule in ipairs(self.rules) do
+        if (rule:CheckMatch(ruleId)) then
+            table.remove(self.rules, i)
+            return true
+        end
+    end
+
+    return false
+end
+
+--[[===========================================================================
     | category_Reset
     |   This clears all of the rules within this category
     =======================================================================--]]
 local function category_Reset(self)
     self.rules = {};
+end
+
+--[[===========================================================================
+    | category_EvaluateOne
+    |   Execute a single rule and return the result
+    =======================================================================--]]
+local function category_EvaluateOne(self, engine, ruleOrId, log, environment)
+    if (type(ruleOrId) == "string") then
+        ruleOrId = self:category_Find(self, ruleOrId)
+    end
+
+    if (type(ruleOrId) == "table") and ruleOrId:IsHealthy() then
+        log:Write("Evaluating rule '%s' (weight: %d)", ruleOrId:GetId(), 0);
+        local status, result, message = ruleOrId:Execute(environment)
+        if (not status) then
+            log:Write("Rule '%s' failed to execute: %s", ruleOrId:GetId(), message or "<unknown error>");
+            engine.OnRuleStatusChange("UNHEALTHY", self.id, ruleOrId:GetId(), ruleOrId:GetError())
+            return true, false, true, 0
+        end
+
+        return true, result == true, false, ruleOrId:GetWeight()
+    end
+
+
+    log:Write("Unable to determine rule to execute [category=%s, rule=%s]", tostring(self:GetId()), tostring(ruleOrId))
+    return false, false, false, 0
 end
 
 --[[===========================================================================
@@ -53,22 +97,20 @@ local function category_Evaluate(self, engine, log, environment)
         if (rule:IsHealthy()) then
             count = count + 1
             
-            log:Write("Evaluating rule '%s' (weight: %d)", rule:GetId(), weight);
-            local status, result, message = rule:Execute(environment);
-            if (not status) then
-                log:Write("Rule '%s' failed to execute: %s", rule:GetId(), message or "<unknown error>");
-                if (not rule:IsHealthy()) then
-                    engine.OnRuleStatusChange("UNHEALTHY", self.id, rule:GetId(), rule:GetError());
-                end
-            elseif (status and (result ~= nil) and result) then
-                local rw = rule:GetWeight()
-                if (rw and (rw ~= 0)) then
-                    rw = base + rw
+            -- TODO: this should loop and determine the highest weight rule
+
+            log:Write("Evaluating rule '%s' (weight: %d)", rule:GetId(), rule:GetWeight())
+            local _, result, error, weight = category_EvaluateOne(self, engine, rule, log, environment)
+            if (not error and result) then
+                local weight = rule:GetWeight() or 0
+                if (type(weight) == "number" and (weight ~= 0)) then
+                    weight = base + weight
                 else
-                    rw = math.max(0, base - (2 * index))
+                    weight = math.max(0, base - (2 * index))
                 end
 
-                return rule, count, nil, (self:GetWeight() + rw)
+                log:Write("Evaluated rule '%s' to true (weight: %d)", rule:GetId(), rule:GetWeight())
+                return rule, count, nil, (self:GetWeight() + weight)
             end
         else
             -- Skipping rule because it isn't healthy
@@ -109,6 +151,7 @@ local category_API =
     GetWeight = function (self) return self.weight end,
     GetRuleStatus = category_GetRuleStatus,
     Find = category_Find,
+    Remove = category_Remove,
 };
 
 --[[===========================================================================

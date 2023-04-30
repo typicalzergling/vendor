@@ -8,6 +8,7 @@ local destroyFilterEnabled = false
 local adiBags = nil
 local LAdiBags = nil
 local filters = {}
+local filterEngine = nil
 
 -- AdiBags Sell Filter for Vendor
 local function registerSellFilter()
@@ -91,7 +92,12 @@ end
 
 -- Create and registers a filter for each non-locked rule
 local function createRuleFilters()
-    for _, rule in ipairs(self.Rules:GetRules()) do
+    if (not filterEngine) then
+        --filterEngine = Addon:CreateRulesEngine(true)
+        --filterEngine:CreateCategory(1, "=adibags=", 0)
+    end
+
+    for _, rule in ipairs(Addon.Rules.GetDefinitions()) do
         if (not rule.Locked) then
             local filter = adiBags:RegisterFilter("Vendor:" .. rule.Id, 100, 'ABEvent-1.0')
             filter.uiName = L.ADDON_NAME .. ": " .. rule.Name
@@ -99,26 +105,34 @@ local function createRuleFilters()
         
             filter.OnInitialize = function(self)
                 -- No settings, so nothing to initialize at this time.
+                --filterEngine:AddRule(1, rule)
             end
         
             filter.OnEnable = function(self)
                 filter.enabled = true
+                --filterEngine:AddRule(1, rule)
                 adiBags:UpdateFilters()
             end
         
-            sellfilterFilter.OnDisable = function(self)
+            filter.OnDisable = function(self)
                 filter.eanbled = false
+                --filterEngine:RemoveRule(rule.Id)
                 adiBags:UpdateFilters()
             end
 
             filter.Filter = function(self, slotData)
                 -- Get Item info for bag/slot
-                local item = {}
-                local result = filterEngine:EvaluateOne(rule.Id, item)
-                if (result == true) then
-                    return filter.uiName
+                local item = Addon.Systems.ItemProperties:GetItemPropertiesFromBagAndSlot(slotData.bag, slotData.slot)
+                Addon:Debug("features", "--> filter %s, %s, %s", slotData.bag, slotData.item, tostring(item))
+                if (item) then
+                    --local result = filterEngine:EvaluateOne(rule.Id, item)
+                    --if (result == true) then
+                        --return filter.uiName
+                    --end
                 end
             end
+
+            table.insert(filters, filter)
         end
     end
 end
@@ -151,6 +165,7 @@ local function registerAdiBagsExtension()
             end
             registerSellFilter()
             registerDestroyFilter()
+            --createRuleFilters()
             return true
         end,
     }
