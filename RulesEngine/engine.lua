@@ -407,6 +407,30 @@ local function engine_EvaluateEx(self, object, ...)
 end
 
 --[[===========================================================================
+    | engine_EvaluateOne
+    |   Executes a single rule in the engine, returns the resuls
+    =======================================================================--]]
+local function engine_EvaluateOne(self, ruleId, object, ...)
+    if (type(ruleId) == "table") then
+        ruleId = ruleId.Id
+    end
+
+    local accessors = createAccessors(object);
+    local ruleEnv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
+    assignFunctionEnv(self.environment, createRestrictedEnvironment(false, accessors, { OBJECT = object },  _G));
+
+    for _, category in ipairs(self.categories) do
+        local exists, result, error, weight = category:EvaluateOne(self, ruleId, self.log, object, ...)
+        if (exists and not error) then
+            return true, weight, category:GetId()
+        end
+    end
+
+    return false, -1, -1
+end
+
+
+--[[===========================================================================
     | engine_CreateRuleId
     |   Generates a new unique custom rule id, this rule encodes the player, realm
     |   and time so it should be very unique.
@@ -510,6 +534,20 @@ local function engine_AddRuleset(self, categoryId, id, name)
     return ruleset;
 end
 
+--[[===========================================================================
+    | engine_RemoveRule:
+    |   Removes the sepcified rule from the engine
+    =========================================================================]]
+local function engine_RemoveRule(self, rule)
+    if (type(rule) == "table") then
+        rule = rule.Id
+    end
+
+    for _, cat in ipairs(self.categories) do
+        cat:Remove(rule)
+    end
+end
+
 -- Define the API we expose
 local engine_API =
 {
@@ -529,6 +567,8 @@ local engine_API =
     SetVerbose = engine_SetVerbose,
     ValidateScript = engine_ValidateScript,
     AddRuleset = engine_AddRuleset,
+    EvaluateOne = engine_EvaluateOne,
+    RemoveRule = engine_RemoveRule,
 };
 
 --[[===========================================================================
