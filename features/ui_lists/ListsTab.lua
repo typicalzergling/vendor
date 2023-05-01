@@ -53,6 +53,8 @@ function ListsTab:OnLoad()
                 return a:GetName() < b:GetName()
             end
         end)
+
+    self.lists:ScrollToTop()
 end
 
 --[[ Called when the lists tab is activated ]]

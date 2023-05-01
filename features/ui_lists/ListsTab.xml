@@ -185,7 +185,7 @@
                     <Anchor point="TOPRIGHT" relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-4"/>
                 </Anchors>
             </EditBox>
-            <ScrollFrame inherits="CommonUI_TextArea" parentKey="description">
+            <Frame inherits="CommonUI_TextArea" parentKey="description">
                 <Size x="1" y="72"/>
                 <KeyValues>
                     <KeyValue key="Handler" value="OnDescriptionChanged"/>
@@ -195,7 +195,7 @@
                     <Anchor point="TOPLEFT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMLEFT" y="-4"/>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-4"/>
                 </Anchors>
-            </ScrollFrame>
+            </Frame>
             <EditBox inherits="CommonUI_Edit" parentKey="itemId">
                 <KeyValues>
                     <KeyValue key="Numeric" value="true" type="boolean"/>

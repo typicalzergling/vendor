@@ -155,6 +155,8 @@ function RulesTab:ShowRules(category)
 				return ruleA.Id < ruleB.Id
 			end
 		end)
+
+	self.rules:ScrollToTop()
 end
 
 function RulesTab:UpdateConfig(view)

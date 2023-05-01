@@ -12,7 +12,6 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local List = Mixin({}, Addon.CommonUI.Mixins.Border)
 local STATE_KEY = {}
-local SCROLLFRAME_TEMPLATE = "UIPanelScrollFrameTemplate"
 local Colors = Addon.CommonUI.Colors
 local UI = Addon.CommonUI.UI
 local Layouts = Addon.CommonUI.Layouts
@@ -46,64 +45,8 @@ local function list_callHandler(list, handler, ...)
     end
 end
 
---[[
-    Create the child scrollview which actually holds the contents
-]]
-local function _createScrollframe(list)
 
-    local sb = CreateFrame("EventFrame", nil, list, "MinimalScrollBar");
-    sb:SetPoint("TOPRIGHT", list, "TOPRIGHT", -8, -10);
-    sb:SetPoint("BOTTOMRIGHT", list, "BOTTOMRIGHT", -8, 10);
-
-    sb:SetVisibleExtentPercentage(.25);
-    sb:RegisterCallback(sb.Event.OnScroll, function(_, pos)
-            print("b=", pos);
-            local state = rawget(list, STATE_KEY)
-
-            -- move the frame based on the perctage visible
-            local viewHeight = state.frame:GetHeight()
-            local top = math.max(0, (list.viewHeight - viewHeight)) * pos
-
-            print("top=", top, viewHeight, list, state.frame:GetHeight())
-            --state.frame:SetPoint("TOPLEFT", list, "TOPLEFT", 0, top)
-            list.itemOffset = top
-            state.layout = true
-            state.itemOffset = top
-
-        end, list);
-
-    state.scrollbar = sb
-
-    list:SetScript("OnMouseWheel", function(_, ...)
-        print("--mouse wheel")
-        sb:OnMouseWheel(...)
-    end)
-
-    local scroller = CreateFrame("ScrollFrame", nil, list, SCROLLFRAME_TEMPLATE)
-    scroller:SetScrollChild(CreateFrame("Frame", nil, scroller))
-    scroller:SetPoint("TOPLEFT", 3, -3)
-    scroller:SetPoint("BOTTOMRIGHT", -3, 3)
-    ScrollFrame_OnLoad(scroller)
-    
-    local scrollbar = scroller.ScrollBar
-    --[[local up = scrollbar.ScrollUpButton
-    local down = scrollbar.ScrollDownButton
-
-    scrollbar:SetWidth(up:GetWidth())
-    up:ClearAllPoints()
-    up:SetPoint("TOPRIGHT", list, -2, -2)
-
-    down:ClearAllPoints()
-    down:SetPoint("BOTTOMRIGHT", list, -2, 1)]]
-
-    scrollbar:ClearAllPoints()
-    scrollbar:SetPoint("TOPLEFT", list, "BOTTOMLEFT")
-    scrollbar:SetPoint("BOTTOMRIGHT", list, "TOPRIGHT")
-    scroller:Hide();
-
-    return scroller
-end
-
+--[[ Create a new 10.1+ scrollbar ]]
 local function list_CreateScrollbarRetail(self)
     local scrollbar = CreateFrame("EventFrame", nil, self, "MinimalScrollBar");
     scrollbar:SetPoint("TOPRIGHT", self, "TOPRIGHT", -6, -4);
@@ -114,8 +57,8 @@ local function list_CreateScrollbarRetail(self)
             local state = rawget(self, STATE_KEY)
 
             -- move the frame based on the perctage visible
-            local viewHeight = state.frame:GetHeight()
-            local top = math.max(0, (state.viewHeight - viewHeight)) * pos
+            local viewHeight = state.frame:GetHeight() or 0
+            local top = math.max(0, ((state.viewHeight or 0) - viewHeight)) * pos
 
             state.itemOffset = top
             state.layout = true
@@ -387,8 +330,13 @@ local function list_Layout(self, state)
         Addon:Debug("list", "List '%s' has finshed layout %s x %s (%s frames)", list_DebugName(self), width, viewHeight, table.getn(state.viewFrames or {}))
     end
 
-    state.viewHeight = viewHeight
-    state.scrollbar:SetVisibleExtentPercentage(state.frame:GetHeight() / viewHeight);
+    state.viewHeight = viewHeight    
+    if (viewHeight <= state.frame:GetHeight()) then
+        state.scrollbar:SetScrollAllowed(false)
+    else
+        state.scrollbar:SetScrollAllowed(true)
+    end
+    state.scrollbar:SetVisibleExtentPercentage(math.min(1, state.frame:GetHeight() / viewHeight));
 end
 
 --[[ Display the empty list ]]

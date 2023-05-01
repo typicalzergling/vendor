@@ -20,6 +20,7 @@ end
 
 function Url:OnChar()
     self:SetText(rawget(self, TEXT_KEY))
+    self:HighlightText();
 end
 
 function Url:OnTextChanged()

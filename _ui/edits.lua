@@ -121,26 +121,45 @@ end
 
 --[[=========================================================================]]
 
-local TextArea = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.Debounce, Addon.CommonUI.Mixins.Placeholder, Addon.CommonUI.Mixins.ScrollView)
+local TextArea = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.Debounce, Addon.CommonUI.Mixins.Placeholder)
 
 function TextArea:OnLoad()
-    self:InitializeScrollView(self, 4)
-    self:InitializePlaceholder("LEFT", "TOP")
-    self:OnBorderLoaded(nil, "EDIT_BORDER", "EDIT_BACK")
-    UI.SetColor(self.editbox, Colors.EDIT_REST)
+    self.enabled = true
 
-    local edit = self.editbox
-    edit:SetScript("OnEditFocusGained", GenerateClosure(self.OnFocus, self))
-    edit:SetScript("OnEditFocusLost", GenerateClosure(self.OnBlur, self))
-    edit:SetScript("OnTextChanged", GenerateClosure(self.OnTextChanged, self))
-    edit:SetScript("OnEnable", GenerateClosure(self.OnEnable, self))
-    edit:SetScript("OnDisable", GenerateClosure(self.OnDisable, self))
-    ScrollFrame_OnLoad(self)
+    self.scrollbar = CreateFrame("EventFrame", nil, self, "MinimalScrollBar")
+    self.scrollbar:SetFrameStrata("HIGH")
+    self.scrollbar:SetPoint("TOPRIGHT", -8, -4)
+    self.scrollbar:SetPoint("BOTTOMRIGHT", -8, 4)
+    self.scrollbar.minThumbExtent = 16
+
+    self.editbox = CreateFrame("Frame", nil, self, "ScrollingEditBoxTemplate")
+    self.editbox:SetPoint("TOPLEFT", 8, -8)
+    self.editbox:SetPoint("BOTTOMRIGHT", self.scrollbar, "BOTTOMLEFT", -8, 0);
+    ScrollUtil.RegisterScrollBoxWithScrollBar(self.editbox:GetScrollBox(), self.scrollbar);
+
+    self.editbox:SetTextColor(Colors.EDIT_REST);
+    if (type(self.Placeholder) == "string") then
+        local loctext = locale:GetString(self.Placeholder)
+        self.editbox:SetDefaultText(loctext)
+        self.editbox:SetDefaultTextColor(Colors.EDIT_PLACEHOLDER)
+    end
+
+    --multiLine="true" letters="4000" autoFocus="false"
+    self:OnBorderLoaded(nil, "EDIT_BORDER", "EDIT_BACK")
+    
+    local editbox = self.editbox
+
+    editbox:RegisterCallback("OnFocusGained", GenerateClosure(self.OnFocus, self))
+    editbox:RegisterCallback("OnFocusLost", GenerateClosure(self.OnBlur, self))
 
     if (self.ReadOnly == true) then
         self.readonly = true
-        edit:SetScript("OnChar", GenerateClosure(self.RestoreText, self))
-    end
+        editbox:RegisterCallback("OnTextChanged", GenerateClosure(self.RestoreText, self))
+    else
+        self.readonly = false
+        editbox:RegisterCallback("OnTextChanged", GenerateClosure(self.OnTextChanged, self))
+        editbox:RegisterCallback("OnEnterPressed", GenerateClosure(self.NotifyChange, self))
+     end
 end
 
 function TextArea:OnMouseDown()
@@ -153,21 +172,27 @@ function TextArea:RestoreText()
     self.editbox:SetText(self.current)
 
     if (self.HighlightOnFocus == true) then
-        self.editbox:HighlightText()
+        local edit = self.editbox:GetEditBox()
+        edit:HighlightText()
     end
 end
 
 function TextArea:OnDisable()
-    UI.SetColor(self.editbox, Colors.EDIT_DISABLED)
+    self.editbox:SetTextColor(Colors.EDIT_DISABLED)
     self:SetBorderColor(Colors.EDIT_DISABLED)
 end
 
+function TextArea:HasFocus()
+    local edit = self.editbox:GetEditBox()
+    return edit and edit:HasFocus()
+end
+
 function TextArea:OnEnable()
-    if (not self.editbox:HasFocus()) then
-        UI.SetColor(self.editbox, Colors.EDIT_REST)
+    if (not self:HasFocus()) then
+        self.editbox:SetTextColor(Colors.EDIT_REST)
         self:SetBorderColor(Colors.EDIT_BORDER)
     else
-        UI.SetColor(self.editbox, Colors.EDIT_TEXT)
+        self.editbox:SetTextColor(Colors.EDIT_TEXT)
         self:SetBorderColor(Colors.EDIT_HIGHLIGHT)
     end
 end
@@ -184,7 +209,7 @@ function TextArea:SetText(text)
     if (text ~= current) then
         self.current = text
         self.editbox:SetText(text)
-        self:SetVerticalScroll(0)
+        --self:SetVerticalScroll(0)
         if (string.len(text) ~= 0) then
             self:ShowPlaceholder(false)
         end
@@ -197,7 +222,7 @@ function TextArea:OnFocus()
     self:ShowPlaceholder(false)
 
     if (self.HighlightOnFocus == true) then
-        self.editbox:HighlightText()
+        self.editbox:GetEditBox():HighlightText()
     end
 end
 
@@ -205,12 +230,8 @@ function TextArea:OnBlur()
     self:SetBorderColor("EDIT_BORDER")
     UI.SetColor(self, "EDIT_REST")
     self:DebounceNow()
-    if (not self:HasText()) then
-        self:ShowPlaceholder(true)
-    end
-
     if (self.HighlightOnFocus == true) then
-        self.editbox:ClearHighlightText()
+        self.editbox:GetEditBox():ClearHighlightText()
     end
 end
 
@@ -238,19 +259,23 @@ function TextArea:NotifyChange()
 end
 
 function TextArea:IsEnabled()
-    return self.editbox:IsEnabled()
+    return self.enabled
 end
 
 function TextArea:Enable()
-    self.editbox:Enable()
+    self.enabled = true
+    self.editbox:SetEnabled(true)
+    self:OnEnable()
 end
 
 function TextArea:Disable()
-    self.editbox:Disable()
+    self.enabled = false
+    self.editbox:SetEnabled(false)
+    self:OnDisable()
 end
 
 function TextArea:HasText()
-    local text = self.editbox:GetText()
+    local text = self:GetText()
     if (type(text) ~= "string") then
         return false
     end
@@ -260,7 +285,7 @@ function TextArea:HasText()
 end
 
 function TextArea:GetText()
-    local text = self.editbox:GetText()
+    local text = self.editbox:GetInputText()
     if (type(text) ~= "string") then
         return ""
     end
@@ -269,7 +294,13 @@ end
 
 function TextArea:Insert(text)
     if (type(text) == "string") and (string.len(text) ~= 0) then
-        self.editbox:Insert(text)
+        local edit = self.editbox:GetEditBox()
+
+        if (edit:IsDefaultTextDisplayed()) then
+            self.editbox:SetText(text)
+        else
+            edit:Insert(text)
+        end
         self:Debounce(.5, GenerateClosure(self.NotifyChange, self))
     end
 end

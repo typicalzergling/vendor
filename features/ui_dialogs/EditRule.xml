@@ -51,8 +51,8 @@
 						<KeyValue key="Color" value="TEXT"/>
 					</KeyValues>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelDescr" y="-76"/>
-						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelDescr" y="-76"/>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelDescr" y="-84"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelDescr" y="-84"/>
 					</Anchors>
 				</FontString>
 				<FontString parentKey="labelParam" maxLines="1" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal">
@@ -103,7 +103,7 @@
 				</Anchors>
 			</EditBox>
 
-			<ScrollFrame parentKey="description"  inherits="CommonUI_TextArea">
+			<Frame parentKey="description"  inherits="CommonUI_TextArea">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_DESCR_HELPTEXT" type="string"/>
 					<KeyValue key="Handler" value="OnDescriptionChanged" type="string"/>
@@ -113,9 +113,9 @@
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelDescr" y="-4"/>
 					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelScript" y="12"/>
 				</Anchors>
-			</ScrollFrame>
+			</Frame>
 
-			<ScrollFrame parentKey="script"  inherits="CommonUI_TextArea">
+			<Frame parentKey="script"  inherits="CommonUI_TextArea">
 				<Size x="1" y="120"/>
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
@@ -125,7 +125,7 @@
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.labelScript" y="-4"/>
 					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeKey="$parent.labelParam" y="12"/>
 				</Anchors>
-			</ScrollFrame>
+			</Frame>
 
 			<Frame inherits="CommonUI_List" parentKey="paramList">
 				<KeyValues>

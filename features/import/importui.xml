@@ -27,7 +27,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <ScrollFrame inherits="CommonUI_TextArea" parentKey="import">
+            <Frame inherits="CommonUI_TextArea" parentKey="import">
                 <KeyValues>
                     <KeyValue key="Placeholder" value="IMPORT_HELP_TEXT_PASTE_HERE"/>
                     <KeyValue key="Handler" value="OnImportText"/>
@@ -36,7 +36,7 @@
                     <Anchor point="BOTTOMRIGHT"/>
                     <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
                 </Anchors>
-            </ScrollFrame>
+            </Frame>
         </Frames>
     </Frame>    
 
@@ -57,7 +57,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <ScrollFrame inherits="CommonUI_TextArea" parentKey="export">
+            <Frame inherits="CommonUI_TextArea" parentKey="export">
                 <KeyValues>
                     <KeyValue key="ReadOnly" value="true" type="boolean"/>
                     <KeyValue key="HighlightOnFocus" value="true" type="boolean"/>
@@ -66,7 +66,7 @@
                     <Anchor point="BOTTOMRIGHT"/>
                     <Anchor point="TOPLEFT" relativeKey="$parent.help" relativePoint="BOTTOMLEFT" y="-12"/>
                 </Anchors>
-            </ScrollFrame>
+            </Frame>
         </Frames>
     </Frame>
 
