@@ -20,7 +20,7 @@ local Info = Addon.Systems.Info
 --[[ GetContainerItemInfo ]]
 local getContainerItemInfo = nil
 local function setupGetContainerItemInfo()
-    if Info.IsRetailEra then
+    if C_Container.GetContainerItemInfo then
         getContainerItemInfo = C_Container.GetContainerItemInfo
     else
         getContainerItemInfo = GetContainerItemInfo
@@ -33,7 +33,7 @@ end
 --[[ GetContainerNumSlots ]]
 local getContainerNumSlots = nil
 local function setupGetContainerNumSlots()
-    if Info.IsRetailEra then
+    if C_Container.GetContainerNumSlots then
         getContainerNumSlots = C_Container.GetContainerNumSlots
     else
         getContainerNumSlots = GetContainerNumSlots
@@ -46,7 +46,7 @@ end
 --[[ UseContainerItem ]]
 local useContainerItem = nil
 local function setupUseContainerItem()
-    if Info.IsRetailEra then
+    if C_Container.UseContainerItem then
         useContainerItem = C_Container.UseContainerItem
     else
         useContainerItem = UseContainerItem
@@ -59,7 +59,7 @@ end
 --[[ PickupContainerItem ]]
 local pickupContainerItem = nil
 local function setupPickupContainerItem()
-    if Info.IsRetailEra then
+    if C_Container.PickupContainerItem then
         pickupContainerItem = C_Container.PickupContainerItem
     else
         pickupContainerItem = PickupContainerItem
@@ -72,7 +72,7 @@ end
 --[[ GetContainerFreeSlots ]]
 local getContainerFreeSlots = nil
 local function setupGetContainerFreeSlots()
-    if Info.IsRetailEra then
+    if C_Container.GetContainerFreeSlots then
         getContainerFreeSlots = C_Container.GetContainerFreeSlots
     else
         getContainerFreeSlots = GetContainerFreeSlots
@@ -86,7 +86,7 @@ end
 --[[ NUM_TOTAL_EQUIPPED_BAG_SLOTS]]
 local getNumTotalEquippedBagSlots = nil
 local function setupGetNumTotalEquippedBagSlots()
-    if Info.IsRetailEra then
+    if NUM_TOTAL_EQUIPPED_BAG_SLOTS then
         getNumTotalEquippedBagSlots = function() return NUM_TOTAL_EQUIPPED_BAG_SLOTS end
     else
         getNumTotalEquippedBagSlots = function() return NUM_BAG_SLOTS end
@@ -99,11 +99,7 @@ end
 --[[ IsLocationValid - IsValid was added in BFA ]]
 local isLocationValid = nil
 local function setupIsLocationValid()
-    if Info.IsRetailEra then
-        isLocationValid = function(location) return location:IsValid() end
-    else
-        isLocationValid = function(location) return C_Item.DoesItemExist(location) end
-    end
+    isLocationValid = function(location) return C_Item.DoesItemExist(location) end
 end
 function Interop:IsLocationValid(location)
     return isLocationValid(location)
