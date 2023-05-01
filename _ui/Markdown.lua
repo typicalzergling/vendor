@@ -7,7 +7,7 @@ local UI = Addon.CommonUI.UI
 local Layouts = Addon.CommonUI.Layouts
 
 local MARGINS = {
-    header = { top = 4, bottom = 2 },
+    header = { left = 4, top = 4, bottom = 2 },
     list = { left = 16,  top = 4, bottom = 4 },
     paragraph = { left = 16, top = 4, bottom = 4 }
 }
@@ -161,7 +161,7 @@ function MarkdownFrame:Layout(width, height)
         self.content:SetHeight(0)
         self:SetHeight(self.content:GetHeight())
     elseif (type(self.contents) == "table") then
-        width = width or self:GetWidth()        
+        width = width or self:GetWidth()     
 
         local padding = 0
         if (type(self.Padding) == "number") then

@@ -214,10 +214,10 @@ local SettingsList = {}
 
 --[[ Handle laoding the settign list ]]
 function SettingsList:OnLoad()
-    Addon.CommonUI.List.OnLoad(self)
     self.settings = {}
     self.ItemSpacing = 12
     self.Padding = 12
+    Addon.CommonUI.List.OnLoad(self)
 end
 
 --[[ Create an item for the setting list ]]

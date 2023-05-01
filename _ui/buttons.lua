@@ -198,6 +198,10 @@ local function getPadding(padding)
     return 0, 0, 0, 0
 end
 
+function Layouts.GetMargins(frame)
+    return getPadding(frame.margins or frame.Margins)
+end
+
 function Layouts.Stack(panel, children, padding, spacing, panelWidth)
     local space = 0
     local width = panelWidth or panel:GetWidth()

@@ -31,9 +31,9 @@ end
 --[[ Creates the list for this settings page ]]
 function DebugSettings:CreateList(parent)
 	local list = Settings.CreateList(parent)
-    local indent = { left = 16 }
-    list:AddHeader("Channels")
+    local indent = { left = 8 }
 
+    list:AddHeader("Channels")
     for _, channel in ipairs(Addon:GetDebugChannels()) do
         local toggle = createChannelToggle(channel)
         local setting = list:AddSetting(toggle, string.upper(channel))

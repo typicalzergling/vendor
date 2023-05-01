@@ -288,6 +288,9 @@
                 </Anchors>
             </Frame>
             <Frame parentKey="notes" inherits="CommonUI_Markdown">
+                <KeyValues>
+                    <KeyValue key="Padding" value="8" type="number"/>
+                </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.releases" relativePoint="TOPRIGHT" x="12"/>
                     <Anchor point="BOTTOMRIGHT"/>

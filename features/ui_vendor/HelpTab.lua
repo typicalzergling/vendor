@@ -88,6 +88,7 @@ function HelpTab:ShowRelease(release)
     else
         self.notes:SetMarkdown("")
     end
+    self.notes:ScrollToTop()
 end
 
 Vendor.MainDialog.HelpTab = HelpTab
