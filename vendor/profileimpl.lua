@@ -19,6 +19,7 @@ local PROFILE_HIDDEN_RULES = "rules:hidden"
 local PROFILE_VERSION = "profile:version";
 local CURRENT_VERSION = 2;
 local PROFILE_INTERFACEVERSION = "profile:interface";
+local _, _, _, INTERFACE_VERSION = GetBuildInfo()
 
 local RuleType = Addon.RuleType;
 local ListType = Addon.ListType;
@@ -228,7 +229,7 @@ end
 function Addon:OnInitializeProfile(profile)
 
 	-- Set the version
-	profile:SetValue(PROFILE_INTERFACEVERSION, Info.Build.InterfaceVersion);
+	profile:SetValue(PROFILE_INTERFACEVERSION, INTERFACE_VERSION);
 	profile:SetValue(PROFILE_VERSION, CURRENT_VERSION);
 
 	-- Lists start empty
@@ -260,6 +261,10 @@ end
 function Addon:OnCheckProfileMigration(profile)
 	Addon:Debug("profile", "In CheckMigration for Profile: " .. profile:GetName());
 	local version = profile:GetValue(PROFILE_VERSION)
+	if type(version) ~= "number" then
+		version = CURRENT_VERSION
+	end
+
 	Addon:Debug("profile", "Profile Version: " .. tostring(version));
 
 	-- No-op for current version.
