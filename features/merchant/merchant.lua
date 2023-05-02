@@ -19,6 +19,23 @@ local AUTO_SELL_ITEM = Addon.Events.AUTO_SELL_ITEM
 local isMerchantOpen = false
 local isAutoSelling = false
 
+local function repairMessage(message, ...)
+    if (Addon:IsFeatureEnabled("chat")) then
+        Addon:GetFeature("chat"):Output(Addon.Features.Chat.MessageType.Repair, message, ...)
+    else
+        Addon:Print(L:GetString(message), ...)
+    end
+end
+
+local function merchantMessage(message, ...)
+    if (Addon:IsFeatureEnabled("chat")) then
+        Addon:GetFeature("chat"):Output(Addon.Features.Chat.MessageType.Merchant, message, ...)
+    else
+        Addon:Print(L:GetString(message), ...)
+    end
+end
+
+
 -- When the merchant window is opened, we will attempt to auto repair and sell.
 function Merchant.OnMerchantShow()
     debugp("Merchant opened.")
@@ -56,11 +73,11 @@ function Merchant:AutoRepair()
         if not Addon.Systems.Info.IsClassicEra and profile:GetValue(Addon.c_Config_GuildRepair) and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
             -- use guild repairs
             RepairAllItems(true)
-            Addon:Print(string.format(L["MERCHANT_REPAIR_FROM_GUILD_BANK"], Addon:GetPriceString(cost)))
+            repairMessage("MERCHANT_REPAIR_FROM_GUILD_BANK", Addon:GetPriceString(cost))
         else
             -- use own funds
             RepairAllItems()
-            Addon:Print(string.format(L["MERCHANT_REPAIR_FROM_SELF"], Addon:GetPriceString(cost)))
+            repairMessage("MERCHANT_REPAIR_FROM_SELF", Addon:GetPriceString(cost))
         end
     end
 end
@@ -91,7 +108,7 @@ end
 
 local function printSellSummary(num, value)
     if num > 0 then
-        Addon:Print(L["MERCHANT_SOLD_ITEMS"], tostring(num), Addon:GetPriceString(value))
+        merchantMessage("MERCHANT_SOLD_ITEMS", tostring(num), Addon:GetPriceString(value))
     end
 end
 
@@ -174,13 +191,13 @@ function Merchant:AutoSell()
                         Addon:UseContainerItem(bag, slot)
                         Addon:RaiseEvent(AUTO_SELL_ITEM, entry.Item.Link, numSold, sellLimitMaxItems)
                     else
-                        Addon:Print("Simulating selling of: %s", tostring(item.Link))
+                        merchantMessage("Simulating selling of: %s", tostring(item.Link))
                         Addon:RaiseEvent(AUTO_SELL_ITEM, entry.Item.Link, numSold, sellLimitMaxItems)
                     end
 
                     -- Record sell data
                     local netValue = entry.Item.TotalValue
-                    Addon:Print(L["MERCHANT_SELLING_ITEM"], tostring(entry.Item.Link), Addon:GetPriceString(netValue), tostring(entry.Result.Rule))
+                    merchantMessage("MERCHANT_SELLING_ITEM", tostring(entry.Item.Link), Addon:GetPriceString(netValue), tostring(entry.Result.Rule))
                     numSold = numSold + 1
                     totalValue = totalValue + netValue
 
@@ -189,7 +206,7 @@ function Merchant:AutoSell()
 
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
-                        Addon:Print(L["MERCHANT_SELL_LIMIT_REACHED"], sellLimitMaxItems)
+                        merchantMessage("MERCHANT_SELL_LIMIT_REACHED", sellLimitMaxItems)
                         printSellSummary(numSold, totalValue)
                         setIsAutoSelling(false)
                         return
@@ -214,7 +231,7 @@ end
 -- Confirms the popup if an item will be non-tradeable when sold, but only when we are auto-selling it.
 function Merchant.AutoConfirmSellTradeRemoval(link)
     if Merchant:IsAutoSelling() then
-        Addon:Print(L["MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL"], link)
+        merchantMessage("MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL", link)
         SellCursorItem()
     end
 end
