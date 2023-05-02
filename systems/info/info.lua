@@ -119,7 +119,7 @@ end
 function Info:CheckReleaseForClient(release)
     if (release == Info.ReleaseType.RetailNext or release == Info.ReleaseType.Retail) then
         return self.IsRetailEra
-    elseif (relase == Info.ReleaseType.Classic or release == Info.ReleaseType.ClassicNext) then
+    elseif (release == Info.ReleaseType.Classic or release == Info.ReleaseType.ClassicNext) then
         return self.IsClassicEra
     end
     return false

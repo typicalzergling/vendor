@@ -46,11 +46,35 @@ local function list_callHandler(list, handler, ...)
 end
 
 
+--[[ Gets the padding for the list content ]]
+local function list_GetContentPadding(padding)
+    local ptype = type(padding)
+    if (ptype == "number") then
+        return padding, padding, padding, padding
+    elseif (ptype == "table") then
+        return tonumber(padding.left) or 0,
+            tonumber(padding.top) or 0,
+            tonumber(padding.right) or 0,
+            tonumber(padding.bottom) or 0
+    end
+
+    return 0, 0, 0, 0
+end
+
 --[[ Create a new 10.1+ scrollbar ]]
 local function list_CreateScrollbarRetail(self)
-    local scrollbar = CreateFrame("EventFrame", nil, self, "MinimalScrollBar");
-    scrollbar:SetPoint("TOPRIGHT", self, "TOPRIGHT", -6, -4);
-    scrollbar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -6, 4);
+    local template = "MinimalScrollBar"
+    local scrollInset = 6
+    local bottomOffset = 4
+    if ( Addon.Systems.Info.IsClassicEra) then
+        template = "WowTrimScrollBar"
+        scrollInset = 2
+        bottomOffset = 2
+    end
+    
+    local scrollbar = CreateFrame("EventFrame", nil, self, template)
+    scrollbar:SetPoint("TOPRIGHT", self, "TOPRIGHT", -scrollInset, -4);
+    scrollbar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -scrollInset, bottomOffset);
 
     -- Hookup to the "Scroll" callback
     scrollbar:RegisterCallback(scrollbar.Event.OnScroll, function(_, pos)
@@ -353,6 +377,11 @@ local function list_showEmpty(list, show)
         UI.SetColor(empty, "LIST_EMPTY_TEXT")
         empty:SetText(locale[text] or text)
         empty:SetTextColor(Colors.LIST_EMPTY_TEXT:GetRGBA())
+
+        empty:ClearAllPoints()
+        local pl, pt, pr = list_GetContentPadding(state.padding)
+        empty:SetPoint("TOPLEFT", 2 * pl, -2 * pt)
+        empty:SetPoint("TOPRIGHT", state.scrollbar, "TOPLEFT", -2 * pr, -2 * pt)
     end
 
     Addon:Debug("list", "Showing empty text '%s' for list '%s'", text or "", list:GetDebugName() or "<unknown>")
@@ -460,24 +489,9 @@ function List:OnHide()
         end)
 end
 
---[[ Gets the padding for the list content ]]
-local function list_GetContentPadding(padding)
-    local ptype = type(padding)
-    if (ptype == "number") then
-        return padding, padding, padding, padding
-    elseif (ptype == "table") then
-        return tonumber(padding.left) or 0,
-            tonumber(padding.top) or 0,
-            tonumber(padding.right) or 0,
-            tonumber(padding.bottom) or 0
-    end
-
-    return 0, 0, 0, 0
-end
-
 function List:ScrollToTop()
     local state = rawget(self, STATE_KEY)
-    state.scrollbar:ScrollToBegin()
+    state.scrollbar:SetScrollPercentage(0)
 end
 
 --[[ Handler for size changed ]]

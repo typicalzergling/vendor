@@ -126,42 +126,62 @@ local TextArea = Mixin({}, Addon.CommonUI.Mixins.Border, Addon.CommonUI.Mixins.D
 function TextArea:OnLoad()
     self.enabled = true
 
-    self.scrollbar = CreateFrame("EventFrame", nil, self, "MinimalScrollBar")
-    self.scrollbar:SetFrameStrata("HIGH")
-    self.scrollbar:SetPoint("TOPRIGHT", -8, -4)
-    self.scrollbar:SetPoint("BOTTOMRIGHT", -8, 4)
-    self.scrollbar.minThumbExtent = 16
+    local template = "MinimalScrollBar"
+    local scrollInset = 8
+    local bottomOffset = 4
+    if ( Addon.Systems.Info.IsClassicEra) then
+        template = "WowTrimScrollBar"
+        scrollInset = 2
+        bottomOffset = 2
+    end
+    
 
-    self.editbox = CreateFrame("Frame", nil, self, "ScrollingEditBoxTemplate")
-    self.editbox:SetPoint("TOPLEFT", 8, -8)
-    self.editbox:SetPoint("BOTTOMRIGHT", self.scrollbar, "BOTTOMLEFT", -8, 0);
-    ScrollUtil.RegisterScrollBoxWithScrollBar(self.editbox:GetScrollBox(), self.scrollbar);
+    local scrollbar = CreateFrame("EventFrame", nil, self, template)
+    scrollbar:SetFrameStrata("HIGH")
+    scrollbar:SetPoint("TOPRIGHT", -scrollInset, -4)
+    scrollbar:SetPoint("BOTTOMRIGHT", -scrollInset, bottomOffset)
+    scrollbar.minThumbExtent = 16
+    self.scrollbar = scrollbar
 
-    self.editbox:SetTextColor(Colors.EDIT_REST);
+    local control  = CreateFrame("Frame", nil, self, "ScrollingEditBoxTemplate")
+    self.editbox = control
+    control:SetPoint("TOPLEFT", 8, -8)
+    control:SetPoint("BOTTOMRIGHT", self.scrollbar, "BOTTOMLEFT", -8, 0);
+    ScrollUtil.RegisterScrollBoxWithScrollBar(control:GetScrollBox(), self.scrollbar);
+
+    control:SetTextColor(Colors.EDIT_REST);
+    local editbox = control:GetEditBox()
+
     if (type(self.Placeholder) == "string") then
         local loctext = locale:GetString(self.Placeholder)
-        self.editbox:SetDefaultText(loctext)
-        self.editbox:SetDefaultTextColor(Colors.EDIT_PLACEHOLDER)
+        control:SetDefaultText(loctext)
+        control:SetDefaultTextColor(Colors.EDIT_PLACEHOLDER)
     end
+
+    local len = 4096
+    if (type(self.MaxLength) == "number") then
+        len = self.MaxLength
+    end
+    editbox:SetMaxLetters(len)
+    editbox:SetMultiLine(true)
+    editbox:SetAutoFocus(false)
 
     --multiLine="true" letters="4000" autoFocus="false"
     self:OnBorderLoaded(nil, "EDIT_BORDER", "EDIT_BACK")
-    
-    local editbox = self.editbox
-
-    editbox:RegisterCallback("OnFocusGained", GenerateClosure(self.OnFocus, self))
-    editbox:RegisterCallback("OnFocusLost", GenerateClosure(self.OnBlur, self))
+    control:RegisterCallback("OnFocusGained", GenerateClosure(self.OnFocus, self))
+    control:RegisterCallback("OnFocusLost", GenerateClosure(self.OnBlur, self))
 
     if (self.ReadOnly == true) then
         self.readonly = true
-        editbox:RegisterCallback("OnTextChanged", GenerateClosure(self.RestoreText, self))
+        control:RegisterCallback("OnTextChanged", GenerateClosure(self.RestoreText, self))
     else
         self.readonly = false
-        editbox:RegisterCallback("OnTextChanged", GenerateClosure(self.OnTextChanged, self))
-        editbox:RegisterCallback("OnEnterPressed", GenerateClosure(self.NotifyChange, self))
+        control:RegisterCallback("OnTextChanged", GenerateClosure(self.OnTextChanged, self))
+        control:RegisterCallback("OnEnterPressed", GenerateClosure(self.NotifyChange, self))
      end
 end
 
+--[[ Handles clicking on frame to set focus ]]
 function TextArea:OnMouseDown()
     self.editbox:SetFocus()
 end
@@ -169,8 +189,8 @@ end
 function TextArea:RestoreText()
     assert(type(self.current) == "string")
     assert(self.ReadOnly)
-    self.editbox:SetText(self.current)
 
+    self.editbox:SetText(self.current)
     if (self.HighlightOnFocus == true) then
         local edit = self.editbox:GetEditBox()
         edit:HighlightText()
