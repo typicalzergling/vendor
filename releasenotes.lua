@@ -6,13 +6,9 @@ Release ="6.2 (May 1, 2022)",
 Notes = [[
 # Dragonflight 10.1 Support
 
-This release only fixes Dragonflight 10.1 Support. It is NOT compatible with Wrath as the Blizzard
-scrollbar changes are retail only and we have yet to shim them to Wrath in order to make sure
-Vendor is 10.1 ready.
-
-Please do not try to use this version with Wrath, it will not work! A subsequent release will shim
-and fix Wrath to this version, but there is no functionality change here that requires Wrath
-players to update at this time. The previous 6.1.4 version should work fine for Wrath.
+This release only fixes Dragonflight 10.1 Support. Wrath is also supported, though scrollbars
+are now rather ugly. This is because Blizzard changed how scrollbars work in 10.1 and have not
+ported that change to Wrath.
 
 # Known Issues
 
