@@ -35,7 +35,7 @@ function SettingsFeature:RegisterPage(name, help, creator, order)
             Text = name,
             Help = help,
             CreateList = creator,
-            Order = order
+            Order = order or 9000
         })
 end
 
@@ -50,15 +50,17 @@ function SettingsFeature:GetSettings()
     local categories = self.Categories
     if type(categories) == "table" then
         for _, category in pairs(categories) do
-            table.insert(settings, {
-                Key = category:GetName(),
-                Text = category:GetText(),
-                Help = category:GetSummary(),
-                Order = category:GetOrder() or 1000,
-                CreateList = function(parent)
-                    return category:CreateList(parent)
-                end
-            })
+            if (type(category.ShowShow) ~= "function") or (category:ShowShow() == true) then
+                table.insert(settings, {
+                    Key = category:GetName(),
+                    Text = category:GetText(),
+                    Help = category:GetSummary(),
+                    Order = category:GetOrder() or 1000,
+                    CreateList = function(parent)
+                        return category:CreateList(parent)
+                    end
+                })
+            end
         end
     end
 

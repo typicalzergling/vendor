@@ -32,13 +32,14 @@ function Features:Startup(onready)
                     name = name,
                     instance = feature,
                     enabled = false,
+                    beta = type(feature.BETA) == "boolean" and feature.BETA == true
                 }
                 self.features[string.lower(name)] = featureInfo
             end
         end
     end
 
-    onready({ "GetFeature", "IsFeatureEnabled", "EnableFeature", "DisableFeature",  "WithFeature" })
+    onready({ "GetFeature", "IsFeatureEnabled", "EnableFeature", "DisableFeature",  "WithFeature", "GetBetaFeatures" })
 end
 
 --[[ Called to handle shutting down the features ]]
@@ -75,6 +76,22 @@ end
 
 function Features:EndInit(success)
     debugp("All features initialized")
+end
+
+--[[ Returns all the beta features ]]
+function Features:GetBetaFeatures()
+    local beta = {}
+    for _, feature in pairs(self.features) do
+        if (feature.beta) then
+            table.insert(beta, {
+                id = string.lower(feature.name),
+                name = feature.instance.NAME or feature.name,
+                description = feature.instance.DESCRIPTION or "",
+                eanbled = feature.enabled
+            })
+        end
+    end
+    return beta
 end
 
 function Features:GetFeature(feature)
@@ -224,35 +241,43 @@ end
 function Features:OnAllSystemsReady()
     debugp("Checking for features to initialize")
 
+    local profile = Addon:GetProfile()
+    local beta = profile:GetValue("beta") or {}
+
     for _, feature in pairs(self.features) do
         assert(type(feature) == "table", "Expected the feature to be a table")
 
-        --@debug@
-        local success, systems = callFeature(feature.instance, "GetSystems")
-        if (not success) then
-            error("Failed to get the systems feature '" .. name .. "' depends on")
-        end
+        if (not feature.beta or beta[string.lower(feature.name)] == true) then
 
-        if (type(systems) == "table") then
-            for _, system in pairs(systems) do
-                if (not Addon:GetSystem(system)) then
-                    error("Feature '" .. name .. "' depends on system '" .. system .. "' which is not available")
+            --@debug@
+            local success, systems = callFeature(feature.instance, "GetSystems")
+            if (not success) then
+                error("Failed to get the systems feature '" .. name .. "' depends on")
+            end
+
+            if (type(systems) == "table") then
+                for _, system in pairs(systems) do
+                    if (not Addon:GetSystem(system)) then
+                        error("Feature '" .. name .. "' depends on system '" .. system .. "' which is not available")
+                    end
                 end
             end
-        end
-        --@end-debug@
+            --@end-debug@
 
-        local success, dependencies = callFeature(feature.instance, "GetDependencies")
-        if (not success) then 
-            error("Failed to resolve dependencies for feature '" .. name .. "'")
-        end
+            local success, dependencies = callFeature(feature.instance, "GetDependencies")
+            if (not success) then 
+                error("Failed to resolve dependencies for feature '" .. name .. "'")
+            end
 
-        -- TEMP
-        if (not dependencies and feature.instance.DEPENDENCIES) then
-            dependencies = feature.instance.DEPENDENCIES
-        end
+            -- TEMP
+            if (not dependencies and feature.instance.DEPENDENCIES) then
+                dependencies = feature.instance.DEPENDENCIES
+            end
 
-        self:AddTarget(feature, feature.name, dependencies)
+            self:AddTarget(feature, feature.name, dependencies)
+        else
+            debugp("Skipping BETA feature '%s'", feature.name)
+        end
     end
 
     C_Timer.After(0.001, function() self:BeginInit() end)

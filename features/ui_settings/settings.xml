@@ -5,6 +5,7 @@
     <Script file="widgets.lua"/>
     <Include file="widgets.xml"/>
     <Script file="GeneralSettings.lua"/>
+    <Script file="BetaFeatures.lua"/>
     <Script file="QuickSettings.lua"/>
     <!--@do-not-package@-->
     <Script file="DebugSettings.lua"/>

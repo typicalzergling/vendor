@@ -3,10 +3,11 @@ local locale = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("chat", ...) end
 
 local ChatFeature = { 
-    NAME = "History", 
+    NAME = "Chat Output", 
     VERSION = 1, 
     DEPENDENCIES = { "Rules" },
-    DISABLED = true,
+    BETA = true,
+    DESCRIPTION = [[Controls where the output from vendor goes, allows you to select which messages got to each chat frame]]
 }
 
 ChatFeature.MessageType = {
