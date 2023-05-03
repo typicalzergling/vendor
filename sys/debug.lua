@@ -118,7 +118,7 @@ function Addon:Debug(channel, msg, ...)
     local name = string.upper(channel or "default");
     if (Addon:IsDebugChannelEnabled(name)) then
         local success = true
-        if (Addon:IsFeatureEnabled("chat")) then
+        if (type(Addon.IsFeatureEnabled) == "function" and Addon:IsFeatureEnabled("chat")) then
             local chat = Addon:GetFeature("chat")
             success = pcall(chat.Output, chat, Addon.Features.Chat.MessageType.Debug, "[" .. ACHIEVEMENT_COLOR_CODE .. name .. "|r]" .. msg, ...)
         else

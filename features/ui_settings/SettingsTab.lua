@@ -10,11 +10,6 @@ end
 
 function SettingsTab:OnActivate()
     self.settings:EnsureSelection()
-
-    for k, v in pairs(Addon.Features.Settings.Events) do
-        print(k,v)
-    end
-
     Addon:RegisterCallback(Settings.Events.OnPagesChanged, self,
         GenerateClosure(self.settings.Rebuild, self.settings))
 end
