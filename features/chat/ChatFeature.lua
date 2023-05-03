@@ -79,7 +79,12 @@ end
 function ChatFeature:Output(type, message, ...)
     -- Danger - You cannot have debug prints in this method --
 
-    message = string.format(locale:GetString(message) or message, ...)
+    local args = {}
+    for _, arg in ipairs({...}) do
+        table.insert(args, tostring(arg))
+    end
+
+    message = string.format(locale:GetString(message) or message, unpack(args))
     local options = self:GetFrameSettings()
 
     local prefix = "" 
