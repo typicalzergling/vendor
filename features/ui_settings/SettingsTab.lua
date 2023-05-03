@@ -1,5 +1,5 @@
 local _, Addon = ...
-local Vendor = Addon.Features.Vendor
+local Settings = Addon.Features.Settings
 local SettingsTab = {}
 
 --[[ Retreive the categories for the rules ]]
@@ -10,6 +10,17 @@ end
 
 function SettingsTab:OnActivate()
     self.settings:EnsureSelection()
+
+    for k, v in pairs(Addon.Features.Settings.Events) do
+        print(k,v)
+    end
+
+    Addon:RegisterCallback(Settings.Events.OnPagesChanged, self,
+        GenerateClosure(self.settings.Rebuild, self.settings))
+end
+
+function SettingsTab:OnDeactivate()
+    Addon:UnregisterCallback(Settings.Events.OnPagesChanged, self)
 end
 
 function SettingsTab:ShowSettings(settings)
@@ -35,4 +46,4 @@ function SettingsTab:ShowSettings(settings)
     frame:Show()
 end
 
-Vendor.MainDialog.SettingsTab = SettingsTab
+Settings.SettingsTab = SettingsTab

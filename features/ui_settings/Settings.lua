@@ -9,11 +9,16 @@ local SettingsFeature = {
     },
 }
 
+SettingsFeature.Events = {
+    OnPagesChanged = "settings:OnPagesChanged"
+}
+
 --[[
     Called when feature is initialized
 ]]
 function SettingsFeature:OnInitialize()
     Addon:Debug("settings", "Initialize settings")
+    Addon:GenerateEvents(self.Events)
     self.pages = {}
 
     local profile = Addon:GetProfile()
@@ -37,6 +42,29 @@ function SettingsFeature:RegisterPage(name, help, creator, order)
             CreateList = creator,
             Order = order or 9000
         })
+
+    Addon:RaiseEvent(self.Events.OnPagesChanged)
+end
+
+--[[ Removes the settings page with the sepcified name ]]
+function SettingsFeature:UnregisterPage(name)
+    assert(type(name) == "string", "The page name must be a string")
+
+    local pages = {}
+    local changed = false;
+
+    for _, page in ipairs(self.pages) do
+        if (page.Key ~= name) then
+            table.insert(pages, page)
+        else
+            changed = true
+        end
+    end
+
+    self.pages = pages
+    if (changed) then
+        Addon:RaiseEvent(self.Events.OnPagesChanged)
+    end
 end
 
 --[[
@@ -88,10 +116,22 @@ function SettingsFeature:GetSettings()
     return settings
 end
 
+--[[  Retrieve the lists tab ]]
+function SettingsFeature:GetTab()
+    return {
+            Id = "settngs",
+            Name = "RULES_DIALOG_CONFIG_TAB",
+            Template = "Vendor_SettingsTab",
+            Class = self.SettingsTab,
+            Far = true
+        }
+end
+
 --[[
     Callback for when the feature is terminated
 ]]
 function SettingsFeature:OnTerminate()
+    Addon:RemoveEvents(self.Events)
 end
 
 Addon.Features.Settings = SettingsFeature

@@ -16,7 +16,12 @@ function MainDialog:OnInitDialog(dialog)
 	end
 
 	tabs:AddTab("profiles", "OPTIONS_PROFILE_TITLE", "Vendor_ProfilesTab", "Features.Vendor.ProfilesTab", true)
-	tabs:AddTab("settings", "RULES_DIALOG_CONFIG_TAB", "Vendor_SettingsTab", self.SettingsTab, true)
+	
+	-- Add the settings tab
+	if (Addon:IsFeatureEnabled("settings")) then
+		tabs:AddTab(Addon:GetFeature("settings"):GetTab())
+	end
+
 	tabs:AddTab("audit", "CONFIG_DIALOG_AUDIT_TAB", "Vendor_HistoryTab", self.HistoryTab, true)
 	tabs:AddTab("help", "EDITRULE_HELP_TAB_NAME", "Vendor_HelpTab", self.HelpTab, true)
 	tabs:ShowTab("rules")

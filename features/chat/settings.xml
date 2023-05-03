@@ -1,0 +1,155 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="settings.lua"/>
+
+    <Frame virtual="true" name="Chat_FrameSetting">
+        <Size x="1" y="100"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="frameName" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="TOPRIGHT"/>
+                    </Anchors>
+                </FontString>
+
+                <FontString parentKey="destroy" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="LocKey" value="CHAT_MESSAGETYPE_DESTROY"/>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM" relativeKey="$parent.frameName" y="-10"/>
+                        <Anchor point="RIGHT" relativePoint="CENTER" x="-4"/>
+                        <Anchor point="LEFT"  x="52"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="merchant" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                        <KeyValue key="LocKey" value="CHAT_MESSAGETYPE_MERCHANT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.destroy"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.destroy"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="repair" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                        <KeyValue key="LocKey" value="CHAT_MESSAGETYPE_REPAIR"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.merchant"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.merchant"/>
+                    </Anchors>
+                </FontString>                
+
+                <FontString parentKey="list" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="LocKey" value="CHAT_MESSAGETYPE_LISTS"/>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.destroy"/>
+                        <Anchor point="LEFT" relativePoint="CENTER" x="4"/>
+                        <Anchor point="RIGHT"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="other" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="LocKey" value="CHAT_MESSAGETYPE_OTHER"/>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.list"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.list"/>
+                    </Anchors>
+                </FontString>
+                <!--@debug@-->       
+                <FontString parentKey="debug" maxLines="1" wordWrap="false" inherits="GameFontNormal" justifyH="LEFT" justifyV="MIDDLE">
+                    <Size x="1" y="20"/>
+                    <KeyValues>
+                        <KeyValue key="LocKey" value="CHAT_MESSAGETYPE_DEBUG"/>
+                        <KeyValue key="Color" value="BUTTON_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.other"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.other"/>
+                    </Anchors>
+                </FontString>       
+                <!--@end-debug@-->
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button inherits="CommonUI_Switch" parentArray="bits">
+                <KeyValues>
+                    <KeyValue key="bit" type="number" value="0x1"/>
+                </KeyValues>
+                <Size x="28" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.destroy" x="-8"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_Switch" parentArray="bits">
+                <KeyValues>
+                    <KeyValue key="bit" type="number" value="0x4"/>
+                </KeyValues>
+                <Size x="28" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.repair" x="-8"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_Switch" parentArray="bits">
+                <KeyValues>
+                    <KeyValue key="bit" type="number" value="0x2"/>
+                </KeyValues>
+
+                <Size x="28" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.merchant" x="-8"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_Switch" parentArray="bits">
+                <KeyValues>
+                    <KeyValue key="bit" type="number" value="0x8"/>
+                </KeyValues>
+                <Size x="28" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.list" x="-8"/>
+                </Anchors>
+            </Button>
+            <Button inherits="CommonUI_Switch" parentArray="bits">
+                <KeyValues>
+                    <KeyValue key="bit" type="number" value="0x10"/>
+                </KeyValues>
+                <Size x="28" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.other" x="-8"/>
+                </Anchors>
+            </Button>
+            <!--@debug@-->
+            <Button inherits="CommonUI_Switch" parentArray="bits">
+                <KeyValues>
+                    <KeyValue key="bit" type="number" value="0x10000"/>
+                </KeyValues>
+                <Size x="28" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.debug" x="-8"/>
+                </Anchors>
+            </Button>
+            <!--@end-debug@-->
+        </Frames>
+    </Frame>
+
+    <Frame virtual="true" name="Chat_Settings" hidden="true" />
+
+</Ui>

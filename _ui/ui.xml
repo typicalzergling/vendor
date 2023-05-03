@@ -17,6 +17,7 @@
     <Script file="CategoryItem.lua"/>
     <Script file="Markdown.lua"/>
     <Script file="chips.lua"/>
+    <Script file="Switch.lua"/>
     <Script file="contextmenu.lua"/>
     
     <!-- UX -->

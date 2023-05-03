@@ -119,6 +119,21 @@ function Features:EnableFeature(name)
     if (not feature.enabled) then
         debugp("Enabling feature '%s'", feature.name)
 
+        -- Merge the locale into the table
+        if (type(feature.instance.Locale) == "table") then
+            for locale, strings in pairs(feature.instance.Locale) do
+                assert(type(strings) == "table")
+
+                local loc = Addon:FindLocale(locale);
+                if (loc) then
+                    loc:Add(strings)
+                else
+                    debugp("Clearing unsused locale[%s] from feature [%s]", locale, name)
+                    feature.instance.Locale[locale] = nil
+                end
+            end
+        end
+
         -- Call Initiaize on the feature
         -- We should have 4 core events:
         --      OnInitialize
@@ -203,6 +218,18 @@ function Features:DisableFeature(name)
         Addon:RemoveEvents(feature.instance.EVENTS)
     end
 
+    -- Merge the locale into the table
+    if (type(feature.instance.Locale) == "table") then
+        for locale, strings in pairs(feature.instance.Locale) do
+            assert(type(strings) == "table")
+
+            local loc = Addon:FindLocale(locale);
+            if (loc) then
+                loc:Remove(strings)
+            end
+        end
+    end
+
     -- TODO: Disable all features that depend on this one....
     --- .... and all features dependent on those features...
     -- For now lets just not disable features on which other features depend....
@@ -243,6 +270,7 @@ function Features:OnAllSystemsReady()
 
     local profile = Addon:GetProfile()
     local beta = profile:GetValue("beta") or {}
+
 
     for _, feature in pairs(self.features) do
         assert(type(feature) == "table", "Expected the feature to be a table")

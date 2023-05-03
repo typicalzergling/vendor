@@ -19,13 +19,6 @@ end
 
 --[[ Checks if we should show this item ]]
 function BetaFeatures:ShowShow()
-    print("beta-features-show")
-    local b = Addon:GetBetaFeatures()
-    print("beta", b, table.getn(b))
-    for k,v in ipairs(b) do
-        print("beta", k,v)
-    end
-
     if (table.getn(Addon:GetBetaFeatures()) ~= 0) then
         return true
     end

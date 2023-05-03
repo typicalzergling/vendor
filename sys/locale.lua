@@ -27,6 +27,47 @@ local _, Addon = ...
 local locales = {}
 local localizedStrings = nil
 local localizedStringsProxy = nil
+local LocaleObject = {}
+local currentLocale = nil
+
+function LocaleObject:__construct()
+    assert(type(self.locale) == "string", "Expected locate property to be defined")
+    self.strings = localizedStrings
+end
+
+function LocaleObject:GetName()
+    return self.locale
+end
+
+function LocaleObject:Add(strings)
+    assert(type(strings) == "table", "Expected the argument to be a table")
+
+    for id, string in pairs(strings) do
+        self.strings[id] = string
+    end
+end
+
+function LocaleObject:Remove(strings)
+    assert(type(strings) == "table", "Expected the argument to be a table")
+    
+    for id, _ in pairs(strings) do
+        self.strings[id] = nil
+    end
+end
+
+function LocaleObject:Get(id)
+    assert(type(id) == "string", "Expected the ID to be a string")
+    return self.strings[id] or nil
+end
+
+function LocaleObject:Format(id, ...)
+    local string = self:Get(id)
+    if (type(string) == "string") then
+        return string.format(string, ...)
+    end
+    return nil
+end
+    
 
 -- This will add a locale definition to the addon.
 -- All locale definitions must be added before calling SetLocale or GetLocale.
@@ -40,6 +81,15 @@ function Addon:AddLocale(locale, strings)
     assert(type(strings) == "table", "Invalid parameter to AddLocale: strings must be a string table.")
     assert(locales, "You cannot add a locale after calling GetLocale(). Move up the '"..locale.."' definition in the TOC load order to fix this.")
     table.insert(locales, { locale=locale, strings=strings })
+end
+
+--[[ Finds the locale object for the specified locale, returns nil if the locale doens't exist ]]
+function Addon:FindLocale(locale)
+    if (string.lower(locale) ~= string.lower(currentLocale)) then
+        return nil
+    end
+
+    return Addon.object("LocaleObject", { locale = locale }, LocaleObject)
 end
 
 local function findLocale(locale)
@@ -161,6 +211,7 @@ local function setLocale()
     setmetatable(localizedStringsProxy, proxyMetatable)
 
     -- Free up memory for all the unused strings.
+    currentLocale = targetLocale.locale
     locales = nil
 end
 

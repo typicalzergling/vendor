@@ -171,6 +171,7 @@ function TabControl:AddTab(id, name, template, class, far)
     if (type(id) == "table") then
         assert(not self:GetTab(id.Id), "There is already a table with the specified id: " .. id.Id)
         tab = Tab.Create(self, id.Id, id.Name, id.Template, id.Class)
+        far = id.Far or false
     else
         assert(not self:GetTab(id), "There is already a table with the specified id: " .. id)
         tab = Tab.Create(self, id, name, template, class)

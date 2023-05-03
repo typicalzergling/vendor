@@ -1,6 +1,20 @@
-local AddonName, Addon = ...
+local _, Addon = ...
 
 Addon.ReleaseNotes = {
+{
+Release = "6.3 (BETA)",
+Notes = [[
+# Chat support (BETA)
+
+You can now control which messages go to which chat frame
+
+# Bugfixes
+
+* Audit frame no longer has large totals truncated
+* Fix import error in Wrath
+
+]]
+},
 {
 Release ="6.2 (May 1, 2022)",
 Notes = [[

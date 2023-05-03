@@ -50,27 +50,6 @@
         </Frames>
     </Frame>
 
-    <Frame name="Vendor_SettingsTab" virtual="true" hidden="true">
-        <Frames>
-            <Frame parentKey="settings" inherits="CommonUI_CategoryList">
-                <KeyValues>
-                    <KeyValue key="OnSelection" value="ShowSettings"/>
-                </KeyValues>
-                <Size x="224" y="1"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT"/>
-                    <Anchor point="BOTTOMLEFT"/>
-                </Anchors>
-            </Frame>
-            <Frame parentKey="host" hidden="true">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.settings" relativePoint="TOPRIGHT" x="12"/>
-                    <Anchor point="BOTTOMRIGHT"/>
-                </Anchors>
-            </Frame>
-        </Frames>
-    </Frame>
-
 	<Button name="HistoryItem" virtual="true" mixin="ItemMixin">
 		<Size x="20" y="18"/>
 		<Layers>
@@ -164,6 +143,7 @@
                     </KeyValues>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT"/>
+                        <Anchor point="BOTTOMLEFT"/>
 					</Anchors>
 				</FontString>
             </Layer>

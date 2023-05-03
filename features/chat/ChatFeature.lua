@@ -1,11 +1,12 @@
 local AddonName, Addon = ...
 local locale = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("chat", ...) end
+local FRAMES_KEY = "feature:chat:frames"
 
 local ChatFeature = { 
     NAME = "Chat Output", 
     VERSION = 1, 
-    DEPENDENCIES = { "Rules" },
+    DEPENDENCIES = { "settings" },
     BETA = true,
     DESCRIPTION = [[Controls where the output from vendor goes, allows you to select which messages got to each chat frame]]
 }
@@ -16,15 +17,29 @@ ChatFeature.MessageType = {
     Repair = 0x4,
     List = 0x8,
     Other = 0x10,
-    All = 0xff
+    Debug = 0x10000,
+    All = 0xfffff
 }
 
 function ChatFeature:OnInitialize()
     debugp("ChatFeature.OnInitialize()")
+
+    local settings = Addon:GetFeature("Settings")
+    settings:RegisterPage(
+        "CHAT_SETTING_NAME", 
+        "CHAT_SETTING_DESCR",
+        function(parent)
+            local frame = CreateFrame("Frame", nil, parent or UIParent, "Chat_Settings")
+            Addon.CommonUI.UI.Attach(frame, Addon.Features.Chat.ChatSettings)
+            return frame
+        end)
 end
 
 function ChatFeature:OnTerminate()
     debugp("ChatFeature.OnTerminate()")
+
+    local settings = Addon:GetFeature("settings")
+    settings:UnregisterPage("CHAT_SETTING_NAME")
 end
 
 function ChatFeature:GetSettings()
@@ -39,49 +54,53 @@ local function getChatName(chatFrame)
     return ""
 end
 
---[[ Checks if the frame is visible/enabled ]]
-local function isFrameActive(chatFrame)
-    local tab = _G[chatFrame:GetName() .. "Tab"]
-    if (tab) then
-        return tab:IsShown()
-    end
-    return false
-end
-
-
 --[[ Get the current options from the profile ]]
-local function getChatOptions()
+function ChatFeature:GetFrameSettings()
     local profile = Addon:GetProfile()
-    local options = profile:GetValue("chatFeature")
+    local options = profile:GetValue(FRAMES_KEY)
     if (not options) then
         options = {}
         options[getChatName(DEFAULT_CHAT_FRAME)] = ChatFeature.MessageType.All
+        profile:SetValue(FRAMES_KEY, options)
     end
 
     return options
 end
 
-local CHAT_PREFIX = string.format("%s[%s%s%s]%s%s%s", HIGHLIGHT_FONT_COLOR_CODE, ORANGE_FONT_COLOR_CODE, AddonName, HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, FONT_COLOR_CODE_CLOSE, " ")
+--[[ Update the profile with the new values ]]
+function ChatFeature:SetFrameSetting(name, value)
+    local profile = Addon:GetProfile()
+    local options = self:GetFrameSettings()
+    options[name] = value or 0
+    profile:SetValue(FRAMES_KEY, options)
+end
 
 --[[ Sends a chat message to the chat frames ]]
 function ChatFeature:Output(type, message, ...)
-    local args = {}
-    for _, arg in ipairs({...}) do
-        table.insert(args, tostring(arg))
+    -- Danger - You cannot have debug prints in this method --
+
+    message = string.format(locale:GetString(message) or message, ...)
+    local options = self:GetFrameSettings()
+
+    local prefix = "" 
+    if (type ~= self.MessageType.Debug) then
+        prefix = string.format(locale.CHAT_MESSAGE_PREFIX_FMT1, AddonName)
+    --@debug@
+    elseif (Addon.IsDebug) then
+        prefix = string.format(locale.CHAT_MESSAGEDEBUG_PREFIX_FMT1, AddonName)
+    --@end-debug@
+    else
+        return
     end
 
-    message = string.format(locale:GetString(message) or message, unpack(args))
-    local options = getChatOptions()
     
     ChatFrameUtil.ForEachChatFrame(
         function(frame)
-            if (isFrameActive(frame)) then
-                local name = getChatName(frame)
+            local name, _, _, _, _, _, shown, _, docked = FCF_GetChatWindowInfo(frame:GetID())
+            if (shown or docked) then
                 local bits = options[name] or 0
-
                 if (bit.band(bits, type) == type) then
-                    debugp("Sending chat message to '%s' (%s)", name, type)
-                    frame:AddMessage(CHAT_PREFIX .. message)
+                    frame:AddMessage(prefix .. message)
                 end
             end
         end)

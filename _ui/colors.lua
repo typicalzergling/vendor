@@ -80,6 +80,15 @@ Addon.CommonUI.Colors =
     CHECKBOX_CHECK = CreateColor(1, 1, 0, 0.6),
     CHECKBOX_DISABLED = CreateColor(1, 1, 1, .5),
 
+    -- Switch control
+    SWTICH_BORDER = CreateColor(1, 1, 1, .5),
+    SWITCH_BORDER_HOVER = WHITE_FONT_COLOR,
+    SWITCH_TOGGLE_OFF = CreateColor(1, 1, 0, 0.5),
+    SWTICH_TOGGLE_ON = CreateColor(1, 1, 0, 1),
+    SWITCH_BACKGROUND = CreateColor(1, 1, 1, .15),
+    SWITCH_BACKGROUND_ON = CreateColor(1, 1, 0, .25),
+    SWITCH_DISABLED = CreateColor(1, 1, 1, .5),
+
     -- Tab Controls
     TABCONTROL_BORDER = CreateColor(1, 1, 1, .60),
     TABCONROL_BACK = { r = 0, g = 0, b = 0, a = 0 },

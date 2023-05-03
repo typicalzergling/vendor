@@ -159,6 +159,7 @@ end
 function MarkdownFrame:Layout(width, height)
     if (self.content) then
         self.content:SetHeight(0)
+        self.content:SetWidth(width)
         self:SetHeight(self.content:GetHeight())
     elseif (type(self.contents) == "table") then
         width = width or self:GetWidth()     

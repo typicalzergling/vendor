@@ -2,7 +2,6 @@
     <Script file="vendor.lua"/>
     <Script file="MainDialog.lua"/>
     <Script file="RulesTab.lua"/>
-    <Script file="SettingsTab.lua"/>
     <Script file="HelpTab.lua"/>
     <Script file="ProfilesTab.lua"/>
     <Script file="ProfileItem.lua"/>

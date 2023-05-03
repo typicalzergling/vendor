@@ -235,4 +235,10 @@
         </Layers>
     </Button>
 
+    <Button virtual="true" name="CommonUI_Switch">
+        <Scripts>
+            <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Switch")</OnLoad>
+        </Scripts>
+    </Button>
+
 </Ui>
