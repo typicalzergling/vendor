@@ -288,6 +288,9 @@ function SettingsList:AddSetting(setting, label, help, depend)
     return setting
 end
 
+--todo: make a scrollview class of our own which uses minimal or wowtrim scrollbar and 
+-- can have a frame assigned to it.
+
 --[[ Create a new settings list ]]
 function Settings.CreateList(parent)
     local frame = CreateFrame("Frame", nil, (parent or UIParent), "CommonUI_List")

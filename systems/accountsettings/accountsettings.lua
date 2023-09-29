@@ -4,7 +4,7 @@ local function debugp(...) Addon:Debug("accountsettings", ...) end
 
 --[[ Retrieve our depenedencies ]]
 function AccountSettings:GetDependencies()
-    return { "savedvariables" }
+    return { "system:savedvariables" }
 end
 
 --[[ Called when the settings have changed ]]
@@ -13,10 +13,9 @@ function AccountSettings:GetEvents()
 end
 
 --[[ Startup our system ]]
-function AccountSettings:Startup(onready)
+function AccountSettings:Startup(register)
     self.savedVariable = Addon:CreateSavedVariable("AccountSettings")
-
-    onready({ "GetAccountSetting", "SetAccountSetting" })
+    register({ "GetAccountSetting", "SetAccountSetting" });
 end
 
 --[[ Shutdown our system ]]
@@ -30,6 +29,7 @@ end
 --[[ Retrieve an account setting ]]
 function AccountSettings:GetAccountSetting(name, default)
     assert(type(name) == "string", "Invalid input to GetAccountSetting")
+
     local value = self.savedVariable:Get(name)
     debugp("GetAccountSetting: %s = %s (%s), default = %s", name, tostring(value), type(value), tostring(default))
     if (type(value) == "nil") then

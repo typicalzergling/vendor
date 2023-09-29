@@ -88,10 +88,10 @@ Returns true if the item is in any of the provided lists by name. The name provi
 
 --[[ Register functions ]]
 function Lists:RegisterFunctions()
-    self.Rules:RegisterFunctions(ListRuleFunctions)
+    Addon:RegisterFunctions(ListRuleFunctions)
 end
 
 --[[ Unregister functions ]]
 function Lists:UnregisterFunctions()
-    self.Rules:UnregisterFunctions(ListRuleFunctions)
+    Addon:UnregisterFunctions(ListRuleFunctions)
 end

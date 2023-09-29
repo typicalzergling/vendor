@@ -17,10 +17,11 @@ function ExtensionManager:GetDependencies()
         "rules",
         "interop",
         "lists",
+     --   "features"
     }
 end
 
-function ExtensionManager:Startup(onready)
+function ExtensionManager:Startup(register)
 
     -- Load all extensions for addons which may have already been loaded prior to our addon loading.
     debugp("In ExtensionManager Startup")
@@ -34,7 +35,7 @@ function ExtensionManager:Startup(onready)
     -- Register event to handle addons which load after we do.
     --Addon:RegisterEvent("ADDON_LOADED", self.OnAddonLoaded)
 
-    onready({
+    register({
         -- Eventually add external extension registration here when it is migrated.
         })
 end

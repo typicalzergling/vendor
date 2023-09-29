@@ -9,6 +9,7 @@ local adiBags = nil
 local LAdiBags = nil
 local filters = {}
 local filterEngine = nil
+local destroyFilter = nil
 
 -- AdiBags Sell Filter for Vendor
 local function registerSellFilter()
@@ -17,22 +18,9 @@ local function registerSellFilter()
     sellFilter.uiName = L.ADIBAGS_FILTER_VENDOR_SELL_NAME
     sellFilter.uiDesc = L.ADIBAGS_FILTER_VENDOR_SELL_DESC
 
-    sellFilter.OnInitialize = function(self)
-        -- No settings, so nothing to initialize at this time.
-    end
-
-    sellFilter.OnEnable = function(self)
-        sellFilterEnabled = true
-        adiBags:UpdateFilters()
-    end
-
-    sellFilter.OnDisable = function(self)
-        sellFilterEnabled = false
-        adiBags:UpdateFilters()
-    end
-
-    sellFilter.Filter = function(self, slotData)
+    sellFilter.Filter = function(self, slotData)        
         assert(Vendor and Vendor.EvaluateItem, "Expected Vendor functions not available. Something went horribly wrong; please report to Vendor Addon developers.")
+
         if not slotData then
             return
         end
@@ -42,11 +30,6 @@ local function registerSellFilter()
             return L.ADIBAGS_CATEGORY_VENDOR_SELL, LAdiBags["Junk"]
         end
     end
-
-    -- No filter options at this time
-    sellFilter.GetFilterOptions = function(self)
-        return
-    end
 end
 
 
@@ -54,23 +37,10 @@ end
 local function registerDestroyFilter()
 
     -- Use highest priority, since Vendor could end up reclassifying absolutely anything in the bags.
-    local destroyFilter = adiBags:RegisterFilter("VendorDestroy", 100, 'ABEvent-1.0')
+    destroyFilter = adiBags:RegisterFilter("VendorDestroy", 100, 'ABEvent-1.0')
     destroyFilter.uiName = L.ADIBAGS_FILTER_VENDOR_DESTROY_NAME
     destroyFilter.uiDesc = L.ADIBAGS_FILTER_VENDOR_DESTROY_DESC
 
-    destroyFilter.OnInitialize = function(self)
-        -- No settings, so nothing to initialize at this time.
-    end
-
-    destroyFilter.OnEnable = function(self)
-        destroyFilterEnabled = true
-        adiBags:UpdateFilters()
-    end
-
-    destroyFilter.OnDisable = function(self)
-        destroyFilterEnabled = false
-        adiBags:UpdateFilters()
-    end
 
     destroyFilter.Filter = function(self, slotData)
         assert(Vendor and Vendor.EvaluateItem, "Expected Vendor functions not available. Something went horribly wrong; please report to Vendor Addon developers.")
@@ -83,52 +53,36 @@ local function registerDestroyFilter()
             return L.ADIBAGS_CATEGORY_VENDOR_DESTROY, LAdiBags["Junk"]
         end
     end
-
-    -- No filter options at this time
-    destroyFilter.GetFilterOptions = function(self)
-        return
-    end
 end
 
 -- Create and registers a filter for each non-locked rule
 local function createRuleFilters()
     if (not filterEngine) then
-        --filterEngine = Addon:CreateRulesEngine(true)
-        --filterEngine:CreateCategory(1, "=adibags=", 0)
+        filterEngine = Addon:CreateRulesEngine()
+        filterEngine:CreateCategory(1, "=adibags=", 0)
     end
 
-    for _, rule in ipairs(Addon.Rules.GetDefinitions()) do
+    print("Addon:", Addon, AddonName)
+    local rules = Addon:GetFeature("rules"):GetRules()
+    print("rules:", rules, table.getn(rules))
+    rules = Addon.Rules.GetDefinitions();
+    print("rules:", rules, table.getn(rules))
+
+    for _, rule in ipairs(rules) do
         if (not rule.Locked) then
-            local filter = adiBags:RegisterFilter("Vendor:" .. rule.Id, 100, 'ABEvent-1.0')
+            local filter = adiBags:RegisterFilter("Vendor:rule:" .. rule.Id, 99, 'ABEvent-1.0')
             filter.uiName = L.ADDON_NAME .. ": " .. rule.Name
             filter.uiDesc = rule.Description
-        
-            filter.OnInitialize = function(self)
-                -- No settings, so nothing to initialize at this time.
-                --filterEngine:AddRule(1, rule)
-            end
-        
-            filter.OnEnable = function(self)
-                filter.enabled = true
-                --filterEngine:AddRule(1, rule)
-                adiBags:UpdateFilters()
-            end
-        
-            filter.OnDisable = function(self)
-                filter.eanbled = false
-                --filterEngine:RemoveRule(rule.Id)
-                adiBags:UpdateFilters()
-            end
-
+            filterEngine:AddRule(1, rule)
+                
             filter.Filter = function(self, slotData)
                 -- Get Item info for bag/slot
                 local item = Addon.Systems.ItemProperties:GetItemPropertiesFromBagAndSlot(slotData.bag, slotData.slot)
-                Addon:Debug("features", "--> filter %s, %s, %s", slotData.bag, slotData.item, tostring(item))
                 if (item) then
-                    --local result = filterEngine:EvaluateOne(rule.Id, item)
-                    --if (result == true) then
-                        --return filter.uiName
-                    --end
+                    local result = filterEngine:EvaluateOne(rule.Id, item, {})
+                    if (result == true) then
+                        return filter.uiName
+                    end
                 end
             end
 
@@ -151,21 +105,29 @@ local function registerAdiBagsExtension()
         -- This is called by Vendor whenever its rules change and AdiBags needs to update its filters.
         OnRuleUpdate = function()
             -- We'll only tell AdiBags to update filters if one of our filters is enabled.
-            if sellFilterEnabled or destroyFilterEnabled then
-                adiBags:UpdateFilters()
-            end
+            adiBags:UpdateFilters()
         end,
 
         Register = function()
-            if not adiBags then
+            if not adiBags then 
                 adiBags = LibStub('AceAddon-3.0'):GetAddon('AdiBags')
             end
             if not LAdibags then
                 LAdiBags = setmetatable({}, {__index = adiBags.L})
             end
             registerSellFilter()
-            registerDestroyFilter()
-            --createRuleFilters()
+            registerDestroyFilter()            
+            --adiBags:UpdateFilters()
+
+            Addon:RegisterCallback("OnFeaturesReady", {}, function()
+                    createRuleFilters()
+                    if (destroyFilter) then
+                        destroyFilter:SetEnabledState(false)
+                        destroyFilter:SetEnabledState(true)
+                    end
+                    adiBags:UpdateFilters()
+                end)
+
             return true
         end,
     }

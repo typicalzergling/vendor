@@ -106,8 +106,8 @@ function Evaluation:EvaluateItem(item, ignoreCache)
     return result
 end
 
-function Evaluation:Startup(onready)
-    onready({
+function Evaluation:Startup(register)
+    register({
         "EvaluateSource",                   -- Wrapped in Public API
         "ClearItemResultCacheByItemId",     -- Forced Cache Clear   - Used by Blocklists
         "ClearItemResultCache",             -- Forced Cache Clear   - Used in many places

@@ -125,9 +125,9 @@ function Info:CheckReleaseForClient(release)
     return false
 end
 
-function Info:Startup(onready)
+function Info:Startup(register)
     populateBuildInfo()
-    onready({
+    register({
         "GetPriceString",
         "CheckReleaseForClient"
     })

@@ -24,12 +24,12 @@ function RuleSystem:GetEvents()
 end
 
 --[[ Startup our system ]]
-function RuleSystem:Startup(onready)
+function RuleSystem:Startup(register)
     self.functions = {}
     xpcall(
     self.RegisterSystemFunctions, CallErrorHandler, self)
 
-    onready({    "GetRuleFunctions",
+    register({    "GetRuleFunctions",
                 "GetFunctionDocumentation",
                 "RegisterFunctions",
                 "UnregisterFunctions",

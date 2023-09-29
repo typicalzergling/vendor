@@ -3,6 +3,7 @@
     <Script file="api.lua"/>
     <Script file="utils.lua"/>
     <Script file="event.lua"/>
+    <Script file="component.lua"/>
     <Script file="locale.lua"/>
     <Script file="hook.lua"/>
     <Script file="console.lua"/>

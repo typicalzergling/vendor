@@ -411,22 +411,18 @@ end
     |   Executes a single rule in the engine, returns the resuls
     =======================================================================--]]
 local function engine_EvaluateOne(self, ruleId, object, ...)
-    if (type(ruleId) == "table") then
-        ruleId = ruleId.Id
-    end
-
     local accessors = createAccessors(object);
     local ruleEnv = createRestrictedEnvironment(true, accessors, self.environment, self.globals);
     assignFunctionEnv(self.environment, createRestrictedEnvironment(false, accessors, { OBJECT = object },  _G));
 
     for _, category in ipairs(self.categories) do
-        local exists, result, error, weight = category:EvaluateOne(self, ruleId, self.log, object, ...)
-        if (exists and not error) then
+        local exists, matched, weight = category:EvaluateOne(self, ruleId, self.log, ruleEnv)
+        if (exists and matched) then
             return true, weight, category:GetId()
         end
     end
 
-    return false, -1, -1
+    return false, -1, nil
 end
 
 

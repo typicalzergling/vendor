@@ -1,6 +1,5 @@
 local AddonName, Addon = ...
 local debugp = function (...) Addon:Debug("systems", ...) end
-
 local systems = {}
 
 --[[ Checks the local list for a dependency ]]
@@ -318,12 +317,12 @@ function Systems:Get(system)
 end
 
 -- Hook up the events
-Addon:GenerateEvents({ "OnSystemReady", "OnAllSystemsReady" })
+Addon:GenerateEvents({ "OnAllSystemsReady" })
 
 --[[ When our addon is completely loaded start the initialization of our systems ]]
 Addon:RegisterEvent("ADDON_LOADED", function(addon)
     if (addon == AddonName) then
-        Systems:Init()
+    --    Systems:Init()
     end
 end)
 
@@ -335,13 +334,162 @@ end)
 Addon.Systems = {}
 Addon.Systems.Profile = {
     GetDependencies = function()
-        return { "savedvariables" }
+        return { "system:savedvariables" }
     end
 }
 
 --[[ Retrieve the named system ]]
 function Addon:GetSystem(system)
-    return Systems:Get(system)
+    local key = string.lower(system);
+    local result = systems[key];
+    if (result) then
+        return result;
+    end
+
+    error("Unable to locate the specified system: " .. system);
 end
 
 Addon.DependencyInit = DependencyInit
+
+local compMgr = Addon.ComponentManager
+
+local SystemComponent = {
+    Type = "system"
+}
+
+function SystemComponent.Create(name, system)
+    local instance = {
+        name = name,
+        system = system,
+    };
+
+    return setmetatable(instance, { 
+        __index = SystemComponent, 
+        __metatable = "system:" .. name 
+    });
+end
+
+function SystemComponent:GetDependencies()
+    local getDeps = self.system.GetDependencies;
+    local deps = {}
+
+    if (type(getDeps) == "function") then
+        deps = self.system.GetDependencies();
+    end
+    
+    table.insert(deps, "event:loaded");
+    return deps;
+end
+
+function SystemComponent:GetName()
+    return self.name
+end
+
+function SystemComponent:OnInitialize()
+
+    local startup = self.system.Startup;
+    if (type(startup) == "function") then
+        --local success, api = xpcall(source.Startup, CallErrorHandler, source, systemReady, systemError)
+    end
+end
+
+function SystemComponent:OnTerminate()
+end
+    
+
+local function RegisterApi(name, system, handler)
+    if (type(handler) == "table") then
+        for _, value in ipairs(handler) do
+            RegisterApi(name, system, value)
+        end
+    elseif (type(handler) == "string") then
+        local func = system[handler];
+        assert(type(func) == "function", "Expected handler '" .. handler .. "' to resolve to a function on " .. name)
+
+        assert(not Addon[handler], "An API with the name '" .. handler .. "' has already been registered")
+        Addon[handler] = function(_, ...)
+            return func(system, ...) 
+        end;
+        debugp("System[%s] registered API '%s'", name, handler);
+    end
+end
+
+local function InitializeSystem(name, system)
+    local startup = system.Startup;
+    if (type(startup) == "function") then
+        local success = xpcall(startup, CallErrorHandler, system, 
+            function(...) 
+                RegisterApi(name, system, ...)
+            end)
+    end
+
+    -- Check if system generates events
+    if (type(system.GetEvents) == "function") then
+        local events = system.GetEvents(system);
+        Addon:GenerateEvents(events)
+    end
+
+    -- Automatically hook events into the system
+    for name, handler in pairs(system) do
+        if (type(handler) == "function") then
+            if (name == "ADDON_LOADED") then
+                -- This is implicit sine we are already here.
+                handler(system);
+            elseif Addon:RaisesEvent(name) then
+                Addon:RegisterCallback(name, system, handler)
+            elseif (string.find(name, "ON_") == 1) then
+                Addon:RegisterEvent(string.sub(name, 4),
+                    function(...)
+                        handler(system, ...)
+                    end)
+            end
+        end
+    end
+
+    systems[string.lower(name)] = system
+end
+
+local function TerminateSystem(name, system)
+end
+
+local function CreateComponent(name, system)
+    local systemDeps = {}
+    if (type(system.GetDependencies) == "function") then
+        systemDeps = system.GetDependencies(system)
+    end
+    table.insert(systemDeps, "event:loaded" );
+
+    return {
+        Type = "system",
+        Name = name,
+        OnInitialize = function(self)  InitializeSystem(name, system) end,
+        OnTerminate = function(self) TerminateSystem(name, system) end,
+        Dependencies = systemDeps
+    }
+end
+
+
+Addon:RegisterEvent("ADDON_LOADED", function(addon)
+    if (addon == AddonName) then
+        local deps = {}
+        
+        for name, system in pairs(Addon.Systems or {}) do
+            table.insert(deps, "system:" .. name)
+            compMgr:Create(CreateComponent(name, system));
+        end
+
+        compMgr:Create({
+            Name = "systems",
+            Type = "core",
+            Dependencies = deps,
+            OnInitialize = function(self)
+                Addon:RaiseEvent("OnAllSystemsReady")
+            end
+        })
+
+        compMgr:InitializeComponents()
+    end
+end)
+
+
+--local systemsx  = compMgr:Create(SystemComponent)

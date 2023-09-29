@@ -195,17 +195,17 @@
                         <KeyValue key="LocKey" value="ABOUT_PROJECT_LABEL"/>
                         <KeyValue key="Color" value="TEXT"/>
                     </KeyValues>
-                    <Size x="100" y="24"/>
+                    <Size x="100" y="18"/>
                     <Anchors>
                         <Anchor point="TOPLEFT"/>
                     </Anchors>
                 </FontString>
                 <FontString justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" parentKey="labelTutorial">
                     <KeyValues>
-                        <KeyValue key="LocKey" value="ABOUT_TUTORIAL_LABEL"/>
+                        <KeyValue key="LocKey" value="ABOUT_DISCORD_LABEL"/>
                         <KeyValue key="Color" value="TEXT"/>
                     </KeyValues>
-                    <Size x="100" y="24"/>
+                    <Size x="100" y="18"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeKey="$parent.labelUrl" relativePoint="BOTTOMLEFT" y="-8"/>
                         <Anchor point="RIGHT" relativeKey="$parent.labelUrl"/>
@@ -216,7 +216,7 @@
                         <KeyValue key="LocKey" value="ABOUT_VERSION_LABEL" type="string"/>
                         <KeyValue key="Color" value="TEXT"/>
                     </KeyValues>
-                    <Size x="100" y="24"/>
+                    <Size x="100" y="18"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeKey="$parent.labelTutorial" relativePoint="BOTTOMLEFT"  y="-8"/>
                         <Anchor point="RIGHT" relativeKey="$parent.labelUrl"/>
@@ -239,7 +239,7 @@
             <EditBox inherits="CommonUI_Url" parentKey="tutorial">
                 <Size x="100" y="24"/>
                 <KeyValues>
-                    <KeyValue key="Url" value="VENDOR_TUTORIAL"/>
+                    <KeyValue key="Url" value="VENDOR_DISCORD"/>
                     <KeyValue key="Color" value="SECONDARY_TEXT"/>
                 </KeyValues>
                 <Anchors>

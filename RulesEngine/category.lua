@@ -60,26 +60,21 @@ end
     | category_EvaluateOne
     |   Execute a single rule and return the result
     =======================================================================--]]
-local function category_EvaluateOne(self, engine, ruleOrId, log, environment)
-    if (type(ruleOrId) == "string") then
-        ruleOrId = self:category_Find(self, ruleOrId)
-    end
-
-    if (type(ruleOrId) == "table") and ruleOrId:IsHealthy() then
-        log:Write("Evaluating rule '%s' (weight: %d)", ruleOrId:GetId(), 0);
-        local status, result, message = ruleOrId:Execute(environment)
-        if (not status) then
-            log:Write("Rule '%s' failed to execute: %s", ruleOrId:GetId(), message or "<unknown error>");
-            engine.OnRuleStatusChange("UNHEALTHY", self.id, ruleOrId:GetId(), ruleOrId:GetError())
-            return true, false, true, 0
+local function category_EvaluateOne(self, engine, ruleId, log, environment)
+    local rule = category_Find(self, ruleId)
+    if (type(rule) == "table") and rule:IsHealthy() then
+        log:Write("Evaluating one rule '%s' (weight: %d)", rule:GetId(), 0);
+        local success, result, message = rule:Execute(environment)
+        if (not success) then
+            log:Write("Rule '%s' failed to execute: %s", rule:GetId(), message or "<unknown error>");
+            engine.OnRuleStatusChange("UNHEALTHY", self.id, rule:GetId(), rule:GetError())
+        else
+            log:Write("Rule '%s' evaluated [%s, %s]", rule:GetId(), tostring(result), tostring(message))
+            return true, result == true, self.weight + rule:GetWeight()
         end
-
-        return true, result == true, false, ruleOrId:GetWeight()
     end
 
-
-    log:Write("Unable to determine rule to execute [category=%s, rule=%s]", tostring(self:GetId()), tostring(ruleOrId))
-    return false, false, false, 0
+    return false, false, -1
 end
 
 --[[===========================================================================
@@ -100,8 +95,11 @@ local function category_Evaluate(self, engine, log, environment)
             -- TODO: this should loop and determine the highest weight rule
 
             log:Write("Evaluating rule '%s' (weight: %d)", rule:GetId(), rule:GetWeight())
-            local _, result, error, weight = category_EvaluateOne(self, engine, rule, log, environment)
-            if (not error and result) then
+            local success, result, message = rule:Execute(environment)
+            if (not success) then
+                log:Write("Rule '%s' failed to execute: %s", rule:GetId(), message or "<unknown error>");
+                engine.OnRuleStatusChange("UNHEALTHY", self.id, rule:GetId(), rule:GetError())
+            elseif (result) then
                 local weight = rule:GetWeight() or 0
                 if (type(weight) == "number" and (weight ~= 0)) then
                     weight = base + weight
@@ -146,6 +144,7 @@ local category_API =
     Add = category_Add,
     Reset = category_Reset,
     Evaluate = category_Evaluate,
+    EvaluateOne = category_EvaluateOne,
     GetName = function(self) return self.name end,
     GetId = function(self) return self.id end,
     GetWeight = function (self) return self.weight end,

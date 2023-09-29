@@ -30,11 +30,11 @@ function ListSystem:GetEvents()
 end
 
 --[[ Startup our system ]]
-function ListSystem:Startup(onready)
+function ListSystem:Startup(register)
     self.customLists = ListSystem:CreateCustomListManager()
     self:RegisterFunctions()
 
-    onready({ "GetList", "GetLists", "CreateList", "DeleteList", "GetSystemLists" })
+    register({ "GetList", "GetLists", "CreateList", "DeleteList", "GetSystemLists" })
 end
 
 --[[ Shutdown our system ]]

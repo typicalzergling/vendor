@@ -36,7 +36,7 @@ local function eventDispatcher(frame, event, ...)
     
     if type(handler) == "table" then
         -- Execute all handlers for this event.
-        for k, v in ipairs(handler) do
+        for _, v in ipairs(handler) do
             dispatchEvent(v, ...)
         end
     else
@@ -50,7 +50,7 @@ local function registerEvent(event, handler)
         events[event] = handler
     else 
         -- Check if we need to convert it to table    
-        if type(events[event] ~= "table") then
+        if (type(events[event]) ~= "table") then
             local firstHandler = events[event]
             events[event] = {}
             table.insert(events[event], firstHandler)
