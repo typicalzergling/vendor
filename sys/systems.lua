@@ -429,27 +429,17 @@ local function InitializeSystem(name, system)
         Addon:GenerateEvents(events)
     end
 
-    -- Automatically hook events into the system
-    for name, handler in pairs(system) do
-        if (type(handler) == "function") then
-            if (name == "ADDON_LOADED") then
-                -- This is implicit sine we are already here.
-                handler(system);
-            elseif Addon:RaisesEvent(name) then
-                Addon:RegisterCallback(name, system, handler)
-            elseif (string.find(name, "ON_") == 1) then
-                Addon:RegisterEvent(string.sub(name, 4),
-                    function(...)
-                        handler(system, ...)
-                    end)
-            end
-        end
-    end
-
+    Addon.RegisterForEvents(system, system)
     systems[string.lower(name)] = system
 end
 
 local function TerminateSystem(name, system)
+    Addon.UnregisterFromEvents(system, system)
+
+    if (type(system.GetEvents) == "function") then
+        local events = system.GetEvents(system);
+        Addon:RemoveEvents(events)
+    end
 end
 
 local function CreateComponent(name, system)
@@ -468,6 +458,33 @@ local function CreateComponent(name, system)
     }
 end
 
+--[[ Simple helper for automatically connecting to events ]]
+Addon.RegisterForEvents = function(instance, metatable)
+    for name, handler in pairs(metatable) do
+        if (type(handler) == "function") then
+            if Addon:RaisesEvent(name) then
+                Addon:RegisterCallback(name, instance, handler)
+            elseif (string.find(name, "ON_") == 1) then
+                Addon:RegisterEvent(string.sub(name, 4),
+                    function(...)
+                        handler(instance, ...)
+                    end
+                )
+            end
+        end
+    end
+end
+
+--[[ Simple helper for automatically connecting to events ]]
+Addon.UnregisterFromEvents = function(instance, metatable)
+    for name, handler in pairs(metatable) do
+        if (type(handler) == "function") then
+            if Addon:RaisesEvent(name) then
+                Addon:UnregisterCallback(name, instance)
+            end
+        end
+    end
+end
 
 Addon:RegisterEvent("ADDON_LOADED", function(addon)
     if (addon == AddonName) then
