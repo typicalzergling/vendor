@@ -3,7 +3,7 @@
 # Load paths. We assume paths are in the .env file and that this is being executed from the addon's .release folder.
 . ".env"
 
-all_flavors="_retail_ _ptr_ _classic_ _beta_"
+all_flavors="_retail_ _ptr_ _xptr_ _classic_ _beta_"
 
 flavors=$all_flavors
 

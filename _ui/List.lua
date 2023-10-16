@@ -354,7 +354,8 @@ local function list_Layout(self, state)
         Addon:Debug("list", "List '%s' has finshed layout %s x %s (%s frames)", list_DebugName(self), width, viewHeight, table.getn(state.viewFrames or {}))
     end
 
-    state.viewHeight = viewHeight    
+    state.viewHeight = viewHeight
+    if viewHeight == 0 then viewHeight = 1 end
     if (viewHeight <= state.frame:GetHeight()) then
         state.scrollbar:SetScrollAllowed(false)
     else
@@ -688,7 +689,9 @@ function List:Update()
         list_Layout(self, state)
         self.layout = false
 
-        state.scrollbar:SetVisibleExtentPercentage(math.max(1, self:GetHeight() / container:GetHeight()))
+        local height = container:GetHeight()
+        if height == 0 then  height = 1 end
+        state.scrollbar:SetVisibleExtentPercentage(math.max(1, self:GetHeight() / height))
         state.scrollbar:Update()
     end
 end
