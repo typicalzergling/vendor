@@ -119,7 +119,7 @@ end
 --[[  Retrieve the lists tab ]]
 function SettingsFeature:GetTab()
     return {
-            Id = "settngs",
+            Id = "settings",
             Name = "RULES_DIALOG_CONFIG_TAB",
             Template = "Vendor_SettingsTab",
             Class = self.SettingsTab,

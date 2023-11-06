@@ -2,21 +2,53 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
-Release = "6.3 (BETA)",
+Release = "6.3 (November 6, 2023)",
 Notes = [[
-# Chat support (BETA)
+# Dragonflight 10.2 Support
 
-You can now control which messages go to which chat frame
+This release fixes a few bugs found in the 10.2 Dragonflight client, has some back end
+engineering improvements, and mainly delivers the much requested Chat Output feature.
+
+# Chat Output (BETA)
+
+You can now control which messages go to which chat frame. This has been a longtime request and
+we've implemented this as a beta feature. To configure chat output, go to Settings and select
+"Chat Output". We list your active chat channels and you can select which Vendor messages go
+to which chat channels, or turn them all off. It's entirely up to you. This is a beta feature
+so there's probably a few bugs with it, please let us know how it is working for you.
+
+# Discord Server for Addon Support
+We now have a discord server for Vendor where you can come ask us questions and share issues.
+* https://discord.gg/BtqVg8KVDg
+
+
+# Initialization load order changes
+
+These changes are largely transparent to the typical Vendor enjoyer, but we experienced issues
+with other addons and load order because we try to be smart and not load things all at once
+and have delay loading on several things so your client isn't a slideshow when you log in.
+Unfortunately we're one of the only addons who do this and delay load meant some other addons
+that we plug into would not see us and get some errors. So we did a rather significant rework
+of our intialization and loading code, which is all back end boring stuff for you. However,
+what it means is that we may have some bugs lurking there, so please pay attention especially
+to interactions with other addons like Adibags or CanIMogIt and lets us know if you have
+problems. Feel free to use the above Discord for reporting issues or to ping us there.
+
+
+# Known Issues
+* The "Hidden Rules" settings category is not working. We may be delayed in fixing this for
+a few days.
+
 
 # Bugfixes
 
-* Audit frame no longer has large totals truncated
-* Fix import error in Wrath
+* Audit frame no longer has large totals truncated.
+* Fixed import error in Wrath.
 
 ]]
 },
 {
-Release ="6.2 (May 1, 2022)",
+Release ="6.2 (May 1, 2023)",
 Notes = [[
 # Dragonflight 10.1 Support
 

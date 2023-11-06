@@ -13,13 +13,7 @@ CHAT_MESSAGETYPE_DEBUG = "Debug",
 CHAT_MESSAGE_PREFIX_FMT1 = HIGHLIGHT_FONT_COLOR_CODE .. "["  .. ORANGE_FONT_COLOR_CODE .. "%s|r" ..  HIGHLIGHT_FONT_COLOR_CODE .. "]|r ",
 CHAT_MESSAGEDEBUG_PREFIX_FMT1 = HIGHLIGHT_FONT_COLOR_CODE .. "["  .. BLUE_FONT_COLOR_CODE .. "%s|r" ..  HIGHLIGHT_FONT_COLOR_CODE .. "]|r ",
 CHAT_SETTINGS_HELP = [[
-[revisit] The following types can be configued:
-
-* Destroy 
-* Merchant
-* Repair
-* List
-* Other
+Configure which category of messages appear in your chat channels below.
 ]]
 
 }}

@@ -468,27 +468,27 @@ DIALOG_TEXT_CONFIRM="Confirm",
 IMPORT_HELP_TEXT="Paste in the encoded text string below for Vendor rules or lists from other players to import them.",
 IMPORT_DIALOG_CAPTION="Import Rules and Lists",
 IMPORT_HELP_TEXT_PASTE_HERE="Paste in Vendor export strings here from exporting rules or lists.",
-IMPORT_INVALID_STRING = "[revisit] The specified string is not a valid import payload",
+IMPORT_INVALID_STRING = "The specified string is not a valid import string.",
 IMPORT_ERROR_CAPTION="Import Error",
 IMPORT_PAYLOAD_ERROR = [[
 # Import Error
 
-[revisit] The contents of the import data appear to be invalid
+Invalid import data.
 ]],
 IMPORT_UNKNOWN_CONTENT = [[
 # Import Error
 
-[revisit] The contents of the import data do not appear to be a vendor object
+Import data is not a string Vendor recognizes.
 ]],
 IMPORT_MISMATCH_RELEASE = [[
 # Import Error
 
-[revisit] The contents of the import data are for a different flavor of World of Warcraft
+Import data is for a different flavor of World of Warcraft.
 ]],
 IMPORT_OUTDATED_VERSION = [[
 # Import Error
 
-[revisit] The contents of the import data are for an older version of vendor
+Import data is from an older version of Vendor and is unsupported on this version.
 ]],
 
 EDITPARAM_NAME_LABEL = "Name:",
