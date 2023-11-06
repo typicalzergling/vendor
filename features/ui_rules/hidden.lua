@@ -127,8 +127,10 @@ function HiddenRuleItem:HasTooltip()
 end
 
 Addon.Features.Rules.HiddenRuleItem = HiddenRuleItem
-function Addon.Features.Rules.CreateHiddenRulePage(parent)
-    local frame = CreateFrame("Frame", nil, parent or UIParent, "Rules_HiddenSettings")
-    UI.Attach(frame, HiddenRuleSettings)
-    return frame
-end
+Addon.Features.Rules.HiddenRuleSettings = {
+    Create = function(parent)
+        local frame = CreateFrame("Frame", nil, parent or UIParent, "Rules_HiddenSettings")
+        UI.Attach(frame, HiddenRuleSettings)
+        return frame
+    end
+}

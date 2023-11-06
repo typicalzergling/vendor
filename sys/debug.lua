@@ -2,6 +2,7 @@
 -- This file will exist on a release build so Debug related code in the other files is defined.
 local AddonName, Addon = ...
 local DEBUG_VARIABLE = (AddonName .. "_debug");
+local MessageType = 0x10000
 
 Addon.IsDebug = true
 
@@ -25,15 +26,15 @@ end
 
 function Addon:PrintDebugChannels()
     debugEnsureVariable()
-    self:Print("Debug Channels:")
+    Addon:Output(MessageType, "Debug Channels:")
     local keys = {}
     for key in pairs(_G[DEBUG_VARIABLE].channel) do table.insert(keys, key) end
     table.sort(keys)
     for _, name in ipairs(keys) do
         if _G[DEBUG_VARIABLE].channel[name] then
-            self:Print("%s # %s%s", GREEN_FONT_COLOR_CODE, string.lower(name), FONT_COLOR_CODE_CLOSE)
+            Addon:Output(MessageType, "%s # %s%s", GREEN_FONT_COLOR_CODE, string.lower(name), FONT_COLOR_CODE_CLOSE)
         else
-            self:Print("    %s", string.lower(name))
+            Addon:Output(MessageType, "    %s", string.lower(name))
         end
     end
 end
@@ -53,7 +54,7 @@ function Addon:DisableAllDebugChannels()
     for name, enabled in pairs(_G[DEBUG_VARIABLE].channel) do
         _G[DEBUG_VARIABLE].channel[name] = false
     end
-    self:Print("All Debug Channels disabled.")
+    Addon:Output(MessageType, "All Debug Channels disabled.")
 end
 
 -- Explicity sets the state of a debug channel
@@ -74,10 +75,10 @@ function Addon:ToggleDebug(channel)
 
     if enabled then
         _G[DEBUG_VARIABLE].channel[name] = false;
-        self:Print("Debug channel %s disabled.", name)
+        Addon:Output(MessageType, "Debug channel %s disabled.", name)
     else
         _G[DEBUG_VARIABLE].channel[name] = true;
-        self:Print("Debug channel %s enabled.", name)
+        Addon:Output(MessageType, "Debug channel %s enabled.", name)
     end
 end
 
@@ -85,7 +86,7 @@ end
 function Addon:GetDebugSetting(key)
     debugEnsureVariable()
     if (type(key) ~= "string") then
-        Addon:Print("ERROR: the key for SetDebugSetting must be a string");
+        Addon:Output(MessageType, "ERROR: the key for SetDebugSetting must be a string");
         return;
     end
 
@@ -96,7 +97,7 @@ end
 function Addon:SetDebugSetting(key, value)
     debugEnsureVariable()
     if (type(key) ~= "string") then
-        Addon:Print("ERROR: the key for SetDebugSetting must be a string");
+        Addon:Output(MessageType, "ERROR: the key for SetDebugSetting must be a string");
         return;
     end
 
@@ -116,18 +117,8 @@ end
 -- Writes a debug message for a specific channmel to the defualt chat frame
 function Addon:Debug(channel, msg, ...)
     local name = string.upper(channel or "default");
-    if (Addon:IsDebugChannelEnabled(name)) then
-        local success = true
-        if (type(Addon.IsFeatureEnabled) == "function" and Addon:IsFeatureEnabled("chat")) then
-            local chat = Addon:GetFeature("chat")
-            success = pcall(chat.Output, chat, Addon.Features.Chat.MessageType.Debug, "[" .. ACHIEVEMENT_COLOR_CODE .. name .. "|r]" .. msg, ...)
-        else
-            local success = pcall(self.Print, self, "%s[%s]%s " .. msg, ACHIEVEMENT_COLOR_CODE, name, FONT_COLOR_CODE_CLOSE, ...)
-        end
-
-        if (not success) then
-            print(RED_FONT_COLOR_CODE .. "Debug Failed|r :: ", channel, msg, ...)
-        end
+    if (Addon.Output and Addon:IsDebugChannelEnabled(name)) then
+        Addon:Output(MessageType, "[" .. ACHIEVEMENT_COLOR_CODE .. name .. "|r]" .. tostring(msg), ...)
     end
 end
 

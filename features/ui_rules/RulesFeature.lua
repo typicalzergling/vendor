@@ -14,7 +14,7 @@ function RulesFeature:OnInitialize()
     Addon:GenerateEvents(EVENTS)
 
     local settings = Addon:GetFeature("Settings")
-    settings:RegisterPage(L.OPTIONS_CATEGORY_HIDDENRULES, L.OPTIONS_DESC_HIDDENRULES, self.CreateHiddenRulePage)
+    settings:RegisterPage(L.OPTIONS_CATEGORY_HIDDENRULES, L.OPTIONS_DESC_HIDDENRULES, self.HiddenRuleSettings.Create)
 end
 
 --[[

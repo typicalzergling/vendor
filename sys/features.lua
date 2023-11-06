@@ -87,10 +87,25 @@ function Features:InitializeFeature(name, feature)
     Addon.RegisterForEvents(instance, feature)
     self.features[string.lower(name)] = instance;
     Addon:RaiseEvent("OnFeatureReady", name, instance)
+    Addon:RaiseEvent("OnFeatureEnabled", name, instance)
 end
 
-function Features:TerminateFeature(name, system)
-    print("terminate system:", name)
+function Features:TerminateFeature(name, feature)
+    debugp("TerminateFeature[%s]", name)
+
+    name = string.lower(name)
+    if (self.features[name]) then
+        local term = feature.OnTerminate
+        if (type(term) == "function") then
+            debugp("Terminating feature[%s]", name)
+            local success = xpcall(term, CallErrorHandler, self.features[name])
+            assert(success, "Feature failed to terminate '" .. name .. "'")
+        end
+
+        Addon.UnregisterFromEvents(self.features[name], feature)
+        self.features[string.lower(name)] = nil;
+        Addon:RaiseEvent("OnFeatureDisabled", name, feature)
+    end
 end
 
 function Features:CreateComponent(name, feature)
@@ -158,13 +173,13 @@ end
 --[[ Returns all the beta features ]]
 function Features:GetBetaFeatures()
     local beta = {}
-    for _, feature in pairs(self.features) do
-        if (feature.beta) then
+    for name, feature in pairs(Addon.Features or {}) do
+        if (feature.BETA == true) then
             table.insert(beta, {
-                id = string.lower(feature.name),
-                name = feature.instance.NAME or feature.name,
-                description = feature.instance.DESCRIPTION or "",
-                eanbled = feature.enabled
+                id = string.lower(name),
+                name = feature.NAME or name,
+                description = feature.DESCRIPTION or "",
+                eanbled = self.features[string.lower(name)] ~= nil
             })
         end
     end
@@ -180,9 +195,27 @@ function Features:IsFeatureEnabled(name)
 end
 
 function Features:EnableFeature(name)
+    debugp("Enable feature '%s'", name)
+    local component = compMgr:Get("feature:" .. string.lower(name))
+    if (component ~= nil) then
+        return
+    end
+
+    name = string.lower(name)
+    for fname, feature in pairs(Addon.Features) do
+        print("feature:", name, "--> ", feature)
+        if (string.lower(fname) == name) then
+            compMgr:Create(self:CreateComponent(name, feature))
+            compMgr:InitializeComponents()
+            break;
+        end
+    end
 end
 
 function Features:DisableFeature(name)
+    debugp("Disable feature '%s'", name)
+    local componentName = "feature:" .. string.lower(name)
+    local component = compMgr:Remove(componentName)
 end
 
 function Features:WithFeature(name, callback)
@@ -202,37 +235,7 @@ function Features:WithFeature(name, callback)
     end
 end
 
---[[ Retreive the events we raise ]]
-function Features:GetEvents()
-    return { "OnFeatureDisabled", "OnFeatureEnabled", "OnFeatureReady", "OnFeaturesReady" }
-end
-
 
 Addon.Features = {}
 Addon.Systems.Features = Features
-
-
---[[Addon:RegisterEvent("ADDON_LOADED", function(addon)
-    if (addon == AddonName) then
-        local deps = { }
-        local compMgr = Addon.ComponentManager
-        
-        for name, feature in pairs(Addon.Features or {}) do
-            table.insert(deps, "feature:" .. name)
-
-            -- todo check if should eanble the feature or not.
-
-            compMgr:Create(CreateComponent(name, feature));
-        end
-
-        compMgr:Create({
-            Name = "features",
-            Type = "core",
-            Dependencies = deps,
-            OnInitialize = function(self)
-                debugp("All features are ready")
-                --RaiseEvent("AllFeaturesReady")
-            end
-        })
-    end
-end)]]--
+Addon:GenerateEvents({ "OnFeatureDisabled", "OnFeatureEnabled", "OnFeatureReady", "OnFeaturesReady" })

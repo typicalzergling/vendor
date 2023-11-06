@@ -6,6 +6,7 @@
 local _, Addon = ...
 local L = Addon:GetLocale()
 local debugp = function (...) Addon:Debug("tooltip", ...) end
+local MessageType = Addon.Systems.Chat.MessageType
 
 local Info = Addon.Systems.Info
 local ItemProperties = Addon.Systems.ItemProperties
@@ -13,41 +14,24 @@ local ItemProperties = Addon.Systems.ItemProperties
 local Tooltip = {
     NAME = "Tooltip",
     VERSION = 1,
-    DEPENDENCIES = {
-    },
+    DEPENDENCIES = { "system:chat" },
 }
-
-local function tooltipMessage(message, ...)
-    if (Addon:IsFeatureEnabled("chat")) then
-        Addon:GetFeature("chat"):Output(Addon.Features.Chat.MessageType.List, message, ...)
-    else
-        Addon:Print(L:GetString(message), ...)
-    end
-end
-
-local function otherMessage(message, ...)
-    if (Addon:IsFeatureEnabled("chat")) then
-        Addon:GetFeature("chat"):Output(Addon.Features.Chat.MessageType.Other, message, ...)
-    else
-        Addon:Print(L:GetString(message), ...)
-    end
-end
 
 -- Will take whatever item is being moused-over and add it to the Always-Sell list.
 function Tooltip:AddTooltipItemToList(list)
     -- Get the item from
     name, link = GameTooltip:GetItem();
     if not link then
-        otherMessage("TOOLTIP_ADDITEM_ERROR_NOITEM", list)
+        Addon:Output(MessageType.Other, "TOOLTIP_ADDITEM_ERROR_NOITEM", list)
         return
     end
 
     -- Add the link to the specified blocklist.
     local retval = Addon:ToggleItemInBlocklist(list, link)
     if retval == 1 then
-        tooltipMessage("CMD_LISTTOGGLE_ADDED", tostring(link), list)
+        Addon:Output(MessageType.List, "CMD_LISTTOGGLE_ADDED", tostring(link), list)
     elseif retval == 2 then
-        tooltipMessage("CMD_LISTTOGGLE_REMOVED", tostring(link), list)
+        Addon:Output(MessageType.List, "CMD_LISTTOGGLE_REMOVED", tostring(link), list)
     end
 end
 

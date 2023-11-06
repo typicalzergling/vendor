@@ -408,7 +408,7 @@ local function RegisterApi(name, system, handler)
 
         assert(not Addon[handler], "An API with the name '" .. handler .. "' has already been registered")
         Addon[handler] = function(_, ...)
-            return func(system, ...) 
+            return func(system, ...)
         end;
         debugp("System[%s] registered API '%s'", name, handler);
     end

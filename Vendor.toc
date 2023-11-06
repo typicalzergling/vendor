@@ -32,6 +32,7 @@ ui\ui.xml
 
 # Systems
 systems\systems.xml
+systems\chat\chat.xml
 systems\info\info.xml
 systems\interop\interop.xml
 systems\itemproperties\itemproperties.xml

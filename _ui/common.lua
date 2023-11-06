@@ -1,16 +1,7 @@
 local _, Addon = ...
 local locale = Addon:GetLocale()
 local Colors = Addon.CommonUI.Colors
-
-local PLACEHOLDER_ALPHA_DEFAULT = 0.8
 local PLACEHOLDER_INSET = 8
-
--- Simple helper to determine the color
-local function computeColor(frame)
-    local color = frame.PlacholderColor or PLACEHOLDER_COLOR_DEFAULT
-    local alpha = frame.PlacholderAlpha or PLACEHOLDER_ALPHA_DEFAULT
-    return color.r, color.g, color.b, alpha
-end
 
 --[[===========================================================================
   | Implements a mixin which provides placehodler support, which is ghosted 

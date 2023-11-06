@@ -9,7 +9,7 @@ end
 
 --[[ Gets the text of this setting page ]]
 function BetaFeatures:GetText()
-	return "Beta"
+	return "Beta Features"
 end
 
 --[[ Gets the summary of his setting list (opttional) ]]

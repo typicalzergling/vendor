@@ -1,7 +1,11 @@
 local AddonName, Addon = ...
 local locale = Addon:GetLocale()
-local debugp = function (...) Addon:Debug("chat", ...) end
 local FRAMES_KEY = "feature:chat:frames"
+local MessageType = Addon.Systems.Chat.MessageType
+
+--@debug@
+local debugp = function (msg, ...) Addon:Debug("chat", "ChatFeature: " .. msg, ...) end
+--@debug-end@
 
 local ChatFeature = { 
     NAME = "Chat Output", 
@@ -11,22 +15,12 @@ local ChatFeature = {
     DESCRIPTION = [[Controls where the output from vendor goes, allows you to select which messages got to each chat frame]]
 }
 
-ChatFeature.MessageType = {
-    Destroy =  0x1,
-    Merchant = 0x2,
-    Repair = 0x4,
-    List = 0x8,
-    Other = 0x10,
-    Debug = 0x10000,
-    All = 0xfffff
-}
-
 function ChatFeature:OnInitialize()
     debugp("ChatFeature.OnInitialize()")
 
     local settings = Addon:GetFeature("Settings")
     settings:RegisterPage(
-        "CHAT_SETTING_NAME", 
+        "CHAT_SETTING_NAME",
         "CHAT_SETTING_DESCR",
         function(parent)
             local frame = CreateFrame("Frame", nil, parent or UIParent, "Chat_Settings")
@@ -60,7 +54,7 @@ function ChatFeature:GetFrameSettings()
     local options = profile:GetValue(FRAMES_KEY)
     if (not options) then
         options = {}
-        options[getChatName(DEFAULT_CHAT_FRAME)] = ChatFeature.MessageType.All
+        options[getChatName(DEFAULT_CHAT_FRAME)] = MessageType.All
         profile:SetValue(FRAMES_KEY, options)
     end
 
@@ -76,28 +70,22 @@ function ChatFeature:SetFrameSetting(name, value)
 end
 
 --[[ Sends a chat message to the chat frames ]]
-function ChatFeature:Output(type, message, ...)
+function ChatFeature:Output(type, message)
     -- Danger - You cannot have debug prints in this method --
-
-    local args = {}
-    for _, arg in ipairs({...}) do
-        table.insert(args, tostring(arg))
-    end
-
-    message = string.format(locale:GetString(message) or message, unpack(args))
+    local prefix = string.format(locale.CHAT_MESSAGE_PREFIX_FMT1, AddonName)
     local options = self:GetFrameSettings()
 
-    local prefix = "" 
-    if (type ~= self.MessageType.Debug) then
-        prefix = string.format(locale.CHAT_MESSAGE_PREFIX_FMT1, AddonName)
-    --@debug@
-    elseif (Addon.IsDebug) then
-        prefix = string.format(locale.CHAT_MESSAGEDEBUG_PREFIX_FMT1, AddonName)
-    --@end-debug@
-    else
+    if (type == MessageType.Console) then
+        DEFAULT_CHAT_FRAME:AddMessage(prefix .. message)
         return
     end
 
+    --@debug
+    if (type == MessageType.Debug) then
+        if (not Addon.IsDebug) then return end;
+        prefix = string.format(locale.CHAT_MESSAGEDEBUG_PREFIX_FMT1, AddonName)
+    end
+    --@end-debug@
     
     ChatFrameUtil.ForEachChatFrame(
         function(frame)

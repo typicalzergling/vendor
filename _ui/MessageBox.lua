@@ -32,7 +32,7 @@ local function onButtonClicked(button)
         xpcall(button.callback, CallErrorHandler, button.id)
     end
 
-    button.close:TriggerEvent("OnClose", self, button.id)
+    button.close:TriggerEvent("OnClose", button, button.id)
 end
 
 --[[ Add a button and handler to the dialog ]]

@@ -12,8 +12,8 @@ local function PrintConsoleHelp()
     
     -- Print Command help
     for _, cmd in ipairs(cmds) do
-        if commandList[cmd].Help then
-            Addon.Print(Addon, "    %s%s%s  -  %s",YELLOW_FONT_COLOR_CODE, cmd, FONT_COLOR_CODE_CLOSE, commandList[cmd].Help)
+        if Addon.Output and commandList[cmd].Help then
+            Addon:Output(Addon.Systems.Chat.MessageType.Console, "    %s%s%s  -  %s",YELLOW_FONT_COLOR_CODE, cmd, FONT_COLOR_CODE_CLOSE, commandList[cmd].Help)
         end
     end
 end
