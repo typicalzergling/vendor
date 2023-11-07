@@ -110,7 +110,6 @@ function Addon.Features.Settings.CreateFeatureSetting(name)
 
     -- Sets the current value
     local set = function(value)
-        print("feature.settings.set", name, " =", value)
         if (value) then
             Addon:EnableFeature(name)
         else

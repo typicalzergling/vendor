@@ -71,4 +71,19 @@
         </Layers>
     </Frame>
 
+    <!-- Represents Help Text -->
+    <Frame name="Vendor_Settings_HelpText" virtual="true" hidden="true">
+        <Size x="1" y="22"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" hidden="true"  wordwrap="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="8"/>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" y="-8"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
 </Ui>

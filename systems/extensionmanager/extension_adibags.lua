@@ -62,11 +62,8 @@ local function createRuleFilters()
         filterEngine:CreateCategory(1, "=adibags=", 0)
     end
 
-    print("Addon:", Addon, AddonName)
     local rules = Addon:GetFeature("rules"):GetRules()
-    print("rules:", rules, table.getn(rules))
     rules = Addon.Rules.GetDefinitions();
-    print("rules:", rules, table.getn(rules))
 
     for _, rule in ipairs(rules) do
         if (not rule.Locked) then

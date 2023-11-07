@@ -118,7 +118,7 @@ end
 function Addon:Debug(channel, msg, ...)
     local name = string.upper(channel or "default");
     if (Addon.Output and Addon:IsDebugChannelEnabled(name)) then
-        Addon:Output(MessageType, "[" .. ACHIEVEMENT_COLOR_CODE .. name .. "|r]" .. tostring(msg), ...)
+        Addon:Output(MessageType, "[" .. ACHIEVEMENT_COLOR_CODE .. name .. "|r] " .. tostring(msg), ...)
     end
 end
 

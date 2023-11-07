@@ -33,7 +33,7 @@ function DebugSettings:CreateList(parent)
 	local list = Settings.CreateList(parent)
     local indent = { left = 8 }
 
-    list:AddHeader("Channels")
+    list:AddHeader("Debug Channels", [[All of the debug channels and thier current state are displayed below.]])
     for _, channel in ipairs(Addon:GetDebugChannels()) do
         local toggle = createChannelToggle(channel)
         local setting = list:AddSetting(toggle, string.upper(channel))
@@ -44,7 +44,7 @@ function DebugSettings:CreateList(parent)
 end
 
 function DebugSettings:GetOrder()
-	return 100000
+	return 1000000
 end
 
 Settings.Categories.Debug = DebugSettings

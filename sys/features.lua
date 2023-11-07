@@ -18,6 +18,24 @@ local function GetFeatureValue(feature, property, funcName)
     return nil
 end
 
+--[[ Checks if the feature is a beta feature or not ]]
+local function IsBetaFeature(feature)
+    local beta = GetFeatureValue(feature, "BETA", "GetIsBeta")
+    return (type(beta) == "boolean") and beta == true
+end
+
+--[[ Retreives the enables state of a beta feature ]]
+local function GetBetaFeatureState(name)
+    local beta = Addon:GetAccountSetting("BetaFeatures", {})
+    name = string.lower(name)
+
+    if (type(beta[name]) == "boolean") then
+        return (beta[name] ~= false)
+    end
+
+    return true
+end
+
 function Features:InitializeFeature(name, feature)
     debugp("Initialize Feature[%s]", name)
     local instance = feature
@@ -120,6 +138,7 @@ function Features:CreateComponent(name, feature)
     return {
         Type = "feature",
         Name = name,
+        Beta = IsBetaFeature(feature),
         OnInitialize = function() Features.InitializeFeature(fs, name, feature) end,
         OnTerminate = function() Features.TerminateFeature(fs, name, feature) end,
         Dependencies = featureDeps
@@ -138,11 +157,18 @@ function Features:Startup(register)
     local deps = { }
     
     for name, feature in pairs(Addon.Features or {}) do
-        table.insert(deps, "feature:" .. name)
+        local enable = true
+        if (IsBetaFeature(feature)) then
+            if (not GetBetaFeatureState(name)) then
+                debugp("Skipping beta feature '%s' because it's disabled", name)
+                enable = false
+            end
+        end
 
-        -- todo check if should eanble the feature or not.
-
-        compMgr:Create(self:CreateComponent(name, feature));
+        if (enable) then
+            table.insert(deps, "feature:" .. name)
+            compMgr:Create(self:CreateComponent(name, feature));
+        end
     end
 
     compMgr:Create({
@@ -151,7 +177,7 @@ function Features:Startup(register)
         Dependencies = deps,
         OnInitialize = function(self)
             debugp("All features are ready")
-            --Addon:RaiseEvent("AllFeaturesReady")
+            Addon:RaiseEvent("OnFeaturesReady")
         end
     })
 
@@ -161,7 +187,8 @@ function Features:Startup(register)
         "EnableFeature", 
         "DisableFeature",  
         "WithFeature", 
-        "GetBetaFeatures"
+        "GetBetaFeatures",
+        "SetBetaFeatureState"
     })
 end
 
@@ -186,6 +213,14 @@ function Features:GetBetaFeatures()
     return beta
 end
 
+--[[ Change the state of a beta feature ]]
+function Features:SetBetaFeatureState(name, state)
+    local beta = Addon:GetAccountSetting("BetaFeatures", {})
+    beta[string.lower(name)] = state or false
+    Addon:SetAccountSetting("BetaFeatures", beta)
+    debugp("Setting beta feature '%s' state to %s", name, tostring(state))
+end
+
 function Features:GetFeature(feature)
     return self.features[string.lower(feature)]
 end
@@ -203,7 +238,6 @@ function Features:EnableFeature(name)
 
     name = string.lower(name)
     for fname, feature in pairs(Addon.Features) do
-        print("feature:", name, "--> ", feature)
         if (string.lower(fname) == name) then
             compMgr:Create(self:CreateComponent(name, feature))
             compMgr:InitializeComponents()
@@ -225,8 +259,6 @@ function Features:WithFeature(name, callback)
     end
 
     -- todo handle enabled
-    Addon:DebugForEach("features", feature)
-    Addon:Debug("features", "Name:: %s", getmetatable(feature.object))
     if (feature) then
         callback(feature)
     else

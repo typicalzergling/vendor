@@ -208,6 +208,39 @@ function Addon.Features.Settings.CreateHeader(header, help, parent)
     return frame
 end
 
+--[[ Help Text ]]-----------------------------------------------------------------
+
+local HelpText = {}
+
+function HelpText:OnLoad()
+    self.text:SetTextColor(Colors.SECONDARY_TEXT:GetRGBA())
+    self.Margins = { bottom = 8 }
+end
+
+function HelpText:SetHeader(header)
+    _setText(self.text, header or "<error>")
+end
+
+function HelpText:SetHelp(help)
+    _setText(self.text, help)
+end
+
+function HelpText:OnSizeChanged()
+    self:Layout()
+end
+
+function HelpText:Layout()
+    local height = self.text:GetHeight()
+    self:SetHeight(height)
+end
+
+function Addon.Features.Settings.CreateHelpText(help, parent)
+    local frame = CreateFrame("Frame", nil, (parent or UIParent), "Vendor_Settings_HelpText")
+    Addon.AttachImplementation(frame, HelpText, true)
+    frame:SetHelp(help)
+    return frame
+end
+
 --[[ Setting List ]]-----------------------------------------------------------
 
 local SettingsList = {}
@@ -225,7 +258,13 @@ function SettingsList:OnCreateItem(model)
     local setting = nil
 
     if (not model.Setting) then
-        return Settings.CreateHeader(model.Header, model.Help, self)
+        if (model.Header) then
+            setting = Settings.CreateHeader(model.Header, model.Help, self)
+        elseif (model.Help) then
+            setting = Settings.CreateHelpText(model.Help, self)
+        else
+            assert(false, "An unknown setings model item")
+        end
     else
         if (model.Setting:GetType() == "boolean") then
             setting = Settings.CreateCheckbox(model.Setting, model.Label, model.Help, self)
@@ -272,6 +311,13 @@ end
 function SettingsList:AddHeader(header, help)
     table.insert(self.settings, {
             Header = header,
+            Help = help
+        })
+end
+
+--[[ Adds help text ot the settings list ]]
+function SettingsList:AddHelpText(help)
+    table.insert(self.settings, {
             Help = help
         })
 end

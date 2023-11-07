@@ -4,8 +4,7 @@ local SettingsTab = {}
 
 --[[ Retreive the categories for the rules ]]
 function SettingsTab:GetCategories()
-    local settings = Addon:GetFeature("Settings")
-    return settings:GetSettings()
+    return Settings:GetSettings()
 end
 
 function SettingsTab:OnActivate()

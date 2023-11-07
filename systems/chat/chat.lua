@@ -78,7 +78,7 @@ end
 
 local color = Addon.c_PrintColorCode or ORANGE_FONT_COLOR_CODE
 assert(type(color) == "string", "Addon print color code must be a string.")
-local printPrefix = string.format("%s[%s%s%s]%s%s%s", HIGHLIGHT_FONT_COLOR_CODE, color, AddonName, HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, FONT_COLOR_CODE_CLOSE, " ")
+local printPrefix = string.format("%s[%s%s%s] %s%s%s", HIGHLIGHT_FONT_COLOR_CODE, color, AddonName, HIGHLIGHT_FONT_COLOR_CODE, FONT_COLOR_CODE_CLOSE, FONT_COLOR_CODE_CLOSE, " ")
 
 --[[===========================================================================
     | Print

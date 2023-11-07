@@ -114,7 +114,6 @@ end
 function AutolootFeature:ON_LOOT_READY(autoloot)
     debugp("Loot ready : %s", tostring(autoloot))
 
-    --print(pcall(function()
         self:CreateLootTable()
         self:StartLooting()
     --end))

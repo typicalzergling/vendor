@@ -30,17 +30,21 @@ function SettingsFeature:OnInitialize()
     end
 end
 
-function SettingsFeature:RegisterPage(name, help, creator, order)
+function SettingsFeature:RegisterPage(name, help, creator, order, new)
     assert(type(name) == "string", "The page name must be a string")
     assert(type(creator) == "function", "The page creator must be a function")
     assert(not order or type(order) == "number", "The page order must be a numer")
 
+    local localizedName = locale:GetString(name) or name
+    local localizedHep = locale:GetString(help) or help
+
     table.insert(self.pages, {
             Key = name,
-            Text = name,
-            Help = help,
+            Text = localizedName,
+            Help = localizedHep,
             CreateList = creator,
-            Order = order or 9000
+            Order = order or 9000,
+            IsNew = new or false
         })
 
     Addon:RaiseEvent(self.Events.OnPagesChanged)
@@ -79,11 +83,34 @@ function SettingsFeature:GetSettings()
     if type(categories) == "table" then
         for _, category in pairs(categories) do
             if (type(category.ShowShow) ~= "function") or (category:ShowShow() == true) then
+
+                local order = 1000
+                if (type(category.GetOrder) == "function") then
+                    order = category:GetOrder()
+                    if (type(order) ~= "number") then
+                        order = 1000
+                    end
+                end
+
+                local isNew = false
+                if (type(category.GetIsNew) == "function") then
+                    isNew =category:GetIsNew()
+                    if (type(isNew) ~= "boolean") then
+                        isNew = false
+                    end
+                end
+
+                local catName = category:GetText()
+                catName = locale:GetString(catName) or catName
+                local catDesc = category:GetSummary()
+                catDesc = locale:GetString(catDesc) or catDesc
+
                 table.insert(settings, {
                     Key = category:GetName(),
-                    Text = category:GetText(),
-                    Help = category:GetSummary(),
-                    Order = category:GetOrder() or 1000,
+                    Text = catName,
+                    Help = catDesc,
+                    Order = order,
+                    IsNew = isNew,
                     CreateList = function(parent)
                         return category:CreateList(parent)
                     end
@@ -108,7 +135,7 @@ function SettingsFeature:GetSettings()
                 return (a.Order < b.Order)
             end
 
-            return a.Name < b.Name
+            return a.Text < b.Text
         end)
 
 

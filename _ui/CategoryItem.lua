@@ -5,6 +5,18 @@ local Colors = Addon.CommonUI.Colors
 local CategoryItem = Mixin({}, Addon.CommonUI.SelectableItem)
 local UI = CommonUI.UI
 
+--[[ Shows a new tag on the frame ]]
+local function createNewLabel(frame, point, x, y)
+    if (Addon.Systems.Info.IsRetailEra) then
+        local tag = CreateFrame("Frame", nil,  frame, "NewFeatureLabelTemplate")
+        tag:SetPoint("TOPRIGHT", frame, point, x, y)
+        tag:Show()
+        return tag
+    end
+
+    return nil
+end
+
 --[[ Called when the model is changed ]]
 function CategoryItem:OnModelChange(model)
     if (type(model.GetName) == "function") then
@@ -15,6 +27,15 @@ function CategoryItem:OnModelChange(model)
         UI.SetText(self.text, model.Text)
     else
         self.text:SetText()
+    end
+
+    -- Show / Hide the new tag
+    for _, frame in ipairs(self.new) do
+        if (model.IsNew == true) then
+            frame:Show()
+        else
+            frame:Hide()
+        end
     end
 end
 
