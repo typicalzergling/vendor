@@ -32,7 +32,6 @@ function RuleSystem:Startup(register)
         Addon:RaiseEvent("OnRulesChanged", ...)
     end)
     Addon.Rules.OnFunctionsChanged:Add(function(...) 
-        print("$$$ rules changed")
         Addon:RaiseEvent("OnRulesChanged", ...)
     end)
 
@@ -64,8 +63,7 @@ function RuleSystem:GetFunctionDocumentation()
     local docs = {}
 
     for name, definition in pairs(self.functions) do
-        local supported = definition.Supported and definition.Supported[Addon.Systems.Info.ReleaseName]
-        if (type(definition.Documentation) == "string") and supported then
+        if (type(definition.Documentation) == "string") then
             docs[name] = definition.Documentation
         end
     end
@@ -90,6 +88,7 @@ function RuleSystem:RegisterFunctions(functions, source)
     assert(source == RuleSource.SYSTEM or source == RuleSource.CUSTOM or source == RuleSource.EXTENSION)
 
     for _, definition in ipairs(functions) do
+
         if (type(definition.Name) ~= "string") then
             error("An invalid function definition was provided (Name)")
         end
