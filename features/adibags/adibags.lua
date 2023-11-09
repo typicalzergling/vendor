@@ -39,7 +39,17 @@ function Adibags:OnInitialize()
             return frame
         end, nil, true)
 
-    self:OnProfileChanged(Addon:GetProfile())
+    local profile = Addon:GetProfile()
+
+    if (profile:GetValue(self.c_EnableSellFilter) == nil) then
+        profile:SetValue(self.c_EnableSellFilter, true)
+    end
+
+    if (profile:GetValue(self.c_EnableDestroyFilter) == nil) then
+        profile:SetValue(self.c_EnableDestroyFilter, true)
+    end
+
+    self:OnProfileChanged(profile)
 end
 
 function Adibags:OnTerminate()
