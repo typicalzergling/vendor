@@ -157,6 +157,7 @@ function Features:Startup(register)
     local deps = { }
     
     for name, feature in pairs(Addon.Features or {}) do
+        print("name ->", name)
         local enable = true
         if (IsBetaFeature(feature)) then
             if (not GetBetaFeatureState(name)) then
@@ -166,7 +167,9 @@ function Features:Startup(register)
         end
 
         if (enable) then
-            table.insert(deps, "feature:" .. name)
+            if (string.lower(name) ~= "adibags") then
+                table.insert(deps, "feature:" .. name)
+            end
             compMgr:Create(self:CreateComponent(name, feature));
         end
     end
@@ -201,7 +204,7 @@ end
 function Features:GetBetaFeatures()
     local beta = {}
     for name, feature in pairs(Addon.Features or {}) do
-        if (feature.BETA == true) then
+        if (IsBetaFeature(feature)) then
             table.insert(beta, {
                 id = string.lower(name),
                 name = feature.NAME or name,

@@ -24,10 +24,17 @@ function RuleSystem:GetEvents()
 end
 
 --[[ Startup our system ]]
-function RuleSystem:Startup(register)
+function RuleSystem:Startup(register)    
     self.functions = {}
-    xpcall(
-    self.RegisterSystemFunctions, CallErrorHandler, self)
+    xpcall(self.RegisterSystemFunctions, CallErrorHandler, self)
+
+    Addon.Rules.OnDefinitionsChanged:Add(function(...)
+        Addon:RaiseEvent("OnRulesChanged", ...)
+    end)
+    Addon.Rules.OnFunctionsChanged:Add(function(...) 
+        print("$$$ rules changed")
+        Addon:RaiseEvent("OnRulesChanged", ...)
+    end)
 
     register({    "GetRuleFunctions",
                 "GetFunctionDocumentation",
@@ -109,13 +116,15 @@ function RuleSystem:RegisterFunctions(functions, source)
         end
     end
 
-    --Addon:RaiseEvent(RuleEvents.FUNCTIONS_CHANGED)
-    --Addon:RaiseEvent(RuleEvents.DOCS_CHANGED)
+    Addon:RaiseEvent("OnRulesChanged", "DOCS")
+    Addon:RaiseEvent("OnRulesChanged", "FUNCTIONS")
 end
 
 --[[ Removes the functions from our list ]]
 function RuleSystem:UnregisterFunctions(functions)
 end
+
+Addon:GenerateEvents({ "OnRulesChanged" })
 
 Addon.Systems.Rules = RuleSystem
 Addon.Systems.Rules.RuleEvents = RuleEvents

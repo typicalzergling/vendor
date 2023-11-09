@@ -399,19 +399,6 @@ DATA_MIGRATION_ERROR = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration
 
 -- Extensions Loc
 
--- Adibags extension
-ADIBAGS_FILTER_VENDOR_SELL_NAME = "Vendor: Sell",
-ADIBAGS_FILTER_VENDOR_SELL_DESC = "Put items that the Vendor addon will sell into this collection."..
-" This filter must be a very high priority to work correctly, as it can reclassify any item in your inventory.",
-ADIBAGS_CATEGORY_VENDOR_SELL = "Sell (Vendor)",
-
-ADIBAGS_FILTER_VENDOR_DESTROY_NAME = "Vendor: Destroy",
-ADIBAGS_FILTER_VENDOR_DESTROY_DESC = "Put items that the Vendor addon will destroy into this collection."..
-" This filter must be a very high priority to work correctly, as it can reclassify any item in your inventory.",
-ADIBAGS_CATEGORY_VENDOR_DESTROY = "Destroy (Vendor)",
-
-
-
 -- Edit Rule Dialog
 EDITRULE_CAPTION = "Edit Rule",
 CREATERULE_CAPTION = "Create Rule",
@@ -699,7 +686,6 @@ HELP_QUALITY_TEXT = [[The quality of the item:
 8 = Wow Token
 
 You can also use the following constants in your scripts: POOR, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, ARTIFACT, HEIRLOOM]],
-HELP_LEVEL_TEXT = [[The item level (iLvl) of the item.]],
 HELP_LEVEL_TEXT = "This will be the item's effective item level if it is Equipment, otherwise it will be the base item level if it does not have an effective item level.",
 HELP_MINLEVEL_TEXT = [[The required character level for equipping the item.]],
 HELP_TYPE_TEXT = [[The name of the item's Type. This is a localized string. You can use this in conjunction with SubType to zero in on specific types of items.]],

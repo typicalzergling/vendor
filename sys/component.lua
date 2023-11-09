@@ -333,10 +333,9 @@ local function satisfyAllAddons()
     local numAddons = GetNumAddOns();
     for i=1,numAddons do
         local addon, _, _, enabled = GetAddOnInfo(i);
-
         if (enabled) then
             local depenedency = "addon:" .. addon;
-            if (IsDependencySatisfied(depenedency)) then
+            if (not IsDependencySatisfied(depenedency)) then
                 sastifyDependency(depenedency);
             end
         end

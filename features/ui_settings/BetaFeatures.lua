@@ -28,7 +28,7 @@ end
 
 --[[ Persists the state of the feature ]]
 function BetaFeatures:OnFeatureStateChanged(setting)
-    Addon:SetBetaFeatureState(setting:GetName(), setting:GetValue())
+    Addon:SetBetaFeatureState(setting:GetName(), true)
 end
 
 --[[ Creates the list for this settings page ]]

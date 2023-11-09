@@ -102,10 +102,11 @@ local function registerAdiBagsExtension()
         -- This is called by Vendor whenever its rules change and AdiBags needs to update its filters.
         OnRuleUpdate = function()
             -- We'll only tell AdiBags to update filters if one of our filters is enabled.
-            adiBags:UpdateFilters()
+            --adiBags:UpdateFilters()
         end,
 
         Register = function()
+            --[[
             if not adiBags then 
                 adiBags = LibStub('AceAddon-3.0'):GetAddon('AdiBags')
             end
@@ -124,7 +125,7 @@ local function registerAdiBagsExtension()
                     end
                     adiBags:UpdateFilters()
                 end)
-
+                ]]
             return true
         end,
     }

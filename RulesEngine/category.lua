@@ -36,16 +36,18 @@ end
     |   removed then true is returned otherwise false is returned
     =======================================================================--]]
 local function category_Remove(self, ruleId)
-    assert(type(id) == "string" and string.len(id) ~= 0, "An invalid ruleId was provided")
+    assert(type(ruleId) == "string" and string.len(ruleId) ~= 0, "An invalid ruleId was provided")
 
-    for i, rule in ipairs(self.rules) do
-        if (rule:CheckMatch(ruleId)) then
-            table.remove(self.rules, i)
-            return true
+    local old = self.rules
+    self.rules = {}
+
+    for i, rule in ipairs(old) do
+        if (not rule:CheckMatch(ruleId)) then
+            table.insert(self.rules, rule)
         end
     end
 
-    return false
+    return (#old ~= #self.rules)
 end
 
 --[[===========================================================================
