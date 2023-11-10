@@ -43,6 +43,11 @@ problems. Feel free to use the above Discord for reporting issues or to ping us 
 The list tab now supports chaning the sort order of the items it can be set to etiher 
 id, name, or quality.  The choosen sort is saved the profile and used for each list.
 
+# New Properties
+
+New properties avaialbe for rule evaluation:Addon: 
+- PlayerName
+- PlayerRealm
 
 # Bugfixes
 
