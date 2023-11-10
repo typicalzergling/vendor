@@ -51,8 +51,8 @@ local EXPANSION  = {
     ["wod"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["draenor"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["legion"] = LE_EXPANSION_LEGION,
-    ["bfa"] = LE_EXPANSION_8_0, 
-    ["bofa"] = LE_EXPANSION_8_0,
+    ["bfa"] = 8.0, 
+    ["bofa"] = 8.0,
     ["sl"] = 9.0,
     ["shadowlands"] = 9.0,
     ["df"] = 10.0,
@@ -200,6 +200,10 @@ local function getEnvironmentVariables()
     RuleEnvironmentVariables.KEEP_LIST = Addon.ListType.KEEP
     RuleEnvironmentVariables.SELL_LIST = Addon.ListType.SELL
     RuleEnvironmentVariables.DESTROY_LIST = Addon.ListType.DESTROY
+
+    RuleEnvironmentVariables.PlayerName,
+    RuleEnvironmentVariables.PlayerRealm = UnitFullName("player");
+
     return RuleEnvironmentVariables
 end
 
