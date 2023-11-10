@@ -147,6 +147,7 @@ function Layouts.Flow(frame, marginX, marginY)
     local left = 0
     local top = 0
     local row = 0
+    local maxRowWidth = 0
 
     for i, child in ipairs({ frame:GetChildren() }) do
         local cx = child:GetWidth()
@@ -168,6 +169,10 @@ function Layouts.Flow(frame, marginX, marginY)
             end
         end
 
+        if (left > maxRowWidth) then
+            maxRowWidth = left
+        end
+
         if (cx > width and width ~= 0) then
             child:SetWidth(width)
         end
@@ -178,6 +183,7 @@ function Layouts.Flow(frame, marginX, marginY)
     end
 
     frame:SetHeight(height)
+    frame:SetWidth(maxRowWidth)
 end
 
 local function numberOrZero(value)

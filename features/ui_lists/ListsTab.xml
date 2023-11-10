@@ -56,6 +56,17 @@
                     <Anchor point="BOTTOMRIGHT" y="12" relativePoint="TOPRIGHT" relativeKey="$parent.editList"/>
                 </Anchors>
             </Frame>
+            <Frame parentKey="sort" inherits="CommonUI_Chips">
+                <Size x="400" y="18"/>
+                <KeyValues>
+                    <KeyValue key="Handler" value="OnSortItems"/>
+                    <KeyValue key="radio" value="true" type="boolean"/>
+                    <KeyValue key="margin" value="0" type="number"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="8"/>
+                </Anchors>
+            </Frame>
             <Frame parentKey="items" inherits="CommonUI_List">
                 <Size x="224" y="1"/>
                 <KeyValues>
@@ -63,12 +74,13 @@
                 </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.lists" x="12"/>
-                    <Anchor point="BOTTOMRIGHT"/>
+                    <Anchor point="RIGHT"/>
+                    <ANchor point="BOTTOM" relativePoint="TOP" relativeKey="$parent.sort" y="8"/>
                 </Anchors>
                 <Scripts>
                     <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "_ItemList")</OnLoad>
                 </Scripts>
-            </Frame>        
+            </Frame>
         </Frames>
     </Frame>
 

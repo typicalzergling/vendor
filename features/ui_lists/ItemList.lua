@@ -4,15 +4,34 @@ local Colors = Addon.CommonUI.Colors
 local UI = Addon.CommonUI.UI
 local ItemItem = Addon.Features.Lists.ItemItem
 
+local SORTS = {
+    --[[ Sort the two items by ID ]]
+    id = function(itemA, itemB)
+         return tonumber(itemA) < tonumber(itemB)
+    end,
+    --[[ Sort the two items by namne ]]
+    name = function (itemA, itemB)
+        return C_Item.GetItemNameByID(itemA) < C_Item.GetItemNameByID(itemB)
+    end,
+    --[[ Sort the two items by quality ]]
+    quality = function(itemA, itemB)
+        return C_Item.GetItemQualityByID(itemA) > C_Item.GetItemQualityByID(itemB)
+    end
+}
+
 --[[ Handle load ]]
 function ItemList:OnLoad()
     Addon.CommonUI.List.OnLoad(self)
+    self.sort = SORTS.id
 end
 
 function ItemList:OnShow()
     Addon:RegisterCallback("OnListChanged", self, self.OnListChanged)
     Addon:RegisterCallback("OnListRemoved", self, self.OnListRemoved)
     Addon:RegisterCallback("OnProfileChanged", self, self.OnListChanged)
+    if (self.sort) then
+        self:Sort(self.sort)
+    end
     self:Rebuild()
 end
 
@@ -24,11 +43,25 @@ end
 
 --[[ Get the list of our models ]]
 function ItemList:OnGetItems()
+    local items
     if (not self.list) then
-        return {}
+        items = {}
     else
-        return self.list:GetContents()
+        items = self.list:GetContents()
     end
+
+    if (self.sort) then
+        table.sort(items, self.sort)
+    end
+    return items
+end
+
+function ItemList:SetItemSort(sortType)
+    assert(SORTS[string.lower(sortType)], "expected a valid sort type: " .. sortType)
+    local sort = SORTS[string.lower(sortType)] or SORTS.id
+    assert(type(sort) == "function", "Expected the sort to resolve to a function: " .. sortType)
+    self.sort = sort
+    self:Sort(sort)
 end
 
 --[[ Create an item ]]

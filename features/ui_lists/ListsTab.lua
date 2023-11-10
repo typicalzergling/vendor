@@ -7,6 +7,7 @@ local ListType = nil
 local SystemListId = nil
 local ChangeType = nil
 local SYSTEM_ORDER = nil
+local SORT_KEY = "listtab:sorttype"
 
 local ListsTab = {}
 
@@ -26,6 +27,12 @@ function ListsTab:OnLoad()
         [SystemListId.DESTROY] = 1000
     }
 
+    self.sort.radio = true
+    self.sort:AddChips({
+        { id="id", text="LISTS_SORT_BY_ID_LABEL", tooltip="LISTS_SORT_BY_ID_TOOLTIP" },
+        { id="name", text="LISTS_SORT_BY_NAME_LABEL", tooltip="LISTS_SORT_BY_NAME_TOOLTIP" },
+        { id="quality", text="LISTS_SORT_BY_QUALITY_LABEL", tooltip="LISTS_SORT_BY_QUALITY_TOOLTIP" }
+    })
 
     self.feature = Addon:GetFeature("Lists")
     UI.Enable(self.editList, false)
@@ -55,6 +62,11 @@ function ListsTab:OnLoad()
         end)
 
     self.lists:ScrollToTop()
+
+    local profile = Addon:GetProfile()
+    local sortType = profile:GetValue(SORT_KEY) or "id"
+    self.items:SetItemSort(sortType)
+    self.sort:SetSelected({ [sortType] = true})
 end
 
 --[[ Called when the lists tab is activated ]]
@@ -63,6 +75,17 @@ function ListsTab:OnActivate()
 end
 
 function ListsTab:OnDeactivate()
+end
+
+function ListsTab:OnSortItems()
+    local selected = self.sort:GetSelected()
+    for id, val in pairs(selected) do
+        if (val == true) then
+            self.items:SetItemSort(id)
+            Addon:GetProfile():SetValue(SORT_KEY, id)
+            break
+        end
+    end
 end
 
 --[[ Retrieve the currently defined lists ]]

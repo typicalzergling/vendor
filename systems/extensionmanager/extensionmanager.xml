@@ -4,6 +4,5 @@
     <Include file="extension_pawn.lua"/>
     <Include file="extension_ark.lua"/>
     <Include file="extension_tsm.lua"/>
-    <Include file="extension_adibags.lua"/>
     <Include file="extension_cimi.lua"/>
 </Ui>

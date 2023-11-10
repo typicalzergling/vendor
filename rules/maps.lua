@@ -55,10 +55,12 @@ Addon.Maps.Expansion =
     ["wod"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["draenor"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["legion"] = LE_EXPANSION_LEGION,
-    ["bfa"] = LE_EXPANSION_8_0, 
-    ["bofa"] = LE_EXPANSION_8_0,
+    ["bfa"] = 8.0,
+    ["bofa"] = 8.0,
     ["sl"] = 9.0,
-    ["shadowlands"] = 9.0
+    ["shadowlands"] = 9.0,
+    ["dragonflight"] = 10.0,
+    ["df"] = 10.0,
 }
 
 --*****************************************************************************
