@@ -68,6 +68,8 @@ Addon.ScriptReference.ItemProperties =
     Bag = L["HELP_BAG_TEXT"],
     Slot = L["HELP_SLOT_TEXT"],
     CraftedQuality = L["HELP_CRAFTEDQUALITY_TEXT"],
+    PlayerName = L["HELP_PLAYERNAME_TEXT"],
+    PlayerRealm = L["HELP_PLAYERREALM_TEXT"],
 }
 
 Addon.ScriptReference.Functions =

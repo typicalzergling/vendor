@@ -210,10 +210,15 @@ IsBagAndSlot = [[True if the item has a defined bag and slot.]],
 Bag = [[The bag ID of the item, or -1 if it is not in a bag and slot.]],
 Slot = [[The slot ID of the item, or -1 if it is not in a bag and slot.]],
 CraftedQuality = [[The Dragonflight Profession Crafted Quality of an item or reagent. 0 means the item has no crafted quality, if it is > 0 then it has crafted quality.]],
+
 }
 
 function Addon.Systems.ItemProperties:GetPropertyDocumentation()
-    local docs = {}
+    local docs = {
+        PlayerName = "The nae of the currently logged in character.",
+        PlayerRealm = "The realm where the currently logged in caracter resides.",        
+    }
+    
     for k,v in pairs(DOCS) do
         if self:IsPropertySupported(k) then
             docs[k] = v

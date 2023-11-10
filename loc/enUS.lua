@@ -884,6 +884,10 @@ True if the player is currently a Fury Warrior
 
 ]],
 
+HELP_PLAYERNAME_TEXT = "The name of the currently logged in character",
+
+HELP_PLAYERREALM_TEXT = "The realm where the currently logged in character resides",
+
 HELP_TOTALITEMCOUNT_TEXT = [[
 Usage: TotalItemCount([includeBank, includeUses])
 
