@@ -281,7 +281,8 @@ end
     Create a new dialog from the specified paramaters
 ]]
 function UI.Dialog(caption, template, implementation, buttons, ...)
-    local dialog = CreateFrame("Frame", nil, UIParent, "DialogBox_Base")
+    local dialogName = 'vendor:dialog:' .. template .. ":" .. tostring(time())
+    local dialog = CreateFrame("Frame", dialogName, UIParent, "DialogBox_Base")
     local content = CreateFrame("Frame", nil, dialog, template)
 
     -- Initialize the dialog

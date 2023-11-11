@@ -13,6 +13,37 @@ local DIALOG_PADDING_Y = 14
 local DIALOG_CONTENT_PADDING_X = 18
 local DIALOG_CONTENT_PADDING_Y = 12
 
+local dialogStack = {}
+
+local function removeFromSpecialFrames(dialog)
+    for i, name in ipairs(UISpecialFrames) do
+        if name == dialog:GetName() then
+            table.remove(UISpecialFrames, i)
+            break
+        end
+    end
+
+    table.remove(dialogStack, 1)
+    if #dialogStack ~= 0 then
+        table.insert(UISpecialFrames, 1, dialogStack[1])
+    end
+end
+
+local function addToSpecialFrames(dialog)
+    if (#dialogStack ~= 0) then
+        local remove = dialogStack[1]
+        for i, name in ipairs(UISpecialFrames) do
+            if name == remove then
+                table.remove(UISpecialFrames, i)
+                break;
+            end
+        end
+    end
+    
+    table.insert(dialogStack, 1, dialog:GetName())
+    table.insert(UISpecialFrames, 1, dialog:GetName())
+end
+
 local function layoutButtons(dialog)
     -- Position the buttons if needed
     if (dialog.__buttons) then
@@ -164,22 +195,12 @@ function DialogBox:OnShow()
     end
 
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-    self:SetScript("OnKeyDown", function(_, key)
-            if (key == "ESCAPE") then
-                self:Hide()
-                self:Lower()
-                self:SetPropagateKeyboardInput(false)
-                return
-            end
-            self:SetPropagateKeyboardInput(true)
-        end)
-
     self:Raise()
+    addToSpecialFrames(self)
 end
 
 function DialogBox:OnHide()
     PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
-    self:SetScript("OnKeyUp", nil)
 
     if (self.__content) then
         self.__content:Hide()
@@ -200,6 +221,9 @@ function DialogBox:OnHide()
         end
         Addon:SetAccountSetting(template, points)
     end
+
+    -- Remove from the special frames list
+    removeFromSpecialFrames(self)
 end
 
 --[[ Handle drag start ]]
