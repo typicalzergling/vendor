@@ -12,6 +12,7 @@ local Adibags= {
     DEPENDENCIES = { "rules", "settings", "addon:adibags" },
     BETA = true,
     DESCRIPTION = [[Description of the AdiBags feature]],
+    OPTIONAL = true,
 
     c_EnabledFiltersKey = "adibags:eanbled-filters",
     c_EnableSellFilter = "adibags:enable-sell-filter",

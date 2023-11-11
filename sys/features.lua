@@ -159,17 +159,25 @@ function Features:Startup(register)
     for name, feature in pairs(Addon.Features or {}) do
         print("name ->", name)
         local enable = true
+        local optional = false
+
         if (IsBetaFeature(feature)) then
             if (not GetBetaFeatureState(name)) then
                 debugp("Skipping beta feature '%s' because it's disabled", name)
                 enable = false
             end
+            optional = true
+        end
+
+        if (not optional and type(feature.OPTIONAL) == "boolean") then
+            optional = feature.OPTIONAL == true
         end
 
         if (enable) then
-            if (string.lower(name) ~= "adibags") then
+            if (not optional) then
                 table.insert(deps, "feature:" .. name)
             end
+
             compMgr:Create(self:CreateComponent(name, feature));
         end
     end
