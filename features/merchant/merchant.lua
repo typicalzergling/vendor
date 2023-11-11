@@ -177,13 +177,13 @@ function Merchant:AutoSell()
                         Addon:UseContainerItem(bag, slot)
                         Addon:RaiseEvent(AUTO_SELL_ITEM, entry.Item.Link, numSold, sellLimitMaxItems)
                     else
-                        Addon:Output(MessageType.Merchant, message, "Simulating selling of: %s", tostring(item.Link))
+                        Addon:Output(MessageType.Merchant, "Simulating selling of: %s", tostring(item.Link))
                         Addon:RaiseEvent(AUTO_SELL_ITEM, entry.Item.Link, numSold, sellLimitMaxItems)
                     end
 
                     -- Record sell data
                     local netValue = entry.Item.TotalValue
-                    Addon:Output(MessageType.Merchant, message, "MERCHANT_SELLING_ITEM", tostring(entry.Item.Link), Addon:GetPriceString(netValue), tostring(entry.Result.Rule))
+                    Addon:Output(MessageType.Merchant, "MERCHANT_SELLING_ITEM", tostring(entry.Item.Link), Addon:GetPriceString(netValue), tostring(entry.Result.Rule))
                     numSold = numSold + 1
                     totalValue = totalValue + netValue
 
@@ -192,7 +192,7 @@ function Merchant:AutoSell()
 
                     -- Check for sell limit
                     if sellLimitEnabled and sellLimitMaxItems <= numSold then
-                        Addon:Output(MessageType.Merchant, message, "MERCHANT_SELL_LIMIT_REACHED", sellLimitMaxItems)
+                        Addon:Output(MessageType.Merchant, "MERCHANT_SELL_LIMIT_REACHED", sellLimitMaxItems)
                         printSellSummary(numSold, totalValue)
                         setIsAutoSelling(false)
                         return
@@ -217,7 +217,7 @@ end
 -- Confirms the popup if an item will be non-tradeable when sold, but only when we are auto-selling it.
 function Merchant.AutoConfirmSellTradeRemoval(link)
     if Merchant:IsAutoSelling() then
-        Addon:Output(MessageType.Merchant, message, "MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL", link)
+        Addon:Output(MessageType.Merchant, "MERCHANT_AUTO_CONFIRM_SELL_TRADE_REMOVAL", link)
         SellCursorItem()
     end
 end
