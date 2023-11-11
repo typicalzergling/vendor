@@ -64,7 +64,7 @@ function ListsTab:OnLoad()
     self.lists:ScrollToTop()
 
     local profile = Addon:GetProfile()
-    local sortType = profile:GetValue(SORT_KEY) or "id"
+    local sortType = profile:GetValue(SORT_KEY) or "name"
     self.items:SetItemSort(sortType)
     self.sort:SetSelected({ [sortType] = true})
 end

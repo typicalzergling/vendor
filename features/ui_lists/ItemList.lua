@@ -9,20 +9,27 @@ local SORTS = {
     id = function(itemA, itemB)
          return tonumber(itemA) < tonumber(itemB)
     end,
+
     --[[ Sort the two items by namne ]]
     name = function (itemA, itemB)
         return C_Item.GetItemNameByID(itemA) < C_Item.GetItemNameByID(itemB)
     end,
+
     --[[ Sort the two items by quality ]]
     quality = function(itemA, itemB)
-        return C_Item.GetItemQualityByID(itemA) > C_Item.GetItemQualityByID(itemB)
+        local qA = C_Item.GetItemQualityByID(itemA)
+        local qB = C_Item.GetItemQualityByID(itemB)
+        if (qA == qB) then
+            return C_Item.GetItemNameByID(itemA) < C_Item.GetItemNameByID(itemB)
+        end
+        return  qA > qB
     end
 }
 
 --[[ Handle load ]]
 function ItemList:OnLoad()
     Addon.CommonUI.List.OnLoad(self)
-    self.sort = SORTS.id
+    self.sort = SORTS.name
 end
 
 function ItemList:OnShow()
