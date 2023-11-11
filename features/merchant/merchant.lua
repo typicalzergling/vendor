@@ -94,7 +94,7 @@ end
 
 local function printSellSummary(num, value)
     if num > 0 then
-        Addon:Output(MessageType.Merchant, message, "MERCHANT_SOLD_ITEMS", tostring(num), Addon:GetPriceString(value))
+        Addon:Output(MessageType.Merchant, "MERCHANT_SOLD_ITEMS", tostring(num), Addon:GetPriceString(value))
     end
 end
 
