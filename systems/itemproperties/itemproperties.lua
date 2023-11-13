@@ -228,7 +228,7 @@ local function doGetItemProperties(itemObj)
         -- if the player cannot use it but could potentially trade it to other characters.
         -- This may not include illusions. TODO: Check illusion behavior.
         item.IsCollectable = false
-        if not item.IsCollected and item.IsTransmogEquipment and (item.IsBindOnEquip or item.IsAccountBound) and not (item.AppearanceId == 0) then
+        if not item.IsCollected and item.IsTransmogEquipment and not (item.AppearanceId == 0) then
             item.IsCollectable = true
         end
 
