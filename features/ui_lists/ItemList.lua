@@ -12,15 +12,49 @@ local SORTS = {
 
     --[[ Sort the two items by namne ]]
     name = function (itemA, itemB)
-        return C_Item.GetItemNameByID(itemA) < C_Item.GetItemNameByID(itemB)
+        if (not itemA or not itemB) then
+            return (tonumber(itemA) or 0) < (tonumber(itemB) or 0)
+        end
+
+        local nA = C_Item.GetItemNameByID(itemA) or nil
+        local nB = C_Item.GetItemNameByID(itemB) or nil
+
+        -- Items that aren't loaded yet are considered less than
+        -- everything, the list should fix itself on the next
+        -- update, this is an edge case and only on first show
+        if (nA and nB) then
+            return nA < nB
+        end
+
+        if (not nA) then
+            return true
+        end
+
+        return false
     end,
 
     --[[ Sort the two items by quality ]]
     quality = function(itemA, itemB)
+        if (not itemA or not itemB) then
+            return tonumber(itemA) < tonumber(itemB)
+        end
+
         local qA = C_Item.GetItemQualityByID(itemA)
         local qB = C_Item.GetItemQualityByID(itemB)
+
         if (qA == qB) then
-            return C_Item.GetItemNameByID(itemA) < C_Item.GetItemNameByID(itemB)
+            local nA = C_Item.GetItemNameByID(itemA)
+            local nB = C_Item.GetItemNameByID(itemB)
+
+            if (nA and nB) then
+                return nA < nB
+            end
+
+            if (not nA) then
+                return true
+            end
+
+            return false
         end
         return  qA > qB
     end
@@ -57,9 +91,6 @@ function ItemList:OnGetItems()
         items = self.list:GetContents()
     end
 
-    if (self.sort) then
-        table.sort(items, self.sort)
-    end
     return items
 end
 
