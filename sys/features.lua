@@ -157,7 +157,6 @@ function Features:Startup(register)
     local deps = { }
     
     for name, feature in pairs(Addon.Features or {}) do
-        print("name ->", name)
         local enable = true
         local optional = false
 

@@ -13,7 +13,7 @@ exit_code=0
 while getopts ":cd" opt; do
 	case $opt in
 	c)
-		classicOnly="true"
+		clean="true"
 		;;
 	d)
 		devmode="true"
@@ -27,6 +27,13 @@ while getopts ":cd" opt; do
 		;;
 	esac
 done
+
+if [ $clean ]; then
+    (cd .release; ./clean.sh)
+    echo
+    echo "All junctions removed."
+    exit $exit_code
+fi
 
 if [ $devmode ]; then
     (cd .release; ./devmode.sh)
