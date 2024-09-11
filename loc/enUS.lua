@@ -482,6 +482,7 @@ IMPORT_OUTDATED_VERSION = [[
 
 Import data is from an older version of Vendor and is unsupported on this version.
 ]],
+IMPORT_BUTTON_TEXT="Import",
 
 EDITPARAM_NAME_LABEL = "Name:",
 EDITPARAM_KEY_LABEL = "Script Name:",

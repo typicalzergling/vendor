@@ -10,4 +10,16 @@ LISTS_SORT_BY_NAME_TOOLTIP = "Arrange the list items by name.",
 LISTS_SORT_BY_QUALITY_LABEL = "Quality",
 LISTS_SORT_BY_QUALITY_TOOLTIP = "Arrange the list items by quality."
 
+},
+zhCN = {
+
+    LISTS_SORT_BY_ID_LABEL = "ID",
+    LISTS_SORT_BY_ID_TOOLTIP = "按ID排列列表项。",
+    
+    LISTS_SORT_BY_NAME_LABEL = "名称",
+    LISTS_SORT_BY_NAME_TOOLTIP = "按名称排列列表项。",
+    
+    LISTS_SORT_BY_QUALITY_LABEL = "质量",
+    LISTS_SORT_BY_QUALITY_TOOLTIP = "按质量排列列表项。"
+    
 }}
