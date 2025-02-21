@@ -24,6 +24,11 @@ local Adibags= {
 function Adibags:OnInitialize()
     debugp("AdiBbags.OnInitialize()")
 
+    local addon = Addon:GetAddOnInfo('AdiBags')
+    if not select(4, addon) then
+        return
+    end
+
     self.ruleFeature = Addon:GetFeature("rules")
     self.adibags = LibStub('AceAddon-3.0'):GetAddon('AdiBags')
     self.adibagsLoc = setmetatable({}, { __index = self.adibags.L })

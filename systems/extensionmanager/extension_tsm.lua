@@ -158,23 +158,31 @@ local function registerTSMExtension()
                 Type = "Keep",
                 Name = "TSM - Items Worth Auctioning",
                 Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
-                Description = "Any items which have a (Market Value - Vendor Price) greater than the specified amount of Gold. Example: Specifying '10' will keep all items which have a net auction value greater than 10 gold.",
+                Description = "Any items which have a (Market Value - Vendor Price) greater than the specified amount of Gold. Example: Specifying '10' will keep all items which have a net auction value greater than 10 gold. Specifying SaleRate",
                 Script = function()
-                    return TSM_IsAuctionItem() and (TSM_CustomValue("dbregionsalerate * 100") > 30) and ((TSM_MarketValue() - UnitValue) > (RULE_PARAMS.GOLDVALUE * 10000));
+                    return TSM_IsAuctionItem() and (TSM_CustomValue("dbregionsalerate * 100") > RULE_PARAMS.SALERATE) and ((TSM_MarketValue() - UnitValue) > (RULE_PARAMS.GOLDVALUE * 10000));
                 end,
-                ScriptText = "TSM_IsAuctionItem() and (TSM_CustomValue(\"dbregionsalerate * 100\") > 30) and ((TSM_MarketValue() - UnitValue) > ({gold} * 10000))",
-                Params =     
+                ScriptText = "TSM_IsAuctionItem() and (TSM_CustomValue(\"dbregionsalerate * 100\") > SALERATE) and ((TSM_MarketValue() - UnitValue) > (GOLDVALUE * 10000))",
+                Params =
                     {
                         {
                             Type="numeric",
                             Name="Gold",
                             Key="GOLDVALUE",
+                            Default = 10,
+                        },
+                    },
+                    {
+                        {
+                            Type="numeric",
+                            Name="SaleRate",
+                            Key="SALERATE",
+                            Default = 30,
                         },
                     },
                 Order = 1100,
             },
         },
-        --@end-retail@
     }
 
     local extmgr = Addon.Systems.ExtensionManager

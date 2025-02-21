@@ -60,10 +60,10 @@ local function isStringInTooltipText(text, location, str)
         elseif location:IsBagAndSlot() then
             scanningtip:SetBagItem(location:GetBagAndSlot())
         else
-            error("Invalid location")
+            return false
         end
     else
-        error("Invalid arguments to Tooltip Scanner")
+        return false
     end
 
 
@@ -98,6 +98,11 @@ function ItemProperties:IsStringInTooltip(location, str)
     return ItemProperties:IsStringInTooltipRightText(location, str)
 end
 
+-- Account Bound
+function ItemProperties:IsItemAccountBoundInTooltip(location)
+    return self:IsStringInTooltipLeftText(location, L["TOOLTIP_SCAN_BLIZZARDACCOUNTBOUND"])
+end
+
 --[[ These are the scans required, which will probably be used again in a few classic releases
 
 -- You haven't collected this appearance
@@ -124,11 +129,6 @@ end
 function Addon:IsItemCraftingReagentInTooltip(location)
     -- Look, I don't know why it's called that, but it is. Blizzard has...reasons.
     return self:IsStringInTooltipLeftText(location, L["TOOLTIP_SCAN_CRAFTINGREAGENT"])
-end
-
--- Account Bound
-function Addon:IsItemAccountBoundInTooltip(location)
-    return self:IsStringInTooltipLeftText(location, L["TOOLTIP_SCAN_BLIZZARDACCOUNTBOUND"])
 end
 
 -- Cosmetic Item

@@ -47,7 +47,8 @@ end
 -- Called to get the documentation for this property
 function PropertyItem:GetDocumentation()
     local model = self:GetModel()
-    local doc = Addon.ScriptReference.ItemProperties[model.Name]
+    --local doc = Addon.ScriptReference.ItemProperties[model.Name]
+    local doc = Addon:GetPropertyDocumentation(model.Name)
 
     if (doc) then
         local text = doc;

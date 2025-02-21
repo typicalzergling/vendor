@@ -2,6 +2,33 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.7.1 (February 21, 2025)",
+Notes = [[
+# TWW 11.1 update
+
+Updated TOC for TWW 11.1.
+
+No significant changes were made.
+
+]]
+},
+{
+Release = "6.7 (September 8, 2024)",
+Notes = [[
+# Properties Display update
+
+Changed how properties are displayed in the viewer. Added setting to enable drag & drop item onto vendor icon to
+open properties for that item.
+
+Properties are now sorted in how they are displayed and hidden if they are default/unused values for an item.
+
+This release adds support for The War Within Beta, 11.0, and features many updates to properties and how properties are shown.
+
+# Bugfixes
+* Fixed Cataclysm tooltip errors.
+]]
+},
+{
 Release = "6.6 (June 28, 2024)",
 Notes = [[
 # TWW Support, New properties
