@@ -9,5 +9,5 @@ Beta features are features which are currently in development and may be less st
 If you experience problems with beta features, you can disable them here.
 ]],
 OPTIONS_ITEM_DIALOG = "Enable Minimap Item Dialog",
-OPTIONS_ITEM_DIALOG_DESC = [[todo: fill me in]],
+OPTIONS_ITEM_DIALOG_DESC = [[Enables dragging an item onto the Icon of Vendor to open an item properties dialog for that item.]],
 }}

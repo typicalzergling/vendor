@@ -370,8 +370,8 @@ local RuleFunctions = {
         local itemStats = {};
 
         -- build a table of the stats this item has
-        for st, sv in pairs(GetItemStats(Link)) do
-            if (sv ~= 0) then
+        for st, sv in pairs(Addon:GetItemStats(Link)) do
+            if (sv ~= 0 and _G[st]) then
                 itemStats[_G[st]] = true;
             end
         end

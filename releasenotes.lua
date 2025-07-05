@@ -2,6 +2,43 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.7.3 (July 5, 2025)",
+Notes = [[
+# Updated ToC for 11.2.0
+Nothing of note in this change, as there was no known broken functionality in retail. Verified 11.1.7 and 11.2.0.
+
+# Added Minimap icon item drag-and-drop
+A new option, OFF by default, is now in the "General" settings to enable an item properties dialog on drag and drop.
+If you drag an item onto the icon for Vendor it will open an item properties dialog for that item, showing you all of its properties.
+
+This is intended to be a convenient shortcut for people who use vendor to inspect properties or want to just get information about an item.
+
+# Added Mists Classic Support
+Mists Classic is now supported by Vendor, verified on the live Classic pre-patch.
+
+* Transmogs are now in the game with Mists, and detection of Unknown Appearance and transmog info has been enabled for Mists.
+* The Keep rule for "Keep Uncollected Appearances" has been added to Mists Classic (and should be on by default!)
+
+There may be some quirkiness with transmog detection, it is different from retail. There may be some bugs there.
+
+]]
+},
+{
+Release = "6.7.2 (February 25, 2025)",
+Notes = [[
+# Bugfixes and Partial Russian Translation
+Added partial Russian translation, thanks to ZamestroTV!
+
+Generally fixed the merchant is sellable logic so it should no longer try to sell at merchants that cannot vendor items, such as Autohammers,
+but will allow merchants that are sellable which dont have items, such as the Grizzled Hills Packmaster.
+
+# Bugfixes
+* Fixed "HasStat" function, which was due to GetItemStats now being a C_Item API in 11.1.
+* Fixed autosell not working on some merchants that have no items like the Grizzled Hills Packmaster.
+* Fixed merchant button allowing autosell at unsellable merchants. It will now be disabled if you cannot sell at the merchant.
+]]
+},
+{
 Release = "6.7.1 (February 21, 2025)",
 Notes = [[
 # TWW 11.1 update

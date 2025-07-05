@@ -10,10 +10,10 @@ local L = Addon:GetLocale()
 local function debugp(...) Addon:Debug("info", ...) end
 
 -- Actual version and then assumed "next" version is the next minor version bump.
-local RETAIL_VERSION = 100207
-local RETAIL_VERSION_NEXT = 110000
-local CLASSIC_VERSION = 0
-local CLASSIC_VERSION_NEXT = 30500
+local RETAIL_VERSION = 110107
+local RETAIL_VERSION_NEXT = 110200
+local CLASSIC_VERSION = 40400
+local CLASSIC_VERSION_NEXT = 50500
 local tocVersion = {
     RetailNext = RETAIL_VERSION_NEXT,
     Retail = RETAIL_VERSION,

@@ -259,7 +259,7 @@ Rules.SystemRules =
     {
         Id = "keep.unknownappearance",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
         Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
         ScriptText = "IsUnknownAppearance",

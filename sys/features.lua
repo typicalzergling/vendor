@@ -127,7 +127,7 @@ function Features:TerminateFeature(name, feature)
 end
 
 function Features:CreateComponent(name, feature)
-    debugp("Create commpoennt Feature[%s]", name)
+    debugp("Create component Feature[%s]", name)
 
     local featureDeps = GetFeatureValue(feature, "DEPENDENCIES", "GetDependencies") or {}
     table.insert(featureDeps, "event:loaded" );

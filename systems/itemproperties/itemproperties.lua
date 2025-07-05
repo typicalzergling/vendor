@@ -24,6 +24,7 @@ function ItemProperties:Startup(register)
     IS_RETAIL = Addon.Systems.Info.IsRetailEra
     IS_RETAIL_NEXT = Addon.Systems.Info.IsRetailNext
     IS_CLASSIC = Addon.Systems.Info.IsClassicEra
+    IS_CLASSIC_NEXT = Addon.Systems.Info.IsClassicNext
     itemproperties = self
     
     register({
@@ -113,13 +114,13 @@ local function doGetItemProperties(itemObj)
 
     -- Populate tooltip and surface args.
     local tooltipdata = nil
-    if IS_RETAIL then
+    if C_TooltipInfo and C_TooltipInfo.GetItemByGUID then
         tooltipdata = C_TooltipInfo.GetItemByGUID(item.GUID)
 
         -- TooltipUtil.SurfaceArgs removed in 11.0
         -- Does not appear necessary in order for data to be
         -- available.
-        if not Addon.Systems.Info.IsRetailNext then
+        if TooltipUtil and TooltipUtil.SurfaceArgs then
             TooltipUtil.SurfaceArgs(tooltipdata)
             for _, line in ipairs(tooltipdata.lines) do
                 TooltipUtil.SurfaceArgs(line)
@@ -202,7 +203,20 @@ local function doGetItemProperties(itemObj)
         end
     end
 
-    if IS_RETAIL then
+    --[[
+    if IS_RETAIL and location then
+        if item.IsEquipment then
+            C_ItemUpgrade.ClearItemUpgrade()
+            C_ItemUpgrade.SetItemUpgradeFromLocation(location)
+            local uI = C_ItemUpgrade.GetItemUpgradeItemInfo()
+            if UI then
+                print("Name"..uI.name .. " Cur: "..uI.currUpgrade.." Max: "..uI.maxUpgrade.." minIlvl: "..uI.minitemLevel.." maxIlvl: "..uI.maxitemLevel)
+            end
+        end
+    end
+    ]]
+
+    if IS_RETAIL or IS_CLASSIC_NEXT then
         -- Determine if this item is cosmetic. Blizzard Cosmetic check doesn't count every type of cosmetic
         -- we have seen, so we will use tooltip to ensure it is actually a Cosmetic as the Player sees it.
         if tooltipdata and item.IsEquipment and itemproperties:IsItemCosmeticInTooltip(tooltipdata) then
@@ -262,16 +276,27 @@ local function doGetItemProperties(itemObj)
                 if Addon.IsDebug then
                     item.TransmogInfoSource = "PlayerHasTransmogByItemInfo"
                 end
-                item.IsAppearanceCollected = C_TransmogCollection.PlayerHasTransmogByItemInfo(item.Link)
+
+                -- Our last fallback is to use the Transmog collection, unless that isn't available.
+                -- Our final fallback is checking the appearance in the tooltip.
+                if (C_TransmogCollection and C_TransmogCollection.PlayerHasTransmogByItemInfo) then
+                    item.IsAppearanceCollected = C_TransmogCollection.PlayerHasTransmogByItemInfo(item.Link)
+                end
             end
         end
 
         item.IsUnknownAppearance = item.HasAppearance and not item.IsAppearanceCollected
 
+        if IS_CLASSIC_NEXT then
+            item.IsUnknownAppearance = item.IsUnknownAppearance or itemproperties:IsItemUnknownAppearanceInTooltip()
+        end
+
         -- Get Crafted Quality for Dragonflight professions.
         -- There is also a Reagent Quality but every instance I have found for that it is identical.
         -- We will just use the one for now unless there is need to add the differentiation.
-        item.CraftedQuality = C_TradeSkillUI.GetItemCraftedQualityByItemInfo(item.Link)
+        if (Addon.Systems.ItemProperties:IsPropertySupported("CraftedQuality")) then
+            item.CraftedQuality = C_TradeSkillUI.GetItemCraftedQualityByItemInfo(item.Link)
+        end
         if not item.CraftedQuality then item.CraftedQuality = 0 end
 
         -- Determine if this is a toy.
@@ -315,7 +340,7 @@ local function doGetItemProperties(itemObj)
         end
     end
 
-    if not IS_RETAIL then
+    if not IS_RETAIL and not IS_CLASSIC_NEXT then
         -- Old tooltip import for Classic
         -- Import the tooltip text as item properties for custom rules.
         item.TooltipLeft = itemproperties:ImportTooltipTextLeft(location)

@@ -61,7 +61,7 @@ local ITEM_PROPERTIES = {
     SubTypeId               = { Default=0,      Hide=0,  Category="Type",       Parent=nil,                   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=18 },
     StackSize               = { Default=0,      Hide=0,  Category="General",    Parent=nil,                   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=19 },
     UnitValue               = { Default=0,      Hide=0,  Category="General",    Parent=nil,                   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=20 },
-    IsCraftingReagent       = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=21 },
+    IsCraftingReagent       = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=21 },
     HasUseAbility           = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=22 },
     IsEquipment             = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=23 },
     ExpansionPackId         = { Default=0,      Hide=0,  Category="Type",       Parent=nil,                   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=24 },
@@ -79,7 +79,7 @@ local ITEM_PROPERTIES = {
     IsUnsellable            = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=34 },
     IsProfessionEquipment   = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=35 },
     IsEquippable            = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=36 },
-    IsPet                   = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=37 },
+    IsPet                   = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=37 },
 
     -- Bind properties
     BindType                = { Default=0,      Hide=0,  Category="Binding",    Parent=nil,                   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=38 },
@@ -90,17 +90,17 @@ local ITEM_PROPERTIES = {
     IsWarboundUntilEquip    = { Default=false,  Hide=0,  Category="Binding",    Parent=nil,                   Type="boolean",    Supported={ Retail=false, Classic=false, RetailNext=true, ClassicNext=false }, Rank=43 },
 
     -- Transmog properties
-    IsTransmogEquipment     = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=44 },
-    IsAppearanceCollected   = { Default=false,  Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=45 },
-    HasAppearance           = { Default=false,  Hide=0,  Category="Transmog",   Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=46 },
-    IsUnknownAppearance     = { Default=false,  Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=47 },
-    AppearanceId            = { Default=0,      Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=48 },
-    SourceId                = { Default=0,      Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=49 },
+    IsTransmogEquipment     = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=44 },
+    IsAppearanceCollected   = { Default=false,  Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=45 },
+    HasAppearance           = { Default=false,  Hide=0,  Category="Transmog",   Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=46 },
+    IsUnknownAppearance     = { Default=false,  Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=47 },
+    AppearanceId            = { Default=0,      Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=48 },
+    SourceId                = { Default=0,      Hide=0,  Category="Transmog",   Parent="HasAppearance",       Type="number",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=49 },
 
     -- Tooltip-derived Properties (excluding IsAccountBound)
-    IsCosmetic              = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=50 },
-    IsAlreadyKnown          = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=51 },
-    IsToy                   = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=53 },
+    IsCosmetic              = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=50 },
+    IsAlreadyKnown          = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=51 },
+    IsToy                   = { Default=false,  Hide=0,  Category="Type",       Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=53 },
 
     -- Pet properties
     PetName                 = { Default="",     Hide=0,  Category="Pet",        Parent="IsPet",               Type="string",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=54 },
@@ -115,11 +115,11 @@ local ITEM_PROPERTIES = {
     IsAccountBound          = { Default=false,  Hide=1,  Category="Binding",    Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true } , Rank=61},
 
     -- Deprecated Properties for old Tooltip scanning in classic
-    TooltipLeft             = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true }, Rank=62 },
-    TooltipRight            = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true }, Rank=63 },
+    TooltipLeft             = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false }, Rank=62 },
+    TooltipRight            = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false }, Rank=63 },
 
     -- Used for data only
-    TooltipData             = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=64 },
+    TooltipData             = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=64 },
 
     -- Debug properties
     TransmogInfoSource      = { Default=nil,    Hide=0,  Category="Debug",     Parent=nil,                   Type="string",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=65 }

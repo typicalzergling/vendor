@@ -45,6 +45,9 @@ local interopMap = {
     ["GetDetailedItemLevelInfo"]    = {"C_Item",            "GetDetailedItemLevelInfo"},
     ["IsEquippableItem"]            = {"C_Item",            "IsEquippableItem"},
     ["IsUsableItem"]                = {"C_Item",            "IsUsableItem"},
+
+    -- C_Item remaps from 11.1
+    ["GetItemStats"]                = {"C_Item",            "GetItemStats"},
 }
 
 local function registerInteropMap(register)

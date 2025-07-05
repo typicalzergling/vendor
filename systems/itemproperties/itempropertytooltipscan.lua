@@ -7,6 +7,7 @@ local function debugp(...) Addon:Debug("tooltipscan", ...) end
 
 local ItemProperties = Addon.Systems.ItemProperties
 
+
 local function isStringInTooltipText(tooltipdata, str, location)
     assert(type(str) == "string", "Missing string argument.")
     assert(type(location) == "string" and (location == "Left" or location == "Right"), "Invalid arguments to isStringInTooltipText")
