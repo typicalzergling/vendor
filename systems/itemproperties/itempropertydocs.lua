@@ -105,6 +105,7 @@ The expansion pack ID to which this item belongs.
 > 8 = SL
 > 9 = DF
 > 10 = TWW
+> 254 = Classic SoD
 
 ## Notes:
 
@@ -115,7 +116,8 @@ everything, including many items from Expansion packs (like reagants and Dalaran
 We recommend that you only use this for rules involving wearable equipment. Checking ExpansionPackId() == 0
 intending to match Vanilla will not do what you want, as it will include non-Vanilla things. Likewise
 ExpansionPackId() < 7 will match a great many items. If you want to be safe, use this in conjunction with
-IsEquipment(), and have some items from Vanilla and several expansion packs to verify.
+IsEquipment(), and have some items from Vanilla and several expansion packs to verify. Classic Season of
+Discover value is 254.
 ]],
 IsAzeriteItem = [[True if the item is Azerite gear from BFA.]],
 IsEquipment = [[

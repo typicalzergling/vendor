@@ -6,24 +6,17 @@
 local _, Addon = ...
 local L = Addon:GetLocale()
 local function debugp(...) Addon:Debug("tooltip", ...) end
+local MessageType = Addon.Systems.Chat.MessageType
 
 local Info = Addon.Systems.Info
 local ItemProperties = Addon.Systems.ItemProperties
 
 local function tooltipMessage(message, ...)
-    if (Addon:IsFeatureEnabled("chat")) then
-        Addon:GetFeature("chat"):Output(Addon.Features.Chat.MessageType.List, message, ...)
-    else
-        Addon:Print(L:GetString(message), ...)
-    end
+    Addon:Output(MessageType.List, message, ...)
 end
 
 local function otherMessage(message, ...)
-    if (Addon:IsFeatureEnabled("chat")) then
-        Addon:GetFeature("chat"):Output(Addon.Features.Chat.MessageType.Other, message, ...)
-    else
-        Addon:Print(L:GetString(message), ...)
-    end
+    Addon:Output(MessageType.Other, message, ...)
 end
 
 

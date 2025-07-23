@@ -725,14 +725,18 @@ HELP_EXPANSIONPACKID_TEXT = [[The expansion pack ID to which this item belongs.
 5 = WoD
 6 = Legion
 7 = BFA
-8 = SL]],
+8 = SL
+9 = DF
+10 = TWW
+256 = Classic SOD]],
 HELP_EXPANSIONPACKID_NOTES = "Use caution when using this to identify items of previous expansions. Not every item is tagged with an " ..
     "expansion ID. It appears that generally only wearable equipment is tagged. Zero is the default for " .. 
     "everything, including many items from Expansion packs (like reagants and Dalaran Hearthstones).|n|n" ..
     "We recommend that you only use this for rules involving wearable equipment. Checking ExpansionPackId() == 0 " ..
     "intending to match Vanilla will not do what you want, as it will include non-Vanilla things. Likewise, " ..
     "ExpansionPackId() < 7 will match a great many items. If you want to be safe, use this in conjunction with " ..
-    "IsEquipment(), and have some items from Vanilla and several expansion packs to verify.",
+    "IsEquipment(), and have some items from Vanilla and several expansion packs to verify. Note that on Classic SoD,"..
+    "ExpansionPackId is 254",
 
 HELP_ISAZERITEITEM_TEXT = [[True if the item is Azerite gear.]],
 HELP_ISEQUIPMENT_TEXT = [[True if the item is wearable equipment. This is equivalent to EquipLoc() ~= nil]],

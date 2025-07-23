@@ -64,11 +64,11 @@ function RulesFeature:GetRules(ruleType, all)
     for _, rule in ipairs(Addon.Rules.GetDefinitions()) do
         if (not ruleType or ruleType == rule.Type) then
             if (not all and hidden:Contains(rule.Id)) then
-                Addon:Debug("rulez", "Excluding hidden rule '%s'", rule.Id)
+                Addon:Debug("rules", "Excluding hidden rule '%s'", rule.Id)
             elseif (not all and rule.Locked == true) then
-                Addon:Debug("rulez", "Excluding locked rule '%s'", rule.Id)
+                Addon:Debug("rules", "Excluding locked rule '%s'", rule.Id)
             else
-                Addon:Debug("rulez", "Including rule '%s'", rule.Id)
+                Addon:Debug("rules", "Including rule '%s'", rule.Id)
                 if (rule.Source == Addon.RuleSource.SYSTEM) then
                     rule.IsSystem = true
                 elseif (rule.Source == Addon.RuleSource.EXTENSION) then

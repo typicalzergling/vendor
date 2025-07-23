@@ -192,7 +192,7 @@ local function doGetItemProperties(itemObj)
     else
         if item.BindType == 2 then
             item.IsBindOnEquip = true
-            if IS_RETAIL_NEXT and C_Item.IsBoundToAccountUntilEquip(location) then
+            if (IS_RETAIL or IS_RETAIL_NEXT) and C_Item.IsBoundToAccountUntilEquip(location) then
                 item.IsWarboundUntilEquip = true
                 -- For rule simplicity, we will treat WarboundUntilEquip the same as Warbound
                 -- Technically it is both warbound and bind on equip.

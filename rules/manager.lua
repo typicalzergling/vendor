@@ -4,9 +4,21 @@ local L = Addon:GetLocale()
 local Package = select(2, ...);
 Addon.RuleManager = {}
 local RuleManager = Addon.RuleManager;
-local RULE_TYPE_LOCKED_KEEP = 1;
-local RULE_TYPE_LOCKED_SELL = 2;
-local RULE_TYPE_LOCKED_DESTROY = 3;
+
+-- This ranking determines order we evaluate the rule types
+-- We use locked rules first to allow users to make exclusions to keep rules
+-- The idea is if you add an item to the sell or destroy list explicitly, then
+-- that overrides any keep rules that may exist for that item, and any item
+-- explicitly added to the keep list will always override everything else.
+-- If we were to move the sell/destroy lists to be below keep rules, then
+-- there would be no way to make an item exemption without changing every
+-- rule to recognize exempted items, while simply having the list override
+-- creates an easier and cleaner way to do exemptions.
+-- This is why sell and destroy locked rules are evaluated before keep rules,
+-- but not before keep lists.
+local RULE_TYPE_LOCKED_KEEP = 1;     -- Items that will never be sold/destroyed.
+local RULE_TYPE_LOCKED_SELL = 2;     -- Enable sell list item exemptions to keep rules.
+local RULE_TYPE_LOCKED_DESTROY = 3;  -- Enable destroy list item exemptions to keep rules.
 local RULE_TYPE_KEEP = 10;
 local RULE_TYPE_SELL = 1000;
 local RULE_TYPE_DESTROY = 2000;

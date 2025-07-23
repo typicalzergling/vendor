@@ -1,7 +1,7 @@
 local _, Addon = ...
 
 local function AttCompletionPercentage()
-    if not AllTheThings then return 0 end
+    if not AllTheThings or not AllTheThings.GetCachedSearchResults then return 0 end
     local cacheResult = AllTheThings.GetCachedSearchResults(AllTheThings.SearchForLink, Link)
     if cacheResult then
         return cacheResult.total>0 and (cacheResult.progress/cacheResult.total) or 1;

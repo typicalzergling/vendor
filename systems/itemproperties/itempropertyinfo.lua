@@ -87,7 +87,7 @@ local ITEM_PROPERTIES = {
     IsBindOnEquip           = { Default=false,  Hide=0,  Category="Binding",    Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=40 },
     IsBindOnUse             = { Default=false,  Hide=0,  Category="Binding",    Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=41 },
     IsWarbound              = { Default=false,  Hide=0,  Category="Binding",    Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=42 },
-    IsWarboundUntilEquip    = { Default=false,  Hide=0,  Category="Binding",    Parent=nil,                   Type="boolean",    Supported={ Retail=false, Classic=false, RetailNext=true, ClassicNext=false }, Rank=43 },
+    IsWarboundUntilEquip    = { Default=false,  Hide=0,  Category="Binding",    Parent=nil,                   Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=43 },
 
     -- Transmog properties
     IsTransmogEquipment     = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=44 },

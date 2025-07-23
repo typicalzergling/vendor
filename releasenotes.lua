@@ -2,6 +2,24 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.7.4 (July 22, 2025)",
+Notes = [[
+# Fixed compatibility with Classic SoD
+Fixed an issue that prevented latest version from working with Classic Season of Discovery.
+
+# Added AllTheThings extension!
+Thanks to 'brunokbcao' for adding an ATT extension, which features a function to check completion percentage,
+and a rule for keeping items that you still need for completing collections.
+
+# Bugfixes
+* Fix broken warbound and missing WarboundUntilEquip properties introduced in 6.7.3 for retail.
+* Fix keybind list toggling in Classic Mists
+
+# Known Issues
+* Rule help in the rule editor is missing some documentation for various properties and features.
+]]
+},
+{
 Release = "6.7.3 (July 5, 2025)",
 Notes = [[
 # Updated ToC for 11.2.0
