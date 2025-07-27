@@ -37,6 +37,7 @@ function GeneralSettings:CreateList(parent)
 		setting.isNew = true
 	end
 
+	self:CreateProtect(list)
 	self:CreateSell(list)
 	self:CreateRepair(list)
 	self:CreateTooltip(list)
@@ -49,9 +50,24 @@ function GeneralSettings:GetOrder()
 end
 
 --[[ Adds the selling settings to the settings list ]]
+function GeneralSettings:CreateProtect(list)
+	if (not Addon:IsFeatureEnabled("ItemProtection")) then return end
+
+	list:AddHeader("OPTIONS_CATEGORY_PROTECT", "OPTIONS_DESC_PROTECT")
+ 
+	local protectionFeature = Addon:GetFeature("ItemProtection")
+
+	local protection = Settings.CreateSetting(Addon.c_Config_Protection, true)
+	local setting = list:AddSetting(protection, "OPTIONS_SETTINGNAME_PROTECTION", "OPTIONS_SETTINGDESC_PROTECTION")
+	setting.isNew = true
+	setting.Margins = INDENT
+end
+
+
+--[[ Adds the selling settings to the settings list ]]
 function GeneralSettings:CreateSell(list)
 	list:AddHeader("OPTIONS_CATEGORY_SELLING", "OPTIONS_DESC_SELLING")
- 
+
 	local autosell = Settings.CreateSetting(Addon.c_Config_AutoSell, true)
 	local setting = list:AddSetting(autosell, "OPTIONS_SETTINGNAME_AUTOSELL", "OPTIONS_SETTINGDESC_AUTOSELL")
 	setting.Margins = INDENT

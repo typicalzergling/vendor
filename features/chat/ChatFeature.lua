@@ -24,7 +24,7 @@ function ChatFeature:OnInitialize()
             local frame = CreateFrame("Frame", nil, parent or UIParent, "Chat_Settings")
             Addon.CommonUI.UI.Attach(frame, Addon.Features.Chat.ChatSettings)
             return frame
-        end, nil, true)
+        end, nil, false)
 end
 
 function ChatFeature:OnTerminate()

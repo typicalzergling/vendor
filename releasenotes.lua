@@ -2,6 +2,87 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.8.0 (July 27, 2025)",
+Notes = [[
+# Major Feature Update
+This update has some major features and quality of life improvements Vendor enthusiasts have requested (or complained about)
+for a long time. Vendor finally has Item Upgrade support to make rules about upgradeable items, and item tracks! It now
+also knows about your itemlevel watermark for a given slot, and has many other small quality of life improvements. A major
+new feature with Vendor comes with 6.8 - the Item Protection feature!
+
+# 'Keep' Item Protection Feature
+Until now, Vendor's keep rules have only protected your items from Vendor selling or destroying them. Now Vendor has the ability
+to protect your important items from you - or accidents you may make in a hurry! The "Item Protection" feature is a new ON by
+default feature which you can disable in General Settings or Quick settings, or toggle by SHIFT-Right-Clicking the Vendor Minimap/LDB
+button. When this feature is on, any item that evalutes to "Keep" by Vendor, such as a Keep rule or a Keep list will be more
+resitant to accidents. If you manually sell one of these items, Vendor will automatically buy it back for! If you attempt to
+destroy one of these items by dragging it out of your inventory, the destroy confirmation will be immediately caught and cancelled.
+This feature is intended to help you not accidentally lose your most important items.
+
+However, it is also understood that you might want to sell or destroy a keep item on occasion if you run very protective rules.
+To make that easy to do, we've added a SHIFT+Right Click functionality to the Vendor minimap and LDB buttons that will toggle the
+protection setting on and off. The tooltip for Vendor in those buttons now also displays the current state of the protection feature. If you
+do not like this feature, it is easy to turn it off for good, or if you only want to temporarily turn it off we have made that fairly
+convenient to do.
+
+
+# New Properties - Item Upgrade Support!
+* MaxLevel = This is the max itemlevel which an item can be if it is fully upgraded. For non-upgradeable items this is
+strictly equivalent to "Level" so this new property can be used everywhere "Level" is used but will now treat upgradeable
+items as if they were their highest upgrade possible.
+* IsUpgradeable now works correctly and is moved to be in a new "Upgrade" category in the item properties.
+* UpgradeTrack = The plain-text track name (Hero, Champion, Myth, etc).
+* UpgradeLevel = The current numeric value of the upgrade. Ex: For 3/8 upgrade, this value would be '3'
+* UpgradeMax = The max upgrade level of this item. Ex: For 3/8, this value would be '8'.
+* IsFullyUpgraded = True if UpgradeLevel == UpgradeMax
+
+# New Function - WatermarkLevel
+* WatermarkLevel() = Returns the current high watermark for that item's slot for the current character. You can use it directly
+with itemlevel comparisons, such as "MaxLevel < WatermarkLevel()" to match anything below your current watermark for that slot.
+
+# Rule Changes
+* Most built-in rules that used the "Level" property now use the "MaxLevel" property in order to account
+for upgradeable items that may not be fully upgraded. We will assume they are for the purposes of these rules.
+This includes all of the built-in Sell rules.
+* The "Keep Side-grade or Better" built-in rule has changed and now uses MaxLevel and the new WatermarkLevel()
+function to keep any item who's MaxLevel is equal to or greater than your character's high watermark for that slot.
+This means it will keep any items that are the same max ilevel as your current highest.
+* New "Keep Epic Crafted Gear" Rule, which will protect all of your spark-crafted gear. If it has a crafted quality
+and is of Epic quality, this rule will protect it.
+* New "Keep Leveling Gear" Rule, which simply matches any gear that has a higher minimum level requirement than the player's
+current level. This rule matches nothing for a max level character so its value is in leveling.
+* Default Rules for new profiles have been updated. "Keep Unknown Appearance" is no longer a default enabled
+keep rule on Retail, and "Keep Potential Upgrades" is no longer enabled by default, with the Keep Side-grade or better rule
+now a default rule instead. The new "Keep Epic Crafted gear" is now also a new enabled-by-default rule. These changes
+only affect new profiles, not existing profiles!
+
+# Merchant Autosell Suppress w/ Shift
+* Merchant autosell and auto repair features will now be suppressed if you hold the SHIFT key when opening
+the merchant frame. This is a quick way to disable the autosell if you want to temporarily suppress it.
+
+# Minimap Button / LibDataBroker plugin Improvements
+* Tooltip now refreshes as vendor scan and state changes (a longtime bug)
+* Minimap/LDB button tooltip now shows Protection feature's status.
+* Minimap/LDB button now has additional functionality:
+  * SHIFT+Left-Click will now run Destroy Next Item, so you can run destroy anywhere without a keybind.
+  * SHIFT+Right-Click will now toggle the Protection feature state On/Off
+  * Holding ALT while mousing over the tooltip will display help for the click options.
+
+
+# Miscellanous Changes
+* The new Chat system is no longer a beta feature, it has been around long enough without issue.
+* Added "tww" and "thewarwithin" and "thewarwithin" to Expansion Pack Ids and updated the numeric value
+of other expansion packs to be correct. You can use something like "ExpansionPackId = WAR_WITHIN" now to reference
+The War Within expansion, just like caps names work for every other expansion.
+* The CURRENT_EXPANSION environment variable in scripts has been updated to be TWW for Retail and MOP for classic.
+* Improved toy detection that was missing some toys.
+
+
+# Known Issues
+* Rule help in the rule editor is missing some documentation for various properties and features.
+]]
+},
+{
 Release = "6.7.4 (July 22, 2025)",
 Notes = [[
 # Fixed compatibility with Classic SoD

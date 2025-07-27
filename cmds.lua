@@ -66,6 +66,7 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
+    BuybackItem(GetNumBuybackItems())
     Addon:WithFeature("Vendor", function(vendor)
         vendor:ShowDialog("rules")
     end)
@@ -132,6 +133,12 @@ function Addon:Destroy_Cmd()
     Addon:Output(Addon.Systems.Chat.MessageType.Destroy, L.CMD_RUNDESTROY);
     local destroy = Addon:GetFeature("Destroy")
     destroy:DestroyItems()
+end
+
+-- Toggles Item Protection
+function Addon:ToggleProtection_Cmd()
+    local p = Addon:GetFeature("ItemProtection");
+    print("Toggling Item Protection")
 end
 
 -- Prints the public API

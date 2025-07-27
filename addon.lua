@@ -19,4 +19,7 @@ function Addon:OnInitialize()
         self:SetupTestConsoleCommands()
     end
     --@end-do-not-package@
+
+    Addon:SetupSpecialList()
+
 end

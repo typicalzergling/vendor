@@ -109,6 +109,7 @@ end
 function Evaluation:Startup(register)
     register({
         "EvaluateSource",                   -- Wrapped in Public API
+        "EvaluateItem",                     -- Used directly by merchant buyback
         "ClearItemResultCacheByItemId",     -- Forced Cache Clear   - Used by Blocklists
         "ClearItemResultCache",             -- Forced Cache Clear   - Used in many places
         "GetItemResultForBagAndSlot",       -- Get Result - BagAndSlot

@@ -71,6 +71,7 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_MaxSellItems] = false,
     [Addon.c_Config_MinimapData] = {},
     [Addon.c_Config_MerchantData] = {},
+    [Addon.c_Config_Protection] = true,
 }
 
 --*****************************************************************************
@@ -86,10 +87,12 @@ Addon.DefaultConfig.Rules =
 
     -- The default rules to enable which cause items to be kept
     keep = {
+        --"keep.specialitems",
         "keep.legendaryandup",
         "keep.equipmentset",
-        "keep.unknownappearance",
-        "keep.potentialupgrades",
+        "keep.sidegradeorbetter",
+        "keep.craftedgear",
+        "keep.levelinggear",
         "keep.cosmetic",
     },
 
@@ -101,8 +104,9 @@ Addon.DefaultConfig.Rules =
         "sell.knowntoys",
     },
 
-    destroy = {
-        -- Empty
+    destroy =
+    {
+        "destroy.knowntoys",
     }
 }
 

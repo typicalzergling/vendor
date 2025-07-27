@@ -31,6 +31,7 @@ function ExtensionManager:GetLists()
 end
 
 function ExtensionManager:RegisterList(extension, list)
+	print("Registering new list");
 	if (type(list) ~= "table") then
 		error("List registration must be a table")
 		return false

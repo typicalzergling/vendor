@@ -28,6 +28,9 @@ function Merchant.OnMerchantShow()
     isMerchantOpen = true
     local profile = Addon:GetProfile();
 
+    -- Don't do anything else if shift is held down
+    if IsShiftKeyDown() then return end
+
     -- Do auto-repair if enabled
     if profile:GetValue(Addon.c_Config_AutoRepair) then
         Merchant:AutoRepair()

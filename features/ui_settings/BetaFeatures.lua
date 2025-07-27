@@ -20,7 +20,7 @@ end
 --[[ Checks if we should show this item ]]
 function BetaFeatures:ShowShow()
     if (table.getn(Addon:GetBetaFeatures()) ~= 0) then
-        return true
+        return false
     end
 
     return false;

@@ -17,6 +17,7 @@ ListSystem.ListType = {
     SYSTEM = 1,
     CUSTOM = 2,
     EXTENSION = 3,
+    --STATIC = 4,
 }
 
 --[[ Retrieve our depenedencies ]]

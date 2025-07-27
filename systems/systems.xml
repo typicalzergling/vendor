@@ -6,6 +6,7 @@
     <Script file="lists/systemlist.lua"/>
     <Script file="lists/customlist.lua"/>
     <Script file="lists/functions.lua"/>
+    <Script file="lists/staticlist.lua"/>
 
     <!-- Rules -->
     <Script file="rules/rulesystem.lua"/>

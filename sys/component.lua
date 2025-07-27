@@ -35,7 +35,7 @@ local function GetComponentInfo(component, key)
 end
 
 --[[ Sets the speciifed values on the component info ]]
-local function SetComoenntInfo(component, values)
+local function SetComponentInfo(component, values)
     assert(type(value) == "table", "Expected the values to be a table")
     local info = rawget(component, COMPONENT_INFO)
     if (not info) then

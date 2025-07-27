@@ -70,7 +70,7 @@ local function isTransmogEquipment(invtype)
     return transmog_invtypes[invtype] or false
 end
 
-local function doGetItemProperties(itemObj)
+local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
     assert(type(itemObj) == "table", "Expected an ItemMixin as the argument")
     assert(type(itemObj.GetItemID) == "function", "Expected an ItemMixin as the argument")
     -- Empty item detection. Have to do this since there's very strange behavior for determining
@@ -81,7 +81,7 @@ local function doGetItemProperties(itemObj)
     end
 
     local location = itemObj:GetItemLocation() or false
-    local guid = itemObj:GetItemGUID() or false
+    local guid = guidOverride or itemObj:GetItemGUID() or false
     if not guid then
         Addon:Debug("itemerrors", "Item has no GUID")
         return nil
@@ -113,8 +113,8 @@ local function doGetItemProperties(itemObj)
     if not item.GUID then return nil end
 
     -- Populate tooltip and surface args.
-    local tooltipdata = nil
-    if C_TooltipInfo and C_TooltipInfo.GetItemByGUID then
+    local tooltipdata = tooltipDataOverride
+    if not tooltipdata and C_TooltipInfo and C_TooltipInfo.GetItemByGUID then
         tooltipdata = C_TooltipInfo.GetItemByGUID(item.GUID)
 
         -- TooltipUtil.SurfaceArgs removed in 11.0
@@ -133,6 +133,7 @@ local function doGetItemProperties(itemObj)
 
     -- Get the effective item level.
     item.Level = Addon:GetDetailedItemLevelInfo(item.Link)
+    item.MaxLevel = item.Level  -- MaxLevel is the level unless we determine otherwise. This allows using MaxLevel safely in any situation you want to check level.
 
     -- Rip out properties from GetItemInfo
     item.Id = itemObj:GetItemID()
@@ -175,7 +176,23 @@ local function doGetItemProperties(itemObj)
     if IS_RETAIL then item.IsProfessionEquipment = item.IsEquipment and item.TypeId == 19 end
     item.IsEquipped = location and location:IsEquipmentSlot()
     if IS_RETAIL then item.IsTransmogEquipment = isTransmogEquipment(item.EquipLoc) end
-    if IS_RETAIL then item.IsUpgradeable = location and C_ItemUpgrade.CanUpgradeItem(location) end
+
+    -- Item Upgrade info
+    if IS_RETAIL then
+        if item.IsEquipment then
+            local upgradeInfo = C_Item.GetItemUpgradeInfo(item.Link)
+
+            -- upgradeInfo should always have a value, check the track string to see if it is upgradeable.
+            if upgradeInfo.trackString then
+                item.IsUpgradeable = true
+                item.MaxLevel = upgradeInfo.maxItemLevel
+                item.UpgradeTrack = upgradeInfo.trackString
+                item.UpgradeLevel = upgradeInfo.currentLevel
+                item.UpgradeMax = upgradeInfo.maxLevel
+                item.IsFullyUpgraded = item.UpgradeLevel == item.UpgradeMax
+            end
+        end
+    end
 
     -- Get soulbound information
     if location and C_Item.IsBound(location) then
@@ -192,7 +209,9 @@ local function doGetItemProperties(itemObj)
     else
         if item.BindType == 2 then
             item.IsBindOnEquip = true
-            if (IS_RETAIL or IS_RETAIL_NEXT) and C_Item.IsBoundToAccountUntilEquip(location) then
+            if (IS_RETAIL or IS_RETAIL_NEXT) and 
+            ((location and C_Item.IsBoundToAccountUntilEquip(location)) or
+             (C_Item.IsItemBindToAccountUntilEquip(item.Link))) then
                 item.IsWarboundUntilEquip = true
                 -- For rule simplicity, we will treat WarboundUntilEquip the same as Warbound
                 -- Technically it is both warbound and bind on equip.
@@ -202,19 +221,6 @@ local function doGetItemProperties(itemObj)
             item.IsBindOnUse = true
         end
     end
-
-    --[[
-    if IS_RETAIL and location then
-        if item.IsEquipment then
-            C_ItemUpgrade.ClearItemUpgrade()
-            C_ItemUpgrade.SetItemUpgradeFromLocation(location)
-            local uI = C_ItemUpgrade.GetItemUpgradeItemInfo()
-            if UI then
-                print("Name"..uI.name .. " Cur: "..uI.currUpgrade.." Max: "..uI.maxUpgrade.." minIlvl: "..uI.minitemLevel.." maxIlvl: "..uI.maxitemLevel)
-            end
-        end
-    end
-    ]]
 
     if IS_RETAIL or IS_CLASSIC_NEXT then
         -- Determine if this item is cosmetic. Blizzard Cosmetic check doesn't count every type of cosmetic
@@ -305,7 +311,7 @@ local function doGetItemProperties(itemObj)
         -- Toybox may be some sort of on-demand loaded component.
         item.IsToy = false
         local isToy = {C_ToyBox.GetToyInfo(item.Id)}
-        if tooltipdata and item.TypeId == 15 or item.TypeId == 0 then
+        if tooltipdata and ((item.TypeId == 15) or (item.TypeId == 0) or (item.SubTypeId == 0)) then
             if itemproperties:IsItemToyInTooltip(tooltipdata) then
                 item.IsToy = true
             end
@@ -400,6 +406,12 @@ function ItemProperties:GetItemPropertiesFromTooltip()
     return nil
 end
 
+function ItemProperties:GetItemPropertiesFromExternalTooltip(tooltipData)
+    if not tooltipData then return end
+    if not tooltipData.guid then return end
+    return self:GetItemPropertiesFromItemLink(C_Item.GetItemLinkByGUID(tooltipData.guid), tooltipData.guid, tooltipData)
+end
+
 -- From Location
 function ItemProperties:GetItemPropertiesFromLocation(location)
     if not location or not Interop:IsLocationValid(location) then return nil end
@@ -407,9 +419,9 @@ function ItemProperties:GetItemPropertiesFromLocation(location)
 end
 
 -- From Link - Not a great choice, GUID is best.
-function ItemProperties:GetItemPropertiesFromItemLink(itemLink)
+function ItemProperties:GetItemPropertiesFromItemLink(itemLink, guidOverride, tooltipOverride)
     if not itemLink then return nil end
-    return doGetItemProperties(Item:CreateFromItemLink(itemLink));
+    return doGetItemProperties(Item:CreateFromItemLink(itemLink), guidOverride, tooltipOverride);
 end
 
 -- From Equipment Slot

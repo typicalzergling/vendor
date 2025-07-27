@@ -156,9 +156,16 @@ end
 -- For refreshing the tooltip if the mouse stays over it.
 local tooltipRefreshTicker = nil
 
+local function refreshTooltip(self, tip)
+    debugp("Refreshing tootip")
+    tip:ClearLines();
+    self.data.OnTooltipShow(tip)
+    tip:Show()
+end
 
 local function onEnter(self)
 	if isDraggingButton then return end
+
     if self.showOnMouseover then
         self.fadeOut:Stop()
         self:SetAlpha(1)
@@ -167,8 +174,8 @@ local function onEnter(self)
     if self.data.OnTooltipShow then
         tooltip:SetOwner(self,"ANCHOR_NONE")
         tooltip:SetPoint(getAnchors(self))
-        self.data.OnTooltipShow(tooltip)
-        tooltip:Show()
+        refreshTooltip(self, tooltip)
+        tooltipRefreshTicker = C_Timer.NewTicker(.5, function() refreshTooltip(self, tooltip) end )
     end
 end
     

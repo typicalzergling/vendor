@@ -51,12 +51,15 @@ local EXPANSION  = {
     ["wod"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["draenor"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["legion"] = LE_EXPANSION_LEGION,
-    ["bfa"] = 8.0, 
-    ["bofa"] = 8.0,
-    ["sl"] = 9.0,
-    ["shadowlands"] = 9.0,
-    ["df"] = 10.0,
-    ["drgonflight"] = 10.0
+    ["bfa"] = LE_EXPANSION_BATTLE_FOR_AZEROTH,
+    ["bofa"] = LE_EXPANSION_BATTLE_FOR_AZEROTH,
+    ["sl"] = LE_EXPANSION_SHADOWLANDS,
+    ["shadowlands"] = LE_EXPANSION_SHADOWLANDS,
+    ["df"] = LE_EXPANSION_DRAGONFLIGHT,
+    ["dragonflight"] = LE_EXPANSION_DRAGONFLIGHT,
+    ["tww"] = LE_EXPANSION_WAR_WITHIN,
+    ["thewarwithin"] = LE_EXPANSION_WAR_WITHIN,
+    ["warwithin"] = LE_EXPANSION_WAR_WITHIN,
 }
 
 --*****************************************************************************
@@ -174,9 +177,9 @@ end
 local function getEnvironmentVariables()
     local RuleEnvironmentVariables = {}
     if Addon.Systems.Info.IsRetailEra then
-        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_DRAGONFLIGHT
+        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_WAR_WITHIN
     else
-        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_WRATH_OF_THE_LICH_KING
+        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_MISTS_OF_PANDARIA
     end
     RuleEnvironmentVariables.CLASSIC = LE_EXPANSION_CLASSIC                                 -- 0
     RuleEnvironmentVariables.BURNING_CRUSADE = LE_EXPANSION_BURNING_CRUSADE                 -- 1
@@ -188,6 +191,7 @@ local function getEnvironmentVariables()
     RuleEnvironmentVariables.BATTLE_FOR_AZEROTH = LE_EXPANSION_BATTLE_FOR_AZEROTH           -- 7
     RuleEnvironmentVariables.SHADOWLANDS = LE_EXPANSION_SHADOWLANDS                         -- 8
     RuleEnvironmentVariables.DRAGONFLIGHT = LE_EXPANSION_DRAGONFLIGHT                       -- 9
+    RuleEnvironmentVariables.WAR_WITHIN = LE_EXPANSION_WAR_WITHIN                           -- 10
     RuleEnvironmentVariables.POOR = 0
     RuleEnvironmentVariables.COMMON = 1
     RuleEnvironmentVariables.UNCOMMON = 2
@@ -403,6 +407,21 @@ local RuleFunctions = {
         local includeBank, includeUses = ...
         -- Assuming if you care to know about the bank you also want reagent bank.
         return GetItemCount(Link, includeBank, includeUses, includeBank)
+    end,
+},
+
+{
+    Name = "WatermarkLevel",
+    Documentation = locale["HELP_WATERMARKLEVEL_TEXT"],
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+    Function = function(...)
+        local forAccount = not not (...)
+        local character, account = C_ItemUpgrade.GetHighWatermarkForItem(Link)
+        if forAccount then
+            return account
+        else
+            return character
+        end
     end,
 },
 
