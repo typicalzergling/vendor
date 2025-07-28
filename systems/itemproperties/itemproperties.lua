@@ -176,6 +176,7 @@ local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
     if IS_RETAIL then item.IsProfessionEquipment = item.IsEquipment and item.TypeId == 19 end
     item.IsEquipped = location and location:IsEquipmentSlot()
     if IS_RETAIL then item.IsTransmogEquipment = isTransmogEquipment(item.EquipLoc) end
+    if IS_RETAIL and location then item.IsScrappable = C_Item.CanScrapItem(location) end
 
     -- Item Upgrade info
     if IS_RETAIL then

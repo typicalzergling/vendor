@@ -4,11 +4,18 @@ Addon.ReleaseNotes = {
 {
 Release = "6.8.0 (July 27, 2025)",
 Notes = [[
-# Major Feature Update
+# Item Uprade Support - Default Keep List - Item Protection
 This update has some major features and quality of life improvements Vendor enthusiasts have requested (or complained about)
 for a long time. Vendor finally has Item Upgrade support to make rules about upgradeable items, and item tracks! It now
 also knows about your itemlevel watermark for a given slot, and has many other small quality of life improvements. A major
-new feature with Vendor comes with 6.8 - the Item Protection feature!
+new feature with Vendor comes with 6.8 - the Item Protection feature! And perhaps most important for new users of Vendor, we now have
+a special list that is pre-populated with important items (like Cloak of Coordination) along with a Keep Rule that protects
+items in that list.
+
+# Default 'Important Items' Keep rule and list
+All vendor users will now have an "Important Items" list created and pre-populated with common important items. There is also a new
+"Important Items" Keep rule that will be enabled by default on all new profiles. This list can be edited, but it cannot be deleted.
+Consider it a special "keep" list that is account-wide.
 
 # 'Keep' Item Protection Feature
 Until now, Vendor's keep rules have only protected your items from Vendor selling or destroying them. Now Vendor has the ability
@@ -25,7 +32,6 @@ protection setting on and off. The tooltip for Vendor in those buttons now also 
 do not like this feature, it is easy to turn it off for good, or if you only want to temporarily turn it off we have made that fairly
 convenient to do.
 
-
 # New Properties - Item Upgrade Support!
 * MaxLevel = This is the max itemlevel which an item can be if it is fully upgraded. For non-upgradeable items this is
 strictly equivalent to "Level" so this new property can be used everywhere "Level" is used but will now treat upgradeable
@@ -35,6 +41,8 @@ items as if they were their highest upgrade possible.
 * UpgradeLevel = The current numeric value of the upgrade. Ex: For 3/8 upgrade, this value would be '3'
 * UpgradeMax = The max upgrade level of this item. Ex: For 3/8, this value would be '8'.
 * IsFullyUpgraded = True if UpgradeLevel == UpgradeMax
+* IsScrappable = True if item can be scrapped in the scrapper. This will be expanded before Remix for the return of scrap rules.
+For now it allows you to make rules that can exclude scrappable items.
 
 # New Function - WatermarkLevel
 * WatermarkLevel() = Returns the current high watermark for that item's slot for the current character. You can use it directly
@@ -67,7 +75,6 @@ the merchant frame. This is a quick way to disable the autosell if you want to t
   * SHIFT+Left-Click will now run Destroy Next Item, so you can run destroy anywhere without a keybind.
   * SHIFT+Right-Click will now toggle the Protection feature state On/Off
   * Holding ALT while mousing over the tooltip will display help for the click options.
-
 
 # Miscellanous Changes
 * The new Chat system is no longer a beta feature, it has been around long enough without issue.

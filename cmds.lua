@@ -10,10 +10,10 @@ function Addon:SetupConsoleCommands()
     self:AddConsoleCommand("settings", L.CMD_SETTINGS_HELP, "OpenSettings_Cmd")
     self:AddConsoleCommand("withdraw", L.CMD_WITHDRAW_HELP, "Withdraw_Cmd")
     self:AddConsoleCommand("api", L.CMD_API_HELP, "PrintAPI_Cmd")
+    self:AddConsoleCommand("resetlist", L.CMD_RESETLIST_HELP, "ResetList_Cmd")
     self:AddConsoleCommand("history", L.CMD_HISTORY_HELP, "History_Cmd")
     self:AddConsoleCommand("destroy", L.CMD_DESTROY_HELP, "Destroy_Cmd")
     self:AddConsoleCommand("import", "imports", "Import_Cmd")
-    self:AddConsoleCommand("test", "test", "Test_Cmd")
 end
 
 function Addon:Import_Cmd(text)
@@ -135,10 +135,9 @@ function Addon:Destroy_Cmd()
     destroy:DestroyItems()
 end
 
--- Toggles Item Protection
-function Addon:ToggleProtection_Cmd()
-    local p = Addon:GetFeature("ItemProtection");
-    print("Toggling Item Protection")
+function Addon:ResetList_Cmd()
+    Addon:ResetImportantItemsList()
+    Addon:Output(Addon.Systems.Chat.MessageType.Console, L["RESET_IMPORTANT_ITEMS_LIST"])
 end
 
 -- Prints the public API

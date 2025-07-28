@@ -55,13 +55,18 @@ Addon.ListType = {
     KEEP = "keep",
     DESTROY = "destroy",
     CUSTOM = "custom",
-    EXTENSION = "extension"
+    EXTENSION = "extension",
+    STATIC = "static",
 }
 
 Addon.SystemListId = {
     NEVER = "system:never-sell",
     ALWAYS = "system:always-sell",
     DESTROY = "system:always-destroy",
+}
+
+Addon.StaticListId = {
+    IMPORTANT_ITEMS = "static:important-items"
 }
 
 Addon.Events = {
@@ -95,6 +100,10 @@ Addon.Colors = {
     CUSTOMLIST_TEXT = CreateColor(0.0, 0.56863, 0.94902, .8),
     CUSTOMLIST_HOVER_TEXT = CreateColor(0.0, 0.56863, 0.94902, 1),
     CUSTOMLIST_SELECTED_TEXT = CreateColor(0.0, 0.56863, 0.94902, 1),
+
+    STATICLIST_TEXT = CreateColor(1.0, 0.50196,	0.0, .8),
+    STATICLIST_HOVER_TEXT = CreateColor(1.0, 0.50196, 0.0, 1),
+    STATICLIST_SELECTED_TEXT = CreateColor(1.0, 0.50196, 0.0, 1),
 
     HELPITEM_FUNCTION_BORDER = CreateColor(0.0, 0.8, 1, .6),
     HELPITEM_FUNCTION_BACK = CreateColor(0.0, 0.8, 1, .1),

@@ -141,6 +141,7 @@ function EditListDialog:Update()
     self:EnableAddById()
 
     UI.Show(self.systemInfo, editor:GetType() == ListType.SYSTEM)
+    UI.Show(self.staticInfo, editor:GetType() == ListType.STATIC)
 
     self:SetButtonState(buttons)
     self.items:Rebuild()

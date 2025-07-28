@@ -215,6 +215,20 @@ Rules.SystemRules =
         Order = -3000,
     },
 
+    -- Item is in the Important Items list
+    {
+        Id = "keep.importantitems",
+        Type = KEEP_RULE,
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Name = L["SYSRULE_KEEP_IMPORTANTITEMS"],
+        Description = L["SYSRULE_KEEP_IMPORTANTITEMS_DESC"],
+        ScriptText = "IsImportantItem()",
+        Script = function() 
+            return IsImportantItem()
+        end,
+        Order = 100,
+    },
+
     -- Safeguard rule - Legendary and higher are very rare and should probably never be worthy of a sell rule, but just in case...
     {
         Id = "keep.legendaryandup",
@@ -401,7 +415,7 @@ Rules.SystemRules =
         Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
         Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
-        Script = "IsEquippable and (MaxLevel >= WatermarkLevel())",
+        Script = "IsEquippable and (MaxLevel >= WatermarkLevel()) and (MaxLevel >= (.8 * PlayerItemLevel()))",
         Order = 1225,
     },
 

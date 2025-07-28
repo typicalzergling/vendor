@@ -9,7 +9,11 @@ function ItemItem:OnModelChange(itemId)
     self:SetItemID(itemId)
     self:ContinueOnItemLoad(function()
         local color = self:GetItemQualityColor() or GRAY_FONT_COLOR
-        self.name:SetText(self:GetItemName())
+        if (Addon.IsDebug) then
+            self.name:SetText("["..itemId.."] "..self:GetItemName())
+        else
+            self.name:SetText(self:GetItemName())
+        end
         self.name:SetTextColor(color.r, color.g, color.b, color.a or 1)
         UI.Enable(self.delete, not self:IsItemEmpty())
     end)

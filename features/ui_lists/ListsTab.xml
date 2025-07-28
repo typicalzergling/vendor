@@ -171,6 +171,16 @@
                         <Anchor point="RIGHT" relativeKey="$parent.labelName" relativePoint="RIGHT"/>
                     </Anchors>
                 </FontString>
+                <FontString inherits="GameFontNormal" parentKey="staticInfo" justifyH="LEFT">
+                    <KeyValues>
+                        <KeyValue key="LocText" value="LISTDIALOG_STATIC_INFO"/>
+                        <KeyValue key="Color" value="WARNING_TEXT"/>
+                    </KeyValues>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT"/>
+                        <Anchor point="RIGHT" relativeKey="$parent.labelName" relativePoint="RIGHT"/>
+                    </Anchors>
+                </FontString>
             </Layer>
         </Layers>
         <Frames>

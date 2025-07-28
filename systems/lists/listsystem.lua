@@ -17,7 +17,7 @@ ListSystem.ListType = {
     SYSTEM = 1,
     CUSTOM = 2,
     EXTENSION = 3,
-    --STATIC = 4,
+    STATIC = 4,
 }
 
 --[[ Retrieve our depenedencies ]]
@@ -33,9 +33,10 @@ end
 --[[ Startup our system ]]
 function ListSystem:Startup(register)
     self.customLists = ListSystem:CreateCustomListManager()
+    self.staticLists = ListSystem:CreateStaticListManager()
     self:RegisterFunctions()
 
-    register({ "GetList", "GetLists", "CreateList", "DeleteList", "GetSystemLists" })
+    register({ "GetList", "GetLists", "CreateList", "CreateListStatic", "DeleteList", "GetSystemLists" })
 end
 
 --[[ Shutdown our system ]]
@@ -57,6 +58,11 @@ function ListSystem:GetList(listId)
         return self:CreateCustomList(listId)
     end
 
+    -- Step 3 - Check static lists
+    if (self.staticLists:Exists(listId)) then
+        return self:CreateStaticList(listId)
+    end
+
     return nil
 end
 
@@ -72,6 +78,11 @@ function ListSystem:GetLists()
     -- Custom lists
     for _, customList in ipairs(self.customLists:GetLists()) do
         table.insert(lists, self:CreateCustomList(customList.Id))
+    end
+
+    -- Static lists
+    for _, staticList in ipairs(self.staticLists:GetLists()) do
+        table.insert(lists, self:CreateStaticList(staticList.Id))
     end
 
     return lists
@@ -102,6 +113,19 @@ function ListSystem:CreateList(name, description)
     return list
 end
 
+--[[ Creates a static list ]]
+function ListSystem:CreateListStatic(name, id, description)
+    if (type(name) ~= "string") or (string.len(name) == 0) then
+        error("A list must have a valid name")
+    end
+
+    local listDef = self.staticLists:Create(name, id, description)
+    local list = self:CreateStaticList(listDef.Id)
+    Addon:RaiseEvent(ListSystem.ListEvents.ADDED, list)
+
+    return list
+end
+
 --[[ Handle deleting a list ]]
 function ListSystem:DeleteList(listId)
     local list = self:GetList(listId)
@@ -110,11 +134,19 @@ function ListSystem:DeleteList(listId)
         error("There is not list : " .. tostring(listId))
     end
 
-    if (list:GetType() ~= ListSystem.ListType.CUSTOM) then
+    -- Allow custom and static lists to be deleted for repair purposes
+    if ((list:GetType() ~= ListSystem.ListType.CUSTOM) and (list:GetType() ~= ListSystem.ListType.STATIC)) then
         error("Only custom list can be deleted - " .. list:GetName())
     end
 
-    self.customLists:Delete(list:GetId())
+    if (list:GetType() == ListSystem.ListType.CUSTOM) then
+        self.customLists:Delete(list:GetId())
+    end
+
+    if (list:GetType() == ListSystem.ListType.STATIC) then
+        self.staticLists:Delete(list:GetId())
+    end
+
     Addon:RaiseEvent(ListSystem.ListEvents.REMOVED, list)
 end
 

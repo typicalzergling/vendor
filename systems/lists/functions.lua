@@ -40,6 +40,18 @@ Returns true if the item is in the "Destroy" list.
 },
 
 {
+    Name = "IsImportantItem",
+    Documentation =
+[[
+Returns true if the item is in the Important Items list.
+]],
+    Function = function()
+        local list = Lists:GetList(Addon.StaticListId.IMPORTANT_ITEMS)
+        return list:Contains(Id)
+    end
+},
+
+{
     Name = "IsInList",
     Documentation =
 [[

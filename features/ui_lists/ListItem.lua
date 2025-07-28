@@ -22,6 +22,8 @@ function ListItem:OnModelChange(list)
 
     if (list:GetType() == ListType.CUSTOM) then
         UI.SetColor(self.text, "CUSTOMLIST_TEXT")
+    elseif (list:GetType() == ListType.STATIC) then
+        UI.SetColor(self.text, "STATICLIST_TEXT") 
     else
         UI.SetColor(self.text, "TEXT")
     end
@@ -64,6 +66,8 @@ function ListItem:OnEnter()
 
         if (self:GetModel():GetType() == ListType.CUSTOM) then
             UI.SetColor(self.text, "CUSTOMLIST_HOVER_TEXT")
+        elseif (self:GetModel():GetType() == ListType.STATIC) then
+            UI.SetColor(self.text, "STATICLIST_HOVER_TEXT") 
         else
             UI.SetColor(self.text, "HOVER_TEXT")
         end    
@@ -80,6 +84,8 @@ function ListItem:OnLeave()
 
         if (self:GetModel():GetType() == ListType.CUSTOM) then
             UI.SetColor(self.text, "CUSTOMLIST_TEXT")
+        elseif (self:GetModel():GetType() == ListType.STATIC) then
+            UI.SetColor(self.text, "STATICLIST_TEXT") 
         else
             UI.SetColor(self.text, "TEXT")
         end
@@ -101,8 +107,10 @@ function ListItem:OnTooltip(tooltip)
     tooltip:SetText(self.text:GetText(), nameColor:GetRGB())
     if (self:GetModel():GetType() == ListType.CUSTOM) then
         tooltip:AddDoubleLine(locale["LISTOOLTIP_LISTTYPE"], locale["TOOLTIP_CUSTOMLIST"])
+    elseif (self:GetModel():GetType() == ListType.STATIC) then
+        tooltip:AddDoubleLine(locale["LISTOOLTIP_LISTTYPE"], locale["TOOLTIP_STATICLIST"])
     else
-        tooltip:AddDoubleLine(locale["LISTOOLTIP_LISTTYPE"], locale["TOOLTIP_SYTEMLIST"])
+        tooltip:AddDoubleLine(locale["LISTOOLTIP_LISTTYPE"], locale["TOOLTIP_SYSTEMLIST"])
     end
 
     if (type(help) == "string" and string.len(help) ~= 0) then
@@ -119,6 +127,8 @@ function ListItem:OnSelected()
 
     if (self:GetModel():GetType() == ListType.CUSTOM) then
         UI.SetColor(self.text, "CUSTOMLIST_SELECTED_TEXT")
+    elseif (self:GetModel():GetType() == ListType.STATIC) then
+        UI.SetColor(self.text, "STATICLIST_SELECTED_TEXT")
     else
         UI.SetColor(self.text, "SELECTED_TEXT")
     end
@@ -134,6 +144,12 @@ function ListItem:OnUnselected()
             textColor = "CUSTOMLIST_HOVER_TEXT"
         else
             textColor = "CUSTOMLIST_TEXT"
+        end
+    elseif (self:GetModel():GetType() == ListType.STATIC) then
+        if (mouseOver) then
+            textColor = "STATICLIST_HOVER_TEXT"
+        else
+            textColor = "STATICLIST_TEXT"
         end
     else
         if (mouseOver) then

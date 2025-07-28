@@ -20,6 +20,6 @@ function Addon:OnInitialize()
     end
     --@end-do-not-package@
 
-    Addon:SetupSpecialList()
+    Addon:SetupImportantItemsList()
 
 end

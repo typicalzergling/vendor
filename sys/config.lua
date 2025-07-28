@@ -71,7 +71,7 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_MaxSellItems] = false,
     [Addon.c_Config_MinimapData] = {},
     [Addon.c_Config_MerchantData] = {},
-    [Addon.c_Config_Protection] = true,
+    [Addon.c_Config_Protection] = false,
 }
 
 --*****************************************************************************
@@ -87,7 +87,7 @@ Addon.DefaultConfig.Rules =
 
     -- The default rules to enable which cause items to be kept
     keep = {
-        --"keep.specialitems",
+        "keep.importantitems",
         "keep.legendaryandup",
         "keep.equipmentset",
         "keep.sidegradeorbetter",

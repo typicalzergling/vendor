@@ -57,7 +57,7 @@ function GeneralSettings:CreateProtect(list)
  
 	local protectionFeature = Addon:GetFeature("ItemProtection")
 
-	local protection = Settings.CreateSetting(Addon.c_Config_Protection, true)
+	local protection = Settings.CreateSetting(Addon.c_Config_Protection, false)
 	local setting = list:AddSetting(protection, "OPTIONS_SETTINGNAME_PROTECTION", "OPTIONS_SETTINGDESC_PROTECTION")
 	setting.isNew = true
 	setting.Margins = INDENT

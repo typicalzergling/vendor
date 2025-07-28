@@ -3,10 +3,12 @@
     <!-- Lists -->
     <Script file="lists/listsystem.lua"/>
     <Script file="lists/customlists.lua"/>
+    <Script file="lists/staticlists.lua"/>
     <Script file="lists/systemlist.lua"/>
     <Script file="lists/customlist.lua"/>
-    <Script file="lists/functions.lua"/>
     <Script file="lists/staticlist.lua"/>
+    <Script file="lists/functions.lua"/>
+    <Script file="lists/staticlistdef.lua"/>
 
     <!-- Rules -->
     <Script file="rules/rulesystem.lua"/>

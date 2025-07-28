@@ -77,8 +77,8 @@ function QuickSettings:CreateList(parent)
     setting = list:AddSetting(repair, "QUICK_REPAIR_SETTING", "QUICK_REPAIR_SETTING_HELP")
     setting.isNew = false
 
-    if (Addon:IsFeatureEnabled("ItemProtection")) then
     -- Quick Protection setting
+    if (Addon:IsFeatureEnabled("ItemProtection")) then
         local protection = Settings.CreateSetting(nil, isProtectionEnabled(self),
             function() return isProtectionEnabled(self) end,
             function(value)
