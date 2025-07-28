@@ -17,10 +17,10 @@ All vendor users will now have an "Important Items" list created and pre-populat
 "Important Items" Keep rule that will be enabled by default on all new profiles. This list can be edited, but it cannot be deleted.
 Consider it a special "keep" list that is account-wide.
 
-# 'Keep' Item Protection Feature
+# 'Keep' Item Protection Feature (Retail Only)
 Until now, Vendor's keep rules have only protected your items from Vendor selling or destroying them. Now Vendor has the ability
-to protect your important items from you - or accidents you may make in a hurry! The "Item Protection" feature is a new ON by
-default feature which you can disable in General Settings or Quick settings, or toggle by SHIFT-Right-Clicking the Vendor Minimap/LDB
+to protect your important items from you - or accidents you may make in a hurry! The "Item Protection" feature is a new OFF by
+default feature which you can enable in General Settings or Quick settings, or toggle by SHIFT-Right-Clicking the Vendor Minimap/LDB
 button. When this feature is on, any item that evalutes to "Keep" by Vendor, such as a Keep rule or a Keep list will be more
 resitant to accidents. If you manually sell one of these items, Vendor will automatically buy it back for! If you attempt to
 destroy one of these items by dragging it out of your inventory, the destroy confirmation will be immediately caught and cancelled.
@@ -28,11 +28,9 @@ This feature is intended to help you not accidentally lose your most important i
 
 However, it is also understood that you might want to sell or destroy a keep item on occasion if you run very protective rules.
 To make that easy to do, we've added a SHIFT+Right Click functionality to the Vendor minimap and LDB buttons that will toggle the
-protection setting on and off. The tooltip for Vendor in those buttons now also displays the current state of the protection feature. If you
-do not like this feature, it is easy to turn it off for good, or if you only want to temporarily turn it off we have made that fairly
-convenient to do.
+protection setting on and off. The tooltip for Vendor in those buttons now also displays the current state of the protection feature.
 
-# New Properties - Item Upgrade Support!
+# New Properties - Item Upgrade Support! (All except MaxLevel are Retail Only)
 * MaxLevel = This is the max itemlevel which an item can be if it is fully upgraded. For non-upgradeable items this is
 strictly equivalent to "Level" so this new property can be used everywhere "Level" is used but will now treat upgradeable
 items as if they were their highest upgrade possible.
@@ -44,7 +42,7 @@ items as if they were their highest upgrade possible.
 * IsScrappable = True if item can be scrapped in the scrapper. This will be expanded before Remix for the return of scrap rules.
 For now it allows you to make rules that can exclude scrappable items.
 
-# New Function - WatermarkLevel
+# New Function - WatermarkLevel (Retail Only)
 * WatermarkLevel() = Returns the current high watermark for that item's slot for the current character. You can use it directly
 with itemlevel comparisons, such as "MaxLevel < WatermarkLevel()" to match anything below your current watermark for that slot.
 

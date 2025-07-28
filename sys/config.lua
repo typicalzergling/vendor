@@ -91,6 +91,7 @@ Addon.DefaultConfig.Rules =
         "keep.legendaryandup",
         "keep.equipmentset",
         "keep.sidegradeorbetter",
+        "keep.sidegradeorbetter_classic",
         "keep.craftedgear",
         "keep.levelinggear",
         "keep.cosmetic",

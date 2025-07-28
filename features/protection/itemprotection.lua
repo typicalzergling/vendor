@@ -16,7 +16,12 @@ ItemProtection.DEPENDENCIES = {
 
 function ItemProtection:IsProtectionEnabled()
     debugp("Getting Protection Status")
-    return not not self:GetProfileValues(Addon.c_Config_Protection)
+    local value = self:GetProfileValues(Addon.c_Config_Protection)
+    if (value == nil) then
+        self:SetProfileValue(Addon.c_Config_Protection, false)
+        value = false
+    end
+    return value
 end
 
 function ItemProtection:OnDeleteItemConfirm(itemName, qualityId, bonding, questwarn)

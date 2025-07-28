@@ -106,13 +106,16 @@ end
 function StaticList:Add(item)
     item = Lists.GetItemId(item)
 
-    local contents = self.manager:GetContents(self.listId)
-    if (contents[item] ~= true) then
-        contents[item] = true
-        self.manager:SetContents(self.listId, contents)
-        Addon:Debug("staticlists", "Added item '%s' to static list '%s'", item, self.listId)
-        Addon:RaiseEvent(ListEvents.CHANGED, self, ChangeType.ADDED, item)
-        return true
+    local exists = C_Item.GetItemInfoInstant(item)
+    if exists then
+        local contents = self.manager:GetContents(self.listId)
+        if (contents[item] ~= true) then
+            contents[item] = true
+            self.manager:SetContents(self.listId, contents)
+            Addon:Debug("staticlists", "Added item '%s' to static list '%s'", item, self.listId)
+            Addon:RaiseEvent(ListEvents.CHANGED, self, ChangeType.ADDED, item)
+            return true
+        end
     end
 
     return false

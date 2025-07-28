@@ -50,8 +50,11 @@ function Addon:SetupImportantItemsList()
 						   				Addon.StaticListId.IMPORTANT_ITEMS,
 						   				L.LIST_STATIC_IMPORTANT_DESC)
 
-	local slm = Addon.Systems.Lists:CreateStaticListManager()
-	slm:SetContents(Addon.StaticListId.IMPORTANT_ITEMS, SystemImportantItemsListDefault)
+	-- Items may not exist on the version of the game, so validate each one before adding.
+	for itemId, v in pairs(SystemImportantItemsListDefault) do
+		list:Add(itemId)
+	end
+
 	debugp("Important Items list created.")
 end
 

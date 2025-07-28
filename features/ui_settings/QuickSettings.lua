@@ -40,7 +40,7 @@ end
 
 --[[ Checks if the protection quick setting should be enabled ]]
 local function isProtectionEnabled(self)
-    local protection = self:GetProfileValues(Addon.c_Config_Protection)
+    local protection = not not self:GetProfileValues(Addon.c_Config_Protection)
     return protection
 end
 
