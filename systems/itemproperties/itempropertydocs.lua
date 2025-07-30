@@ -29,6 +29,7 @@ Quality = [[The quality of the item:
 You can also use the following constants in your scripts: POOR, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, ARTIFACT, HEIRLOOM
 ]],
 Level = [[This will be the item's effective item level if it is Equipment, otherwise it will be the base item level if it does not have an effective item level.]],
+MaxLevel = [[This is the max possible level if the item were to be fully upgraded. For non-upgradeable items, this is equivalent to Level. It is often best to use MaxLevel over Level if you want to account for upgrade potential.]],
 MinLevel = [[The required character level for equipping the item.]],
 Type = [[The name of the item's Type. This is a localized string. You can use this in conjunction with SubType to zero in on specific types of items.]],
 TypeId = [[
@@ -183,6 +184,10 @@ IsProfessionEquipment = [[
 Returns true if the item is an equippable piece of profession equipment.
 ]],
 IsToy = "True if the item is a toy.",
+IsPet = "True if the item is a pet.",
+IsWarbound = "True if the item is warbound (which is the same as Account-bound)",
+IsWarboundUntilEquip = "True if the item is warbound until equipped.",
+IsScrappable = "True if item can be scrapped with the scrap feature.",
 IsCraftingReagent = [[
 True if this specific item is a crafting reagent.
 ]],
@@ -202,6 +207,38 @@ Slot = [[The slot ID of the item, or -1 if it is not in a bag and slot.]],
 CraftedQuality = [[The Dragonflight Profession Crafted Quality of an item or reagent. 0 means the item has no crafted quality, if it is > 0 then it has crafted quality.]],
 PlayerName = "The name of the currently logged in character.",
 PlayerRealm = "The realm where the currently logged in caracter resides.",
+HasAppearance = [[True if the item has a transmog appearance.]],
+IsUnknownAppearance = [[True if the item's appearance has not been collected. This is the inverse of IsAppearanceCollected and exists for compatibility purposes.]],
+AppearanceId = [[The ID of the appearance. This is unique for a given appearance but may not be unique to a single item. Generally not useful for rules, but we include it in case it has value with transmog addons.]],
+SourceId = [[The source ID of the appearance, also not particularly useful but may be useful in conjunction with transmog addons.]],
+IsTransmogEquipment = [[True if the item is in a slot that can be transmogrified.]],
+IsUpgradeable = [[True if the item can be upgraded at an item upgrade NPC.]],
+UpgradeTrack = [[The upgrade track name of the item, such as "Veteran", or "Hero".]],
+UpgradeLevel = [[The current upgrade level of the item. If the item is '3/8' then this would be the '3'.]],
+UpgradeMax = [[The max upgrade level of the item. If the item is '3/8' then this would be the '8'.]],
+IsFullyUpgraded = [[True if UpgradeLevel == UpgradeMax. This is for simple checking if the item has been upgraded to its max.]],
+
+-- Pet docs
+PetName = [[The name of the pet.]],
+PetType = [[The numeric type of the pet which corresponds to family.
+
+> 1  = Humanoid
+> 2  = Dragonkin
+> 3  = Flying
+> 4  = Undead
+> 5  = Critter
+> 6  = Magic
+> 7  = Elemental
+> 8  = Beast
+> 9  = Aquatic
+> 10 = Mechanical
+]],
+IsPetTradeable = [[True if pet can be traded to other players.]],
+PetSpeciesId = [[The ID of the species. There are hundreds of these.]],
+PetCount = [[The number of this pet that you have collected.]],
+PetLimit = [[The max number of this pet that can be collected.]],
+IsPetCollectable = [[True if PetCount == PetLimit.]],
+
 }
 
 function Addon.Systems.ItemProperties:GetPropertyDocumentation(name)

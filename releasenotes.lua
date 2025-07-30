@@ -4,7 +4,7 @@ Addon.ReleaseNotes = {
 {
 Release = "6.8.0 (July 27, 2025)",
 Notes = [[
-# Item Uprade Support - Default Keep List - Item Protection
+# Item Upgrade Support - Default Keep List - Item Protection
 This update has some major features and quality of life improvements Vendor enthusiasts have requested (or complained about)
 for a long time. Vendor finally has Item Upgrade support to make rules about upgradeable items, and item tracks! It now
 also knows about your itemlevel watermark for a given slot, and has many other small quality of life improvements. A major

@@ -921,6 +921,14 @@ True if the player is currently a Fury Warrior
 
 HELP_PLAYERNAME_TEXT = "The name of the currently logged in character",
 
+HELP_WATERMARKLEVEL_TEXT = [[Returns the numeric itemlevel of the highest itemlevel that the character has equipped in this same slot.
+For example, if the highest helm item level your character has equipped was 500, and the current item is equipment in that same slot, this function will return '500'.
+
+Use this function to compare against the best gear your character has ever equipped and is useful when identifying upgrades or side-grades.
+
+## Example
+MaxLevel >= WatermarkLevel()
+]],
 HELP_PLAYERREALM_TEXT = "The realm where the currently logged in character resides",
 
 HELP_TOTALITEMCOUNT_TEXT = [[

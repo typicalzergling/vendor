@@ -8,6 +8,7 @@ local SystemImportantItemsListDefault =
 	[13503] = true,		-- Alchemist Stone (Alchemy Transmute)
 	[32757] = true, 	-- Blessed Medallion of Karabor (Teleport to Black Temple)
 	[40110] = true, 	-- Haunted Memento (creates a ghost, no longer obtainable)
+	[44050] = true,		-- Mastercraft Kalu'ak Fishing Pole (water breathing)
 	[44935] = true, 	-- Ring of the Kirin Tor (teleport to Dalaran)
 	[45690] = true, 	-- Inscribed Ring of the Kirin Tor (teleport to Dalaran)
 	[46874] = true, 	-- Argent Crusdader's Tabard (Teleport to Argent Tournament)
@@ -36,6 +37,7 @@ local SystemImportantItemsListDefault =
 	[198247] = true,	-- Neural Silencer Mk3
 	[210816] = true,	-- Algari Alchemist Stone
 	[211495] = true,	-- Dreambound Augment Rune (DF Reusable augment rune)
+	[219222] = true, 	-- Time Lost Artifact (Teleport to timeless isle)
 	[224572] = true, 	-- Crystallized Augment Rune (TWW Current augment rune)
 }
 
