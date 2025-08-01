@@ -474,7 +474,7 @@ EDITRULE_UNHEALTHY_TEXT = "The following error occured while trying to evaulate 
 EDITRULE_EXTENSION_RULE = "Extension Rule",
 EDITRULE_EXTENSION_RULE_TEXT = "This rule is a built-in extension using '%s' and cannot be edited or deleted. ",
 EDITRULE_SYSTEM_RULE = "Built-In Rule",
-EDITRULE_SYSTEM_RULE_TEXT = "This rules is a built-in Vendor rule and cannot be edited or deleted.",
+EDITRULE_SYSTEM_RULE_TEXT = "This rule is a built-in Vendor rule and cannot be edited or deleted.",
 
 
 DIALOG_TEXT_CONFIRM="Confirm",
