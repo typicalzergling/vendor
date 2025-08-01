@@ -8,7 +8,6 @@
     <Script file="lists/customlist.lua"/>
     <Script file="lists/staticlist.lua"/>
     <Script file="lists/functions.lua"/>
-    <Script file="lists/staticlistdef.lua"/>
 
     <!-- Rules -->
     <Script file="rules/rulesystem.lua"/>

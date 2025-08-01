@@ -242,8 +242,6 @@ CMD_RULES_HELP = "Open the Sell/Keep Rules configuration panel.",
 CMD_KEYS_HELP = "Open keybindings. Working with blocklists is much easier with keybinds!",
 CMD_WITHDRAW_HELP = "Withdraws any items from you bank which vendor would sell, requires your bank to be open",
 CMD_API_HELP = "Prints the public API for Vendor",
-CMD_RESETLIST_HELP = "Allows reset of the important items list",
-RESET_IMPORTANT_ITEMS_LIST = "Important Items list has been reset to its default list of items.",
 
 CMD_LISTTOGGLE_HELP = "Adds or removes items from a list: list {sell||keep||destroy} [itemid]",
 CMD_LISTTOGGLE_INVALIDARG = "Must specify which list to which you want to query or edit an item: {sell||keep||destroy} [item]",
@@ -274,6 +272,12 @@ CMD_HISTORY_HELP = "View, clear, or prune history. Usage: history [clear||prune 
 
 CMD_RUNDESTROY = "Destroying next item in the Destroy rules or in the Destroy list.",
 CMD_DESTROY_HELP = "Destroys a single item matching Destroy rules or in the Destroy list. Only one item can be destroyed per execution of this command.",
+
+CMD_DEFAULTLIST_HELP = "Enumeration and reset of built-in item lists",
+CMD_LIST_HEADER = "Default Item Lists:",
+CMD_LIST_USAGE = "Usage: list <all||reset>",
+CMD_LIST_ENUM = "  %s - Version: %s",
+CMD_LIST_RESET_COMPLETE = "%s list has been reset to its default list of items.",
 
 -- API
 API_REGISTEREXTENSION_TITLE = "Register Extension",

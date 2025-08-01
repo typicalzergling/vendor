@@ -22,14 +22,14 @@ function StaticLists:Init()
 end
 
 --[[ Creates a static custom list ]]
-function StaticLists:Create(name, id, description, items)
+function StaticLists:Create(id, version, name, description, items)
 	local list = {
 		Name = name,
 		Id = id,
 		Description = description,
 		Items = items or {},
 		Timestamp = time(),
-        Version = STATIC_LIST_VERSION,
+        Version = version,
 		CreatedBy = "Vendor"
 	}
 

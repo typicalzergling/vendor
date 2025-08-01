@@ -43,6 +43,22 @@ function StaticList:SetName(name)
     end
 end
 
+function StaticList:GetVersion()
+    local list = self.manager:Get(self.listId)
+    return list.Version
+end
+
+function StaticList:SetVersion(version)
+    if (type(version) ~= "number") then
+        error("A list must have a numeric version")
+    end
+
+    if (version ~= self:GetVersion()) then
+        self.manager:Update(self.listId, { Version = version })
+        Addon:RaiseEvent(ListEvents.CHANGED, self, ChangeType.OTHER, "version")
+    end
+end
+
 --[[ Gets the description for this list ]]
 function StaticList:GetDescription()
     local list = self.manager:Get(self.listId)

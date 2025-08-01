@@ -114,12 +114,12 @@ function ListSystem:CreateList(name, description)
 end
 
 --[[ Creates a static list ]]
-function ListSystem:CreateListStatic(name, id, description)
+function ListSystem:CreateListStatic(name, version, id, description)
     if (type(name) ~= "string") or (string.len(name) == 0) then
         error("A list must have a valid name")
     end
 
-    local listDef = self.staticLists:Create(name, id, description)
+    local listDef = self.staticLists:Create(name, version, id, description)
     local list = self:CreateStaticList(listDef.Id)
     Addon:RaiseEvent(ListSystem.ListEvents.ADDED, list)
 

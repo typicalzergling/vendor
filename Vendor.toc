@@ -60,6 +60,7 @@ features\chat\chat.xml
 features\adibags\adibags.xml
 features\ui_itemdialog\itemdialog.xml
 features\protection\protection.xml
+features\defaultlists\defaultlists.xml
 
 # public API export should be last
 publicAPI.lua
