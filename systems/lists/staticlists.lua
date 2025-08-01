@@ -2,7 +2,6 @@ local AddonName, Addon = ...
 local Lists = Addon.Systems.Lists
 local StaticLists = {}
 local ListEvents = Lists.ListEvents
-local STATIC_LIST_VERSION = 1
 
 --[[ Determine the ID ]]
 local function getListId(source)

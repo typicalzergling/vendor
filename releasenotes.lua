@@ -81,10 +81,9 @@ of other expansion packs to be correct. You can use something like "ExpansionPac
 The War Within expansion, just like caps names work for every other expansion.
 * The CURRENT_EXPANSION environment variable in scripts has been updated to be TWW for Retail and MOP for classic.
 * Improved toy detection that was missing some toys.
-
-
-# Known Issues
-* Rule help in the rule editor is missing some documentation for various properties and features.
+* Fixed missing property and function help. Note that blizzard's scrolling moves the help list very fast, but
+you can manually scroll it with the scrollbar, or use the search filter to better identify functions. Try putting
+"pet" in the help filter, for example.
 ]]
 },
 {
