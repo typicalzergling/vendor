@@ -2,8 +2,8 @@
     <Include file="extensionmanager.lua"/>
     <Include file="internalextensions.lua"/>
     <Include file="extension_pawn.lua"/>
-    <Include file="extension_ark.lua"/>
     <Include file="extension_tsm.lua"/>
     <Include file="extension_cimi.lua"/>
-    <Include file="extension_att.lua"/>    
+    <Include file="extension_att.lua"/>
+    <Include file="extension_auctionator.lua"/>
 </Ui>

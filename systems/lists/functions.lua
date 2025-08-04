@@ -87,6 +87,12 @@ Returns true if the item is in any of the provided lists by name. The name provi
                 local custom = Lists.customLists:Find(name)
                 if (custom) then
                     list = Lists:GetList(custom.Id)
+                else
+                    -- This is awkward but its lua.
+                    local static = Lists.staticLists:Find(name)
+                    if (static) then
+                        list = Lists:GetList(static.Id)
+                    end
                 end
             end
 

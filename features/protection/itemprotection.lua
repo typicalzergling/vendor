@@ -14,14 +14,12 @@ ItemProtection.DEPENDENCIES = {
     "system:chat",
 }
 
+
+local suppressBuybackProtection = false
+
 function ItemProtection:IsProtectionEnabled()
     debugp("Getting Protection Status")
-    local value = self:GetProfileValues(Addon.c_Config_Protection)
-    if (value == nil) then
-        self:SetProfileValue(Addon.c_Config_Protection, false)
-        value = false
-    end
-    return value
+    return not not Addon:GetProfile():GetValue(Addon.c_Config_Protection)
 end
 
 function ItemProtection:OnDeleteItemConfirm(itemName, qualityId, bonding, questwarn)
@@ -31,7 +29,7 @@ function ItemProtection:OnDeleteItemConfirm(itemName, qualityId, bonding, questw
     local item = Addon:GetItemResultForLocation(itemloc)
     if not item then return end
     if item.Result.RuleType == Addon.RuleType.KEEP then
-        Addon:Output(MessageType.Destroy, "Detected DELETE of keep item! "..item.Item.Link.." Cancelling the deletion!")
+        Addon:Output(MessageType.Destroy, "Detected DELETE of keep item ("..item.Result.Rule..")! "..item.Item.Link.." Cancelling the deletion!")
         ClearCursor()
         -- TODO Add a history entry for protection events
     end
@@ -42,7 +40,22 @@ function ItemProtection:OnMerchantUpdate()
     ItemProtection:CheckAndBuybackKeepItem()
 end
 
+function ItemProtection:OnMerchantShow()
+    if IsShiftKeyDown() then 
+        suppressBuybackProtection = true
+    end
+
+    ItemProtection:CheckAndBuybackKeepItem()
+end
+
+function ItemProtection:OnMerchantClosed()
+    suppressBuybackProtection = false
+end
+
+
 function ItemProtection:CheckAndBuybackKeepItem()
+    if suppressBuybackProtection then return end
+
     -- Ignore during autosell, too much spam and we do not want to re-evaluate
     -- every item we just sold, that would double the evaluation cost for no
     -- good reason. There is a chance the player may sell something while
@@ -70,7 +83,7 @@ function ItemProtection:CheckAndBuybackKeepItem()
     end
 
     if result.RuleType == Addon.RuleType.KEEP then
-        Addon:Output(MessageType.Merchant, "Detected SOLD Keep item! "..item.Link.." Buying it back!")
+        Addon:Output(MessageType.Merchant, "Detected SOLD Keep item ("..result.Rule..")! "..item.Link.."  Buying it back!")
         BuybackItem(GetNumBuybackItems())
         -- TODO Add a history entry for protection events
         return true
@@ -88,7 +101,8 @@ end
 function ItemProtection:OnInitialize()
     Addon:RegisterEvent("DELETE_ITEM_CONFIRM", ItemProtection.OnDeleteItemConfirm)
     Addon:RegisterEvent("MERCHANT_UPDATE", ItemProtection.OnMerchantUpdate)
-    Addon:RegisterEvent("MERCHANT_SHOW", ItemProtection.OnMerchantUpdate)
+    Addon:RegisterEvent("MERCHANT_SHOW", ItemProtection.OnMerchantShow)
+    Addon:RegisterEvent("MERCHANT_CLOSED", ItemProtection.OnMerchantClosed)
     debugp("Protection initialized")
 end
 

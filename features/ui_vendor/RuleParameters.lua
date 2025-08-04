@@ -170,7 +170,8 @@ end
 
 --[[ Set the parameter to the current value ]]
 function NumberParameter:SetValue(value)
-    assert(type(value) == "number", "Expected a number value")
+    local name = self.name
+    assert(type(value) == "number", "Parameter: "..tostring(name).."  Expected a number value, got: "..type(value))
 
     if (value ~= self.current) then
         self.current = value

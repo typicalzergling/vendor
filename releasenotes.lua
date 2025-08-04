@@ -2,6 +2,46 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.9.0 (Aug 03, 2025)",
+Notes = [[
+# Extension Support and general addon health update
+Extensions have been updated and some new ones added!
+* Auctionator (new!) - With support for auction value, profit over vendoring, and auction:vendor ratio. There are 3 auctionator functions added and 1 keep rule.
+* TradeSkillMaster  - Fixed its keep rule. It has been broken for some time but it is now fixed.
+
+# Protection feature merchant suppression
+It's common to want to sell items that match a keep rule and toggling protection can be annoying if you want to use the feature.
+To address this, the merchant suppression feature, which is opening the merchant while you hold SHIFT has been expanded to also
+disable sell protection. So if you want to sell items on a keep list, with protection on, open the merchant with SHIFT and then
+sell those items. Vendor will not buy them back and you will not need to toggle on or off the protection feature.
+
+# Fix for Protection feature sometimes being enabled by default
+Due to a bug, the protection feature was erroneously being treated as on for some existing profiles instead of being off.
+This bug has been fixed and it should be off by default for all profiles.
+
+# Added rule information for protection
+If the protection feature buys back an item or blocks a delete, it now indicates the rule that caused it to do so in the chat.
+
+# Removed Some Extensions
+In doing a pass of extensions we also had to decide on which ones to continue maintaining, this resulted in removals.
+* AdiBags integration is no longer supported. AdiBags is no longer in active development and is going to break eventually. It is not
+worth our time to continue to maintain it or test its integration if the developer of the addon will not do so.
+* ArkInventory is no longer supported. Ark has always been an awkward integration and Ark itself is not particularly well written.
+BetterBags does everything Ark does and better, so there isn't much point to maintaining Ark support.
+Apologies if you use AdiBags or ArkInventory, they just aren't maintainable for us. Recommend trying out BetterBags, as that is in
+active development and essentially does what Ark and Adibags do. Better Bags integration is on the way.
+
+# Larger List support
+Some vendor users have large keep/sell lists, and there was a perf issue with showing those lists in the UI with a "script ran too long"
+error. We believe this is fixed now as we changed the sorting algorithm to be more supportive of large lists.
+
+# Miscellaneous
+* Removed TOCs for Wrath and Cata. These are no longer testable editions of the game so removing the TOCs makes sense.
+* Some foundational work for BetterBags has been added, though this does not yet function and has been disabled.
+
+]]
+},
+{
 Release = "6.8.0 (July 27, 2025)",
 Notes = [[
 # Item Upgrade Support - Default Keep List - Item Protection

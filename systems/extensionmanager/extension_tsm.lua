@@ -158,21 +158,18 @@ local function registerTSMExtension()
                 Type = "Keep",
                 Name = "TSM - Items Worth Auctioning",
                 Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
-                Description = "Any items which have a (Market Value - Vendor Price) greater than the specified amount of Gold. Example: Specifying '10' will keep all items which have a net auction value greater than 10 gold. Specifying SaleRate",
+                Description = "Any items which have a (Market Value - Vendor Price) greater than the specified amount of Gold. Example: Specifying '10' will keep all items which have a net auction value greater than 10 gold. Salerate is the minimum rate of sale of the item. This can help you avoid ridiculously priced items that rarely or never actually sell.",
                 Script = function()
                     return TSM_IsAuctionItem() and (TSM_CustomValue("dbregionsalerate * 100") > RULE_PARAMS.SALERATE) and ((TSM_MarketValue() - UnitValue) > (RULE_PARAMS.GOLDVALUE * 10000));
                 end,
                 ScriptText = "TSM_IsAuctionItem() and (TSM_CustomValue(\"dbregionsalerate * 100\") > SALERATE) and ((TSM_MarketValue() - UnitValue) > (GOLDVALUE * 10000))",
-                Params =
-                    {
+                Params = {
                         {
                             Type="numeric",
                             Name="Gold",
                             Key="GOLDVALUE",
                             Default = 10,
                         },
-                    },
-                    {
                         {
                             Type="numeric",
                             Name="SaleRate",

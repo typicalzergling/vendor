@@ -40,8 +40,7 @@ end
 
 --[[ Checks if the protection quick setting should be enabled ]]
 local function isProtectionEnabled(self)
-    local protection = not not self:GetProfileValues(Addon.c_Config_Protection)
-    return protection
+    return Addon.Features.ItemProtection:IsProtectionEnabled()
 end
 
 --[[ Creates the list for this settings page ]]

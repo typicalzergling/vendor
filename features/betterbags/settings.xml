@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
-    <Button virtual="true" name="Adibags_RuleItem">
+    <Button virtual="true" name="Vendor_BetterBags_RuleItem">
         <Size x="1" y="20"/>
         <Layers>
             <Layer level="BACKGROUND">
@@ -42,12 +42,12 @@
         </Layers>
     </Button>
 
-    <Frame virtual="true" name="Adibags_Settings" hidden="true">
+    <Frame virtual="true" name="Vendor_BetterBags_Settings" hidden="true">
         <Layers>
             <Layer level="ARTWORK">
                 <FontString parentArray="stack" justifyH="LEFT" justifyV="TOP" wordWrap="true" inherits="GameFontNormal">
                     <KeyValues>
-                        <KeyValue key="LocText" value="ADIBAGS_HELP_TEXT"/>
+                        <KeyValue key="LocText" value="BETTERBAGS_HELP_TEXT"/>
                         <KeyValue key="Color" value="SECONDARY_TEXT"/>
                     </KeyValues>
                 </FontString>
@@ -56,7 +56,7 @@
         <Frames>
             <Button parentKey="enableFilter" inherits="CommonUI_CommandButton">
                 <KeyValues>
-                    <KeyValue key="Label" value="ADIBAGS_ENABLE"/>
+                    <KeyValue key="Label" value="BETTERBAGS_ENABLE"/>
                     <KeyValue key="Handler" value="OnEnableFilter"/>
                 </KeyValues>
                 <Anchors>
@@ -65,7 +65,7 @@
             </Button>
             <Button parentKey="disableFilter" inherits="CommonUI_CommandButton">
                 <KeyValues>
-                    <KeyValue key="Label" value="ADIBAGS_DISABLE"/>
+                    <KeyValue key="Label" value="BETTERBAGS_DISABLE"/>
                     <KeyValue key="Handler" value="OnDisableFilter"/>
                 </KeyValues>
                 <Anchors>
@@ -77,8 +77,8 @@
                 <KeyValues>
                     <KeyValue key="ItemSource" value="GetRules"/>
                     <KeyValue key="OnSelection" value="OnSelection"/>
-                    <KeyValue key="ItemTemplate" value="Adibags_RuleItem"/>
-                    <KeyValue key="ItemClass" value="Features.Adibags.SettingsRuleItem"/>
+                    <KeyValue key="ItemTemplate" value="Vendor_BetterBags_RuleItem"/>
+                    <KeyValue key="ItemClass" value="Features.BetterBags.SettingsRuleItem"/>
                 </KeyValues>
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.enableFilter" relativePoint="TOPRIGHT" y="12"/>

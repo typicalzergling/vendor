@@ -5,15 +5,15 @@ local Layouts = Addon.CommonUI.Layouts
 local Settings = Addon.Features.Settings
 local UI = Addon.CommonUI.UI
 local Colors = Addon.CommonUI.Colors;
-local Adibags = Addon.Features.Adibags
+local BetterBags = Addon.Features.BetterBags
 
-local ENABLED_FILTERS = Adibags.c_EnabledFiltersKey
-local ENABLE_SELL = Adibags.c_EnableSellFilter
-local ENABLE_DESTROY = Adibags.c_EnableDestroyFilter
+local ENABLED_FILTERS = BetterBags.c_EnabledFiltersKey
+local ENABLE_SELL = BetterBags.c_EnableSellFilter
+local ENABLE_DESTROY = BetterBags.c_EnableDestroyFilter
 
-local function debugp(msg, ...) Addon:Debug("adibags", msg, ...) end
+local function debugp(msg, ...) Addon:Debug("betterbags", msg, ...) end
 
-local AdibagsSettings = {}
+local BetterBagsSettings = {}
 local RuleItem = Mixin({}, Addon.CommonUI.SelectableItem)
 
 --[[=======================================================================--]]
@@ -21,7 +21,7 @@ local RuleItem = Mixin({}, Addon.CommonUI.SelectableItem)
 function RuleItem:OnModelChange(model)
     UI.Show(self.check, model.Enabled == true)
     UI.SetText(self.text, model.Text)
-    UI.SetText(self.ruleType, "ADIBAGS_RULETYPE_" .. string.upper(model.Type))
+    UI.SetText(self.ruleType, "BETTERBAGS_RULETYPE_" .. string.upper(model.Type))
 end
 
 --[[ We do not have a tooltip ]]
@@ -43,8 +43,8 @@ function RuleItem:OnTooltip(tooltip)
     tooltip:AddLine(text, textColor.r, textColor.g, textColor.b, true)
     tooltip:AddLine(" ")
     tooltip:AddDoubleLine(
-        locale:GetString("ADIBAGS_TOOLTIP_TYPE"), 
-        locale:GetString("ADIBAGS_TOOLTIPTYPE_" .. string.upper(model.Type)),
+        locale:GetString("BETTERBAGS_TOOLTIP_TYPE"), 
+        locale:GetString("BETTERBAGS_TOOLTIPTYPE_" .. string.upper(model.Type)),
         nameColor.r, nameColor.g, nameColor.b,
         textColor.r, textColor.g, textColor.b
     )
@@ -53,11 +53,11 @@ end
 --[[=======================================================================--]]
 
 --[[ Load the hidden rule settings page ]]
-function AdibagsSettings:OnLoad()
+function BetterBagsSettings:OnLoad()
     local settings = Addon:GetFeature("Settings")
 
     local enableJunk = Settings.CreateSetting(
-        "adibags-enable-junk",
+        "betterbags-enable-junk",
         true,
         function()
             local profile = Addon:GetProfile()
@@ -70,7 +70,7 @@ function AdibagsSettings:OnLoad()
     )
 
     local enableDestroy = Settings.CreateSetting(
-        "adibags-enable-destroy",
+        "betterbags-enable-destroy",
         true,
         function()
             local profile = Addon:GetProfile()
@@ -82,15 +82,15 @@ function AdibagsSettings:OnLoad()
         end
     )
 
-    table.insert(self.stack, 2, Settings.CreateCheckbox(enableJunk, "ADIBAGS_JUNK_LABEL", "ADIBAGS_JUNK_TEXT", self))
-    local destroyCheckbox = Settings.CreateCheckbox(enableDestroy, "ADIBAGS_DESTROY_LABEL", "ADIBAGS_DESTROY_TEXT", self)
+    table.insert(self.stack, 2, Settings.CreateCheckbox(enableJunk, "BETTERBAGS_JUNK_LABEL", "BETTERBAGS_JUNK_TEXT", self))
+    local destroyCheckbox = Settings.CreateCheckbox(enableDestroy, "BETTERBAGS_DESTROY_LABEL", "BETTERBAGS_DESTROY_TEXT", self)
     destroyCheckbox.Margins = { bottom = 12 }
     table.insert(self.stack, 3, destroyCheckbox)
 
 end
 
 --[[ Called when the page is shown ]]
-function AdibagsSettings:OnShow()
+function BetterBagsSettings:OnShow()
     local selected = self.rules:GetSelected()
     if (not selected) then
         self.enableFilter:Disable()
@@ -100,22 +100,22 @@ function AdibagsSettings:OnShow()
 end
 
 --[[ Called when the settings are hidden ]]
-function AdibagsSettings:OnHide()
+function BetterBagsSettings:OnHide()
 end
 
 --[[ Handle our layout ]]
-function AdibagsSettings:OnSizeChanged(width, height)
+function BetterBagsSettings:OnSizeChanged(width, height)
     local height = Layouts.Stack(self, self.stack, 0, 10, width)
     self.rules:SetPoint("TOP", 0,  -(height + 12))
 end
 
-function AdibagsSettings:OnSelection()
+function BetterBagsSettings:OnSelection()
     local selected = self.rules:GetSelected()
     UI.Enable(self.enableFilter, selected.Enabled ~= true)
     UI.Enable(self.disableFilter, selected.Enabled == true)
 end
 
-function AdibagsSettings:UpdateItem(model, state)
+function BetterBagsSettings:UpdateItem(model, state)
     if (model.Enabled ~= state) then
         model.Enabled = state
         local profile = Addon:GetProfile()
@@ -137,21 +137,21 @@ function AdibagsSettings:UpdateItem(model, state)
     end
 end
 
-function AdibagsSettings:OnEnableFilter()
+function BetterBagsSettings:OnEnableFilter()
     local selected = self.rules:GetSelected()
     if (selected) then
         self:UpdateItem(selected, true)
     end
 end
 
-function AdibagsSettings:OnDisableFilter()
+function BetterBagsSettings:OnDisableFilter()
     local selected = self.rules:GetSelected()
     if (selected) then
         self:UpdateItem(selected, false)
     end
 end
 
-function AdibagsSettings:GetRules()
+function BetterBagsSettings:GetRules()
     debugp("Get Rules")
     
     local rules = Addon:GetFeature("rules"):GetRules()
@@ -184,5 +184,5 @@ function AdibagsSettings:GetRules()
     return items
 end
 
-Addon.Features.Adibags.Settings = AdibagsSettings
-Addon.Features.Adibags.SettingsRuleItem = RuleItem
+Addon.Features.BetterBags.Settings = BetterBagsSettings
+Addon.Features.BetterBags.SettingsRuleItem = RuleItem

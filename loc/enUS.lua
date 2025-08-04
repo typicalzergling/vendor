@@ -167,7 +167,7 @@ OPTIONS_SETTINGDESC_MINIMAP = "Vendor will show a minimap button for quickly acc
 OPTIONS_SETTINGNAME_MERCHANT = "Show Merchant Buttons",
 OPTIONS_SETTINGDESC_MERCHANT = "Adds buttons when interacting with a merchant to trigger autoselling and destruction of items Vendor has identified for selling and/or destruction.\n\nThis is an account-wide setting.",
 OPTIONS_SETTINGNAME_PROTECTION = "Protect 'Keep' Items",
-OPTIONS_SETTINGDESC_PROTECTION = "Delete Attempts on a Keep item will be automatically cancelled.\n\nIf a Keep item is sold, Vendor will attempt to buy it back.",
+OPTIONS_SETTINGDESC_PROTECTION = "Delete Attempts on a Keep item will be automatically cancelled.\n\nIf a Keep item is sold, Vendor will attempt to buy it back. This behavior will be suppressed if you hold SHIFT while opening the merchant.",
 
 QUICK_SELL_SETTING = "Auto-Sell items at merchant",
 QUICK_SELL_SETTING_HELP = "Automatically sell items when interacting with a merchant. If this is disabled you can still manually trigger an autosell by setting a hotkey.\n\nThis also enables the 12-item limit on selling, which is the buyback limit for safety.",
@@ -868,6 +868,30 @@ Example: PlayerClass() == "DEMONHUNTER"
 
 ]],
 
+HELP_HASPROFESSION = [[
+Returns true if the player has the passed in profession. You can pass in a localized string name, or one of the below
+non-localized Environment variables. Only the primary professions are supported since every player can have the secondary
+professions.
+
+Available Environment variables for the professions:
+ALCHEMY
+* BLACKSMITHING
+* ENCHANTING
+* ENGINEERING
+* HERBALISM
+* INSCRIPTION
+* JEWELCRAFTING
+* LEATHERWORKING
+* MINING
+* SKINNING
+* TAILORING
+
+## Examples:
+> HasProfession(ENCHANTING)
+> HasProfession("Enchanting")
+
+]],
+
 HELP_PLAYERITEMLEVEL = [[
 Returns the average item level of the player as it appears in the character panel, rounded down to nearest integer.
 ]],
@@ -989,6 +1013,51 @@ True if the item is within 13 item levels of your currently equipped ger (within
 > CurrentEquippedLevel() <= (Level + 13)
 
 ]],
+EXT_AUCTIONATOR_FUNC_ISAUCTIONITEM = [[
+Uses Auctionator
+
+Returns whether the item has auction data for it, which indicates it is an auction item. This is
+equivalent to "Auc_AuctionValuce() > 0"
+]],
+
+EXT_AUCTIONATOR_FUNC_AUCTIONVALUE = [[
+Uses Auctionator
+
+Returns the auction value of the item in copper, or 0 if the item is not found on auction. 
+
+This is the value after auction house cut (5%), so it is the real net value of the item if sold successfully.
+]],
+EXT_AUCTIONATOR_FUNC_AUCTIONPROFIT = [[
+Uses Auctionator
+
+Returns the amount of gold profit you will get for auctioning this item instead of vendoring it.
+
+This is the value after auction house cut (5%) in gold, not copper. This number will be 0 if the item
+is not auctionable or is a loss to sell. It cannot be negative.
+
+This function can be useful to establish a minimum amount of gold value for an item to be worth taking
+the time and effort for listing and potentially relisting it for auction, as opposed to vendoring it.
+Items with a low gold profit value may not be worth your time unless they are very high volume.
+]],
+EXT_AUCTIONATOR_FUNC_AUCTIONRATIO = [[
+Uses Auctionator
+
+Returns the ratio of the auction value to vendor value. The higher the ratio, the larger the profit is
+over vendoring. For example, an item with a value ratio of '2' is worth twice as much to auction as it
+is to sell to a merchant.
+
+This is the value after auction house cut (5%) and reflects the actual magnitude of auction value this
+item has vs vendoring it. This value will be negative for items that are a loss to auction.
+
+This function can be useful to identify how worthwhile an item is to auction vs being vendored. A low
+ratio indicates an item that is likely a loss of gold and time if you need to relist it multiple times.
+]],
+EXT_AUCTIONATOR_RULENAME_KEEPFORAUCTION = "Auctionator - Keep for Auction",
+EXT_AUCTIONATOR_RULEDESC_KEEPFORAUCTION = [[
+Matches items that have the specified minimum gold profit and specified minimum auction-to-vendor ratio. Use the parameters to fine-tune how worthwhile you want the item to be to be worth keeping for auction.
+]],
+EXT_AUCTIONATOR_RULEPARAM_MINAUCTIONPROFIT = "Minimum Gold Profit",
+EXT_AUCTIONATOR_RULEPARAM_MINAUCTIONRATIO = "Minimum Value Ratio",
 
 }) -- END OF LOCALIZATION TABLE
 

@@ -137,6 +137,23 @@ local INVENTORY_SLOT_MAP = {
 }
 
 --*****************************************************************************
+-- Mapping of Profession Text to IDs
+--*****************************************************************************
+local PROFESSION_MAP = {
+    ALCHEMY = 171,
+    BLACKSMITHING = 164,
+    ENCHANTING = 333,
+    ENGINEERING = 202,
+    HERBALISM = 182,
+    INSCRIPTION = 773,
+    JEWELCRAFTING = 755,
+    LEATHERWORKING = 165,
+    MINING = 186,
+    SKINNING = 393,
+    TAILORING = 197,
+}
+
+--*****************************************************************************
 -- Helper function which given a value, will search the map for the value
 -- and return  the value contained in the map.
 --*****************************************************************************
@@ -207,6 +224,11 @@ local function getEnvironmentVariables()
 
     RuleEnvironmentVariables.PlayerName,
     RuleEnvironmentVariables.PlayerRealm = UnitFullName("player");
+
+    -- Professions
+    for k, v in pairs(PROFESSION_MAP) do
+        RuleEnvironmentVariables[k] = v
+    end
 
     return RuleEnvironmentVariables
 end
@@ -310,6 +332,34 @@ local RuleFunctions = {
         end
     end,
 },
+
+{
+    Name = "HasProfession",
+    Documentation = locale["HELP_HASPROFESSION"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Function = function(...)
+        local profsToCheck = {...}
+	    local prof1, prof2 = GetProfessions()
+        profInfo1 = {GetProfessionInfo(prof1)}
+        profInfo2 = {GetProfessionInfo(prof2)}
+
+        local prof1Id = profInfo1[7]
+        local prof2Id = profInfo2[7]
+
+        for _, id in pairs(profsToCheck) do
+            if type(id) == "string" then
+                id = PROFESSION_MAP[string.upper(id)]
+            end
+
+            if id == prof1Id or id == prof2Id then
+                return true
+            end
+        end
+
+        return false
+    end,
+},
+
 --@do-not-package@
 {
     Name = "tostring",

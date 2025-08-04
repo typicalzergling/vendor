@@ -143,7 +143,7 @@ function RulesTab:ShowRules(category)
 
 			if (ruleB.Order) then
 				if (not ruleA.Order) then
-					return true
+					return false
 				elseif (ruleA.Order ~= ruleB.Order) then
 					return ruleA.Order  < ruleB.Order
 				end

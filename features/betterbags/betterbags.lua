@@ -2,46 +2,68 @@ local _, Addon = ...
 local locale = Addon:GetLocale()
 local ItemProperties = Addon.Systems.ItemProperties
 
-local function debugp(msg, ...) Addon:Debug("adibags",  msg, ...) end
+local function debugp(msg, ...) Addon:Debug("betterbags",  msg, ...) end
 
-local Adibags= { 
-    NAME = "Adibags",
+local BetterBags= { 
+    NAME = "BetterBags",
     VERSION = 1, 
-    DEPENDENCIES = { "rules", "settings", "addon:adibags" },
+    DEPENDENCIES = { "rules", "settings", "addon:betterbags" },
     BETA = true,
-    DESCRIPTION = [[Description of the AdiBags feature]],
+    DESCRIPTION = [[Description of the BetterBags feature]],
     OPTIONAL = true,
 
-    c_EnabledFiltersKey = "adibags:eanbled-filters",
-    c_EnableSellFilter = "adibags:enable-sell-filter",
-    c_EnableDestroyFilter = "adibags:eanble-junk-filter",
+    c_EnabledFiltersKey = "betterbags:enabled-filters",
+    c_EnableSellFilter = "betterbags:enable-sell-filter",
+    c_EnableDestroyFilter = "betterbags:enable-junk-filter",
 
     sellFilter = nil,
     destroyFilter = nil,
     filters = {}
 }
 
-function Adibags:OnInitialize()
-    debugp("AdiBbags.OnInitialize()")
-
-    local addon = Addon:GetAddOnInfo('AdiBags')
-    if not select(4, addon) then
-        return
+function BetterBags:IsBetterBagsEnabled()
+    local addon = {Addon:GetAddOnInfo('BetterBags')}
+    for k, v in pairs(addon) do
+        debugp(" "..tostring(k).." Value: "..tostring(v))
+    end
+    local loadable = select(4, addon)
+    if loadable then
+        debugp("Not present, exiting")
+        return false
     end
 
-    self.ruleFeature = Addon:GetFeature("rules")
-    self.adibags = LibStub('AceAddon-3.0'):GetAddon('AdiBags')
-    self.adibagsLoc = setmetatable({}, { __index = self.adibags.L })
+    local enabledForCharacter = {C_AddOns.GetAddOnEnableState("BetterBags", UnitGUID("player"))}
+    debugp("Enabledstate: "..tostring(enabledForCharacter))
+    for k, v in pairs(enabledForCharacter) do
+        debugp("K = "..tostring(k).." V = "..tostring(v))
+    end
+    if enabledForCharacter[1] == 0 then
+        debugp("Not enabled for current character, exiting")
+        return false
+    end
 
+    return true
+end
+
+function BetterBags:OnInitialize()
+    debugp("BetterBags.OnInitialize()")
+
+    if not self:IsBetterBagsEnabled() then return end
+
+    self.ruleFeature = Addon:GetFeature("rules")
+    self.betterbags = LibStub('AceAddon-3.0'):GetAddon('BetterBags')
+    self.betterbagsLoc = setmetatable({}, { __index = self.betterbags.L })
+
+    debugp("BetterBags loaded")
     local settings = Addon:GetFeature("Settings")
     settings:RegisterPage(
-        "ADIBAGS_SETTINGS_NAME",
-        "ADIBAGS_SETTINGS_SUMMARY",
+        "BETTERBAGS_SETTINGS_NAME",
+        "BETTERBAGS_SETTINGS_SUMMARY",
         function(parent)
-            local frame = CreateFrame("Frame", nil, parent or UIParent, "Adibags_Settings")
+            local frame = CreateFrame("Frame", nil, parent or UIParent, "Vendor_BetterBags_Settings")
             Addon.CommonUI.UI.Attach(frame, self.Settings)
             return frame
-        end, nil, true)
+        end, nil, false)
 
     local profile = Addon:GetProfile()
 
@@ -56,11 +78,11 @@ function Adibags:OnInitialize()
     self:OnProfileChanged(profile)
 end
 
-function Adibags:OnTerminate()
-    debugp("Adibags.OnTerminate()")
+function BetterBags:OnTerminate()
+    debugp("BetterBags.OnTerminate()")
 
     local settings = Addon:GetFeature("settings")
-    settings:UnregisterPage("ADIBAGS_SETTINGS_NAME")
+    settings:UnregisterPage("BETTERBAGS_SETTINGS_NAME")
 
     if (self.sellFIlter) then
         self.sellFIlter:Disable()
@@ -74,24 +96,24 @@ function Adibags:OnTerminate()
         filter:DisableFIlter()
     end
 
-    if (self.adibags) then
-        self.adibags:UpdateFilters()
+    if (self.betterbags) then
+        self.betterbags:UpdateFilters()
     end
 
-    self.adibags = nil
-    self.adibagsLoc = nil
+    self.betterbags = nil
+    self.betterbagsLoc = nil
 end
 
 
--- AdiBags Sell Filter for Vendor
-function Adibags:CreateSellFilter()
+-- BetterBags Sell Filter for Vendor
+function BetterBags:CreateSellFilter()
     -- Use highest priority, since Vendor could end up reclassifying absolutely anything in the bags.
-    local sellFilter = self.adibags:RegisterFilter("VendorSell", 100, 'ABEvent-1.0')
-    sellFilter.uiName = locale:GetString("ADIBAGS_FILTER_VENDOR_SELL_NAME")
-    sellFilter.uiDesc = locale:GetString("ADIBAGS_FILTER_VENDOR_SELL_DESC")
+    local sellFilter = self.betterbags:RegisterFilter("VendorSell", 100, 'BBEvent-1.0')
+    sellFilter.uiName = locale:GetString("BETTERBAGS_FILTER_VENDOR_SELL_NAME")
+    sellFilter.uiDesc = locale:GetString("BETTERBAGS_FILTER_VENDOR_SELL_DESC")
     sellFilter.cannotDisable = true
-    sellFilter.categroy = locale:GetString("ADIBAGS_CATEGORY_VENDOR_SELL") 
-    sellFilter.junk = self.adibagsLoc.Junk
+    sellFilter.categroy = locale:GetString("BETTERBAGS_CATEGORY_VENDOR_SELL") 
+    sellFilter.junk = self.betterbagsLoc.Junk
 
     sellFilter.Filter = function(self, slotData)        
             if not self:IsEnabled() then
@@ -111,15 +133,15 @@ function Adibags:CreateSellFilter()
     return sellFilter
 end
 
--- AdiBags Destroy Filter for Vendor
-function Adibags:CreateDestroyFilter()
+-- BetterBags Destroy Filter for Vendor
+function BetterBags:CreateDestroyFilter()
     -- Use highest priority, since Vendor could end up reclassifying absolutely anything in the bags.
-    local destroyFilter = self.adibags:RegisterFilter("VendorDestroy", 100, 'ABEvent-1.0')
-    destroyFilter.uiName = locale:GetString("ADIBAGS_FILTER_VENDOR_DESTROY_NAME")
-    destroyFilter.uiDesc = locale:GetString("ADIBAGS_FILTER_VENDOR_DESTROY_DESC")
+    local destroyFilter = self.betterbags:RegisterFilter("VendorDestroy", 100, 'BBEvent-1.0')
+    destroyFilter.uiName = locale:GetString("BETTERBAGS_FILTER_VENDOR_DESTROY_NAME")
+    destroyFilter.uiDesc = locale:GetString("BETTERBAGS_FILTER_VENDOR_DESTROY_DESC")
     destroyFilter.cannotDisable = true
-    destroyFilter.categroy = locale:GetString("ADIBAGS_CATEGORY_VENDOR_DESTROY")
-    destroyFilter.junk = self.adibagsLoc.Junk
+    destroyFilter.categroy = locale:GetString("BETTERBAGS_CATEGORY_VENDOR_DESTROY")
+    destroyFilter.junk = self.betterbagsLoc.Junk
     
     destroyFilter.Filter = function(self, slotData)
             if not self:IsEnabled() then
@@ -139,25 +161,25 @@ function Adibags:CreateDestroyFilter()
     return destroyFilter
 end
 
-function Adibags:CreateRuleFilter(rule)
+function BetterBags:CreateRuleFilter(rule)
     local ruleFeature = self.ruleFeature
 
     if (not self.filterEngine) then
         self.filterEngine = Addon:CreateRulesEngine()
-        self.filterEngine:CreateCategory(1, "=adibags=", 0)
+        self.filterEngine:CreateCategory(1, "=betterbags=", 0)
     end
 
     -- For regular rules start with apriority jsut below the highest
-    local filter = self.adibags:RegisterFilter(rule.Id, 90, 'ABEvent-1.0')
+    local filter = self.betterbags:RegisterFilter(rule.Id, 90, 'BBEvent-1.0')
     filter.rule = rule
     filter.cannotDisable = true
-    filter.uiName = locale:FormatString("ADIBAGS_RULEFILTER_NAME_" .. string.upper(rule.Type), rule.Name)
+    filter.uiName = locale:FormatString("BETTERBAGS_RULEFILTER_NAME_" .. string.upper(rule.Type), rule.Name)
     if (type(rule.Description) == "stirng") then
-        filter.uiDesc = locale:FormatString("ADIBAGS_RULEFILTER_DESCRIPTION_FMT", rule.Description)
+        filter.uiDesc = locale:FormatString("BETTERBAGS_RULEFILTER_DESCRIPTION_FMT", rule.Description)
     else
-        filter.uiDesc = locale:GetString("ADIBAGS_RULEFILTER_NO_DESCRIPTION")
+        filter.uiDesc = locale:GetString("BETTERBAGS_RULEFILTER_NO_DESCRIPTION")
     end
-    filter.category = locale:FormatString("ADIBAGS_RULEFILTER_CATEGORY_" .. string.upper(rule.Type), rule.Name)
+    filter.category = locale:FormatString("BETTERBAGS_RULEFILTER_CATEGORY_" .. string.upper(rule.Type), rule.Name)
     filter.engine = self.filterEngine
 
     filter.EnableFilter = function(self)
@@ -204,8 +226,8 @@ function Adibags:CreateRuleFilter(rule)
     return filter;
 end
 
-function Adibags:OnProfileChanged(profile)
-    debugp("Adibags: profile changed")
+function BetterBags:OnProfileChanged(profile)
+    debugp("BetterBags: profile changed")
     local changes = false
 
     local destroy = profile:GetValue(self.c_EnableDestroyFilter)
@@ -275,20 +297,22 @@ function Adibags:OnProfileChanged(profile)
         end
     end
 
-    debugp("Notifying AdiBags of changes")
-    self.adibags:UpdateFilters()
+    debugp("Notifying BetterBags of changes")
+    if (self.betterbags) then
+        self.betterbags:UpdateFilters()
+    end
 end
 
-function Adibags:OnRulesChanged()
+function BetterBags:OnRulesChanged()
     debugp("Rules have changed")
 
     for _, filter in pairs(self.filters) do
         filter:UpdateRule()
     end
 
-    if (self.adibags) then
-        self.adibags:UpdateFilters()
+    if (self.betterbags) then
+        self.betterbags:UpdateFilters()
     end
 end
 
-Addon.Features.Adibags = Adibags
+Addon.Features.BetterBags = BetterBags

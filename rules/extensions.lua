@@ -128,17 +128,17 @@ local function addFunctionDefinition(ext, fdef)
         SourceName = ext.Source
     };
 
-    Addon:Debug("extensions", "Added function '%s' from:", f.Name, ext.Name);
+    Addon:Debug("extensions", "Added function '%s' from: %s", f.Name, ext.Name);
     table.insert(Extensions._functions, f);
     Addon:RegisterFunctions({f}, Addon.RuleSource.EXTENSION)
 end
 
 -- Helper function which adds an entry for the extension.
-local function addExtension(source, addon)
+local function addExtension(source, name)
     local a =
     {
         Source = source,
-        Name = addon,
+        Name = name,
         Functions = 0,
         Rules = 0,
         OnUpdate = 0
