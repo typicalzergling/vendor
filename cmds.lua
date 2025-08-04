@@ -65,7 +65,6 @@ function Addon:OpenKeybindings_Cmd()
 end
 
 function Addon:OpenConfigDialog_Cmd()
-    BuybackItem(GetNumBuybackItems())
     Addon:WithFeature("Vendor", function(vendor)
         vendor:ShowDialog("rules")
     end)

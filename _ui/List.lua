@@ -299,9 +299,14 @@ local function list_BuildView(self, state)
 
         -- If we have sort, then sort the resulting view
         if (type(sort) == "function") then
-            -- Bubblesort has problems with large lists, and quicksort is fast enough
-            --bubbleSort(view, sort)
-            quickSort(view, sort)
+            -- Race conditions with items loading their names can cause sort to fail.
+            local success = pcall(function() quickSort(view, sort) end)
+            if not success then
+                -- If we fail, fall back to sorting by ID
+                -- If this fails, welp, carry on, it aint sorted but should still render.
+                debugp("Sorting failed, falling back on number sort.")
+                pcall(function() quickSort(view, function(a, b) return tonumber(a) < tonumber(b) end) end)
+            end
         end
 
         state.view = view

@@ -19,18 +19,14 @@ local SORTS = {
         local nA = C_Item.GetItemNameByID(itemA) or nil
         local nB = C_Item.GetItemNameByID(itemB) or nil
 
-        -- Items that aren't loaded yet are considered less than
-        -- everything, the list should fix itself on the next
-        -- update, this is an edge case and only on first show
+        -- Items that aren't loaded yet could have a load issue.
+        -- If names not available, sort by number.
         if (nA and nB) then
             return nA < nB
         end
 
-        if (not nA) then
-            return true
-        end
-
-        return false
+        -- If either name isnt' available, use itemId
+        return tonumber(itemA) < tonumber(itemB)
     end,
 
     --[[ Sort the two items by quality ]]
@@ -50,12 +46,10 @@ local SORTS = {
                 return nA < nB
             end
 
-            if (not nA) then
-                return true
-            end
-
-            return false
+            -- ItemId is ultimate fallback
+            return tonumber(itemA) < tonumber(itemB)
         end
+
         return  qA > qB
     end
 }
