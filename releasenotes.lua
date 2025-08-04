@@ -22,6 +22,10 @@ This bug has been fixed and it should be off by default for all profiles.
 # Added rule information for protection
 If the protection feature buys back an item or blocks a delete, it now indicates the rule that caused it to do so in the chat.
 
+# Important Items added
+* Added horde versions of Cloak of Coordination and variants.
+* These will be added to existing important items list once.
+
 # Removed Some Extensions
 In doing a pass of extensions we also had to decide on which ones to continue maintaining, this resulted in removals.
 * AdiBags integration is no longer supported. AdiBags is no longer in active development and is going to break eventually. It is not

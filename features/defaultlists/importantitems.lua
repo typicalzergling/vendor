@@ -4,7 +4,7 @@ local LIST_ID = Addon.StaticListId.IMPORTANT_ITEMS
 
 -- Definition for important items
 local importantItems = {
-    Version = 1,
+    Version = 2,
     Name = "LIST_STATIC_IMPORTANT_NAME",      -- Key Name for loc
     Desc = "LIST_STATIC_IMPORTANT_DESC",      -- Key Name for loc
     Id = LIST_ID,
@@ -22,9 +22,12 @@ local importantItems = {
         [49888] = 1,	-- Shadow's Edge (Shadowmourne precursor axe)
         [51559] = 1, 	-- Runed Ring of the Kirin Tor (teleport to Dalaran)
         [52251] = 1,	-- Jaina's Locket (Teleport to Dalaran)
-        [63206] = 1, 	-- Wrap of Unity (Teleport to Main City)
-        [63352] = 1,	-- Shroud of Cooperation (Teleport to Main City)
-        [65360] = 1,	-- Cloak of Coordination (Teleport to Main City)
+        [63206] = 1, 	-- Wrap of Unity (Alliance) (Teleport to Main City)
+        [63207] = 2,    -- Wrap of Unity (Horde) (Teleport to Main City)
+        [63352] = 1,	-- Shroud of Cooperation (Alliance) (Teleport to Main City)
+        [63353] = 2,    -- Shroud of Cooperation (Horde) (Teleport to Main City)
+        [65274] = 2,    -- Cloak of Coordination (Horde) (Teleport to Main City)
+        [65360] = 1,	-- Cloak of Coordination (Alliance) (Teleport to Main City)
         [109076] = 1,	-- Goblin Glider Kit
         [109262] = 1,	-- Draenic Philosopher's Stone (Required for alch transmute)
         [114943] = 1,	-- Ultimate Gnomish Army Knife (Many tradeskill items, sometimes a res)

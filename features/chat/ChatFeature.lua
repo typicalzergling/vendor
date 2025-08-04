@@ -9,7 +9,7 @@ local ChatFeature = {
     NAME = "Chat Output", 
     VERSION = 1, 
     DEPENDENCIES = { "settings" },
-    BETA = true,
+    BETA = false,
     DESCRIPTION = [[Controls where the output from vendor goes, allows you to select which messages got to each chat frame]]
 }
 
