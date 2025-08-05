@@ -38,7 +38,7 @@ local ITEM_PROPERTIES_CATEGORIES = {
 local ITEM_PROPERTIES = {
     -- Core properties
     -- GUID is intentionally defaulted to false. If we dont have it, we dont have item properties.
-    GUID                    = { Default=false,  Hide=1,  Category="General",    Parent=nil,                   Type="string",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=1 },
+    GUID                    = { Default=false,  Hide=0,  Category="Debug",      Parent=nil,                   Type="string",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=1 },
     Name                    = { Default="",     Hide=0,  Category="General",    Parent=nil,                   Type="string",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=2 },
     Id                      = { Default=0,      Hide=0,  Category="General",    Parent=nil,                   Type="number",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=3 },
     Link                    = { Default="",     Hide=1,  Category="General",    Parent=nil,                   Type="string",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=4 },
@@ -129,9 +129,10 @@ local ITEM_PROPERTIES = {
 
     -- Used for data only
     TooltipData             = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true }, Rank=2000 },
+    Location                = { Default=nil,    Hide=1,  Category="System",     Parent=nil,                   Type="table",     Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true }, Rank=2001 },
 
     -- Debug properties
-    TransmogInfoSource      = { Default=nil,    Hide=0,  Category="Debug",     Parent=nil,                   Type="string",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=9000 }
+    TransmogInfoSource      = { Default=nil,    Hide=0,  Category="Debug",     Parent=nil,                   Type="string",     Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false }, Rank=9001 },
 }
 
 function Addon.Systems.ItemProperties:GetPropertyCategories()

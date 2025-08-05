@@ -123,7 +123,9 @@ end
 -- Raise an event
 function Addon:RaiseEvent(event, ...)
     Addon:Debug("events", "Raising event '%s'", event)
-    eventBroker:TriggerEvent(event, ...)
+    if self:RaisesEvent(event) then
+        eventBroker:TriggerEvent(event, ...)
+    end
 end
 
 -- Register events which can be raised this is enumeration table 

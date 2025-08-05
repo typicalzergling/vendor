@@ -2,6 +2,18 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.9.2 (Aug 04, 2025)",
+Notes = [[
+# Improvements for HasProfession() and IsInEquipmentSet()
+* Improved performance of HasProfession(), this is now a very efficient check.
+* Improved performance and accuracy of IsInEquipmentSet(). This now matches by item guid so will be the exact items in your set
+and no longer give false positives for same-itemid items. It still supports querying EquipmentSet by name, ex: IsInEquipmentSet("Gallywix")
+will only match items in the "Gallyix" named equipment set, while IsInEquipmentSet() will match any set. You can also put multiple names in,
+such as IsInEquipmentSet("Raid-Tank", "M+ Tank", "Solo tank") - that will return true for items in any of those sets. The name is what you
+named the Equipment set.
+]]
+},
+{
 Release = "6.9.0 (Aug 03, 2025)",
 Notes = [[
 # Extension Support and general addon health update

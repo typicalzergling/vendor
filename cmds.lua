@@ -139,6 +139,4 @@ function Addon:PrintAPI_Cmd()
 end
 
 function Addon:Test_Cmd()
-    local f = Addon:GetFeature("itemdialog");
-    f:ShowDialog();
 end

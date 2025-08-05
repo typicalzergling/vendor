@@ -101,6 +101,7 @@ local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
     item.GUID = guid or false
     item.Link = itemObj:GetItemLink()
     item.Count = count
+    item.Location = location or ItemLocation:CreateEmpty()
 
     -- Get more id and cache GetItemInfo, because we aren't bad.
     local getItemInfo = {Addon:GetItemInfo(item.Link)}
