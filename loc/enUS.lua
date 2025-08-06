@@ -808,7 +808,7 @@ HELP_ISEQUIPPED_TEXT = "True if the item is currently equipped. Will never be tr
 
 HELP_ISINEQUIPMENTSET_ARGS = "[setName0 .. setNameN]",
 HELP_ISINEQUIPMENTSET_TEXT = [[
-Checks if the item is a memmber of a Blizzard equipment set and returns true if found.
+Checks if the item is a member of a Blizzard equipment set and returns true if found.
 If no arguments are provied then all of the chracters equipment sets are check, otherwise
 this checks only the specified sets.
 
@@ -981,7 +981,7 @@ More than 100 of this item in bags and bank
 
 More than 50 uses of this item in bags only
 
-> TotalItemCount(false, true)
+> TotalItemCount(false, true) > 50
 
 More than 50 uses of this item across all bags and bank
 
