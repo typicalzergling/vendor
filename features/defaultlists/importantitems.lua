@@ -4,7 +4,7 @@ local LIST_ID = Addon.StaticListId.IMPORTANT_ITEMS
 
 -- Definition for important items
 local importantItems = {
-    Version = 2,
+    Version = 3,
     Name = "LIST_STATIC_IMPORTANT_NAME",      -- Key Name for loc
     Desc = "LIST_STATIC_IMPORTANT_DESC",      -- Key Name for loc
     Id = LIST_ID,
@@ -47,6 +47,8 @@ local importantItems = {
         [211495] = 1,	-- Dreambound Augment Rune (DF Reusable augment rune)
         [219222] = 1, 	-- Time Lost Artifact (Teleport to timeless isle)
         [224572] = 1, 	-- Crystallized Augment Rune (TWW Current augment rune)
+        [243191] = 3,   -- Ethereal Augmnet Rune (TWW Reusable augment rune)
+        [246492] = 3,   -- Soulgorged Augment Rune (TWW persists-through-death augment rune)
     }
 }
 

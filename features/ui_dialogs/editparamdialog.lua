@@ -312,7 +312,7 @@ function EditParamDialog:OnSave()
 
     -- Make sure we can covnert the default value
     if (not self.editor:ConvertDefault()) then
-        self:MessageBox("EEDITPARAM_ERROR_CAPTION", 
+        self:MessageBox("EDITPARAM_ERROR_CAPTION", 
             locale:FormatString("EDITPARAM_ERROR_CONVERT_DEFAULT", self.editor:GetDefault()))
         return
     end
@@ -322,7 +322,7 @@ function EditParamDialog:OnSave()
     local success, code = self.ruleEditor:UpdateParameter(param.Key, param.Type, param.Name, param.Default)
     if (not success) then
         local message = "EDITPARAM_ERROR_UPDATE_GENERAL"
-        self:MessageBox("EEDITPARAM_ERROR_CAPTION", message)
+        self:MessageBox("EDITPARAM_ERROR_CAPTION", message)
         return
     end
 
@@ -336,7 +336,7 @@ function EditParamDialog:OnCreate()
 
     -- Make sure we can covnert the default value
     if (not self.editor:ConvertDefault()) then
-        self:MessageBox("EEDITPARAM_ERROR_CAPTION", 
+        self:MessageBox("EDITPARAM_ERROR_CAPTION", 
             locale:FormatString("EDITPARAM_ERROR_CONVERT_DEFAULT", self.editor:GetDefault()))
         return
     end
@@ -350,7 +350,7 @@ function EditParamDialog:OnCreate()
         if (code == RuleEditorErrors.DUPLICATE_PARAM) then
             message = locale:FormatString("EDITPARAM_ERROR_DUPLICATE_KEY", param.Key)
         end
-        self:MessageBox("EEDITPARAM_ERROR_CAPTION", message)
+        self:MessageBox("EDITPARAM_ERROR_CAPTION", message)
         return
     end
 

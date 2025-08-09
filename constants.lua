@@ -27,6 +27,7 @@ Addon.c_Config_MinimapData = "minimapdata"
 Addon.c_Config_MerchantData = "merchantdata"
 Addon.c_Config_ShowItemDialog = "show_item_dialog"
 Addon.c_Config_Protection = "protection"
+Addon.c_Config_FastLoot = "fastloot"
 
 -- Merchant button
 Addon.MerchantButton = {

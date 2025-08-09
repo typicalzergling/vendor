@@ -139,11 +139,28 @@ local INVENTORY_SLOT_MAP = {
 --*****************************************************************************
 -- Mapping of Profession Text to IDs
 --*****************************************************************************
-local PROFESSION_MAP = {}
-for professionName, id in pairs(Enum.Profession) do
-    -- Adds PROFESSIONNAME = skill line id for profession lookup
-    PROFESSION_MAP[string.upper(professionName)] = C_TradeSkillUI.GetProfessionSkillLineID(id)
-end
+-- The Below only works on retail. Commenting it out until it works on Classic.
+--local PROFESSION_MAP = {}
+--for professionName, id in pairs(Enum.Profession) do
+--    -- Adds PROFESSIONNAME = skill line id for profession lookup
+--    PROFESSION_MAP[string.upper(professionName)] = C_TradeSkillUI.GetProfessionSkillLineID(id)
+--end
+
+local PROFESSION_MAP = {
+    ALCHEMY = 171,
+    BLACKSMITHING = 164,
+    ENCHANTING = 333,
+    ENGINEERING = 202,
+    HERBALISM = 182,
+    INSCRIPTION = 773,
+    JEWELCRAFTING = 755,
+    LEATHERWORKING = 165,
+    MINING = 186,
+    SKINNING = 393,
+    TAILORING = 197,
+}
+
+
 
 --*****************************************************************************
 -- Helper function which given a value, will search the map for the value
@@ -216,6 +233,15 @@ local function getEnvironmentVariables()
 
     RuleEnvironmentVariables.PlayerName,
     RuleEnvironmentVariables.PlayerRealm = UnitFullName("player");
+
+    -- Sometimes the UnitFullName doesn't give correct results.
+    -- If it did not populate correctly, put in a sentinel value of "<unknown>"
+    if not RuleEnvironmentVariables.PlayerName then
+        RuleEnvironmentVariables.PlayerName = "<unknown>"
+    end
+    if not RuleEnvironmentVariables.PlayerRealm then
+        RuleEnvironmentVariables.PlayerRealm = "<unknown>"
+    end
 
     -- Professions
     for k, v in pairs(PROFESSION_MAP) do
@@ -290,7 +316,7 @@ local RuleFunctions = {
 {
     Name = "IsInEquipmentSet",
     Documentation = locale["HELP_ISINEQUIPMENTSET_TEXT"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
     Function = function(...)
         local setsToCheck = {...}
         local inSets = Addon:GetEquipmentSetsForGUID(GUID)

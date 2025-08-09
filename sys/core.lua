@@ -140,9 +140,6 @@ function Addon:AddTerminateAction(action, ...)
     table.insert(onTerminateActions, GenerateClosure(action, ...))
 end
 
--- Useful for any Addon to know.
-Addon.IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
-
 -- Debug Stubs. This is so you can include debug messages and then exclude
 -- Debug files from being packaged without having unnecessary code executing.
 -- No-Op debug messages. This will be overridden if debug.lua is included,

@@ -2,15 +2,70 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.10.0 (Aug ??, 2025)",
+Notes = [[
+# Fast Looting, Rule Changes
+This update adds Fast Loot feature, some new keep rules, adjustments to existing rules, and fixes EquipmentSet detection hopefully for good.
+
+# Fast Looting
+* New on-by-default feature that does fast looting like the common Fast-Loot addons. This was an easy add for convenience. If you already
+use a loot addon or want to turn it off it is in General Settings.
+* This is enabled for all versions of the game.
+
+# Rule Updates - New Profession Gear Keep Rule
+* Default sell rules parameter description changed to "Max-upgrade item level" to reduce confusion about item level being compared for upgradeable gear.
+* Default sell rules description updated for clarity.
+* New on-by-default for new profiles Keep rule for Profession Gear (retail only), which keeps anything classified as Profession Equipment.
+
+# Important Items update
+* The default Important Items list has been updated to include the new Ethereal Augment rune and Soulgorged Augment runes. This will update automatically
+and not affect your current list if you have changed it, the new items will simply be added to your list if they were not already there. You can reset
+the important items list at any time using the console command '/vendor list reset' if you want to do that.
+
+# Bugfixes
+* Restored IsEquipmentSet detection to the guid form, so it should once again match exactly and not cause issues with empty equipment sets.
+* Fixed protection buyback from not matching Soulbound items correctly, causing some false positives on the buyback for items that did not
+actually match keep rules.
+]]
+},
+{
+Release = "6.9.4 (Aug 06, 2025)",
+Notes = [[
+# Speculative fix for a reported crash / lockup
+* There was a reported lockup related to this addon, this is a speculative fix by reverting equipment set lookup changes.
+* This means IsInEquipmentSet() may give false positives for same item-id matches, but that is better than a crash or risking
+a false negative.
+* IsInEquipmentSet update will be revisited and release again at a later time. The new method has issues due to unreliable Blizzard
+behavior.
+]]
+},
+{
+Release = "6.9.3 (Aug 05, 2025)",
+Notes = [[
+# Fix race condition in first time load of equipment set data.
+* There were conditions where when logging into the game equipment set data would not be populated at the time the addon populates.
+* Added a delay load to the equipmentset data with some redundancy checking to address this.
+]]
+},
+{
 Release = "6.9.2 (Aug 04, 2025)",
 Notes = [[
 # Improvements for HasProfession() and IsInEquipmentSet()
 * Improved performance of HasProfession(), this is now a very efficient check.
+
 * Improved performance and accuracy of IsInEquipmentSet(). This now matches by item guid so will be the exact items in your set
 and no longer give false positives for same-itemid items. It still supports querying EquipmentSet by name, ex: IsInEquipmentSet("Gallywix")
 will only match items in the "Gallyix" named equipment set, while IsInEquipmentSet() will match any set. You can also put multiple names in,
 such as IsInEquipmentSet("Raid-Tank", "M+ Tank", "Solo tank") - that will return true for items in any of those sets. The name is what you
 named the Equipment set.
+
+* Added IsInEquipmentSet() function to Classic Mists, and also enabled the equipment set keep rule for Mists Classic.
+
+* Buyback protection will no longer buy back immediately on opening a merchant.
+* The most recent buyback item at the merchant will be immune from buyback protection. This is becuase we assume that this
+item may have been intentionally sold in a previous merchant session via suppressed merchant or toggled-off protection,
+therefore we will treat it as if it were intentionally sold and not buy it back.
+
 ]]
 },
 {

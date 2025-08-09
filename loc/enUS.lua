@@ -132,6 +132,8 @@ OPTIONS_CATEGORY_SELLING = "Selling",
 OPTIONS_DESC_SELLING = "Controls what Vendor does when you are selling at a merchant. ",
 OPTIONS_CATEGORY_REPAIR = "Repairing",
 OPTIONS_DESC_REPAIR = "Whether to auto-repair, and how to pay for it.\n",
+OPTIONS_CATEGORY_LOOTING = "Looting",
+OPTIONS_DESC_LOOTING = "Controls options related to looting, such as fast looting.\n",
 OPTIONS_CATEGORY_TOOLTIP = "Tooltips",
 OPTIONS_DESC_TOOLTIP = "Tooltip settings when mousing over your items.",
 OPTIONS_CATEGORY_DEBUG = "Debug",
@@ -168,6 +170,8 @@ OPTIONS_SETTINGNAME_MERCHANT = "Show Merchant Buttons",
 OPTIONS_SETTINGDESC_MERCHANT = "Adds buttons when interacting with a merchant to trigger autoselling and destruction of items Vendor has identified for selling and/or destruction.\n\nThis is an account-wide setting.",
 OPTIONS_SETTINGNAME_PROTECTION = "Protect 'Keep' Items",
 OPTIONS_SETTINGDESC_PROTECTION = "Delete Attempts on a Keep item will be automatically cancelled.\n\nIf a Keep item is sold, Vendor will attempt to buy it back. This behavior will be suppressed if you hold SHIFT while opening the merchant.",
+OPTIONS_SETTINGNAME_FASTLOOT = "Fast Looting",
+OPTIONS_SETTINGDESC_FASTLOOT = "Speeds up looting by looting all eligible items as soon as looting is available, which is roughly three times faster than normal looting. This does nothing if auto-loot is not enabled for the loot operation.\n\nThis is an account-wide setting.",
 
 QUICK_SELL_SETTING = "Auto-Sell items at merchant",
 QUICK_SELL_SETTING_HELP = "Automatically sell items when interacting with a merchant. If this is disabled you can still manually trigger an autosell by setting a hotkey.\n\nThis also enables the 12-item limit on selling, which is the buyback limit for safety.",
@@ -312,13 +316,7 @@ API_DESTROYITEMS_TITLE = "Destroy Items",
 API_DESTROYITEMS_DOCS = "Runs the item destroyer, which will destroy the next item matching Destroy rules or the Destroy list. Blizzard only allows one item to be destroyed at a time.",
 
 -- Rules
-RULEUI_LABEL_ITEMLEVEL = "Item Level:",
-RULEUI_SELL_EPIC_INFO = "Any " ..ITEM_QUALITY_COLORS[4].hex .. "Epic|r gear below this item level will be sold",
-RULEUI_SELL_RARE_INFO = "Any " ..ITEM_QUALITY_COLORS[3].hex .. "Rare|r gear below this item level will be sold",
-RULEUI_SELL_UNCOMMON_INFO = "Any " ..ITEM_QUALITY_COLORS[2].hex .. "Uncommon|r gear below this item level will be sold",
-RULEUI_KEEP_EPIC_INFO = "Any " ..ITEM_QUALITY_COLORS[4].hex .. "Epic|r gear at or above this item level will be kept",
-RULEUI_KEEP_RARE_INFO = "Any " ..ITEM_QUALITY_COLORS[3].hex .. "Rare|r gear at or above this item level will be kept",
-RULEUI_KEEP_UNCOMMON_INFO = "Any " ..ITEM_QUALITY_COLORS[2].hex .. "Uncommon|r gear at or above this item level will be kept",
+RULEUI_LABEL_ITEMLEVEL_PARAM = "Max-upgrade item level",
 
 CONFIG_DIALOG_CAPTION = "Vendor",
 CONFIG_DIALOG_KEEPRULES_TAB = "Keep Rules",
@@ -353,11 +351,11 @@ SYSRULE_SELL_ALWAYSSELL_DESC = "Items that are in the Always Sell list are alway
 SYSRULE_SELL_POORITEMS = "Poor Items",
 SYSRULE_SELL_POORITEMS_DESC = "Matches all "..ITEM_QUALITY_COLORS[0].hex.."Poor"..FONT_COLOR_CODE_CLOSE.." quality items which are the majority of the junk you will pick up.",
 SYSRULE_SELL_UNCOMMONGEAR = "Uncommon Gear",
-SYSRULE_SELL_UNCOMMONGEAR_DESC = "Matches Any "..ITEM_QUALITY_COLORS[2].hex.."Uncommon"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than the specified item level.",
+SYSRULE_SELL_UNCOMMONGEAR_DESC = "Matches Any "..ITEM_QUALITY_COLORS[2].hex.."Uncommon"..FONT_COLOR_CODE_CLOSE.." equipment with a max upgradeable item level less than the specified item level.",
 SYSRULE_SELL_RAREGEAR = "Rare Gear",
-SYSRULE_SELL_RAREGEAR_DESC = "Matches Any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than the specified item level.",
+SYSRULE_SELL_RAREGEAR_DESC = "Matches Any "..ITEM_QUALITY_COLORS[3].hex.."Rare"..FONT_COLOR_CODE_CLOSE.." equipment with a max upgradeable item level less than the specified item level.",
 SYSRULE_SELL_EPICGEAR = "Epic Gear",
-SYSRULE_SELL_EPICGEAR_DESC = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with an item level less than the specified item level. We assume you will want to sell BoE Epics on the auction house so BoEs are excluded.",
+SYSRULE_SELL_EPICGEAR_DESC = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with a max upgradeable item level less than the specified item level. We assume you will want to sell BoE Epics on the auction house so BoEs are excluded.",
 SYSRULE_SELL_KNOWNTOYS = "Known Toys",
 SYSRULE_SELL_KNOWNTOYS_DESC = "Matches any already-known toys that are Soulbound.",
 SYSRULE_DESTROY_KNOWNTOYS = "Known Toys (Unsellable)",
@@ -400,6 +398,8 @@ SYSRULE_KEEP_LEVELINGGEAR = "Leveling Gear",
 SYSRULE_KEEP_LEVELINGGEAR_DESC = "Matches any equipment which has a higher minimum level to equip than the player's current level. This is gear that may be useful after the player gains levels.",
 SYSRULE_KEEP_IMPORTANTITEMS = "Important Items",
 SYSRULE_KEEP_IMPORTANTITEMS_DESC = "Matches any items in the 'Important Items' list. This list protects common important items often from earlier expansions.",
+SYSRULE_KEEP_PROFESSIONGEAR = "Profession Gear",
+SYSRULE_KEEP_PROFESSIONGEAR_DESC = "Matches any items that are classified as profession equipment that can be equipped in profession slots. This is gear that is likely important for your character's profession skills.",
 
 LIST_STATIC_IMPORTANT_NAME = "Important Items",
 LIST_STATIC_IMPORTANT_DESC = "Items which are associated with the 'Important Items' keep rule. This list is account-wide and available on all characters. Use this list to protect important items common across all characters.",
@@ -521,7 +521,7 @@ EDITPARAM_CANCEL_LABEL = CANCEL,
 EDITPARAM_CLOSE_LABEL = "Close",
 EDITPARAM_DEFAULT_NAME = "New Parameter",
 EDITPARAM_DEFAULT_SCRIPTNAME = "PARAM",
-EEDITPARAM_ERROR_CAPTION = "Parameter Error",
+EDITPARAM_ERROR_CAPTION = "Parameter Error",
 EDITPARAM_ERROR_CONVERT_DEFAULT = [[
 # Invalid Default Value
 
@@ -1017,7 +1017,7 @@ EXT_AUCTIONATOR_FUNC_ISAUCTIONITEM = [[
 Uses Auctionator
 
 Returns whether the item has auction data for it, which indicates it is an auction item. This is
-equivalent to "Auc_AuctionValuce() > 0"
+equivalent to "Auc_AuctionValuce() > 0", it just makes rules simpler if that's what you are after.
 ]],
 
 EXT_AUCTIONATOR_FUNC_AUCTIONVALUE = [[

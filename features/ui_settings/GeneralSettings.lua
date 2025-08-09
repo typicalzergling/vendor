@@ -39,6 +39,7 @@ function GeneralSettings:CreateList(parent)
 
 	self:CreateProtect(list)
 	self:CreateSell(list)
+    self:CreateLoot(list)
 	self:CreateRepair(list)
 	self:CreateTooltip(list)
 
@@ -88,6 +89,18 @@ function GeneralSettings:CreateRepair(list)
 
     local guildrepair = Settings.CreateSetting(Addon.c_Config_GuildRepair, true)
     setting = list:AddSetting(guildrepair, "OPTIONS_SETTINGNAME_GUILDREPAIR", "OPTIONS_SETTINGDESC_GUILDREPAIR", autorepair)
+	setting.Margins = INDENT
+end
+
+--[[ Adds the repair settings to the list ]]
+function GeneralSettings:CreateLoot(list)
+    if not Addon:IsFeatureEnabled("Loot") then return end
+    list:AddHeader("OPTIONS_CATEGORY_LOOTING", "OPTIONS_DESC_LOOTING")
+
+	-- fast loot
+	local fastloot = Addon.Features.Loot:CreateSettingForFastLoot()
+	local setting = list:AddSetting(fastloot, "OPTIONS_SETTINGNAME_FASTLOOT", "OPTIONS_SETTINGDESC_FASTLOOT")
+	setting.isNew = true
 	setting.Margins = INDENT
 end
 

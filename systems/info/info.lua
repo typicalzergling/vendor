@@ -10,8 +10,8 @@ local L = Addon:GetLocale()
 local function debugp(...) Addon:Debug("info", ...) end
 
 -- Actual version and then assumed "next" version is the next minor version bump.
-local RETAIL_VERSION = 110107           -- 11.1 Live
-local RETAIL_VERSION_NEXT = 110200      -- 11.2 PTR
+local RETAIL_VERSION = 110200           -- 11.2 Live
+local RETAIL_VERSION_NEXT = 110200      -- 11.2 PTR (presently unused)
 local CLASSIC_VERSION = 11507           -- Classic SOD
 local CLASSIC_VERSION_NEXT = 50500      -- Classic MoP
 local tocVersion = {
@@ -22,6 +22,8 @@ local tocVersion = {
 }
 
 local releaseOrder = { "RetailNext", "Retail", "ClassicNext", "Classic" }
+
+local DELAY_LOAD_TIME = 10
 
 -- System Def
 local Info = {}
@@ -95,8 +97,7 @@ function Info:GetProfessionIds()
     return prof1Id, prof2Id
 end
 
-local equipmentSetGUIDs = {}
-
+local equipmentSetGUIDs = nil
 function Info:GetEquipmentSetsForGUID(itemGUID)
     return equipmentSetGUIDs[itemGUID]
 end
@@ -105,13 +106,22 @@ end
 -- TODO: add bank check, this hsould be safe to update more frequently, as long as it isn't constant.
 -- if soemthing goes into inventory from bank, we need to update this list
 function updateEquipmentSetGUIDs()
-    equipmentSetGUIDs = {}
+    debugp("Updating EquipmentSet GUIDs")
     local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
+    equipmentSetGUIDs = {}
     for _, setId in pairs(itemSets) do
-        local locations = C_EquipmentSet.GetItemLocations(setId)
+        local locations = C_EquipmentSet.GetItemLocations(setId) or {}
         for _, eLocation in pairs(locations) do
-            if eLocation > 0 then
+            if eLocation > 1 then
                 local player, bank, bags, void, slot, bag = EquipmentManager_UnpackLocation(eLocation)
+
+                if (Addon.Systems.Info.IsClassicNext) then
+                    -- On Classic Mists this there is no "void" return value.
+                    -- Must shift over the arguments by 1
+                    bag = slot
+                    slot = void
+                end
+
                 itemLocation = nil
                 if player and bags then
                     -- In a bag
@@ -139,9 +149,14 @@ function updateEquipmentSetGUIDs()
     end
 
     if (Addon.ClearItemResultCache) then
-        debugp("Equipment set changed, clearing the cache.")
-        Addon:ClearItemResultCache("Equipment Set Changed")
+        debugp("Equipment set changed, clearing cache")
+        Addon:ClearItemResultCache()
     end
+end
+
+-- For some reason blizzard does not immediately have equipmentset info loaded, so delay load it.
+local function delayLoadEquipmentSetInfo(delay)
+    C_Timer.After(delay, function() updateEquipmentSetGUIDs() end)
 end
 
 local function populateBuildInfo()
@@ -238,13 +253,21 @@ function Info:Startup(register)
     Addon:RegisterEvent("PLAYER_TALENT_UPDATE", updateProfessionIds)
     updateProfessionIds()
 
-    -- We only need to get equipment set data whenever a set changes.
-    Addon:RegisterEvent("EQUIPMENT_SETS_CHANGED", updateEquipmentSetGUIDs)
+    -- Equipment sets do not exist on classic.
+    if not Info.IsClassic then
+        -- We only need to get equipment set data whenever a set changes.
+        Addon:RegisterEvent("EQUIPMENT_SETS_CHANGED", updateEquipmentSetGUIDs)
 
-    -- Equipment set items may be in the bank, so anytime we close the
-    -- bank we need to regenerate the equipment set mappings.
-    Addon:RegisterEvent("BANKFRAME_CLOSED", updateEquipmentSetGUIDs)
-    updateEquipmentSetGUIDs()
+        -- Equipment set items may be in the bank, so anytime we close the
+        -- bank we need to regenerate the equipment set mappings.
+        Addon:RegisterEvent("BANKFRAME_CLOSED", updateEquipmentSetGUIDs)
+
+        -- Try to load quickly in case player goes to a merchant straight away.
+        delayLoadEquipmentSetInfo(DELAY_LOAD_TIME)
+
+        -- Fallback in case there's a lot of addons this might take longer to get the data.
+        delayLoadEquipmentSetInfo(DELAY_LOAD_TIME*3)
+    end
 
     register({
         "GetPriceString",

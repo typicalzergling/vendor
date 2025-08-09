@@ -139,4 +139,5 @@ function Addon:PrintAPI_Cmd()
 end
 
 function Addon:Test_Cmd()
+    Addon:UpdateEquipmentSets()
 end

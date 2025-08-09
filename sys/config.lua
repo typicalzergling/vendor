@@ -72,6 +72,7 @@ Addon.DefaultConfig.Settings =
     [Addon.c_Config_MinimapData] = {},
     [Addon.c_Config_MerchantData] = {},
     [Addon.c_Config_Protection] = false,
+    [Addon.c_Config_FastLoot] = true,
 }
 
 --*****************************************************************************
@@ -93,6 +94,7 @@ Addon.DefaultConfig.Rules =
         "keep.sidegradeorbetter",
         "keep.sidegradeorbetter_classic",
         "keep.craftedgear",
+        "keep.professiongear",
         "keep.levelinggear",
         "keep.cosmetic",
     },

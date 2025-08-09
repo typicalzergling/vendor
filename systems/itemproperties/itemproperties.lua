@@ -197,10 +197,10 @@ local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
     end
 
     -- Get soulbound information
-    if location and C_Item.IsBound(location) then
+    if (location and C_Item.IsBound(location)) or (item.BindType == 1) then
         -- IsBound returns true for both Account Bound and Soulbound
+        -- BindType 1 could be warbound or soulbound.
         -- We must check for both types.
-        -- First check if it's soulbound. If it is soulbound then it cannot be
         if itemproperties:IsItemAccountBoundInTooltip(tooltipdata) then
             item.IsWarbound = true
             item.IsAccountBound = true
@@ -208,16 +208,20 @@ local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
             -- If it is bound but not account bound it must be soulbound.
             item.IsSoulbound = true
         end
-    else
+    end
+
+    -- If not soulbound check the other types for boe, bind on use, or warbound until equip.
+    if not item.IsSoulbound then
         if item.BindType == 2 then
             item.IsBindOnEquip = true
             if (IS_RETAIL or IS_RETAIL_NEXT) and 
             ((location and C_Item.IsBoundToAccountUntilEquip(location)) or
-             (C_Item.IsItemBindToAccountUntilEquip(item.Link))) then
+                (C_Item.IsItemBindToAccountUntilEquip(item.Link))) then
                 item.IsWarboundUntilEquip = true
                 -- For rule simplicity, we will treat WarboundUntilEquip the same as Warbound
                 -- Technically it is both warbound and bind on equip.
                 item.IsWarbound = true
+                item.IsAccountBound = true
             end
         elseif item.BindType == 3 then
             item.IsBindOnUse = true

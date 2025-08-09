@@ -31,29 +31,6 @@ local function DefaultItemLevel()
     return math.max(0, math.floor(math.min(avg, equip) * 0.8));
 end
 
--- Param definition for our rules which use ITEMLEVEL
-local ITEM_LEVEL_PARAMS =
-{
-    {
-        Type="numeric",
-        Name=L["RULEUI_LABEL_ITEMLEVEL"],
-        Key="ITEMLEVEL",
-    },
-    {
-        Type="boolean",
-        Name="i am a boolean param",
-        Key="bbITEMLEVEL",
-    },    {
-        Type="numeric",
-        Name=L["RULEUI_LABEL_ITEMLEVEL"],
-        Key="ITEMLEVEL",
-    },    {
-        Type="numeric",
-        Name=L["RULEUI_LABEL_ITEMLEVEL"],
-        Key="ITEMLEVEL",
-    },    
-};
-
 Rules.SystemRules =
 {
     --*****************************************************************************
@@ -136,7 +113,7 @@ Rules.SystemRules =
         Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == UNCOMMON and (not IsUnsellable) and MaxLevel < ITEMLEVEL",
+        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
             end,
@@ -145,7 +122,7 @@ Rules.SystemRules =
             {
                 Key = "ITEMLEVEL",
                 Type = "numeric",
-                Name = L.RULEUI_SELL_UNCOMMON_INFO,
+                Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
                 Default = DefaultItemLevel,
             }
         },
@@ -158,7 +135,7 @@ Rules.SystemRules =
         Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_RAREGEAR"],
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and Quality == RARE and (not IsUnsellable) and MaxLevel < ITEMLEVEL",
+        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
             end,
@@ -166,7 +143,7 @@ Rules.SystemRules =
         {
             {
                 Type = "numeric",
-                Name = L.RULEUI_SELL_RARE_INFO,
+                Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
                 Key = "ITEMLEVEL",
                 Default = DefaultItemLevel,
             }
@@ -180,7 +157,7 @@ Rules.SystemRules =
         Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_EPICGEAR"],
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and Quality == EPIC and (not IsUnsellable) and MaxLevel < ITEMLEVEL",
+        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
         Script = function()
                 return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
             end,
@@ -189,7 +166,7 @@ Rules.SystemRules =
             {
                 Type = "numeric",
                 Key = "ITEMLEVEL",
-                Name = L.RULEUI_SELL_EPIC_INFO,
+                Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
                 Default = DefaultItemLevel,
             }
         },
@@ -331,7 +308,7 @@ Rules.SystemRules =
                 {
                     Type = "numeric",
                     Key = "ITEMLEVEL",
-                    Name = L.RULEUI_KEEP_UNCOMMON_INFO,
+                    Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
                     Default = 0,
                 }
             },
@@ -354,7 +331,7 @@ Rules.SystemRules =
                 {
                     Type = "numeric",
                     Key = "ITEMLEVEL",
-                    Name = L.RULEUI_KEEP_RARE_INFO,
+                    Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
                     Default = 0,
                 }
             },
@@ -377,7 +354,7 @@ Rules.SystemRules =
                 {
                     Type = "numeric",
                     Key = "ITEMLEVEL",
-                    Name = L.RULEUI_KEEP_EPIC_INFO,
+                    Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
                     Default = 0,
                 }
             },
@@ -389,7 +366,7 @@ Rules.SystemRules =
     {
         Id = "keep.equipmentset",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_KEEP_EQUIPMENTSET"],
         Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
         ScriptText = "IsInEquipmentSet()",
@@ -439,6 +416,17 @@ Rules.SystemRules =
         Description =  L["SYSRULE_KEEP_CRAFTEDGEAR_DESC"],
         Script = "IsEquippable and (CraftedQuality > 0) and (Quality >= 4)",
         Order = 1245,
+    },
+
+    -- Crafted gear check.
+    {
+        Id = "keep.professiongear",
+        Type = "Keep",
+        Name =  L["SYSRULE_KEEP_PROFESSIONGEAR"],
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Description =  L["SYSRULE_KEEP_PROFESSIONGEAR_DESC"],
+        Script = "IsProfessionEquipment",
+        Order = 1246,
     },
 
     -- Leveling Gear check

@@ -140,7 +140,7 @@ local function termComponents()
     end
 end
 
-local function sastifyDependency(dependency)
+local function satisfyDependency(dependency)
     dependency = string.lower(dependency)
     depenedencies[dependency] = true
     initComponents()
@@ -322,7 +322,7 @@ local function satisfyAllAddons()
         if (enabled) then
             local depenedency = "addon:" .. addon;
             if (not IsDependencySatisfied(depenedency)) then
-                sastifyDependency(depenedency);
+                satisfyDependency(depenedency);
             end
         end
     end
@@ -336,18 +336,18 @@ eventFrame:SetScript("OnEvent",
             if (name == "PLAYER_ENTERING_WORLD") then
                 eventFrame:UnregisterEvent(name)
                 satisfyAllAddons()
-                sastifyDependency("event:" .. name)
+                satisfyDependency("event:" .. name)
             elseif (name == "ADDON_LOADED") then
                 if (arg1 == AddonName) then
-                    sastifyDependency("event:loaded")
+                    satisfyDependency("event:loaded")
                 elseif (type(arg1) == "string") then
-                    sastifyDependency("addon:" .. arg1)
+                    satisfyDependency("addon:" .. arg1)
                 end
             elseif (name == "PLAYER_LOGOUT") then
                 termComponents()
                 eventFrame:UnregisterAllEvents()
             else
-                sastifyDependency("event:" .. name)
+                satisfyDependency("event:" .. name)
             end
         end
     end)

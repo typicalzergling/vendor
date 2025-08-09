@@ -40,12 +40,21 @@ function ItemProtection:OnMerchantUpdate()
     ItemProtection:CheckAndBuybackKeepItem()
 end
 
+local buyBackSuppressGUID = nil
+
 function ItemProtection:OnMerchantShow()
     if IsShiftKeyDown() then 
         suppressBuybackProtection = true
     end
 
-    ItemProtection:CheckAndBuybackKeepItem()
+    -- Check the first item in the buyback, which may have been sold on a previous
+    -- suppressed interaction. We do not want to buy that back immediately.
+    local data = C_TooltipInfo.GetBuybackItem(GetNumBuybackItems())
+    if not data then return end
+    local item = Addon.Systems.ItemProperties:GetItemPropertiesFromExternalTooltip(data)
+    if not item then return end
+
+    buyBackSuppressGUID = item.GUID
 end
 
 function ItemProtection:OnMerchantClosed()
@@ -55,6 +64,7 @@ end
 
 function ItemProtection:CheckAndBuybackKeepItem()
     if suppressBuybackProtection then return end
+    if not self:IsProtectionEnabled() then return end
 
     -- Ignore during autosell, too much spam and we do not want to re-evaluate
     -- every item we just sold, that would double the evaluation cost for no
@@ -62,9 +72,7 @@ function ItemProtection:CheckAndBuybackKeepItem()
     -- vendor is selling, and if that happens, welp, we can only do so much
     -- to protect the player from themselves.
     local merchant = Addon:GetFeature("Merchant")
-    if merchant and merchant:IsAutoSelling() then return false end
-
-    if not self:IsProtectionEnabled() then return end
+    if merchant and merchant:IsAutoSelling() then return end
 
     debugp("Merchant updated outside autosell, player sold something...")
     local data = C_TooltipInfo.GetBuybackItem(GetNumBuybackItems())
@@ -74,6 +82,9 @@ function ItemProtection:CheckAndBuybackKeepItem()
         debugp("Found no item in the buyback")
         return false
     end
+
+    -- Ignore the buyback suppressed item.
+    if item.GUID == buyBackSuppressGUID then return false end
 
     -- Ignore the cache since that will have bad data and we want fresh evaluation.
     local result = Addon:EvaluateItem(item, true)
