@@ -313,50 +313,6 @@ local RuleFunctions = {
 
 },
 
-{
-    Name = "IsInEquipmentSet",
-    Documentation = locale["HELP_ISINEQUIPMENTSET_TEXT"],
-    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
-    Function = function(...)
-        local setsToCheck = {...}
-        local inSets = Addon:GetEquipmentSetsForGUID(GUID)
-        if not inSets then return false end
-        if #setsToCheck == 0 and inSets then return true end
-
-        for _, name in ipairs(setsToCheck) do
-            local setId = C_EquipmentSet.GetEquipmentSetID(name)
-            for _, set in ipairs(inSets) do
-                if set == setId then
-                    return true
-                end
-            end
-        end
-
-        return false
-    end,
-},
-
-{
-    Name = "HasProfession",
-    Documentation = locale["HELP_HASPROFESSION"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
-    Function = function(...)
-        local profsToCheck = {...}
-        local prof1Id, prof2Id = Addon:GetProfessionIds()
-        for _, id in pairs(profsToCheck) do
-            if type(id) == "string" then
-                id = PROFESSION_MAP[string.upper(id)]
-            end
-
-            if id == prof1Id or id == prof2Id then
-                return true
-            end
-        end
-
-        return false
-    end,
-},
-
 --@do-not-package@
 {
     Name = "tostring",

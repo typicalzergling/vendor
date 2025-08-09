@@ -1,7 +1,7 @@
 ## Interface: 50500
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
-## Version: 6.10.0
+## Version: 6.10.1
 ## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_StaticLists, Vendor_CustomLists, Vendor_History, Vendor_AccountSettings, Vendor_XX_InstanceInfo, Vendor_XX_LootInfo
 ## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_ActiveProfile, Vendor_Character_Data
 ## Author: Thoekh of Sargeras & Buskin of Lightbringer
@@ -56,6 +56,7 @@ features\status\status.xml
 features\minimapbutton\minimapbutton.xml
 features\merchantbutton\merchantbutton.xml
 features\chat\chat.xml
+features\functions\functions.xml
 features\ui_itemdialog\itemdialog.xml
 features\defaultlists\defaultlists.xml
 features\loot\loot.xml

@@ -2,14 +2,14 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
-Release = "6.10.0 (Aug ??, 2025)",
+Release = "6.10.1 (Aug 09, 2025)",
 Notes = [[
 # Fast Looting, Rule Changes
 This update adds Fast Loot feature, some new keep rules, adjustments to existing rules, and fixes EquipmentSet detection hopefully for good.
 
 # Fast Looting
 * New on-by-default feature that does fast looting like the common Fast-Loot addons. This was an easy add for convenience. If you already
-use a loot addon or want to turn it off it is in General Settings.
+use a loot addon or want to turn it off it is in General Settings. This is an account-wide setting, so you do not need to change it on every profile.
 * This is enabled for all versions of the game.
 
 # Rule Updates - New Profession Gear Keep Rule
@@ -26,6 +26,7 @@ the important items list at any time using the console command '/vendor list res
 * Restored IsEquipmentSet detection to the guid form, so it should once again match exactly and not cause issues with empty equipment sets.
 * Fixed protection buyback from not matching Soulbound items correctly, causing some false positives on the buyback for items that did not
 actually match keep rules.
+* Fixed a bug causing the Sell Old Food rule to silently fail.
 ]]
 },
 {

@@ -2,6 +2,10 @@ local PackageName, Package = ...;
 local RULE_OBJECT_NAME = (PackageName .. "::Rule");
 local RULE_PARAMS_KEY = "RULE_PARAMS";
 
+local DEBUG_CHANNEL = "ruleerrors"
+local function debugp(...) Package:Debug(DEBUG_CHANNEL, ...) end
+
+
 --[[===========================================================================
     | rule_Execute
     |    Called to exceute a rule against the specified environment, this
@@ -48,6 +52,11 @@ local function rule_Execute(self, environment)
         else
             self.healthy = false;
             self.error = result;
+
+            -- Going to do a dirty hack to get this important information logged
+            if Package.IsDebug and Package.Debug then
+                debugp("Rule: "..tostring(self.name).. " Error: "..tostring(self.error))
+            end
             return false, false, result;
         end
     end

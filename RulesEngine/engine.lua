@@ -1,5 +1,5 @@
 local PackageName, Package = ...;
-local ENGINE_OBEJCT_TYPE = (PackageName .. "::Engine");
+local ENGINE_OBJECT_TYPE = (PackageName .. "::Engine");
 local g_engineId = 0;
 
 --[[===========================================================================
@@ -600,9 +600,12 @@ local function new_Engine(environment, verbose)
     end
     instance.log:EndBlock();
 
-    return Package.CreateObject(ENGINE_OBEJCT_TYPE, instance, engine_API);
+    return Package.CreateObject(ENGINE_OBJECT_TYPE, instance, engine_API);
 end
 
 -- Expose our create function to the world, this is the only entry point
 -- into this instance module/package/addon
-_G["CreateRulesEngine"] = new_Engine;
+-- oh no what is this madness, dont blindly add things to global namespace!
+-- _G["CreateRulesEngine"] = new_Engine;
+
+Package.CreateRulesEngineInternal = new_Engine

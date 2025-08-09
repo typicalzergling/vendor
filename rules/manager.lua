@@ -54,7 +54,7 @@ local ruleDocumenation = {}
     |   Create and initialize a RulesEngine object.
     =======================================================================--]]
 function Addon:CreateRulesEngine(verbose)
-    local rulesEngine = CreateRulesEngine(Addon:GetRuleEnvironmentVariables(), verbose);
+    local rulesEngine = Addon.CreateRulesEngineInternal(Addon:GetRuleEnvironmentVariables(), verbose);
 
     -- Import constants
     rulesEngine:ImportGlobals(unpack(ITEM_CONSTANTS));

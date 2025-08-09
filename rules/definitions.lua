@@ -77,8 +77,8 @@ Rules.SystemRules =
                     (not NO_LEVEL_ONE or (Level ~= 1)) and
                     (Level <= (PlayerLevel() - FOOD_LEVEL));
         end,
-        Order = 1100,
-        Params = {
+        Params =
+        {
             {
                 Type = "number",
                 Name = "Level",
@@ -91,7 +91,8 @@ Rules.SystemRules =
                 Key = "NO_LEVEL_ONE",
                 Default = true,
             },
-        }
+        },
+        Order = 1100,
     },
 
     {
