@@ -111,7 +111,7 @@ Rules.SystemRules =
     {
         Id = "sell.uncommongear",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -133,7 +133,7 @@ Rules.SystemRules =
     {
         Id = "sell.raregear",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_RAREGEAR"],
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -155,7 +155,7 @@ Rules.SystemRules =
     {
         Id = "sell.epicgear",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
         Name = L["SYSRULE_SELL_EPICGEAR"],
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -173,6 +173,74 @@ Rules.SystemRules =
         },
         Order = 1600,
     },
+
+
+    {
+        Id = "sell.uncommongear_classic",
+        Type = SELL_RULE,
+        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false },
+        Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
+        Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
+        ScriptText = "IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
+        Script = function()
+                return IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
+            end,
+        Params = 
+        {
+            {
+                Key = "ITEMLEVEL",
+                Type = "numeric",
+                Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
+                Default = DefaultItemLevel,
+            }
+        },
+        Order = 1400,
+    },
+
+    {
+        Id = "sell.raregear_classic",
+        Type = SELL_RULE,
+        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false },
+        Name = L["SYSRULE_SELL_RAREGEAR"],
+        Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
+        ScriptText = "IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
+        Script = function()
+                return IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
+            end,
+        Params = 
+        {
+            {
+                Type = "numeric",
+                Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
+                Key = "ITEMLEVEL",
+                Default = DefaultItemLevel,
+            }
+        },
+        Order = 1500,
+    },
+
+    {
+        Id = "sell.epicgear_classic",
+        Type = SELL_RULE,
+        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false },
+        Name = L["SYSRULE_SELL_EPICGEAR"],
+        Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
+        ScriptText = "IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
+        Script = function()
+                return IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
+            end,
+        Params = 
+        {
+            {
+                Type = "numeric",
+                Key = "ITEMLEVEL",
+                Name = L.RULEUI_LABEL_ITEMLEVEL_PARAM,
+                Default = DefaultItemLevel,
+            }
+        },
+        Order = 1600,
+    },
+
 
     --*****************************************************************************
     -- Keep Rules

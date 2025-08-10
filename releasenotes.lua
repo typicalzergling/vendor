@@ -16,6 +16,10 @@ use a loot addon or want to turn it off it is in General Settings. This is an ac
 * Default sell rules parameter description changed to "Max-upgrade item level" to reduce confusion about item level being compared for upgradeable gear.
 * Default sell rules description updated for clarity.
 * New on-by-default for new profiles Keep rule for Profession Gear (retail only), which keeps anything classified as Profession Equipment.
+* Fixed a bug causing the Sell Old Food rule to silently fail.
+* Fixed classic vanilla sell rules which were using IsEquipmentSet(). New rules were created for this specifically for vanilla classic, so if the
+old rules were enabled for a profile they will be disabled with this change and need to be re-enabled.
+* Removed HasProfession() from vanilla classic (SOD), as it did not function correctly. This will be restored in a future update.
 
 # Important Items update
 * The default Important Items list has been updated to include the new Ethereal Augment rune and Soulgorged Augment runes. This will update automatically
@@ -26,7 +30,6 @@ the important items list at any time using the console command '/vendor list res
 * Restored IsEquipmentSet detection to the guid form, so it should once again match exactly and not cause issues with empty equipment sets.
 * Fixed protection buyback from not matching Soulbound items correctly, causing some false positives on the buyback for items that did not
 actually match keep rules.
-* Fixed a bug causing the Sell Old Food rule to silently fail.
 ]]
 },
 {
