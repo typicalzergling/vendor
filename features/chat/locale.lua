@@ -16,4 +16,22 @@ CHAT_SETTINGS_HELP = [[
 Configure which category of messages appear in your chat channels below.
 ]]
 
+},
+zhCN = {
+
+CHAT_SETTING_NAME = "聊天输出",
+CHAT_SETTING_DESCR = "提供对Vendor信息输出位置的精细控制",
+CHAT_TABNAME_FMT1 = "聊天框\"" .. YELLOW_FONT_COLOR_CODE .. "%s" .. "|r\":",
+CHAT_MESSAGETYPE_DESTROY = "摧毁",
+CHAT_MESSAGETYPE_MERCHANT = "商人",
+CHAT_MESSAGETYPE_REPAIR = "修复",
+CHAT_MESSAGETYPE_OTHER = "其他",
+CHAT_MESSAGETYPE_LISTS = "列表",
+CHAT_MESSAGETYPE_DEBUG = "调试",
+CHAT_MESSAGE_PREFIX_FMT1 = HIGHLIGHT_FONT_COLOR_CODE .. "["  .. ORANGE_FONT_COLOR_CODE .. "%s|r" ..  HIGHLIGHT_FONT_COLOR_CODE .. "]|r ",
+CHAT_MESSAGEDEBUG_PREFIX_FMT1 = HIGHLIGHT_FONT_COLOR_CODE .. "["  .. BLUE_FONT_COLOR_CODE .. "%s|r" ..  HIGHLIGHT_FONT_COLOR_CODE .. "]|r ",
+CHAT_SETTINGS_HELP = [[
+请在下方配置要显示在聊天频道中的消息类别
+]]
+
 }}
