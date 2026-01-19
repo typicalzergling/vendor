@@ -1,6 +1,5 @@
 local _, Addon = ...
 local EXT_MGR_KEY = {}
-local EMPTY = {}
 
 local ExtensionManager = {}
 
@@ -27,7 +26,7 @@ function ExtensionManager:GetList(search)
 end
 
 function ExtensionManager:GetLists()
-	return self.lists or EMPTY
+	return self.lists or {}
 end
 
 function ExtensionManager:RegisterList(extension, list)

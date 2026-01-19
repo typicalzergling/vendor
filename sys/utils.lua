@@ -39,6 +39,8 @@ end
 -- Table deep copy, as seen on StackOverflow
 -- https://stackoverflow.com/questions/640642/how-do-you-copy-a-lua-table-by-value
 function Addon.DeepTableCopy(obj, seen)
+    --return obj;
+    ----[[ not needed
     if type(obj) ~= 'table' then return obj end
     if seen and seen[obj] then return seen[obj] end
 
@@ -52,10 +54,13 @@ function Addon.DeepTableCopy(obj, seen)
     s[obj] = res
     for k, v in pairs(obj) do res[Addon.DeepTableCopy(k, s)] = Addon.DeepTableCopy(v, s) end
     return res
+    --]]
 end
 
 -- Deep Table Copy without copying the metatable
 function Addon.DeepTableCopyNoMeta(obj, seen)
+    --return obj;
+    ----[[ This is not needed
     if type(obj) ~= 'table' then return obj end
     if seen and seen[obj] then return seen[obj] end
 
@@ -64,6 +69,7 @@ function Addon.DeepTableCopyNoMeta(obj, seen)
     s[obj] = res
     for k, v in pairs(obj) do res[Addon.DeepTableCopy(k, s)] = Addon.DeepTableCopy(v, s) end
     return res
+    --]]
 end
 
 

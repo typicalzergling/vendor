@@ -61,7 +61,8 @@ function Evaluation:EvaluateItem(item, ignoreCache)
         if cachedEntry then
             debugp("Retrieved %s from cache with result: %s - [%s] %s", tostring(item.Link), tostring(cachedEntry.Result.Action), tostring(cachedEntry.Result.RuleType), tostring(cachedEntry.Result.Rule))
             -- Return deep copy so they don't ruin our actual data with this.
-            return Addon.DeepTableCopy(cachedEntry.Result)
+            --return Addon.DeepTableCopy(cachedEntry.Result)
+            return cachedEntry.Result
         end
     end
 

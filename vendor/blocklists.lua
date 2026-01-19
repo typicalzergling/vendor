@@ -2,7 +2,6 @@ local AddonName, Addon = ...
 local L = Addon:GetLocale()
 local ListType = Addon.ListType
 local SystemListId = Addon.SystemListId
-local EMPTY = {}
 
 -- TODO: Clear result cache anytime any block list changes
 -- Since that can alter the result of one or more rules.
@@ -46,7 +45,7 @@ end
 local function commitListToProfile(listType, list)
     assert(isSystemListType(listType), "Only system lists are kept in the profile")
     local profile = Addon:GetProfileManager():GetProfile()
-    profile:SetList(listType, list or EMPTY)
+    profile:SetList(listType, list or {})
 end
 
 local function getExtensionList(listId)
@@ -57,7 +56,7 @@ local function getCustomList(listId)
     local listMgr = Addon:GetListManager()
     local items, exists =  listMgr:GetListContents(listId)
     assert(exists)
-    return items or EMPTY
+    return items or {}
 end
 
 local function commitCustomList(listId, list)
@@ -133,18 +132,18 @@ function BlockList:Remove(itemId)
 end
 
 function BlockList:Contains(itemId)
-    local list = self.get() or EMPTY
+    local list = self.get() or {}
     return list[itemId] == true;
 end
 
 function BlockList:GetContents()
     local list = self.get();
-    return list or EMPTY
+    return list or {}
 end
 
 function BlockList:GetItems()
     local items = {};
-    local ids = self.get() or EMPTY
+    local ids = self.get() or {}
     for id, _ in pairs(ids) do
         if (C_Item.DoesItemExistByID(id)) then
             table.insert(items, id);
@@ -167,11 +166,11 @@ end
 
 function BlockList:Clear()
     Addon:Debug("blocklists", "Cleared list '%s' [%s]", self.listType, self.listId)
-    self:commit(EMPTY)
+    self:commit({})
 end
 
 function BlockList:RemoveInvalid()
-    local ids = self.get() or EMPTY
+    local ids = self.get() or {}
     local prune = {}
     for id, state in pairs(ids) do
         if ((type(id) ~= "number") or not state or not C_Item.DoesItemExistByID(id)) then
@@ -308,10 +307,10 @@ end
             elseif (type(items) == "function") then
                 local result, items = xpcall(items, CallErrorHandler)
                 if (not result) then
-                    return EMPTY
+                    return {}
                 else
                     local ids = {}
-                    for _, id in ipairs(items or EMPTY) do
+                    for _, id in ipairs(items or {}) do
                         if (type(id) == "number") then
                             ids[id] = true
                         end
@@ -319,7 +318,7 @@ end
                     return ids
                 end
             else
-                return EMPTY
+                return {}
             end
         end,
         commit = function()
@@ -357,7 +356,7 @@ function Addon:ToggleItemInBlocklist(list, item)
     if list == Addon.SystemListId.ALWAYS then
         local isUnsellable = select(11, Addon:GetItemInfo(id)) == 0
         if isUnsellable then
-            self:Print(L.CMD_LISTTOGGLE_UNSELLABLE, link)
+            Addon:Output(Addon.Systems.Chat.MessageType.Console, L.CMD_LISTTOGGLE_UNSELLABLE, link)
             list = Addon.SystemListId.DESTROY
         end
     end

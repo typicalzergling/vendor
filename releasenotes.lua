@@ -2,6 +2,33 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.11.1 (Jan 18, 2025)",
+Notes = [[
+# Midnight Prepatch Support
+Updated for 12.0.1 patch, fixed equipment set functionality.
+]]
+},
+{
+Release = "6.11.0 (Nov 11, 2025)",
+Notes = [[
+# Midnight Beta Compatibility
+Updated TOC and fixed a changed API in equipment sets.
+]]
+},
+{
+Release = "6.10.3 (Aug 12, 2025)",
+Notes = [[
+# Mac Crash detection with equipment sets added
+This update is a targeted fix to address a possible mac client crash. This is a blizzard bug but addons querying
+equipment set information can hit it and cause a crash. This shouldn't be a thing, but it is a thing, so we're dealing with it.
+
+* Added detection for Mac Client crash if an invalid item is in the equipment set.
+* Vendor will not work around this issue, instead we will detect that a crash will occur and
+warn the player that they have a bad equipment set, tell them the set name, and they can fix it.
+* If Vendor detects this condition, we will not process equipment sets further.
+]]
+},
+{
 Release = "6.10.1 (Aug 09, 2025)",
 Notes = [[
 # Fast Looting, Rule Changes

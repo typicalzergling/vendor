@@ -4,7 +4,7 @@ local LIST_ID = Addon.StaticListId.IMPORTANT_ITEMS
 
 -- Definition for important items
 local importantItems = {
-    Version = 3,
+    Version = 4,
     Name = "LIST_STATIC_IMPORTANT_NAME",      -- Key Name for loc
     Desc = "LIST_STATIC_IMPORTANT_DESC",      -- Key Name for loc
     Id = LIST_ID,
@@ -28,6 +28,7 @@ local importantItems = {
         [63353] = 2,    -- Shroud of Cooperation (Horde) (Teleport to Main City)
         [65274] = 2,    -- Cloak of Coordination (Horde) (Teleport to Main City)
         [65360] = 1,	-- Cloak of Coordination (Alliance) (Teleport to Main City)
+        [103678] = 4,   -- Time-Lost Artifact (Trinket) (Teleport to Timeless Isle)
         [109076] = 1,	-- Goblin Glider Kit
         [109262] = 1,	-- Draenic Philosopher's Stone (Required for alch transmute)
         [114943] = 1,	-- Ultimate Gnomish Army Knife (Many tradeskill items, sometimes a res)

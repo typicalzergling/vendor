@@ -86,6 +86,24 @@ function Functions:GetProfessionIds()
     return prof1Id, prof2Id
 end
 
+local function macCrashCheck(equipmentSetId)
+    if not IsMacClient() then return false end
+
+    -- Mac clients can crash if equipment set has invalid items
+    -- and we request location.
+    for _, id in pairs(C_EquipmentSet.GetItemIDs(equipmentSetId)) do
+        if not C_Item.GetItemInfoInstant(id) then
+            -- Invalid item in this set, we cannot process the set.
+            -- Warn the user that they have a crash-causing Equipment Set
+            local name = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetId)
+            Addon:Output(Addon.Systems.Chat.MessageType.Console, L["MAC_CLIENT_CRASH_WARNING"], name);
+            return true
+        end
+    end
+
+    return false
+end
+
 local equipmentSetGUIDs = {}
 function Functions:GetEquipmentSetsForGUID(itemGUID)
     return equipmentSetGUIDs[itemGUID]
@@ -94,32 +112,40 @@ end
 -- Bag update is called on login when the bags are ready.
 -- If we call GetItemLocations before this happens, we will get empty results
 local firstScanCompleted = false
-function firstEquipmentSetUpdate()
-    if firstScanCompleted then return end
-    updateEquipmentSetGUIDs()
-    firstScanCompleted = true
-end
 
 -- Get all item guids and to which equipment set they belong.
 -- TODO: add bank check, this hsould be safe to update more frequently, as long as it isn't constant.
 -- if soemthing goes into inventory from bank, we need to update this list
-function updateEquipmentSetGUIDs()
+local function updateEquipmentSetGUIDs()
     debugp("Updating EquipmentSet GUIDs")
     local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
     local startCount = #equipmentSetGUIDs
     local added = false
     equipmentSetGUIDs = {}
     for _, setId in pairs(itemSets) do
+
+        if macCrashCheck(setId) then
+            -- macCrashCheck will warn the user that equipment sets will not be checked.
+            -- Let them fix the bad data which will prevent other addons from crashing them.
+            firstScanCompleted = true
+            return
+        end
+
         local locations = C_EquipmentSet.GetItemLocations(setId) or {}
         for _, eLocation in pairs(locations) do
             if eLocation > 1 then
-                local player, bank, bags, void, slot, bag = EquipmentManager_UnpackLocation(eLocation)
-
-                if (Addon.Systems.Info.IsClassicNext) then
-                    -- On Classic Mists this there is no "void" return value.
-                    -- Must shift over the arguments by 1
-                    bag = slot
-                    slot = void
+                -- Blizzard has changed this API signature three times. This should work if/when Blizzard back-ports GetLocationData.
+                -- Midnight uses EquipmentManager_GetLocationData
+                local player, bank, bags, slot, bag
+                if EquipmentManager_GetLocationData then
+                    local data = EquipmentManager_GetLocationData(eLocation)
+                    player, bank, bags, slot, bag = data.isPlayer, data.isBank, data.isBags, data.slot, data.bag
+                elseif Addon.Systems.Info.IsClassicNext then
+                    -- No Void Storage on classic, uses UnpackLocation.
+                    player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(eLocation)
+                else
+                    -- Void Storage exists and is 4th argument, uses UnpackLocation.
+                    player, bank, bags, _, slot, bag = EquipmentManager_UnpackLocation(eLocation)
                 end
 
                 itemLocation = nil
@@ -157,6 +183,12 @@ function updateEquipmentSetGUIDs()
     end
     debugp("Equipment set changed, clearing cache")
     Addon:ClearItemResultCache()
+end
+
+local function firstEquipmentSetUpdate()
+    if firstScanCompleted then return end
+    updateEquipmentSetGUIDs()
+    firstScanCompleted = true
 end
 
 -- This is a fallback in case equipmentSetGUID scan has not yet occurred due to various race conditions.

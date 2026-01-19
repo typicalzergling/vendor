@@ -82,7 +82,7 @@ end
 function Profile:GetValue(key)
 	local var = self.profilesVariable:Get(self.profileId) or {};
 	assert(type(key) == "string", "The profile key must be a string value");
-	local value = var[key];	
+	local value = var[key];
 	if (value == nil) then
 		if (type(self.defaults) == "table" and Addon.TableHasKey(key)) then
 			Addon:Debug("profile", "Value '%s' was requested but is not present but there is a default value", key)
@@ -93,7 +93,10 @@ function Profile:GetValue(key)
 	end
 	
 	if (type(value) == "table") then
-		return Addon.DeepTableCopy(value);
+        -- We are not doing deep table copy here for performance considerations
+        -- Revisit if we start seeing data integrity issues.
+		--return Addon.DeepTableCopy(value);
+        return value;
 	end
 
 	return value

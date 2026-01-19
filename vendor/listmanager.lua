@@ -1,6 +1,5 @@
 local _, Addon = ...
 local LIST_MGR_KEY = {}
-local EMPTY = {}
 local CustomListManager = {}
 local savedLists = {}
 
@@ -22,7 +21,7 @@ function CustomListManager:CreateList(listName, listDescription, listItems)
 		Name = listName,
 		Id = id,
 		Description = listDescription,
-		Items = listItems or EMPTY,
+		Items = listItems or {},
 		Timestamp = time(),
 		CreatedBy = Addon:GetCharacterFullName()
 	}
@@ -51,9 +50,9 @@ end
 function CustomListManager:GetListContents(listId)
 	local list = savedLists:Get(GetListId(listId))
 	if (not list) then
-		return EMPTY, false
+		return {}, false
 	end
-	return (list.Items or EMPTY), true
+	return (list.Items or {}), true
 end
 
 --[[ Updates the contents of a custom list ]]
@@ -65,7 +64,7 @@ function CustomListManager:UpdateListContents(listId, items)
 		return false
 	end
 
-	list.Items = Addon.DeepTableCopy(items or EMPTY)
+	list.Items = Addon.DeepTableCopy(items or {})
 	savedLists:Set(listId, list)
 	self:TriggerEvent("OnListChanged", listId, "UPDATED")
 end
@@ -107,7 +106,7 @@ function CustomListManager:GetList(search)
 			Id = resultId,
 			Name = result.Name,
 			Description = result.Description,
-			Items = Addon.DeepTableCopy(result.Items or EMPTY)
+			Items = Addon.DeepTableCopy(result.Items or {})
 		}
 	end
 

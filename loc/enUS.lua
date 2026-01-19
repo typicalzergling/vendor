@@ -423,6 +423,9 @@ TOOLTIP_SCAN_SOULBOUND = _G["ITEM_SOULBOUND"],
 DATA_MIGRATION_SL_NOTICE = YELLOW_FONT_COLOR_CODE.. "Detected migration to Shadowlands! The settings for Vendor have been reset and custom rules require verification before they will be active!" ..FONT_COLOR_CODE_CLOSE,
 DATA_MIGRATION_ERROR = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration was detected, but no action taken. Please notify the addon authors here: https://www.curseforge.com/wow/addons/vendor/issues" ..FONT_COLOR_CODE_CLOSE,
 
+-- Mac client crash for equipment sets
+MAC_CLIENT_CRASH_WARNING = "WARNING: Your equipment set named '%s' has invalid items in it. This will cause a crash on a Mac client if that item location is queried. Vendor will not check this equipment set for rules and you should delete this equipment set to remove the invalid item.",
+
 -- Extensions Loc
 
 -- Edit Rule Dialog
