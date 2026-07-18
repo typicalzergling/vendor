@@ -2,7 +2,36 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
-Release = "6.11.1 (Jan 18, 2025)",
+Release = "6.11.5 (Feb 27, 2026)",
+Notes = [[
+# Midnight MaxLevel 0 fix
+Fixed yet another item data issue from Blizzard's end. In this case some midnight items had upgrade info max
+level set to 0. A mitigation was added to ensure max level is never below level.
+]]
+},
+{
+Release = "6.11.4 (Feb 15, 2026)",
+Notes = [[
+# Midnight Squish Bug Fix #2
+Fixed another bug where Blizzard did not ilvl squish grey boes. Also added (Quality > 1) for the Side-Grade or
+better rule to prevent grey and white gear from being flagged as an upgrade when it should never in practice
+be the case.
+
+Speculative fix for some locale issues.
+]]
+},
+{
+Release = "6.11.3 (Feb 9, 2026)",
+Notes = [[
+# Midnight Squish Bug Fix
+Fixed a bug in MaxLevel caused by Blizzard not properly squishing upgradeable items' max itemlevel. This was
+causing items to not match sell rules because their itemlevel was about 600 ilvls higher than it should have
+been (they were pre-squish levels). The fix detects large discrepancy in MaxLevel vs Level and if it is
+above expectation, we apply the squish curve to the value to arrive at what it should be.
+]]
+},
+{
+Release = "6.11.1 (Jan 18, 2026)",
 Notes = [[
 # Midnight Prepatch Support
 Updated for 12.0.1 patch, fixed equipment set functionality.

@@ -461,7 +461,7 @@ Rules.SystemRules =
         Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
         Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
         Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
-        Script = "IsEquippable and (MaxLevel >= WatermarkLevel()) and (MaxLevel >= (.8 * PlayerItemLevel()))",
+        Script = "IsEquippable and (Quality > 1) and (MaxLevel >= WatermarkLevel()) and (MaxLevel >= (.8 * PlayerItemLevel()))",
         Order = 1225,
     },
 

@@ -188,6 +188,21 @@ local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
             if upgradeInfo.trackString then
                 item.IsUpgradeable = true
                 item.MaxLevel = upgradeInfo.maxItemLevel
+
+                -- Dirty Hack for ItemLevel squish bug. Blizzard did not properly reduce maxItemLevel
+                -- for upgradeable items. To account for this, we will adjust MaxLevel and apply
+                -- the squish curve if the diff of item level and max level is higher than it should be.
+                if (item.MaxLevel - item.Level > 26) then
+                    -- This is the Midnight Item Squish Curve - 92181
+                    item.MaxLevel = C_CurveUtil.EvaluateGameCurve(92181, item.MaxLevel)
+                end
+
+                if (item.MaxLevel < item.Level) then
+                    -- Something went wrong, leave MaxLevel at a sane value.
+
+                    item.MaxLevel = item.Level
+                end
+
                 item.UpgradeTrack = upgradeInfo.trackString
                 item.UpgradeLevel = upgradeInfo.currentLevel
                 item.UpgradeMax = upgradeInfo.maxLevel
@@ -225,6 +240,15 @@ local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
             end
         elseif item.BindType == 3 then
             item.IsBindOnUse = true
+        end
+    end
+
+    if IS_RETAIL then
+        -- Dealing with Blizzard not lowering all itemlevels: grey boes.
+        if item.Quality == 0 and item.IsBindOnEquip and item.Level > 200 then
+            -- Apply the curve to items that appear to be obviously not downranked appropriately
+            item.Level = C_CurveUtil.EvaluateGameCurve(92181, item.Level)
+            item.MaxLevel = item.Level
         end
     end
 

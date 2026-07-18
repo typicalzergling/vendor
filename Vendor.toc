@@ -1,7 +1,7 @@
-## Interface: 120001, 110207
+## Interface: 120001, 120000, 110207
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
-## Version: 6.11.1
+## Version: 6.11.5
 ## SavedVariables: Vendor_CustomRuleDefinitions, Vendor_Settings, Vendor_debug, Vendor_Profiles, Vendor_StaticLists, Vendor_CustomLists, Vendor_History, Vendor_AccountSettings, Vendor_XX_InstanceInfo, Vendor_XX_LootInfo
 ## SavedVariablesPerCharacter: Vendor_RulesConfig, Vendor_ActiveProfile, Vendor_Character_Data
 ## Author: Thoekh of Sargeras & Buskin of Lightbringer
