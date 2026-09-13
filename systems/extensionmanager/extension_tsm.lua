@@ -11,12 +11,15 @@ local function getCustomPriceValue(customPriceStr)
         error("Invalid custom price string for TSM")
     end
     
+    -- TSM rounds custom price results to whole copper, which loses fractional value
+    -- sources such as dbregionsalerate. Scale the entire expression before TSM
+    -- evaluates it, then restore its units with four decimal places of precision.
+    local value = TSM_API.GetCustomPriceValue("(" .. customPriceStr .. ") * 10000", TSM_API.ToItemString(Link))
     -- Items with no data will return nil for a price. We'll convert them to 0 for rule matching.
-    local value = TSM_API.GetCustomPriceValue(customPriceStr, TSM_API.ToItemString(Link))
     if not value then
         return 0
     end
-    return value
+    return value / 10000
 end
 
 -- We factor in the auction house cut here so you can do a simple comparison of value to the vendor price.
@@ -90,7 +93,7 @@ local function registerTSMExtension()
                 Name="CustomValue",
                 Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getCustomPriceValue,
-                Documentation="Gets the TSM specified custom price value specified. You can specify any TSM price string! See http://support.tradeskillmaster.com for how price strings work.",
+                Documentation="Gets the TSM specified custom price value with four decimal places of precision, including fractional value sources such as dbregionsalerate. Returns 0 when no value is available. You can specify any TSM price string! See http://support.tradeskillmaster.com for how price strings work.",
             },
             {
                 Name="MarketValue",
