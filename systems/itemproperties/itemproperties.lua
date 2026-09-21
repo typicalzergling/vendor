@@ -24,7 +24,7 @@ function ItemProperties:Startup(register)
     IS_RETAIL = Addon.Systems.Info.IsRetailEra
     IS_RETAIL_NEXT = Addon.Systems.Info.IsRetailNext
     IS_CLASSIC = Addon.Systems.Info.IsClassicEra
-    IS_CLASSIC_NEXT = Addon.Systems.Info.IsClassicNext
+    IS_CLASSIC_NEXT = Addon.Systems.Info.IsClassicCurrent
     itemproperties = self
     
     register({
@@ -64,6 +64,33 @@ local transmog_invtypes = {
     INVTYPE_THROWN = true,
     INVTYPE_RANGEDRIGHT = true,
 }
+
+-- Calculate the projected item level after upgrading from currentUpgradeLevel to maxUpgradeLevel
+local function getMaxItemLevelForUpgradeInfo(level, currentUpgradeLevel, maxUpgradeLevel)
+    local steps = maxUpgradeLevel - currentUpgradeLevel
+    if (currentUpgradeLevel == 0) or (steps <= 0) then
+        return level
+    end
+
+    local baseGain = steps * 3
+    local r = level % 13
+
+    local bonuses = 0
+    if r == 6 then
+        bonuses = math.floor((steps + 1) / 4)
+    elseif r == 9 then
+        bonuses = math.floor((steps + 2) / 4)
+    elseif r == 12 then
+        bonuses = math.floor((steps + 3) / 4)
+    elseif r == 3 then
+        bonuses = math.floor(steps / 4)
+    else
+        -- Fallback for unexpected remainders
+        bonuses = math.floor((steps + 1) / 4)
+    end
+
+    return level + baseGain + bonuses
+end
 
 local function isTransmogEquipment(invtype)
     if not invtype then return false end
@@ -187,26 +214,34 @@ local function doGetItemProperties(itemObj, guidOverride, tooltipDataOverride)
             -- upgradeInfo should always have a value, check the track string to see if it is upgradeable.
             if upgradeInfo.trackString then
                 item.IsUpgradeable = true
+                item.UpgradeTrack = upgradeInfo.trackString
+                item.UpgradeLevel = upgradeInfo.currentLevel or 0
+                item.UpgradeMax = upgradeInfo.maxLevel
+                item.IsFullyUpgraded = item.UpgradeLevel == item.UpgradeMax
                 item.MaxLevel = upgradeInfo.maxItemLevel
 
-                -- Dirty Hack for ItemLevel squish bug. Blizzard did not properly reduce maxItemLevel
-                -- for upgradeable items. To account for this, we will adjust MaxLevel and apply
-                -- the squish curve if the diff of item level and max level is higher than it should be.
-                if (item.MaxLevel - item.Level > 26) then
-                    -- This is the Midnight Item Squish Curve - 92181
-                    item.MaxLevel = C_CurveUtil.EvaluateGameCurve(92181, item.MaxLevel)
+                -- It is very dumb we have to do this, but Blizzard can't get this right.
+                if (item.MaxLevel == 0) then
+                    item.MaxLevel = getMaxItemLevelForUpgradeInfo(item.Level, item.UpgradeLevel, item.UpgradeMax)
+                    debugp("Adjusted MaxLevel to "..tostring(item.MaxLevel))
+                else
+                    -- Dirty Hack for ItemLevel squish bug. Blizzard did not properly reduce maxItemLevel
+                    -- for upgradeable items. To account for this, we will adjust MaxLevel and apply
+                    -- the squish curve if the diff of item level and max level is higher than it should be.
+                    --[[ Removing this shim - it seems blizzard realized the error and instead made everything 0.
+                    if (item.MaxLevel - item.Level > 50) then
+                        debugp("Applying Midnight curve")
+                        -- This is the Midnight Item Squish Curve - 92181
+                        item.MaxLevel = C_CurveUtil.EvaluateGameCurve(92181, item.MaxLevel)
+                    end
+                    ]]
                 end
 
                 if (item.MaxLevel < item.Level) then
                     -- Something went wrong, leave MaxLevel at a sane value.
-
+                    debugp("Something went wrong with max ilvl adjustment")
                     item.MaxLevel = item.Level
                 end
-
-                item.UpgradeTrack = upgradeInfo.trackString
-                item.UpgradeLevel = upgradeInfo.currentLevel
-                item.UpgradeMax = upgradeInfo.maxLevel
-                item.IsFullyUpgraded = item.UpgradeLevel == item.UpgradeMax
             end
         end
     end

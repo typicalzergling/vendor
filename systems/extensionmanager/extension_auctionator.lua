@@ -51,25 +51,25 @@ local function registerAuctionatorExtension()
         {
             {
                 Name="IsAuctionItem",
-                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
                 Function=isAuctionItem,
                 Documentation=L.EXT_AUCTIONATOR_FUNC_ISAUCTIONITEM,
             },
             {
                 Name="AuctionValue",
-                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
                 Function=getAuctionValue,
                 Documentation=L.EXT_AUCTIONATOR_FUNC_AUCTIONVALUE,
             },
             {
                 Name="AuctionProfit",
-                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
                 Function=getAuctionProfit,
                 Documentation=L.EXT_AUCTIONATOR_FUNC_AUCTIONPROFIT,
             },
             {
                 Name="AuctionRatio",
-                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
                 Function=getAuctionRatio,
                 Documentation=L.EXT_AUCTIONATOR_FUNC_AUCTIONRATIO,
             },
@@ -82,7 +82,7 @@ local function registerAuctionatorExtension()
                 Id = "keepforauction",
                 Type = "Keep",
                 Name = L.EXT_AUCTIONATOR_RULENAME_KEEPFORAUCTION,
-                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
                 Description = L.EXT_AUCTIONATOR_RULEDESC_KEEPFORAUCTION,
                 Script = function()
                     return not IsSoulbound and not IsWarbound and (Auc_AuctionProfit() > MIN_AUCTIONPROFIT) and (Auc_AuctionRatio() > MIN_AUCTIONRATIO)

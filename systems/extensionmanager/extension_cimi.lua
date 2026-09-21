@@ -49,25 +49,25 @@ local function registerCIMIExtension()
         {
             {
                 Name="IsTransmogable",
-                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
                 Function=isTransmogable,
                 Documentation="Returns true if CanIMogIt determines it is Transmogable.",
             },
             {
                 Name="PlayerKnowsTransmogFromItem",
-                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
                 Function=playerKnowsTransmogFromItem,
                 Documentation="Returns true if CanIMogIt determines the player knows the transmog from this specific item.",
             },
             {
                 Name="PlayerKnowsTransmog",
-                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
                 Function=playerKnowsTransmog,
                 Documentation="Returns true if CanIMogIt determines the player knows the transmog. This is likely the most useful function to use for Transmog collecting.",
             },
             {
                 Name="CharacterCanLearnTransmog",
-                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
                 Function=characterCanLearnTransmog,
                 Documentation="Returns true if CanIMogIt determines the character can learn the transmog.",
             },
@@ -80,7 +80,7 @@ local function registerCIMIExtension()
                 Id = "unknowntransmog",
                 Type = "Keep",
                 Name = "CanIMogIt - Unknown Transmogs",
-                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
                 Description = "Non-soulbound gear that is transmogable and has a transmog which the player does not know. Uses CanIMogIt APIs for determining transmog status.",
                 Script = "not IsSoulbound and CIMI_IsTransmogable() and not CIMI_PlayerKnowsTransmog()",
                 Order = 1000,

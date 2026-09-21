@@ -69,10 +69,12 @@ end
 
 --[[ Sends a chat message to the chat frames ]]
 function ChatFeature:Output(type, message)
+
     -- Danger - You cannot have debug prints in this method --
     local prefix = string.format(locale.CHAT_MESSAGE_PREFIX_FMT1, AddonName)
     local options = self:GetFrameSettings()
 
+    -- Lockdown is safe to write to default chat frame.
     if (type == MessageType.Console) then
         DEFAULT_CHAT_FRAME:AddMessage(prefix .. message)
         return
@@ -89,9 +91,13 @@ function ChatFeature:Output(type, message)
         function(frame)
             local name, _, _, _, _, _, shown, _, docked = FCF_GetChatWindowInfo(frame:GetID())
             if (shown or docked) then
+                if issecretvalue(name) then return end
                 local bits = options[name] or 0
                 if (bit.band(bits, type) == type) then
-                    frame:AddMessage(prefix .. message)
+                    -- If in chat lockdown we cannot write to most channels, skip.
+                    if (not C_ChatInfo.InChatMessagingLockdown()) then
+                        frame:AddMessage(prefix .. message)
+                    end
                 end
             end
         end)

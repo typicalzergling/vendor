@@ -41,6 +41,10 @@ Addon.Maps.ItemType =
 --*****************************************************************************
 Addon.Maps.Expansion =
 {
+    ["latest"] = LE_EXPANSION_LEVEL_CURRENT,
+    ["current"] = LE_EXPANSION_LEVEL_CURRENT,
+    ["classic"] = LE_EXPANSION_CLASSIC,
+    ["vanilla"] = LE_EXPANSION_CLASSIC,
     ["tbc"] = LE_EXPANSION_BURNING_CRUSADE,
     ["bc"] = LE_EXPANSION_BURNING_CRUSADE,
     ["burning crusade"] = LE_EXPANSION_BURNING_CRUSADE,
@@ -55,12 +59,17 @@ Addon.Maps.Expansion =
     ["wod"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["draenor"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,
     ["legion"] = LE_EXPANSION_LEGION,
-    ["bfa"] = 8.0,
-    ["bofa"] = 8.0,
-    ["sl"] = 9.0,
-    ["shadowlands"] = 9.0,
-    ["dragonflight"] = 10.0,
-    ["df"] = 10.0,
+    ["bfa"] = LE_EXPANSION_BATTLE_FOR_AZEROTH,
+    ["bofa"] = LE_EXPANSION_BATTLE_FOR_AZEROTH,
+    ["sl"] = LE_EXPANSION_SHADOWLANDS,
+    ["shadowlands"] = LE_EXPANSION_SHADOWLANDS,
+    ["dragonflight"] = LE_EXPANSION_DRAGONFLIGHT,
+    ["df"] = LE_EXPANSION_DRAGONFLIGHT,
+    ["tww"] = LE_EXPANSION_WAR_WITHIN,
+    ["warwithin"] = LE_EXPANSION_WAR_WITHIN,
+    ["thewarwithin"] = LE_EXPANSION_WAR_WITHIN,
+    ["midnight"] = LE_EXPANSION_MIDNIGHT,
+    ["mid"] = LE_EXPANSION_MIDNIGHT,
 }
 
 --*****************************************************************************

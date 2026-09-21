@@ -785,6 +785,7 @@ HELP_EXPANSIONPACKID_TEXT = [[The expansion pack ID to which this item belongs.
 8 = SL
 9 = DF
 10 = TWW
+11 = Midnight
 256 = Classic SOD]],
 HELP_EXPANSIONPACKID_NOTES = "Use caution when using this to identify items of previous expansions. Not every item is tagged with an " ..
     "expansion ID. It appears that generally only wearable equipment is tagged. Zero is the default for " .. 
@@ -884,7 +885,15 @@ Check left side of tooltip, line 1 for "Vanq"
 ]],
 
 HELP_PLAYERLEVEL = [[
-Returns the current level of the player. This is so you can make rules that only work while leveling or at max level.
+Returns the current level of the player.
+]],
+
+HELP_PLAYERMAXLEVEL = [[
+Returns the max level the player could reach in this expansion.
+]],
+
+HELP_ISPLAYERMAXLEVEL = [[
+Returns true if the player is currently at the max level. Use this to determine if you want to make leveling-only or max-level only rules.
 ]],
 
 HELP_PLAYERCLASS = [[

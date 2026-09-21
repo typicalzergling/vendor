@@ -40,7 +40,7 @@ Rules.SystemRules =
     {
         Id = "sell.alwayssell",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_ALWAYSSELL"],
         Description = L["SYSRULE_SELL_ALWAYSSELL_DESC"],
         ScriptText = "IsAlwaysSellItem()",
@@ -54,7 +54,7 @@ Rules.SystemRules =
     {
         Id = "sell.poor",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_POORITEMS"],
         Description = L["SYSRULE_SELL_POORITEMS_DESC"],
         ScriptText = "Quality == POOR",
@@ -67,7 +67,7 @@ Rules.SystemRules =
     {
         Id = "sell.oldfood",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_OLDFOOD"],
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
         ScriptText = "TypeId == 0 and SubTypeId == 5 and (not NO_LEVEL_ONE or Level ~= 1) and Level <= (PlayerLevel() - FOOD_LEVEL)",
@@ -98,7 +98,7 @@ Rules.SystemRules =
     {
         Id = "sell.knowntoys",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false },
         Name = L["SYSRULE_SELL_KNOWNTOYS"],
         Description = L["SYSRULE_SELL_KNOWNTOYS_DESC"],
         ScriptText = "IsSoulbound and IsToy and IsAlreadyKnown and not IsUnsellable",
@@ -111,7 +111,7 @@ Rules.SystemRules =
     {
         Id = "sell.uncommongear",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -133,7 +133,7 @@ Rules.SystemRules =
     {
         Id = "sell.raregear",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_RAREGEAR"],
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -155,7 +155,7 @@ Rules.SystemRules =
     {
         Id = "sell.epicgear",
         Type = SELL_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_EPICGEAR"],
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
         ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -178,7 +178,7 @@ Rules.SystemRules =
     {
         Id = "sell.uncommongear_classic",
         Type = SELL_RULE,
-        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false },
+        Supported={ Retail=false, Forever=false, Classic=true, RetailNext=false, ClassicCurrent=false },
         Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
         ScriptText = "IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -200,7 +200,7 @@ Rules.SystemRules =
     {
         Id = "sell.raregear_classic",
         Type = SELL_RULE,
-        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false },
+        Supported={ Retail=false, Forever=false, Classic=true, RetailNext=false, ClassicCurrent=false },
         Name = L["SYSRULE_SELL_RAREGEAR"],
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
         ScriptText = "IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -222,7 +222,7 @@ Rules.SystemRules =
     {
         Id = "sell.epicgear_classic",
         Type = SELL_RULE,
-        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=false },
+        Supported={ Retail=false, Forever=false, Classic=true, RetailNext=false, ClassicCurrent=false },
         Name = L["SYSRULE_SELL_EPICGEAR"],
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
         ScriptText = "IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
@@ -250,7 +250,7 @@ Rules.SystemRules =
     {
         Id = "keep.neversell",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_NEVERSELL"],
         Description = L["SYSRULE_KEEP_NEVERSELL_DESC"],
         ScriptText = "IsNeverSellItem()",
@@ -265,7 +265,7 @@ Rules.SystemRules =
     {
         Id = "keep.importantitems",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_IMPORTANTITEMS"],
         Description = L["SYSRULE_KEEP_IMPORTANTITEMS_DESC"],
         ScriptText = "IsImportantItem()",
@@ -279,7 +279,7 @@ Rules.SystemRules =
     {
         Id = "keep.legendaryandup",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_LEGENDARYANDUP"],
         Description = L["SYSRULE_KEEP_LEGENDARYANDUP_DESC"],
         ScriptText = "Quality >= 5",
@@ -291,7 +291,7 @@ Rules.SystemRules =
     {
         Id = "keep.soulboundgear",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_SOULBOUNDGEAR"],
         Description = L["SYSRULE_KEEP_SOULBOUNDGEAR_DESC"],
         ScriptText = "IsEquippable and IsSoulbound",
@@ -305,7 +305,7 @@ Rules.SystemRules =
     {
         Id = "keep.bindonequipgear",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_BINDONEQUIPGEAR"],
         Description = L["SYSRULE_KEEP_BINDONEQUIPGEAR_DESC"],
         ScriptText = "IsEquipment and IsBindOnEquip",
@@ -319,7 +319,7 @@ Rules.SystemRules =
     {
         Id = "keep.unknownappearance",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE"],
         Description = L["SYSRULE_KEEP_UNKNOWNAPPEARANCE_DESC"],
         ScriptText = "IsUnknownAppearance",
@@ -329,7 +329,7 @@ Rules.SystemRules =
     {
         Id = "keep.cosmetic",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false },
         Name = L["SYSRULE_KEEP_COSMETIC"],
         Description = L["SYSRULE_KEEP_COSMETIC_DESC"],
         ScriptText = "IsCosmetic and not IsAppearanceCollected",
@@ -341,7 +341,7 @@ Rules.SystemRules =
     {
         Id = "keep.potentialupgrades",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false },
         Name = L["SYSRULE_KEEP_POTENTIALUPGRADES"],
         Description = L["SYSRULE_KEEP_POTENTIALUPGRADES_DESC"],
         ScriptText = "IsEquippable and (MaxLevel >= math.min(PlayerItemLevel() * .95, PlayerItemLevel() - 5))",
@@ -353,7 +353,7 @@ Rules.SystemRules =
     {
         Id = "keep.common",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_COMMON"],
         Description = L["SYSRULE_KEEP_COMMON_DESC"],
         ScriptText = "Quality == 1",
@@ -365,7 +365,7 @@ Rules.SystemRules =
     {
         Id = "keep.uncommongear",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_UNCOMMONGEAR"],
         Description = L["SYSRULE_KEEP_UNCOMMONGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 2 and (MaxLevel >= ITEMLEVEL)",
@@ -388,7 +388,7 @@ Rules.SystemRules =
     {
         Id = "keep.raregear",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_RAREGEAR"],
         Description = L["SYSRULE_KEEP_RAREGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 3 and (MaxLevel >= ITEMLEVEL)",
@@ -411,7 +411,7 @@ Rules.SystemRules =
     {
         Id = "keep.epicgear",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_EPICGEAR"],
         Description = L["SYSRULE_KEEP_EPICGEAR_DESC"],
         ScriptText = "IsEquipment and Quality == 4 and (MaxLevel >= ITEMLEVEL)",
@@ -435,7 +435,7 @@ Rules.SystemRules =
     {
         Id = "keep.equipmentset",
         Type = KEEP_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_KEEP_EQUIPMENTSET"],
         Description = L["SYSRULE_KEEP_EQUIPMENTSET_DESC"],
         ScriptText = "IsInEquipmentSet()",
@@ -448,7 +448,7 @@ Rules.SystemRules =
         Id = "keep.craftingreagent",
         Type = "Keep",
         Name = L["SYSRULE_KEEP_CRAFTINGREAGENT"],
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=false },
         Description = L["SYSRULE_KEEP_CRAFTINGREAGENT_DESC"],
         Script = "IsCraftingReagent",
         Order = 1350,
@@ -459,7 +459,7 @@ Rules.SystemRules =
         Id = "keep.sidegradeorbetter",
         Type = "Keep",
         Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=false },
         Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
         Script = "IsEquippable and (Quality > 1) and (MaxLevel >= WatermarkLevel()) and (MaxLevel >= (.8 * PlayerItemLevel()))",
         Order = 1225,
@@ -470,7 +470,7 @@ Rules.SystemRules =
         Id = "keep.sidegradeorbetter_classic",
         Type = "Keep",
         Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
-        Supported={ Retail=false, Classic=true, RetailNext=false, ClassicNext=true },
+        Supported={ Retail=false, Forever=false, Classic=true, RetailNext=false, ClassicCurrent=true },
         Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
         Script = "IsEquipment and (Level >= CurrentEquippedLevel())",
         Order = 1225,
@@ -481,7 +481,7 @@ Rules.SystemRules =
         Id = "keep.craftedgear",
         Type = "Keep",
         Name =  L["SYSRULE_KEEP_CRAFTEDGEAR"],
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false },
         Description =  L["SYSRULE_KEEP_CRAFTEDGEAR_DESC"],
         Script = "IsEquippable and (CraftedQuality > 0) and (Quality >= 4)",
         Order = 1245,
@@ -492,7 +492,7 @@ Rules.SystemRules =
         Id = "keep.professiongear",
         Type = "Keep",
         Name =  L["SYSRULE_KEEP_PROFESSIONGEAR"],
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false },
         Description =  L["SYSRULE_KEEP_PROFESSIONGEAR_DESC"],
         Script = "IsProfessionEquipment",
         Order = 1246,
@@ -503,7 +503,7 @@ Rules.SystemRules =
         Id = "keep.levelinggear",
         Type = "Keep",
         Name =  L["SYSRULE_KEEP_LEVELINGGEAR"],
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Description =  L["SYSRULE_KEEP_LEVELINGGEAR_DESC"],
         Script = "IsEquipment and (MinLevel > PlayerLevel())",
         Order = 1255,
@@ -517,7 +517,7 @@ Rules.SystemRules =
     {
         Id = "destroy.alwaysdestroy",
         Type = DESTROY_RULE,
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_DESTROYLIST"],
         Description = L["SYSRULE_DESTROYLIST_DESC"],
         ScriptText = "IsInList(\"Destroy\")",
@@ -531,7 +531,7 @@ Rules.SystemRules =
     {
         Id = "destroy.knowntoys",
         Type = DESTROY_RULE,
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+        Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false },
         Name = L["SYSRULE_DESTROY_KNOWNTOYS"],
         Description = L["SYSRULE_DESTROY_KNOWNTOYS_DESC"],
         ScriptText = "IsSoulbound and IsToy and IsAlreadyKnown and IsUnsellable",

@@ -140,7 +140,7 @@ local function updateEquipmentSetGUIDs()
                 if EquipmentManager_GetLocationData then
                     local data = EquipmentManager_GetLocationData(eLocation)
                     player, bank, bags, slot, bag = data.isPlayer, data.isBank, data.isBags, data.slot, data.bag
-                elseif Addon.Systems.Info.IsClassicNext then
+                elseif Addon.Systems.Info.IsClassicCurrent then
                     -- No Void Storage on classic, uses UnpackLocation.
                     player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(eLocation)
                 else
@@ -206,7 +206,7 @@ local functionDefinitions =
     {
         Name = "IsInEquipmentSet",
         Documentation = L["HELP_ISINEQUIPMENTSET_TEXT"],
-        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Function = function(...)
             local setsToCheck = {...}
             local inSets = Functions:GetEquipmentSetsForGUID(GUID)
@@ -229,7 +229,7 @@ local functionDefinitions =
     {
         Name = "HasProfession",
         Documentation = L["HELP_HASPROFESSION"],
-        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+        Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
         Function = function(...)
             local profsToCheck = {...}
             local prof1Id, prof2Id = Functions:GetProfessionIds()

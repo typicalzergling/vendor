@@ -103,7 +103,6 @@ Addon.DefaultConfig.Rules =
     sell =
     {
         "sell.poor",
-        "sell.oldfood",
         "sell.knowntoys",
     },
 

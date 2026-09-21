@@ -20,7 +20,7 @@ local function registerATTExtension()
         {
             {
                 Name="CompletionPercentage",
-                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
                 Function=AttCompletionPercentage,
                 Documentation="Returns the same percentage of completion that is shown on tooltips (0 <= value <= 1)",
             },
@@ -32,7 +32,7 @@ local function registerATTExtension()
                 Id = "attusable",
                 Type = "Keep",
                 Name = "ATT - I still need it",
-                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+                Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
                 Description = "Checks if you are still under 100% for that item, and keep it",
                 Script = "ATT_CompletionPercentage() < 1",
                 Order = 1000,

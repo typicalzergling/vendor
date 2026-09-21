@@ -1,4 +1,4 @@
-## Interface: 120100, 120007, 110207
+## Interface: 16001
 ## Title: Vendor
 ## Notes: Vendors junk you don't want and auto-repairs.
 ## Version: 6.12.0

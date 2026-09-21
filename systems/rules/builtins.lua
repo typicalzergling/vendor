@@ -60,6 +60,7 @@ local EXPANSION  = {
     ["tww"] = LE_EXPANSION_WAR_WITHIN,
     ["thewarwithin"] = LE_EXPANSION_WAR_WITHIN,
     ["warwithin"] = LE_EXPANSION_WAR_WITHIN,
+    ["midnight"] = LE_EXPANSION_MIDNIGHT,
 }
 
 --*****************************************************************************
@@ -202,11 +203,7 @@ end
 
 local function getEnvironmentVariables()
     local RuleEnvironmentVariables = {}
-    if Addon.Systems.Info.IsRetailEra then
-        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_WAR_WITHIN
-    else
-        RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_MISTS_OF_PANDARIA
-    end
+    RuleEnvironmentVariables.CURRENT_EXPANSION = LE_EXPANSION_LEVEL_CURRENT                 -- Maps to whatever it is
     RuleEnvironmentVariables.CLASSIC = LE_EXPANSION_CLASSIC                                 -- 0
     RuleEnvironmentVariables.BURNING_CRUSADE = LE_EXPANSION_BURNING_CRUSADE                 -- 1
     RuleEnvironmentVariables.WRATH_OF_THE_LICH_KING = LE_EXPANSION_WRATH_OF_THE_LICH_KING   -- 2
@@ -218,6 +215,7 @@ local function getEnvironmentVariables()
     RuleEnvironmentVariables.SHADOWLANDS = LE_EXPANSION_SHADOWLANDS                         -- 8
     RuleEnvironmentVariables.DRAGONFLIGHT = LE_EXPANSION_DRAGONFLIGHT                       -- 9
     RuleEnvironmentVariables.WAR_WITHIN = LE_EXPANSION_WAR_WITHIN                           -- 10
+    RuleEnvironmentVariables.MIDNIGHT = LE_EXPANSION_MIDNIGHT                               -- 11
     RuleEnvironmentVariables.POOR = 0
     RuleEnvironmentVariables.COMMON = 1
     RuleEnvironmentVariables.UNCOMMON = 2
@@ -259,16 +257,34 @@ local RuleFunctions = {
 {
     Name = "PlayerLevel",
     Documentation = locale["HELP_PLAYERLEVEL"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
     Function = function()
         return tonumber(UnitLevel("player"))
     end,
 },
 
 {
+    Name = "PlayerMaxLevel",
+    Documentation = locale["HELP_PLAYERMAXLEVEL"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
+    Function = function()
+        return GetMaxLevelForLatestExpansion()
+    end,
+},
+
+{
+    Name = "IsPlayerMaxLevel",
+    Documentation = locale["HELP_ISPLAYERMAXLEVEL"],
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
+    Function = function()
+        return GetMaxLevelForLatestExpansion() == tonumber(UnitLevel("player"))
+    end,
+},
+
+{
     Name = "PlayerClass",
     Documentation = locale["HELP_PLAYERCLASS"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
     Function = function()
         local localizedClassName, englishClass = UnitClass("player")
         return englishClass --This is intentional to avoid passing back extra args
@@ -278,7 +294,7 @@ local RuleFunctions = {
 {
     Name = "PlayerClassId",
     Documentation = locale["HELP_PLAYERCLASSID"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
     Function = function()
         return select(3, UnitClass("player"))
     end,
@@ -287,7 +303,7 @@ local RuleFunctions = {
 {
     Name = "PlayerSpecialization",
     Documentation = locale["HELP_PLAYERSPECIALIZATION"],
-    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
     Function = function()
         return select(2, GetSpecializationInfo(GetSpecialization()))
     end,
@@ -296,7 +312,7 @@ local RuleFunctions = {
 {
     Name = "PlayerSpecializationId",
     Documentation = locale["HELP_PLAYERSPECIALIZATIONID"],
-    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
     Function = function()
         return select(1, GetSpecializationInfo(GetSpecialization()))
     end,
@@ -305,7 +321,7 @@ local RuleFunctions = {
 {
     Name = "PlayerItemLevel",
     Documentation = locale["HELP_PLAYERITEMLEVEL"],
-    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
     Function = function()
         local itemLevel = GetAverageItemLevel();
 	    return floor(itemLevel);
@@ -333,7 +349,7 @@ local RuleFunctions = {
 {
     Name = "TooltipContains",
     Documentation = locale["HELP_TOOLTIPCONTAINS_TEXT"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
     Function = function(...)
         local str, side, line = ...
         assert(str and type(str) == "string", "Text must be specified.")
@@ -371,7 +387,7 @@ local RuleFunctions = {
 {
     Name = "HasStat",
     Documentation = locale["HELP_HASSTAT_TEXT"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
     Function = function(...)
         local stats = {...};
         local itemStats = {};
@@ -405,7 +421,7 @@ local RuleFunctions = {
 {
     Name = "TotalItemCount",
     Documentation = locale["HELP_TOTALITEMCOUNT_TEXT"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
     Function = function(...)
         local includeBank, includeUses = ...
         -- Assuming if you care to know about the bank you also want reagent bank.
@@ -416,7 +432,7 @@ local RuleFunctions = {
 {
     Name = "WatermarkLevel",
     Documentation = locale["HELP_WATERMARKLEVEL_TEXT"],
-    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicNext=false },
+    Supported={ Retail=true, Classic=false, RetailNext=true, ClassicCurrent=false },
     Function = function(...)
         local forAccount = not not (...)
         local character, account = C_ItemUpgrade.GetHighWatermarkForItem(Link)
@@ -431,7 +447,7 @@ local RuleFunctions = {
 {
     Name = "CurrentEquippedLevel",
     Documentation = locale["HELP_CURRENTEQUIPPEDLEVEL_TEXT"],
-    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+    Supported={ Retail=true, Classic=true, RetailNext=true, ClassicCurrent=true },
     Function = function(...)
 
         -- Return 0 if this is a non-equippable item.

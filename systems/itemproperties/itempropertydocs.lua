@@ -106,6 +106,7 @@ The expansion pack ID to which this item belongs.
 > 8 = SL
 > 9 = DF
 > 10 = TWW
+> 11 = Midnight
 > 254 = Classic SoD
 
 ## Notes:

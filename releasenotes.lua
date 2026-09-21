@@ -2,6 +2,38 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.12.0 (September 21, 2026)",
+Notes = [[
+# Forever Beta support
+Added support for WoW Forever beta. It is possible some things do not work, this is a first cut at
+figuring out what rules and properties make sense for Forever, it will probably require some
+tuning but it should at least function.
+
+# Chat Lockdown fix take 2
+Additional lockdown chat checking to ensure Vendor doesn't try to write when in chat lockdown.
+]]
+},
+{
+Release = "6.11.6 (July 18, 2026)",
+Notes = [[
+# PTR 12.1 Support
+Added support for PTR 12.1. I found no new bugs from light testing. It is possible some lurk.
+
+# Midnight MaxLevel 0 Fix take 2.
+Blizzard made ALL maxItemLevel values 0. Updated the code to figure out the actual max ilvl based on current
+track level and the current ilvl, and verified that it correctly determines the max ilvl on both midnight
+season 1 and season 2 gear.
+
+# Added PlayerMaxLevel() and IsPlayerMaxLevel()
+These functions are now available to test if a given character is max level, so you can make rules specific
+to leveling or rules that only work on a max level character.
+
+# Chat Lockdown fix
+Chat should only attempt to write if chat is not locked down, which should prevent lua errors while trying
+to sell or repair in a raid or M+.
+]]
+},
+{
 Release = "6.11.5 (Feb 27, 2026)",
 Notes = [[
 # Midnight MaxLevel 0 fix

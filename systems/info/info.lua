@@ -14,14 +14,16 @@ local RETAIL_VERSION = 110200           -- 11.2 Live
 local RETAIL_VERSION_NEXT = 110200      -- 11.2 PTR (presently unused)
 local CLASSIC_VERSION = 11507           -- Classic SOD
 local CLASSIC_VERSION_NEXT = 50500      -- Classic MoP
+local FOREVER_VERSION = 16001           -- WoW Forever
 local tocVersion = {
     RetailNext = RETAIL_VERSION_NEXT,
     Retail = RETAIL_VERSION,
-    ClassicNext = CLASSIC_VERSION_NEXT,
+    ClassicCurrent = CLASSIC_VERSION_NEXT,
+    Forever = FOREVER_VERSION,
     Classic = CLASSIC_VERSION,
 }
 
-local releaseOrder = { "RetailNext", "Retail", "ClassicNext", "Classic" }
+local releaseOrder = { "RetailNext", "Retail", "ClassicCurrent", "Forever", "Classic" }
 
 -- System Def
 local Info = {}
@@ -31,9 +33,10 @@ local Info = {}
 -- So can do, for example: if releaseType < ReleaseType.Retail
 Info.ReleaseType = {
     Classic = 1,
-    ClassicNext = 2,
-    Retail = 3,
-    RetailNext = 4,
+    Forever = 2,
+    ClassicCurrent = 3,
+    Retail = 4,
+    RetailNext = 5,
 }
 
 function Info:GetDependencies()
@@ -55,14 +58,19 @@ local function populateBuildInfo()
         end
     end
 
+    -- The concepts we had of eras have been turned upside down by blizzard being all over the place with API compat
+    -- For now ClassicEra means we have to do old school tooltip handling and RetailEra means we do not.
+    -- Forever is based on a recent Retail version API-wise so it is considered retail era.
     Info.IsClassic = Info.Release == Info.ReleaseType.Classic
-    Info.IsClassicNext = Info.Release == Info.ReleaseType.ClassicNext
+    Info.IsForever = Info.Release == Info.ReleaseType.Forever
+    Info.IsClassicCurrent = Info.Release == Info.ReleaseType.ClassicCurrent
     Info.IsRetail = Info.Release == Info.ReleaseType.Retail
     Info.IsRetailNext = Info.Release == Info.ReleaseType.RetailNext
-    Info.IsRetailEra = Info.Release >= Info.ReleaseType.Retail
-    Info.IsClassicEra = Info.Release < Info.ReleaseType.Retail
+    Info.IsRetailEra = (Info.Release >= Info.ReleaseType.Retail) or (Info.Release == Info.ReleaseType.Forever)
+    Info.IsClassicEra = (Info.Release == Info.ReleaseType.Classic) or (Info.Release == Info.ReleaseType.ClassicCurrent)
     debugp("IsClassic = %s", tostring(Info.IsClassic))
-    debugp("IsClassicNext = %s", tostring(Info.IsClassicNext))
+    debugp("IsForever = %s", tostring(Info.IsForever))
+    debugp("IsClassicCurrent = %s", tostring(Info.IsClassicCurrent))
     debugp("IsRetail = %s", tostring(Info.IsRetail))
     debugp("IsRetailNext = %s", tostring(Info.IsRetailNext))
 end
@@ -119,7 +127,7 @@ end
 function Info:CheckReleaseForClient(release)
     if (release == Info.ReleaseType.RetailNext or release == Info.ReleaseType.Retail) then
         return self.IsRetailEra
-    elseif (release == Info.ReleaseType.Classic or release == Info.ReleaseType.ClassicNext) then
+    elseif (release == Info.ReleaseType.Classic or release == Info.ReleaseType.ClassicCurrent) then
         return self.IsClassicEra
     end
     return false
