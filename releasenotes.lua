@@ -2,7 +2,7 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
-Release = "6.12.0 (September 21, 2026)",
+Release = "6.12.0 (Sep 21, 2026)",
 Notes = [[
 # Forever Beta support
 Added support for WoW Forever beta. It is possible some things do not work, this is a first cut at
