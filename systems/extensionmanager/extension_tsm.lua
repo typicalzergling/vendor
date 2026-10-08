@@ -19,6 +19,17 @@ local function getCustomPriceValue(customPriceStr)
     return value
 end
 
+-- Checks if TSM has any value at all for this item.
+local function hasCustomPriceValue(customPriceStr)
+    assert(TSM_API and TSM_API.ToItemString and TSM_API.IsCustomPriceValid and TSM_API.GetCustomPriceValue)
+
+    if not TSM_API.IsCustomPriceValid(customPriceStr) then
+        error("Invalid custom price string for TSM")
+    end
+
+    return TSM_API.GetCustomPriceValue(customPriceStr, TSM_API.ToItemString(Link)) ~= nil
+end
+
 -- We factor in the auction house cut here so you can do a simple comparison of value to the vendor price.
 local function getMarketPriceValue()
     return getCustomPriceValue("dbmarket * .95")
@@ -91,6 +102,12 @@ local function registerTSMExtension()
                 Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
                 Function=getCustomPriceValue,
                 Documentation="Gets the TSM specified custom price value specified. You can specify any TSM price string! See http://support.tradeskillmaster.com for how price strings work.",
+            },
+            {
+                Name="HasCustomValue",
+                Supported={ Retail=true, Classic=true, RetailNext=true, ClassicNext=true },
+                Function=hasCustomPriceValue,
+                Documentation="Returns true if TSM returned a value for the specified price string on this item, false if it has no data.",
             },
             {
                 Name="MarketValue",
