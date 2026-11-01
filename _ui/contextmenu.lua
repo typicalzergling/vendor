@@ -8,14 +8,14 @@ local ITEM_SPACING = 4
 
 --[[ Create a line for the context menu ]]
 local function createSeparator(parent)
-    local frame = CreateFrame("Frame", nil, parent, "CommonUI_ContextMenu_Separator")
+    local frame = CreateFrame("Frame", nil, parent, "Vendor_CommonUI_ContextMenu_Separator")
     UI.Prepare(frame)
     return frame
 end
 
 --[[ Create a menu item for the context menu ]]
 local function createItem(parent, label)
-    local frame = CreateFrame("Button", nil, parent, "CommonUI_ContextMenu_Item")
+    local frame = CreateFrame("Button", nil, parent, "Vendor_CommonUI_ContextMenu_Item")
     UI.Prepare(frame)
     frame.text:SetText(locale:GetString(label) or label)
 

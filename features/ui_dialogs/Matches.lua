@@ -107,7 +107,7 @@ function MatchesTab:BuildMatchParameters(parameters)
     self.params = {}
     for _, param in ipairs(parameters) do
         Addon:Debug("editrule", "Add parameter :: %s = %s", param.Name, param.Value)
-        local frame = CreateFrame("Frame", nil, self.parameters, "EditRule_MatchParameter")
+        local frame = CreateFrame("Frame", nil, self.parameters, "Vendor_EditRule_MatchParameter")
         frame.value:SetText(formatValue(param.Value))
         frame.name:SetText(param.Key)
         frame.Layout = function(_, width)

@@ -277,13 +277,13 @@ function Vendor.CreateRuleParameter(parent, param)
     local impl
     if (param.Type == "numeric" or param.Type == "number") then
         impl = NumberParameter
-        frame = CreateFrame("Frame", nil, parent, "RuleParam_Number")
+        frame = CreateFrame("Frame", nil, parent, "Vendor_RuleParam_Number")
     elseif (param.Type == "boolean") then
         impl = BooleanParameter
-        frame = CreateFrame("Frame", nil, parent, "RuleParam_Boolean")
+        frame = CreateFrame("Frame", nil, parent, "Vendor_RuleParam_Boolean")
     elseif (param.Type == "string") then
         impl = StringParameter
-        frame = CreateFrame("Frame", nil, parent, "RuleParam_String")
+        frame = CreateFrame("Frame", nil, parent, "Vendor_RuleParam_String")
     end
 
     assert(frame, "Unknwon parameter type: " .. tostring(param.Type))

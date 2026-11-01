@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
-    <Button name="CommandButton" virtual="true">
+    <Button name="Vendor_CommandButton" virtual="true">
         <Scripts>        
             <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "CommandButton")</OnLoad>
         </Scripts>
@@ -16,9 +16,9 @@
         </Layers>
     </Button>
 
-    <Button virtual="true" name="CommonUI_CommandButton" inherits="CommandButton"/>
+    <Button virtual="true" name="Vendor_CommonUI_CommandButton" inherits="Vendor_CommandButton"/>
 
-    <CheckButton name="CommonUI_Chip" virtual="true">
+    <CheckButton name="Vendor_CommonUI_Chip" virtual="true">
         <Size x="120" y="24"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -32,11 +32,11 @@
         </Layers>
     </CheckButton>
 
-    <Frame virtual="true" name="CommonUI_Chips">
+    <Frame virtual="true" name="Vendor_CommonUI_Chips">
         <Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Chips")</OnLoad></Scripts>
     </Frame>
 
-    <Button name="CommonUI_IconButton" virtual="true">
+    <Button name="Vendor_CommonUI_IconButton" virtual="true">
         <Scripts>        
             <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "IconButton")</OnLoad>
         </Scripts>

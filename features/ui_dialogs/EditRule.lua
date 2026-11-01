@@ -665,9 +665,9 @@ end
 function EditRule:CreateParameterItem(model, parent)
     local frame
     if (self.editor:IsReadOnly()) then
-        frame = CreateFrame("Button", nil, parent, "Rule_ParamItem_ReadOnly")
+        frame = CreateFrame("Button", nil, parent, "Vendor_Rule_ParamItem_ReadOnly")
     else
-        frame = CreateFrame("Button", nil, parent, "Rule_ParamItem")
+        frame = CreateFrame("Button", nil, parent, "Vendor_Rule_ParamItem")
     end
 
     UI.Attach(frame, EditRuleParamItem)

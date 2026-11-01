@@ -173,7 +173,7 @@ end
 
 --[[ Adds a new chip to the list and setups a re-layout ]]
 function Chips:AddChip(id, text, help, checked)
-    local chip = CreateFrame("CheckButton", nil, self, "CommonUI_Chip")
+    local chip = CreateFrame("CheckButton", nil, self, "Vendor_CommonUI_Chip")
     UI.Attach(chip, Chip)
     chip:SetLabel(text)
     chip:SetTooltip(help)

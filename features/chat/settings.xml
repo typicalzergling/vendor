@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="settings.lua"/>
 
-    <Frame virtual="true" name="Chat_FrameSetting">
+    <Frame virtual="true" name="Vendor_Chat_FrameSetting">
         <Size x="1" y="100"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -90,7 +90,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Button inherits="CommonUI_Switch" parentArray="bits">
+            <Button inherits="Vendor_CommonUI_Switch" parentArray="bits">
                 <KeyValues>
                     <KeyValue key="bit" type="number" value="0x1"/>
                 </KeyValues>
@@ -99,7 +99,7 @@
                     <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.destroy" x="-8"/>
                 </Anchors>
             </Button>
-            <Button inherits="CommonUI_Switch" parentArray="bits">
+            <Button inherits="Vendor_CommonUI_Switch" parentArray="bits">
                 <KeyValues>
                     <KeyValue key="bit" type="number" value="0x4"/>
                 </KeyValues>
@@ -108,7 +108,7 @@
                     <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.repair" x="-8"/>
                 </Anchors>
             </Button>
-            <Button inherits="CommonUI_Switch" parentArray="bits">
+            <Button inherits="Vendor_CommonUI_Switch" parentArray="bits">
                 <KeyValues>
                     <KeyValue key="bit" type="number" value="0x2"/>
                 </KeyValues>
@@ -118,7 +118,7 @@
                     <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.merchant" x="-8"/>
                 </Anchors>
             </Button>
-            <Button inherits="CommonUI_Switch" parentArray="bits">
+            <Button inherits="Vendor_CommonUI_Switch" parentArray="bits">
                 <KeyValues>
                     <KeyValue key="bit" type="number" value="0x8"/>
                 </KeyValues>
@@ -127,7 +127,7 @@
                     <Anchor point="RIGHT" relativePoint="LEFT" relativeKey="$parent.list" x="-8"/>
                 </Anchors>
             </Button>
-            <Button inherits="CommonUI_Switch" parentArray="bits">
+            <Button inherits="Vendor_CommonUI_Switch" parentArray="bits">
                 <KeyValues>
                     <KeyValue key="bit" type="number" value="0x10"/>
                 </KeyValues>
@@ -137,7 +137,7 @@
                 </Anchors>
             </Button>
             <!--@debug@-->
-            <Button inherits="CommonUI_Switch" parentArray="bits">
+            <Button inherits="Vendor_CommonUI_Switch" parentArray="bits">
                 <KeyValues>
                     <KeyValue key="bit" type="number" value="0x10000"/>
                 </KeyValues>
@@ -150,6 +150,6 @@
         </Frames>
     </Frame>
 
-    <Frame virtual="true" name="Chat_Settings" hidden="true" />
+    <Frame virtual="true" name="Vendor_Chat_Settings" hidden="true" />
 
 </Ui>

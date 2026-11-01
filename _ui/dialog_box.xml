@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
-    <Frame name="CommonUI_CaptionBar" virtual="true">
+    <Frame name="Vendor_CommonUI_CaptionBar" virtual="true">
         <Size x="1" y="22"/>
         <Layers>
             <Layer level="BORDER">
@@ -69,7 +69,7 @@
         </Frames>
     </Frame>
 
-    <Frame name="DialogBox_Base" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" mixin="BackdropTemplateMixin" hidden="true">
+    <Frame name="Vendor_DialogBox_Base" virtual="true" enableMouse="true" frameStrata="HIGH" movable="true" toplevel="true" mixin="BackdropTemplateMixin" hidden="true">
         <KeyValues>
             <KeyValue key="_autoHookHandlers" value="true" type="boolean"/>
             <KeyValue key="BorderColor" value="DIALOG_BORDER_COLOR"/>
@@ -81,7 +81,7 @@
         <!-- The size reflects the dialog box minus the contents -->
         <Size x="40" y="104"/>
         <Frames>
-            <Frame parentKey="Titlebar" inherits="CommonUI_CaptionBar">
+            <Frame parentKey="Titlebar" inherits="Vendor_CommonUI_CaptionBar">
                 <Size x="1" y="22"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" x="1" y="-1"/>
@@ -103,7 +103,7 @@
         </Anchors>
     </Frame>
 
-    <Frame name="CommonUI_MessageBox" virtual="true" movable="true" enableMouse="true" frameStrata="DIALOG" hidden="true" toplevel="true">
+    <Frame name="Vendor_CommonUI_MessageBox" virtual="true" movable="true" enableMouse="true" frameStrata="DIALOG" hidden="true" toplevel="true">
         <KeyValues>
             <KeyValue key="BorderColor" value="DIALOG_BORDER_COLOR"/>
             <KeyValue key="BackgroundColor" value="DIALOG_BACK_COLOR"/>
@@ -112,7 +112,7 @@
             <KeyValue key="BorderThickness" value="6" type="number"/>
         </KeyValues>    
         <Frames>
-            <Frame parentKey="titlebar" inherits="CommonUI_CaptionBar">
+            <Frame parentKey="titlebar" inherits="Vendor_CommonUI_CaptionBar">
                 <Size x="1" y="22"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" x="1" y="-1"/>

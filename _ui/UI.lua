@@ -283,7 +283,7 @@ end
 ]]
 function UI.Dialog(caption, template, implementation, buttons, ...)
     local dialogName = 'vendor:dialog:' .. template .. ":" .. tostring(time())
-    local dialog = CreateFrame("Frame", dialogName, UIParent, "DialogBox_Base")
+    local dialog = CreateFrame("Frame", dialogName, UIParent, "Vendor_DialogBox_Base")
     local content = CreateFrame("Frame", nil, dialog, template)
 
     -- Initialize the dialog

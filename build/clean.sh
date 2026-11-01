@@ -8,7 +8,7 @@
 . "../.env"
 
 
-all_flavors="_retail_ _ptr_ _xptr_ _classic_ _classic_era_ _beta_"
+all_flavors="_retail_ _ptr_ _xptr_ _forever_ _classic_ _classic_era_ _beta_"
 
 flavors=$all_flavors
 
@@ -27,4 +27,3 @@ do
     # Remove and replace existing junction for main addon
     $JUNCTION_TOOL -d -nobanner "$addon_path"
 done
-

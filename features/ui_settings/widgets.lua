@@ -339,7 +339,7 @@ end
 
 --[[ Create a new settings list ]]
 function Settings.CreateList(parent)
-    local frame = CreateFrame("Frame", nil, (parent or UIParent), "CommonUI_List")
+    local frame = CreateFrame("Frame", nil, (parent or UIParent), "Vendor_CommonUI_List")
     Addon.CommonUI.UI.Attach(frame, SettingsList)
     return frame
 end

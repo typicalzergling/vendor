@@ -10,7 +10,9 @@ local L = Addon:GetLocale()
 local DEBUG_CHANNEL = "functions"
 local function debugp(...) Addon:Debug(DEBUG_CHANNEL, ...) end
 
-local DELAY_LOAD_TIME = 10
+local INITIAL_EQUIPMENT_SET_RETRY_DELAY = 1
+local MAX_EQUIPMENT_SET_RETRY_DELAY = 30
+local MAX_EQUIPMENT_SET_RETRY_DURATION = 120
 
 -- Feature Def
 local Functions = {}
@@ -112,26 +114,37 @@ end
 -- Bag update is called on login when the bags are ready.
 -- If we call GetItemLocations before this happens, we will get empty results
 local firstScanCompleted = false
+local firstBagUpdateSeen = false
+local equipmentSetRetryActive = false
+local equipmentSetRetryToken = 0
 
 -- Get all item guids and to which equipment set they belong.
 -- TODO: add bank check, this hsould be safe to update more frequently, as long as it isn't constant.
 -- if soemthing goes into inventory from bank, we need to update this list
-local function updateEquipmentSetGUIDs()
+local function updateEquipmentSetGUIDs(finalAttempt)
     debugp("Updating EquipmentSet GUIDs")
-    local itemSets = C_EquipmentSet.GetEquipmentSetIDs();
-    local startCount = #equipmentSetGUIDs
-    local added = false
-    equipmentSetGUIDs = {}
-    for _, setId in pairs(itemSets) do
+    local itemSets = C_EquipmentSet.GetEquipmentSetIDs()
+    local updatedGUIDs = {}
+    local hasEquipmentSets = #itemSets > 0
+    local pending = not hasEquipmentSets
+
+    for _, setId in ipairs(itemSets) do
 
         if macCrashCheck(setId) then
             -- macCrashCheck will warn the user that equipment sets will not be checked.
             -- Let them fix the bad data which will prevent other addons from crashing them.
+            equipmentSetGUIDs = {}
             firstScanCompleted = true
-            return
+            Addon:ClearItemResultCache()
+            return true, hasEquipmentSets
         end
 
-        local locations = C_EquipmentSet.GetItemLocations(setId) or {}
+        local locations = C_EquipmentSet.GetItemLocations(setId)
+        if not locations or not next(locations) then
+            pending = true
+            locations = locations or {}
+        end
+
         for _, eLocation in pairs(locations) do
             if eLocation > 1 then
                 -- Blizzard has changed this API signature three times. This should work if/when Blizzard back-ports GetLocationData.
@@ -148,7 +161,7 @@ local function updateEquipmentSetGUIDs()
                     player, bank, bags, _, slot, bag = EquipmentManager_UnpackLocation(eLocation)
                 end
 
-                itemLocation = nil
+                local itemLocation = nil
                 if player and bags then
                     -- In a bag
                     itemLocation = ItemLocation:CreateFromBagAndSlot(bag, slot)
@@ -159,46 +172,100 @@ local function updateEquipmentSetGUIDs()
 
                 if itemLocation then
                     local guid = C_Item.GetItemGUID(itemLocation)
-                    if not equipmentSetGUIDs[guid] then
-                        equipmentSetGUIDs[guid] = {}
+                    if guid and guid ~= "" then
+                        if not updatedGUIDs[guid] then
+                            updatedGUIDs[guid] = {}
+                        end
+                        table.insert(updatedGUIDs[guid], setId)
+                    else
+                        pending = true
                     end
-                    table.insert(equipmentSetGUIDs[guid], setId)
-                    added = true
                 end
             end
         end
     end
 
     if Addon.IsDebug then
-        for k, v in pairs(equipmentSetGUIDs) do
+        for k, v in pairs(updatedGUIDs) do
             debugp("GUID = "..tostring(k).."  in "..tostring(#v).." sets")
         end
     end
 
-    -- Check if first scan on reload is successful. This should be true
-    -- if there are no equipment sets or if there are and we added at least one.
-    if (itemSets == 0) or (startCount == 0 and added) then
-        debugp("Reload scan completed")
-        firstScanCompleted = true
+    if pending and not finalAttempt then
+        debugp("Equipment set data is still loading")
+        return false
+    end
+
+    equipmentSetGUIDs = updatedGUIDs
+    firstScanCompleted = not pending
+    if pending then
+        debugp("Equipment set retry limit reached; applying available data")
     end
     debugp("Equipment set changed, clearing cache")
     Addon:ClearItemResultCache()
+    return not pending, hasEquipmentSets
+end
+
+local delayLoadEquipmentSetInfo
+local startEquipmentSetRetry
+
+local function stopEquipmentSetRetry()
+    equipmentSetRetryActive = false
+    equipmentSetRetryToken = equipmentSetRetryToken + 1
+end
+
+delayLoadEquipmentSetInfo = function(delay, elapsed, retryToken)
+    C_Timer.After(delay, function()
+        if retryToken ~= equipmentSetRetryToken then return end
+        if firstScanCompleted then
+            stopEquipmentSetRetry()
+            return
+        end
+
+        elapsed = elapsed + delay
+        local finalAttempt = elapsed >= MAX_EQUIPMENT_SET_RETRY_DURATION
+        debugp("Equipment set data is not ready; retrying after %d seconds", elapsed)
+        local complete, hasEquipmentSets = updateEquipmentSetGUIDs(finalAttempt)
+
+        if complete then
+            stopEquipmentSetRetry()
+        elseif finalAttempt then
+            stopEquipmentSetRetry()
+            debugp("Equipment set data did not finish loading before the retry limit")
+            if hasEquipmentSets then
+                Addon:Output(
+                    Addon.Systems.Chat.MessageType.Console,
+                    L["EQUIPMENT_SET_DATA_WARNING"])
+            end
+        else
+            delayLoadEquipmentSetInfo(
+                math.min(delay * 2, MAX_EQUIPMENT_SET_RETRY_DELAY, MAX_EQUIPMENT_SET_RETRY_DURATION - elapsed),
+                elapsed,
+                retryToken)
+        end
+    end)
+end
+
+startEquipmentSetRetry = function()
+    if equipmentSetRetryActive then return end
+    equipmentSetRetryActive = true
+    equipmentSetRetryToken = equipmentSetRetryToken + 1
+    delayLoadEquipmentSetInfo(INITIAL_EQUIPMENT_SET_RETRY_DELAY, 0, equipmentSetRetryToken)
+end
+
+local function refreshEquipmentSetGUIDs()
+    firstScanCompleted = false
+    if updateEquipmentSetGUIDs() then
+        stopEquipmentSetRetry()
+    else
+        startEquipmentSetRetry()
+    end
 end
 
 local function firstEquipmentSetUpdate()
-    if firstScanCompleted then return end
-    updateEquipmentSetGUIDs()
-    firstScanCompleted = true
-end
-
--- This is a fallback in case equipmentSetGUID scan has not yet occurred due to various race conditions.
-local function delayLoadEquipmentSetInfo(delay)
-    C_Timer.After(delay, function() 
-        if not firstScanCompleted then
-            debugp("First scan was not completed, delay load fallback engaged")
-            updateEquipmentSetGUIDs()
-        end
-    end)
+    if firstScanCompleted or firstBagUpdateSeen then return end
+    firstBagUpdateSeen = true
+    refreshEquipmentSetGUIDs()
 end
 
 local functionDefinitions =
@@ -265,22 +332,18 @@ function Functions:OnInitialize()
     -- Equipment sets do not exist on classic.
     if not Addon.Systems.Info.IsClassic then
         -- We only need to get equipment set data whenever a set changes.
-        Addon:RegisterEvent("EQUIPMENT_SETS_CHANGED", updateEquipmentSetGUIDs)
+        Addon:RegisterEvent("EQUIPMENT_SETS_CHANGED", refreshEquipmentSetGUIDs)
 
         -- Equipment set items may be in the bank, so anytime we close the
         -- bank we need to regenerate the equipment set mappings.
-        Addon:RegisterEvent("BANKFRAME_CLOSED", updateEquipmentSetGUIDs)
+        Addon:RegisterEvent("BANKFRAME_CLOSED", refreshEquipmentSetGUIDs)
 
         -- Initial population of the equipment set data must happen on bag update
         Addon:RegisterEvent("BAG_UPDATE", firstEquipmentSetUpdate)
 
 
-        -- Try to do an initial update
-        updateEquipmentSetGUIDs()
-
-        -- Fallback in case there's a race between BAG_UPDATE and registering
-        -- for its event. Also on reloads we dont always call BAG_UPDATE.
-        delayLoadEquipmentSetInfo(DELAY_LOAD_TIME)
+        -- Try to do an initial update and retry while the saved data is unavailable.
+        refreshEquipmentSetGUIDs()
     end
 end
 

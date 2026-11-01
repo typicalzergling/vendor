@@ -168,7 +168,7 @@ function Addon.Features.Lists.ShowEditDialog(list, copy)
     Lists = Addon.Features.Lists
     ListType = Addon.Systems.Lists.ListType
 
-    local dialog = UI.Dialog("EditList", "Lists_Editor", EditListDialog, {
+    local dialog = UI.Dialog("EditList", "Vendor_Lists_Editor", EditListDialog, {
             { id="cancel", label = CANCEL, handler = "Hide", default = true },
             { id="save", label = SAVE, handler = "OnSave" },
             { id="delete", label = DELETE, handler = "OnDelete" },

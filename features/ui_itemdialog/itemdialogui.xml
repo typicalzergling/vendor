@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
 
-    <Frame name="ItemDialog_Content" virtual="true" hidden="true">
+    <Frame name="Vendor_ItemDialog_Content" virtual="true" hidden="true">
         <Size x="432" y="600"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -27,7 +27,7 @@
             </Layer>
         </Layers>
         <Frames>        
-			<Frame inherits="CommonUI_ItemLink" parentKey="item">
+			<Frame inherits="Vendor_CommonUI_ItemLink" parentKey="item">
 				<KeyValues>
 					<KeyValue key="AllowDrop" value="true" type="boolean"/>
 					<KeyValue key="OnItemChanged" value="OnItemChanged" type="string"/>
@@ -40,7 +40,7 @@
 					<Anchor point="BOTTOM" relativeKey="$parent.label"/>
 				</Anchors>
 			</Frame>
-            <Button inherits="CommonUI_Switch" parentKey="follow">
+            <Button inherits="Vendor_CommonUI_Switch" parentKey="follow">
                 <KeyValues>
                     <KeyValue key="bit" type="number" value="1"/>
                 </KeyValues>
@@ -50,7 +50,7 @@
                     <Anchor point="LEFT"/>
                 </Anchors>
             </Button>
-			<Frame parentKey="properties" inherits="CommonUI_List">
+			<Frame parentKey="properties" inherits="Vendor_CommonUI_List">
 				<Size x="10" y="100"/>
 				<KeyValues>
 					<KeyValue key="ItemSource" value="GetItemProperties" type="string"/>
@@ -68,7 +68,7 @@
         </Frames>
     </Frame>
 
-	<Button name="ItemDialog_ItemProperty" virtual="true" hidden="true">
+	<Button name="Vendor_ItemDialog_ItemProperty" virtual="true" hidden="true">
 		<KeyValues>
 			<KeyValue key="PaddingY" value="8" type="number"/>
 		</KeyValues>
@@ -107,7 +107,7 @@
 		</Layers>
 	</Button>
 
-	<Frame name="ItemDialog_ItemCategory" virtual="true" hidden="true">
+	<Frame name="Vendor_ItemDialog_ItemCategory" virtual="true" hidden="true">
         <Size x="1" y="20"/>
 		<KeyValues>
 			<KeyValue key="PaddingY" value="8" type="number"/>

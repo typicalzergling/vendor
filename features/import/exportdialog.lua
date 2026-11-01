@@ -55,7 +55,7 @@ function Addon.Features.Import:ShowExportDialog(caption, export)
     assert(type(caption) == "string", "Expected a string for the caption")
     assert(type(export) == "table", "The export object must be a table")
   
-    local dialog = UI.Dialog(caption, "Import_ExportDialog", ExportDialog, {
+    local dialog = UI.Dialog(caption, "Vendor_Import_ExportDialog", ExportDialog, {
             { id="close", label = L["EXPORT_CLOSE_BUTTON"], handler = "Hide" }
         }, export)
 

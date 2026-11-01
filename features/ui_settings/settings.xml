@@ -15,7 +15,7 @@
 
     <Frame name="Vendor_SettingsTab" virtual="true" hidden="true">
         <Frames>
-            <Frame parentKey="settings" inherits="CommonUI_CategoryList">
+            <Frame parentKey="settings" inherits="Vendor_CommonUI_CategoryList">
                 <KeyValues>
                     <KeyValue key="OnSelection" value="ShowSettings"/>
                 </KeyValues>

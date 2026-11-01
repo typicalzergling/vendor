@@ -382,7 +382,7 @@ function EditParamDialog.Create(mode, ruleEditor, param, currentValue)
         table.insert(buttons, { id="create", label = "EDITPARAM_CREATE_LABEL", handler = "OnCreate" })
     end
 
-    local dialog = UI.Dialog("EDIT_RULE_PARAMETER", "Rule_EditParamDialog", EditParamDialog,
+    local dialog = UI.Dialog("EDIT_RULE_PARAMETER", "Vendor_Rule_EditParamDialog", EditParamDialog,
             buttons, mode == DialogMode.VIEW, ruleEditor, param, currentValue)
 
     dialog:Show()

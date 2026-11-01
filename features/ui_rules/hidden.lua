@@ -127,7 +127,7 @@ end
 Addon.Features.Rules.HiddenRuleItem = HiddenRuleItem
 Addon.Features.Rules.HiddenRuleSettings = {
     Create = function(parent)
-        local frame = CreateFrame("Frame", nil, parent or UIParent, "Rules_HiddenSettings")
+        local frame = CreateFrame("Frame", nil, parent or UIParent, "Vendor_Rules_HiddenSettings")
         UI.Attach(frame, HiddenRuleSettings)
         return frame
     end

@@ -96,7 +96,7 @@ local ITEM_PROPERTIES = {
     UpgradeLevel            = { Default=0,      Hide=2,  Category="Upgrade",    Parent="IsUpgradeable",       Type="number",     Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false }, Rank=81 },
     UpgradeMax              = { Default=0,      Hide=2,  Category="Upgrade",    Parent="IsUpgradeable",       Type="number",     Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false }, Rank=82 },
     IsFullyUpgraded         = { Default=0,      Hide=2,  Category="Upgrade",    Parent="IsUpgradeable",       Type="number",     Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false }, Rank=83 },
-    MaxLevel                = { Default=0,      Hide=0,  Category="General",    Parent=nil,                   Type="number",     Supported={ Retail=true, Forever=false, Classic=true, RetailNext=true, ClassicCurrent=true }, Rank=21 },
+    MaxLevel                = { Default=0,      Hide=0,  Category="General",    Parent=nil,                   Type="number",     Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true }, Rank=21 },
 
     -- Transmog properties
     IsTransmogEquipment     = { Default=false,  Hide=0,  Category="Equipment",  Parent="IsEquipment",         Type="boolean",    Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true }, Rank=90 },

@@ -54,7 +54,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Button parentKey="enableFilter" inherits="CommonUI_CommandButton">
+            <Button parentKey="enableFilter" inherits="Vendor_CommonUI_CommandButton">
                 <KeyValues>
                     <KeyValue key="Label" value="BETTERBAGS_ENABLE"/>
                     <KeyValue key="Handler" value="OnEnableFilter"/>
@@ -63,7 +63,7 @@
                     <Anchor point="BOTTOMRIGHT"/>
                 </Anchors>
             </Button>
-            <Button parentKey="disableFilter" inherits="CommonUI_CommandButton">
+            <Button parentKey="disableFilter" inherits="Vendor_CommonUI_CommandButton">
                 <KeyValues>
                     <KeyValue key="Label" value="BETTERBAGS_DISABLE"/>
                     <KeyValue key="Handler" value="OnDisableFilter"/>
@@ -72,7 +72,7 @@
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.enableFilter" relativePoint="BOTTOMLEFT" x="-12" y="0"/>
                 </Anchors>
             </Button>
-            <Frame inherits="CommonUI_List" parentKey="rules">
+            <Frame inherits="Vendor_CommonUI_List" parentKey="rules">
                 <Size x="1" y="300"/>
                 <KeyValues>
                     <KeyValue key="ItemSource" value="GetRules"/>

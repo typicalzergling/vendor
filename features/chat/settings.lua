@@ -85,7 +85,7 @@ function ChatSettings:OnShow()
         function(chatFrame)
             local frame = self.frames[chatFrame:GetName()]
             if (not frame) then
-                frame = CreateFrame("Frame", nil, self.container, "Chat_FrameSetting")
+                frame = CreateFrame("Frame", nil, self.container, "Vendor_Chat_FrameSetting")
                 UI.Attach(frame, FrameSetting)
                 self.frames[chatFrame:GetName()] = frame
             end

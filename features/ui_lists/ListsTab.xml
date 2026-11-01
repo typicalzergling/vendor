@@ -16,7 +16,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Button inherits="CommonUI_CommandButton" parentKey="createList">
+            <Button inherits="Vendor_CommonUI_CommandButton" parentKey="createList">
                 <KeyValues>
                     <KeyValue key="Label" value="NEW_LIST"/>
                     <KeyValue key="Handler" value="CreateList"/>
@@ -25,7 +25,7 @@
                     <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="224"/>
                 </Anchors>
             </Button>
-            <Button inherits="CommonUI_CommandButton" parentKey="copyList">
+            <Button inherits="Vendor_CommonUI_CommandButton" parentKey="copyList">
                 <KeyValues>
                     <KeyValue key="Label" value="COPY_LIST"/>
                     <KeyValue key="Handler" value="CopyList"/>
@@ -35,7 +35,7 @@
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.createList" relativePoint="TOPRIGHT" y="6"/>
                 </Anchors>
             </Button>
-            <Button inherits="CommonUI_CommandButton" parentKey="editList">
+            <Button inherits="Vendor_CommonUI_CommandButton" parentKey="editList">
                 <KeyValues>
                     <KeyValue key="Label" value="EDIT_LIST"/>
                     <KeyValue key="Handler" value="EditList"/>
@@ -45,7 +45,7 @@
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.copyList" relativePoint="TOPRIGHT" y="6"/>
                 </Anchors>
             </Button>
-            <Frame parentKey="lists" inherits="CommonUI_CategoryList">
+            <Frame parentKey="lists" inherits="Vendor_CommonUI_CategoryList">
                 <KeyValues>
                     <KeyValue key="OnSelection" value="ShowList"/>
                     <KeyValue key="ItemClass" value="Features.Lists.ListItem"/>
@@ -56,7 +56,7 @@
                     <Anchor point="BOTTOMRIGHT" y="12" relativePoint="TOPRIGHT" relativeKey="$parent.editList"/>
                 </Anchors>
             </Frame>
-            <Frame parentKey="sort" inherits="CommonUI_Chips">
+            <Frame parentKey="sort" inherits="Vendor_CommonUI_Chips">
                 <Size x="400" y="18"/>
                 <KeyValues>
                     <KeyValue key="Handler" value="OnSortItems"/>
@@ -67,7 +67,7 @@
                     <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="8"/>
                 </Anchors>
             </Frame>
-            <Frame parentKey="items" inherits="CommonUI_List">
+            <Frame parentKey="items" inherits="Vendor_CommonUI_List">
                 <Size x="224" y="1"/>
                 <KeyValues>
                     <KeyValue key="EmptyText" value="RULES_DIALOG_EMPTY_LIST"/>
@@ -103,7 +103,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Button parentKey="delete" inherits="CommonUI_IconButton" hidden="true">
+            <Button parentKey="delete" inherits="Vendor_CommonUI_IconButton" hidden="true">
                 <Size x="20" y="20"/>
                 <KeyValues>
                     <KeyValue key="Icon" value="Interface/Addons/Vendor/assets/Cross"/>
@@ -117,7 +117,7 @@
         </Frames>
     </Frame>
 
-    <Frame name="Lists_Editor" virtual="true" hidden="true">
+    <Frame name="Vendor_Lists_Editor" virtual="true" hidden="true">
         <Size x="600" y="400"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -184,7 +184,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame parentKey="items" inherits="CommonUI_List">
+            <Frame parentKey="items" inherits="Vendor_CommonUI_List">
                 <KeyValues>
                     <KeyValue key="EmptyText" value="ITEMLIST_EMPTY"/>
                 </KeyValues>
@@ -196,7 +196,7 @@
                     <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "_ItemList")</OnLoad>
                 </Scripts>
             </Frame>
-            <EditBox inherits="CommonUI_Edit" parentKey="name">
+            <EditBox inherits="Vendor_CommonUI_Edit" parentKey="name">
                 <Size x="1" y="32"/>
                 <KeyValues>
                     <KeyValue key="Handler" value="OnNameChanged"/>
@@ -207,7 +207,7 @@
                     <Anchor point="TOPRIGHT" relativeKey="$parent.labelName" relativePoint="BOTTOMRIGHT" y="-4"/>
                 </Anchors>
             </EditBox>
-            <Frame inherits="CommonUI_TextArea" parentKey="description">
+            <Frame inherits="Vendor_CommonUI_TextArea" parentKey="description">
                 <Size x="1" y="72"/>
                 <KeyValues>
                     <KeyValue key="Handler" value="OnDescriptionChanged"/>
@@ -218,7 +218,7 @@
                     <Anchor point="TOPRIGHT" relativeKey="$parent.labelDescr" relativePoint="BOTTOMRIGHT" y="-4"/>
                 </Anchors>
             </Frame>
-            <EditBox inherits="CommonUI_Edit" parentKey="itemId">
+            <EditBox inherits="Vendor_CommonUI_Edit" parentKey="itemId">
                 <KeyValues>
                     <KeyValue key="Numeric" value="true" type="boolean"/>
                     <KeyValue key="Handler" value="OnItemIdChanged"/>
@@ -229,7 +229,7 @@
                     <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelItemId" y="-4"/>
                 </Anchors>
             </EditBox>
-            <Button inherits="CommonUI_CommandButton" parentKey="addId">
+            <Button inherits="Vendor_CommonUI_CommandButton" parentKey="addId">
                 <KeyValues>
                     <KeyValue key="Handler" value="InsertById"/>
                     <KeyValue key="Label" value="LISTDIALOG_ADDBYID"/>

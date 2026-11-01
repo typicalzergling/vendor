@@ -2,6 +2,25 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.14.0 (Nov 1, 2026)",
+Notes = [[
+Rule tweaks for Forever.
+]]
+},
+{
+Release = "6.13.0 (Oct 25, 2026)",
+Notes = [[
+# Midnight support
+Updated the retail TOC for the current Midnight client.
+
+# Equipment set loading
+Added retries for delayed equipment set data and a warning when item locations or GUIDs remain unavailable.
+
+# XML template name collisions
+Prefixed XML template names with Vendor_ to reduce collisions with other addons.
+]]
+},
+{
 Release = "6.12.0 (Sep 21, 2026)",
 Notes = [[
 # Forever Beta support

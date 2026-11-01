@@ -931,9 +931,22 @@ fi
 # Set the contents of the addon zipfile.
 contents="$package"
 
+# Reset the audit log of lines stripped out by the debug-statement filter.
+# This file lives next to $pkgdir so it is never packaged.
+removed_lines_log="$releasedir/removed-lines.txt"
+rm -f "$removed_lines_log"
+
 ###
 ### Create filters for pass-through processing of files to replace repository keywords.
 ###
+
+# Records a line removed by the packaging filter so the stripped content can
+# be audited later. Usage: log_removed_line <file> <line number> <line text>
+log_removed_line() {
+	if [ -n "$removed_lines_log" ]; then
+		printf '%s:%s: %s\n' "$1" "$2" "$3" >> "$removed_lines_log"
+	fi
+}
 
 # Filter for simple repository keyword replacement.
 vcs_filter() {
@@ -1128,11 +1141,69 @@ lua_filter() {
 }
 
 debug_statement_filter() {
-	sed \
-		-e "s/^\s*Addon\:Debug.*$//g" \
-		-e "s/^\s*local function debugp(.*$//g" \
-		-e "s/^\s*debugp(.*$//g" \
-		-e "s/^\s*assert(.*$//g"
+	_dsf_file=$1
+	_dsf_lineno=0
+	_dsf_eof=
+	_dsf_stripping_assert=
+	_dsf_assert_depth=0
+	_dsf_assert_quote=
+	_dsf_assert_escape=
+	while [ -z "$_dsf_eof" ]; do
+		IFS='' read -r _dsf_line || _dsf_eof="true"
+		# Strip any trailing CR character.
+		_dsf_line=${_dsf_line%$carriage_return}
+		_dsf_lineno=$(( _dsf_lineno + 1 ))
+		if [ -n "$_dsf_stripping_assert" ] \
+			|| [[ "$_dsf_line" =~ ^[[:space:]]*Addon:Debug ]] \
+			|| [[ "$_dsf_line" =~ ^[[:space:]]*local[[:space:]]+function[[:space:]]+debugp\( ]] \
+			|| [[ "$_dsf_line" =~ ^[[:space:]]*debugp\( ]] \
+			|| [[ "$_dsf_line" =~ ^[[:space:]]*assert\( ]]; then
+			log_removed_line "$_dsf_file" "$_dsf_lineno" "$_dsf_line"
+			if [ -n "$_dsf_stripping_assert" ] \
+				|| [[ "$_dsf_line" =~ ^[[:space:]]*assert\( ]]; then
+				_dsf_index=0
+				while [ "$_dsf_index" -lt "${#_dsf_line}" ]; do
+					_dsf_character=${_dsf_line:$_dsf_index:1}
+					_dsf_next_index=$(( _dsf_index + 1 ))
+					_dsf_next_character=${_dsf_line:$_dsf_next_index:1}
+					if [ -n "$_dsf_assert_quote" ]; then
+						if [ -n "$_dsf_assert_escape" ]; then
+							_dsf_assert_escape=
+						elif [ "$_dsf_character" = "\\" ]; then
+							_dsf_assert_escape=true
+						elif [ "$_dsf_character" = "$_dsf_assert_quote" ]; then
+							_dsf_assert_quote=
+						fi
+					elif [ "$_dsf_character" = "'" ] \
+						|| [ "$_dsf_character" = '"' ]; then
+						_dsf_assert_quote=$_dsf_character
+					elif [ "$_dsf_character" = "-" ] \
+						&& [ "$_dsf_next_character" = "-" ]; then
+						break
+					elif [ "$_dsf_character" = "(" ]; then
+						_dsf_assert_depth=$(( _dsf_assert_depth + 1 ))
+					elif [ "$_dsf_character" = ")" ]; then
+						_dsf_assert_depth=$(( _dsf_assert_depth - 1 ))
+					fi
+					_dsf_index=$(( _dsf_index + 1 ))
+				done
+				if [ "$_dsf_assert_depth" -gt 0 ]; then
+					_dsf_stripping_assert=true
+				else
+					_dsf_stripping_assert=
+					_dsf_assert_depth=0
+					_dsf_assert_quote=
+					_dsf_assert_escape=
+				fi
+			fi
+			_dsf_line=
+		fi
+		if [ -n "$_dsf_eof" ]; then
+			echo -n "$_dsf_line"
+		else
+			echo "$_dsf_line"
+		fi
+	done
 }
 
 toc_filter() {
@@ -1395,7 +1466,7 @@ copy_directory_tree() {
 							[ -n "$_cdt_do_not_package" ] && _cdt_filters+="|do_not_package_filter lua"
 							[ -n "$_cdt_classic" ] && _cdt_filters+="|lua_filter retail"
 							[ -n "$_cdt_localization" ] && _cdt_filters+="|localization_filter"
-							_cdt_filters+="|debug_statement_filter"
+							_cdt_filters+="|debug_statement_filter \"$_cdt_check_file\""
 							;;
 						*.xml)
 							[ -n "$_cdt_alpha" ] && _cdt_filters+="|xml_filter alpha"
@@ -2403,6 +2474,12 @@ if [ -z "$skip_zipfile" ]; then
 fi
 
 # All done.
+
+if [ -s "$removed_lines_log" ]; then
+	echo "Packager stripped $(wc -l < "$removed_lines_log" | tr -d '[:space:]') line(s) from this build (debug statements / assertions)."
+	echo "Review: $removed_lines_log"
+	echo
+fi
 
 echo
 echo "Packaging complete."

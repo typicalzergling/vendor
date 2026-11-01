@@ -15,7 +15,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Frame inherits="CommonUI_ItemLink" parentKey="item">
+			<Frame inherits="Vendor_CommonUI_ItemLink" parentKey="item">
 				<KeyValues>
 					<KeyValue key="AllowDrop" value="true" type="boolean"/>
 					<KeyValue key="OnItemChanged" value="ShowItemProperties" type="string"/>
@@ -28,7 +28,7 @@
 					<Anchor point="BOTTOM" relativeKey="$parent.label"/>
 				</Anchors>
 			</Frame>
-			<Frame parentKey="properties" inherits="CommonUI_List">
+			<Frame parentKey="properties" inherits="Vendor_CommonUI_List">
 				<Size x="10" y="100"/>
 				<KeyValues>
 					<KeyValue key="ItemSource" value="GetItemProperties" type="string"/>
@@ -44,7 +44,7 @@
 		</Frames>
     </Frame>
 
-	<Frame name="EditRule_HelpEntry" virtual="true">
+	<Frame name="Vendor_EditRule_HelpEntry" virtual="true">
 		<Frames>
 			<Frame parentKey="header">
 				<KeyValues>
@@ -143,7 +143,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<EditBox parentKey="filter" inherits="CommonUI_Edit">
+			<EditBox parentKey="filter" inherits="Vendor_CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_FILTER_HELPTEXT" type="string"/>
 					<KeyValue key="Handler" value="ApplyFilters" type="string"/>					
@@ -154,7 +154,7 @@
 					<Anchor point="RIGHT"/>
 				</Anchors>
 			</EditBox>
-            <Frame parentKey="filters" inherits="CommonUI_Chips">
+            <Frame parentKey="filters" inherits="Vendor_CommonUI_Chips">
                 <KeyValues>
                     <KeyValue key="Handler" value="ApplyFilters"/>
                 </KeyValues>
@@ -163,12 +163,12 @@
                     <Anchor point="RIGHT"/>
                 </Anchors>
             </Frame>
-			<Frame parentKey="items" inherits="CommonUI_List">
+			<Frame parentKey="items" inherits="Vendor_CommonUI_List">
 				<Size x="10" y="100"/>
 				<KeyValues>
 					<KeyValue key="ItemSource" value="GetHelpItems" type="string"/>
 					<KeyValue key="ItemClass" value="Features.EditRules.HelpItem"/>
-					<KeyValue key="ItemTemplate" value="EditRule_HelpEntry"/>
+					<KeyValue key="ItemTemplate" value="Vendor_EditRule_HelpEntry"/>
 					<KeyValue key="EmptyText" value="RULEHELP_NO_MATCHES" type="string"/>
 				</KeyValues>
 				<Anchors>

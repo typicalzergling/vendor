@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
-    <Frame name="EditRule_MatchParameter" virtual="true" hidden="true">
+    <Frame name="Vendor_EditRule_MatchParameter" virtual="true" hidden="true">
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="value" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontNormal" wordwrap="true">
@@ -30,7 +30,7 @@
 		</Layers>
     </Frame>
 
-	<Frame name="EditRule_MatchItem" virtual="true" hidden="true">
+	<Frame name="Vendor_EditRule_MatchItem" virtual="true" hidden="true">
 		<Size x="1" y="22"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -76,11 +76,11 @@
 					<Anchor point="TOPRIGHT" relativeKey="$parent.label" relativePoint="BOTTOMRIGHT" y="-12"/>
 				</Anchors>
             </Frame>
-			<Frame parentKey="matches" inherits="CommonUI_List">
+			<Frame parentKey="matches" inherits="Vendor_CommonUI_List">
 				<Size x="10" y="100"/>
 				<KeyValues>
 					<KeyValue key="ItemSource" value="GetMatches"/>
-					<KeyValue key="ItemTemplate" value="EditRule_MatchItem"/>
+					<KeyValue key="ItemTemplate" value="Vendor_EditRule_MatchItem"/>
 					<KeyValue key="ItemClass" value="Features.Dialogs.MatchItem"/>
 					<KeyValue key="EmptyText" value="EDITRULE_NO_MATCHES"/>
 				</KeyValues>

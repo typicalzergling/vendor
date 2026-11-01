@@ -115,10 +115,10 @@ function ItemDialog:CreateItemForModel(model)
     end
 
     if model.Header then
-        return Mixin(CreateFrame("Frame", nil, self.properties, "ItemDialog_ItemCategory"), Addon.Features.ItemDialog.HeaderItem)        
+        return Mixin(CreateFrame("Frame", nil, self.properties, "Vendor_ItemDialog_ItemCategory"), Addon.Features.ItemDialog.HeaderItem)
     end
 
-    return Mixin(CreateFrame("Button", nil, self.properties, "ItemDialog_ItemProperty"), Addon.Features.ItemDialog.PropertyItem)
+    return Mixin(CreateFrame("Button", nil, self.properties, "Vendor_ItemDialog_ItemProperty"), Addon.Features.ItemDialog.PropertyItem)
 end
 
 Addon.Features.ItemDialog = ItemDialog

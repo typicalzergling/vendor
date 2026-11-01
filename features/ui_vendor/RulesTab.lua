@@ -113,7 +113,7 @@ end
 
 --[[ Create an item for the specified rule ]]
 function RulesTab:CreateRuleItem(model)
-	local frame = CreateFrame("CheckButton", nil, self, "RuleItem")
+	local frame = CreateFrame("CheckButton", nil, self, "Vendor_RuleItem")
 	Addon.AttachImplementation(frame, Vendor.RuleItem, true)
 	Addon.CommonUI.DialogBox.Colorize(frame)
 	return frame

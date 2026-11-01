@@ -16,7 +16,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Button inherits="CommonUI_CommandButton" parentKey="createList">
+            <Button inherits="Vendor_CommonUI_CommandButton" parentKey="createList">
                 <KeyValues>
                     <KeyValue key="Label" value="Create List"/>
                     <KeyValue key="Handler" value="OnCreateList"/>
@@ -25,7 +25,7 @@
                     <Anchor point="BOTTOMLEFT"/>
                 </Anchors>
             </Button>
-            <Frame parentKey="ruleType" inherits="CommonUI_List">
+            <Frame parentKey="ruleType" inherits="Vendor_CommonUI_List">
                 <Size x="224" y="1"/>
                 <KeyValues>
                     <KeyValue key="ItemSource" value="GetCategories"/>
@@ -36,7 +36,7 @@
                     <Anchor point="BOTTOMLEFT" y="12" relativePoint="TOPLEFT" relativeKey="$parent.createList"/>
                 </Anchors>
             </Frame>
-            <Frame parentKey="rules" inherits="CommonUI_List">
+            <Frame parentKey="rules" inherits="Vendor_CommonUI_List">
                 <Size x="224" y="1"/>
                 <KeyValues>
                     <KeyValue key="ItemSource" value="GetRules"/>
@@ -50,7 +50,7 @@
         </Frames>
     </Frame>
 
-	<Button name="HistoryItem" virtual="true" mixin="ItemMixin">
+	<Button name="Vendor_HistoryItem" virtual="true" mixin="ItemMixin">
 		<Size x="20" y="18"/>
 		<Layers>
             <Layer level="BACKGROUND">
@@ -149,7 +149,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <EditBox parentKey="search" inherits="CommonUI_Edit">
+            <EditBox parentKey="search" inherits="Vendor_CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="OPTIONS_AUDIT_SEARCH_PLACEHOLDER"/>
 					<KeyValue key="Handler" value="ApplyFilter"/>
@@ -160,7 +160,7 @@
                     <Anchor point="RIGHT"/>
                 </Anchors>
             </EditBox>
-            <Frame parentKey="filters" inherits="CommonUI_Chips">
+            <Frame parentKey="filters" inherits="Vendor_CommonUI_Chips">
                 <KeyValues>
                     <KeyValue key="Handler" value="ApplyFilter"/>
                 </KeyValues>
@@ -169,10 +169,10 @@
                     <Anchor point="RIGHT"/>
                 </Anchors>
             </Frame>
-            <Frame parentKey="items" inherits="CommonUI_List">
+            <Frame parentKey="items" inherits="Vendor_CommonUI_List">
                 <KeyValues>
                     <KeyValue key="ItemSource" value="GetHistory"/>
-                    <KeyValue key="ItemTemplate" value="HistoryItem"/>
+                    <KeyValue key="ItemTemplate" value="Vendor_HistoryItem"/>
                     <KeyValue key="ItemClass" value="Features.Vendor.HistoryItem"/>
                     <KeyValue key="OnViewCreated" value="CalculateTotal"/>
                     <KeyValue key="EmptyText" value="OPTIONS_AUDIT_EMPTY"/>
@@ -225,7 +225,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <EditBox inherits="CommonUI_Url" parentKey="url">
+            <EditBox inherits="Vendor_CommonUI_Url" parentKey="url">
                 <Size x="100" y="24"/>
                 <KeyValues>
                     <KeyValue key="Url" value="VENDOR_URL"/>
@@ -236,7 +236,7 @@
                     <Anchor point="RIGHT"/>
                 </Anchors>
             </EditBox>
-            <EditBox inherits="CommonUI_Url" parentKey="tutorial">
+            <EditBox inherits="Vendor_CommonUI_Url" parentKey="tutorial">
                 <Size x="100" y="24"/>
                 <KeyValues>
                     <KeyValue key="Url" value="VENDOR_DISCORD"/>
@@ -247,7 +247,7 @@
                     <Anchor point="RIGHT"/>
                 </Anchors>
             </EditBox>
-            <EditBox inherits="CommonUI_Url" parentKey="version">
+            <EditBox inherits="Vendor_CommonUI_Url" parentKey="version">
                 <Size x="100" y="24"/>
                 <KeyValues>
                     <KeyValue key="Color" value="SECONDARY_TEXT"/>
@@ -257,7 +257,7 @@
                     <Anchor point="RIGHT"/>
                 </Anchors>
             </EditBox>
-            <Frame parentKey="releases" inherits="CommonUI_CategoryList">
+            <Frame parentKey="releases" inherits="Vendor_CommonUI_CategoryList">
                 <KeyValues>
                     <KeyValue key="OnSelection" value="ShowRelease"/>
                 </KeyValues>
@@ -267,7 +267,7 @@
                     <Anchor point="BOTTOMLEFT"/>
                 </Anchors>
             </Frame>
-            <Frame parentKey="notes" inherits="CommonUI_Markdown">
+            <Frame parentKey="notes" inherits="Vendor_CommonUI_Markdown">
                 <KeyValues>
                     <KeyValue key="Padding" value="8" type="number"/>
                 </KeyValues>
@@ -282,7 +282,7 @@
     <Frame name="Vendor_MainDialog" virtual="true" hidden="true">
         <Size x="796" y="550"/>
         <Frames>
-            <Frame parentKey="tabs" inherits="CommonUI_TabControl">
+            <Frame parentKey="tabs" inherits="Vendor_CommonUI_TabControl">
                 <Anchors>
                     <Anchor point="TOPLEFT"/>
                     <Anchor point="BOTTOMRIGHT"/>

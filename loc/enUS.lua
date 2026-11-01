@@ -382,6 +382,10 @@ SYSRULE_SELL_EPICGEAR = "Epic Gear",
 SYSRULE_SELL_EPICGEAR_DESC = "Matches Soulbound "..ITEM_QUALITY_COLORS[4].hex.."Epic"..FONT_COLOR_CODE_CLOSE.." equipment with a max upgradeable item level less than the specified item level. We assume you will want to sell BoE Epics on the auction house so BoEs are excluded.",
 SYSRULE_SELL_KNOWNTOYS = "Known Toys",
 SYSRULE_SELL_KNOWNTOYS_DESC = "Matches any already-known toys that are Soulbound.",
+SYSRULE_SELL_OUTLEVELEDGEAR = "Outleveled Gear",
+SYSRULE_SELL_OUTLEVELEDGEAR_DESC = "Matches soulbound equipment whose item level is below the currently equipped level for its slot.",
+SYSRULE_SELL_UNUSABLEGEAR = "Unusable Soulbound Gear",
+SYSRULE_SELL_UNUSABLEGEAR_DESC = "Matches soulbound equipment your character cannot equip when you meet its required level.",
 SYSRULE_DESTROY_KNOWNTOYS = "Known Toys (Unsellable)",
 SYSRULE_DESTROY_KNOWNTOYS_DESC = "Matches any already-known toys that are Soulbound which have no value",
 SYSRULE_SELL_OLDFOOD = "Low-Level Food",
@@ -449,6 +453,7 @@ DATA_MIGRATION_ERROR = YELLOW_FONT_COLOR_CODE.. "Data migration error. Migration
 
 -- Mac client crash for equipment sets
 MAC_CLIENT_CRASH_WARNING = "WARNING: Your equipment set named '%s' has invalid items in it. This will cause a crash on a Mac client if that item location is queried. Vendor will not check this equipment set for rules and you should delete this equipment set to remove the invalid item.",
+EQUIPMENT_SET_DATA_WARNING = "WARNING: Vendor could not load item location or GUID data for one or more equipment sets. Equipment-set rules may not identify matching items correctly.",
 
 -- Extensions Loc
 
@@ -1098,5 +1103,3 @@ EXT_AUCTIONATOR_RULEPARAM_MINAUCTIONRATIO = "Minimum Value Ratio",
 }) -- END OF LOCALIZATION TABLE
 
 -- Help strings for documentation of rules. These are separate due to the multi-line strings, which doesn't play nice with tables.
-
-

@@ -279,7 +279,7 @@ function DialogBox:SetButtons(buttons)
 
     self.__buttons = {}
     for _, button in pairs(buttons) do
-        local frame = CreateFrame("Button", nil, self, "CommandButton")
+        local frame = CreateFrame("Button", nil, self, "Vendor_CommandButton")
         frame:SetLabel(button.label)
         frame.buttonId = button.id
         frame.near = button.near

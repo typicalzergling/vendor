@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">	
 
-    <Button name="CommonUI_Tab" virtual="true">
+    <Button name="Vendor_CommonUI_Tab" virtual="true">
         <Size x="64" y="24"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -14,7 +14,7 @@
         </Layers>
     </Button>
 
-    <Frame name="CommonUI_TabControl" virtual="true">
+    <Frame name="Vendor_CommonUI_TabControl" virtual="true">
         <Frames>
             <Frame parentKey="frames">
                 <Anchors>

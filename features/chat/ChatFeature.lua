@@ -21,7 +21,7 @@ function ChatFeature:OnInitialize()
         "CHAT_SETTING_NAME",
         "CHAT_SETTING_DESCR",
         function(parent)
-            local frame = CreateFrame("Frame", nil, parent or UIParent, "Chat_Settings")
+            local frame = CreateFrame("Frame", nil, parent or UIParent, "Vendor_Chat_Settings")
             Addon.CommonUI.UI.Attach(frame, Addon.Features.Chat.ChatSettings)
             return frame
         end, nil, false)

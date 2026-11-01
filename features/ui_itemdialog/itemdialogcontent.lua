@@ -106,7 +106,7 @@ end
 --[[ Show the export dialog with the contents provided ]]
 function Addon.Features.ItemDialog:ShowDialog()
     if not self.dialog then
-        self.dialog = UI.Dialog("ITEMDIALOG_CAPTION", "ItemDialog_Content", ItemDialogContent, {
+        self.dialog = UI.Dialog("ITEMDIALOG_CAPTION", "Vendor_ItemDialog_Content", ItemDialogContent, {
             { id="close", label = CLOSE, handler = "Hide" },
         })
     end

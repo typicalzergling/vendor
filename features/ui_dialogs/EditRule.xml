@@ -79,7 +79,7 @@
 		</Layers>
 
         <Frames>
-            <Frame parentKey="tabs" inherits="CommonUI_TabControl">
+            <Frame parentKey="tabs" inherits="Vendor_CommonUI_TabControl">
                 <Anchors>
                     <Anchor point="TOPRIGHT"/>
                     <Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.labelName" x="8"/>
@@ -91,7 +91,7 @@
 				Rule Parameters
 			-->
 
-			<EditBox parentKey="name" inherits="CommonUI_Edit">
+			<EditBox parentKey="name" inherits="Vendor_CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_NAME_HELPTEXT" type="string"/>
 					<KeyValue key="Handler" value="OnNameChanged" type="string"/>
@@ -103,7 +103,7 @@
 				</Anchors>
 			</EditBox>
 
-			<Frame parentKey="description"  inherits="CommonUI_TextArea">
+			<Frame parentKey="description"  inherits="Vendor_CommonUI_TextArea">
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_DESCR_HELPTEXT" type="string"/>
 					<KeyValue key="Handler" value="OnDescriptionChanged" type="string"/>
@@ -115,7 +115,7 @@
 				</Anchors>
 			</Frame>
 
-			<Frame parentKey="script"  inherits="CommonUI_TextArea">
+			<Frame parentKey="script"  inherits="Vendor_CommonUI_TextArea">
 				<Size x="1" y="120"/>
 				<KeyValues>
 					<KeyValue key="Placeholder" value="EDITRULE_SCRIPT_HELPTEXT" type="string"/>
@@ -127,7 +127,7 @@
 				</Anchors>
 			</Frame>
 
-			<Frame inherits="CommonUI_List" parentKey="paramList">
+			<Frame inherits="Vendor_CommonUI_List" parentKey="paramList">
 				<KeyValues>
 					<KeyValue key="EmptyText" value="EDITRULE_NOPARAMS_TEXT"/>
 					<KeyValue key="ItemSource" value="GetParameters"/>
@@ -140,7 +140,7 @@
 				</Anchors>
 			</Frame>
 
-			<Button inherits="CommonUI_CommandButton" parentKey="addParam">
+			<Button inherits="Vendor_CommonUI_CommandButton" parentKey="addParam">
 				<Size x="100" y="20"/>
 				<KeyValues>
 					<KeyValue key="Label" value="EDITRULE_ADDPARAM_LABEL"/>
@@ -150,7 +150,7 @@
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.paramList" x="0" y="-4"/>
 				</Anchors>
 			</Button>
-			<Button inherits="CommonUI_CommandButton" parentKey="viewParam" hidden="true">
+			<Button inherits="Vendor_CommonUI_CommandButton" parentKey="viewParam" hidden="true">
 				<Size x="100" y="20"/>
 				<KeyValues>
 					<KeyValue key="Label" value="EDITRULE_VIEWPARAM_LABEL"/>
@@ -160,7 +160,7 @@
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.paramList" x="0" y="-4"/>
 				</Anchors>
 			</Button>
-			<Button inherits="CommonUI_CommandButton" parentKey="delParam">
+			<Button inherits="Vendor_CommonUI_CommandButton" parentKey="delParam">
 				<Size x="100" y="20"/>
 				<KeyValues>
 					<KeyValue key="Label" value="EDITRULE_DELPARAM_LABEL"/>
@@ -170,7 +170,7 @@
 					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeKey="$parent.addParam" x="-4"/>
 				</Anchors>
 			</Button>
-			<Button inherits="CommonUI_CommandButton" parentKey="editParam">
+			<Button inherits="Vendor_CommonUI_CommandButton" parentKey="editParam">
 				<Size x="100" y="20"/>
 				<KeyValues>
 					<KeyValue key="Label" value="EDITRULE_EDITPARAM_LABEL"/>
@@ -181,7 +181,7 @@
 				</Anchors>
 			</Button>
 
-			<Frame inherits="CommonUI_Chips" parentKey="ruleType">
+			<Frame inherits="Vendor_CommonUI_Chips" parentKey="ruleType">
 				<KeyValues>
 					<KeyValue key="IsExclusive" value="true" type="boolean"/>
 					<KeyValue key="OneSize" value="true" type="boolean"/>
@@ -203,7 +203,7 @@
         </Frames>
     </Frame>
 
-	<Button name="Rule_ParamItem" virtual="true">
+	<Button name="Vendor_Rule_ParamItem" virtual="true">
 		<Size x="1" y="20"/>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -240,13 +240,13 @@
 		</Layers>
 	</Button>
 
-	<Button name="Rule_ParamItem_ReadOnly" virtual="true" inherits="Rule_ParamItem">
+	<Button name="Vendor_Rule_ParamItem_ReadOnly" virtual="true" inherits="Vendor_Rule_ParamItem">
 		<KeyValues>
 			<KeyValue key="ReadOnly" value="true" type="boolean"/>
 		</KeyValues>
 	</Button>
 
-	<Frame name="Rule_EditParamDialog" virtual="true">
+	<Frame name="Vendor_Rule_EditParamDialog" virtual="true">
 		<Size x="280" y="280"/>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -303,7 +303,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<EditBox parentKey="name" inherits="CommonUI_Edit">
+			<EditBox parentKey="name" inherits="Vendor_CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnNameChanged"/>
 				</KeyValues>
@@ -312,7 +312,7 @@
 					<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.labelKey" relativePoint="TOPRIGHT" y="12"/>
 				</Anchors>
 			</EditBox>
-			<EditBox parentKey="key" inherits="CommonUI_Edit">
+			<EditBox parentKey="key" inherits="Vendor_CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnKeyChanged"/>
 				</KeyValues>
@@ -321,7 +321,7 @@
 					<Anchor point="BOTTOMRIGHT"  relativeKey="$parent.labelType" relativePoint="TOPRIGHT" y="12"/>
 				</Anchors>
 			</EditBox>
-			<Frame inherits="CommonUI_Chips" parentKey="paramType">
+			<Frame inherits="Vendor_CommonUI_Chips" parentKey="paramType">
 				<KeyValues>
 					<KeyValue key="IsExclusive" value="true" type="boolean"/>
 					<KeyValue key="OneSize" value="true" type="boolean"/>
@@ -332,7 +332,7 @@
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelType" x="0" y="-8"/>
 				</Anchors>
 			</Frame>
-			<EditBox parentKey="default" inherits="CommonUI_Edit">
+			<EditBox parentKey="default" inherits="Vendor_CommonUI_Edit">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnDefaultChanged"/>
 				</KeyValues>
@@ -341,7 +341,7 @@
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelCurrent" x="0" y="-6"/>
 				</Anchors>
 			</EditBox>
-			<EditBox parentKey="current" inherits="CommonUI_Edit">
+			<EditBox parentKey="current" inherits="Vendor_CommonUI_Edit">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.labelCurrent" relativePoint="BOTTOMLEFT" y="-6"/>
 					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeKey="$parent.labelCurrent" x="0" y="-6"/>

@@ -67,7 +67,7 @@ Rules.SystemRules =
     {
         Id = "sell.oldfood",
         Type = SELL_RULE,
-        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
+        Supported={ Retail=true, Forever=false, Classic=true, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_OLDFOOD"],
         Description = L["SYSRULE_SELL_OLDFOOD_DESC"],
         ScriptText = "TypeId == 0 and SubTypeId == 5 and (not NO_LEVEL_ONE or Level ~= 1) and Level <= (PlayerLevel() - FOOD_LEVEL)",
@@ -109,14 +109,40 @@ Rules.SystemRules =
     },
 
     {
+        Id = "sell.outleveledgear_forever",
+        Type = SELL_RULE,
+        Supported={ Retail=false, Forever=true, Classic=false, RetailNext=false, ClassicCurrent=false },
+        Name = L["SYSRULE_SELL_OUTLEVELEDGEAR"],
+        Description = L["SYSRULE_SELL_OUTLEVELEDGEAR_DESC"],
+        ScriptText = "IsSoulbound and IsEquipment and (Level < CurrentEquippedLevel())",
+        Script = function()
+            return IsSoulbound and IsEquipment and (Level < CurrentEquippedLevel());
+        end,
+        Order = 1350,
+    },
+
+    {
+        Id = "sell.unusablegear_forever",
+        Type = SELL_RULE,
+        Supported={ Retail=false, Forever=true, Classic=false, RetailNext=false, ClassicCurrent=false },
+        Name = L["SYSRULE_SELL_UNUSABLEGEAR"],
+        Description = L["SYSRULE_SELL_UNUSABLEGEAR_DESC"],
+        ScriptText = "(not IsEquippable) and IsSoulbound and (MinLevel < PlayerLevel())",
+        Script = function()
+            return (not IsEquippable) and IsSoulbound and (MinLevel < PlayerLevel());
+        end,
+        Order = 1375,
+    },
+
+    {
         Id = "sell.uncommongear",
         Type = SELL_RULE,
         Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_UNCOMMONGEAR"],
         Description = L["SYSRULE_SELL_UNCOMMONGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
+        ScriptText = "IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
+                return IsEquipment and (Quality == UNCOMMON) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
             end,
         Params = 
         {
@@ -136,9 +162,9 @@ Rules.SystemRules =
         Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_RAREGEAR"],
         Description = L["SYSRULE_SELL_RAREGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
+        ScriptText = "IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
+                return IsEquipment and (Quality == RARE) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
             end,
         Params = 
         {
@@ -158,9 +184,9 @@ Rules.SystemRules =
         Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=true },
         Name = L["SYSRULE_SELL_EPICGEAR"],
         Description = L["SYSRULE_SELL_EPICGEAR_DESC"],
-        ScriptText = "(not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
+        ScriptText = "IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL)",
         Script = function()
-                return (not IsInEquipmentSet()) and IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
+                return IsEquipment and IsSoulbound and (Quality == EPIC) and (not IsUnsellable) and (MaxLevel < ITEMLEVEL);
             end,
         Params = 
         {
@@ -459,9 +485,20 @@ Rules.SystemRules =
         Id = "keep.sidegradeorbetter",
         Type = "Keep",
         Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
-        Supported={ Retail=true, Forever=true, Classic=false, RetailNext=true, ClassicCurrent=false },
+        Supported={ Retail=true, Forever=false, Classic=false, RetailNext=true, ClassicCurrent=false },
         Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
         Script = "IsEquippable and (Quality > 1) and (MaxLevel >= WatermarkLevel()) and (MaxLevel >= (.8 * PlayerItemLevel()))",
+        Order = 1225,
+    },
+
+    -- Forever upgrade check, same as classic but uses IsEquippable instead to remove unusable items.
+    {
+        Id = "keep.sidegradeorbetter_forever",
+        Type = "Keep",
+        Name =  L["SYSRULE_KEEP_SIDEGRADEORBETTER"],
+        Supported={ Retail=false, Forever=true, Classic=false, RetailNext=false, ClassicCurrent=false },
+        Description =  L["SYSRULE_KEEP_SIDEGRADEORBETTER_DESC"],
+        Script = "IsEquippable and (Level >= CurrentEquippedLevel())",
         Order = 1225,
     },
 
@@ -503,9 +540,20 @@ Rules.SystemRules =
         Id = "keep.levelinggear",
         Type = "Keep",
         Name =  L["SYSRULE_KEEP_LEVELINGGEAR"],
-        Supported={ Retail=true, Forever=true, Classic=true, RetailNext=true, ClassicCurrent=true },
+        Supported={ Retail=true, Forever=false, Classic=true, RetailNext=true, ClassicCurrent=true },
         Description =  L["SYSRULE_KEEP_LEVELINGGEAR_DESC"],
         Script = "IsEquipment and (MinLevel > PlayerLevel())",
+        Order = 1255,
+    },
+
+    -- Leveling Gear check forever
+    {
+        Id = "keep.levelinggear_forever",
+        Type = "Keep",
+        Name =  L["SYSRULE_KEEP_LEVELINGGEAR"],
+        Supported={ Retail=false, Forever=true, Classic=false, RetailNext=false, ClassicCurrent=false },
+        Description =  L["SYSRULE_KEEP_LEVELINGGEAR_DESC"],
+        Script = "IsEquippable and (MinLevel > PlayerLevel())",
         Order = 1255,
     },
 

@@ -37,7 +37,7 @@ end
 
 --[[ Add a button and handler to the dialog ]]
 function MessageBox:AddButton(id, text, handler, default)
-    local button = CreateFrame("Button", nil, self.host, "CommonUI_CommandButton")
+    local button = CreateFrame("Button", nil, self.host, "Vendor_CommonUI_CommandButton")
     button:SetLabel(text)
     if (type(handler) == "function") then
         button.callback = handler
@@ -246,7 +246,7 @@ end
 function MessageBox.Create(params)
     assert(type(params) == "table", "Expected MessageBox parameters to be a table")
 
-    local messagebox = CreateFrame("Frame", nil, params.parent or UIParent, "CommonUI_MessageBox")
+    local messagebox = CreateFrame("Frame", nil, params.parent or UIParent, "Vendor_CommonUI_MessageBox")
     UI.Attach(messagebox, MessageBox)
     messagebox:SetCaption(params.caption or "")
 

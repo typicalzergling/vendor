@@ -31,7 +31,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button parentKey="Sell" inherits="CommonUI_CommandButton">
+			<Button parentKey="Sell" inherits="Vendor_CommonUI_CommandButton">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnSellClicked"/>
 					<KeyValue key="TooltipOffsetX" value="24" type="number"/>
@@ -42,7 +42,7 @@
 				</Anchors>
 			</Button>
 
-			<Button parentKey="Destroy" inherits="CommonUI_CommandButton">
+			<Button parentKey="Destroy" inherits="Vendor_CommonUI_CommandButton">
 				<KeyValues>
 					<KeyValue key="Handler" value="OnDestroyClicked"/>
 					<KeyValue key="TooltipOffsetX" value="24" type="number"/>

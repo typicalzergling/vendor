@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 
-    <Frame virtual="true" name="CommonUI_List">
+    <Frame virtual="true" name="Vendor_CommonUI_List">
         <Layers>
             <Layer level="ARTWORK">
                 <FontString parentKey="empty" hidden="true" inherits="GameFontNormal" justifyH="center" justifyV="TOP">
@@ -17,16 +17,16 @@
     </Frame>
 
     <!-- A specialization of a list setup for categories request a model with Text and Help attributes -->
-    <Frame virtual="true" name="CommonUI_CategoryList" inherits="CommonUI_List">
+    <Frame virtual="true" name="Vendor_CommonUI_CategoryList" inherits="Vendor_CommonUI_List">
         <KeyValues>
             <KeyValue key="ItemSource" value="GetCategories"/>
-            <KeyValue key="ItemTemplate" value="CommonUI_CategoryItem"/>
+            <KeyValue key="ItemTemplate" value="Vendor_CommonUI_CategoryItem"/>
             <KeyValue key="ItemClass" value="CommonUI.CategoryItem"/>
         </KeyValues>
     </Frame>
 
     <!-- An item in the category list -->
-    <Button virtual="true" name="CommonUI_CategoryItem">
+    <Button virtual="true" name="Vendor_CommonUI_CategoryItem">
         <Size x="1" y="22"/>
         <Layers>
 			<Layer level="OVERLAY" textureSubLevel="1">
@@ -56,7 +56,7 @@
         </Layers>
     </Button>
 
-    <Frame virtual="true" name="CommonUI_ItemLink">
+    <Frame virtual="true" name="Vendor_CommonUI_ItemLink">
         <Layers>
             <Layer level="ARTWORK">
                 <FontString parentKey="text" maxLines="1" inherits="ChatFontNormal" justifyH="LEFT" justifyV="MIDDLE">
@@ -74,12 +74,12 @@
     </Frame>
 
     <!-- URL -->
-	<EditBox name="CommonUI_Url" virtual="true" font="ChatFontNormal" autoFocus="false">
+	<EditBox name="Vendor_CommonUI_Url" virtual="true" font="ChatFontNormal" autoFocus="false">
 		<Scripts><OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Url")</OnLoad></Scripts>
 	</EditBox>
 
     <!-- Markdown -->
-    <Frame virtual="true" inherits="CommonUI_List" name="CommonUI_Markdown">
+    <Frame virtual="true" inherits="Vendor_CommonUI_List" name="Vendor_CommonUI_Markdown">
         <KeyValues>
             <KeyValue key="Padding" value="8" type="number"/>
         </KeyValues>
@@ -88,7 +88,7 @@
         </Scripts>
     </Frame>
 
-    <Frame virtual="true" name="Markdown_Paragraph">
+    <Frame virtual="true" name="Vendor_Markdown_Paragraph">
         <Size x="1" y="1"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -105,7 +105,7 @@
         </Layers>
     </Frame>
 
-    <Frame virtual="true" name="Markdown_Quote">
+    <Frame virtual="true" name="Vendor_Markdown_Quote">
         <Size x="1" y="1"/>
         <KeyValues>
             <KeyValue key="BackgroundColor" value="QUOTE_BACK"/>
@@ -125,7 +125,7 @@
         </Layers>
     </Frame>
 
-    <Frame virtual="true" name="Markdown_Header_One">
+    <Frame virtual="true" name="Vendor_Markdown_Header_One">
         <Size x="1" y="1"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -139,7 +139,7 @@
         </Layers>
     </Frame>
 
-    <Frame virtual="true" name="Markdown_Header_Two">
+    <Frame virtual="true" name="Vendor_Markdown_Header_Two">
         <Size x="1" y="1"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -156,7 +156,7 @@
         </Layers>
     </Frame>
 
-    <Frame virtual="true" name="Markdown_Header">
+    <Frame virtual="true" name="Vendor_Markdown_Header">
         <Size x="1" y="1"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -174,14 +174,14 @@
     </Frame>
 
 
-    <Frame virtual="true" name="Markdown_List">
+    <Frame virtual="true" name="Vendor_Markdown_List">
         <KeyValues>
             <KeyValue key="Spacing" value="4" type="number"/>
         </KeyValues>
         <Size x="1" y="1"/>
     </Frame>    
 
-    <Frame virtual="true" name="Markdown_ListItem" parentArray="contents">
+    <Frame virtual="true" name="Vendor_Markdown_ListItem" parentArray="contents">
         <Size x="1" y="1"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -207,7 +207,7 @@
         </Layers>
     </Frame>    
 
-    <Frame virtual="true" name="CommonUI_ContextMenu_Separator">
+    <Frame virtual="true" name="Vendor_CommonUI_ContextMenu_Separator">
         <Size x="3" y="5"/>
         <Layers>
             <Layer level="BACKGROUND">
@@ -222,7 +222,7 @@
         </Layers>
     </Frame>
 
-    <Button virtual="true" name="CommonUI_ContextMenu_Item">
+    <Button virtual="true" name="Vendor_CommonUI_ContextMenu_Item">
         <Size x="3"/>
         <Layers>
             <Layer level="BACKGROUND">
@@ -251,7 +251,7 @@
         </Layers>
     </Button>
 
-    <Button virtual="true" name="CommonUI_Switch">
+    <Button virtual="true" name="Vendor_CommonUI_Switch">
         <Scripts>
             <OnLoad>Vendor.LoadImplementation(self, "CommonUI", "Switch")</OnLoad>
         </Scripts>

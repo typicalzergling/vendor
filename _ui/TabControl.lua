@@ -114,7 +114,7 @@ function Tab:GetId()
 end
 
 --[[static]] function Tab.Create(parent, id, name, template, class)
-    local tab = CreateFrame("Button", nil, parent, "CommonUI_Tab")
+    local tab = CreateFrame("Button", nil, parent, "Vendor_CommonUI_Tab")
     UI.Prepare(tab)
 
     tab.id = id

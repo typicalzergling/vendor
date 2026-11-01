@@ -58,7 +58,7 @@ local function paragraph(parent, line, nextLine)
         end
     end
 
-    local frame = CreateFrame("Frame", nil, parent, "Markdown_Paragraph")
+    local frame = CreateFrame("Frame", nil, parent, "Vendor_Markdown_Paragraph")
     frame.content:SetWordWrap(true)
     frame.content:SetText(paragraph or "")
     frame.content:SetTextColor(Colors.SECONDARY_TEXT:GetRGBA())
@@ -81,7 +81,7 @@ local function quote(parent, line, nextLine)
         line = nextLine()
     end
 
-    local frame = CreateFrame("Frame", nil, parent, "Markdown_Quote")
+    local frame = CreateFrame("Frame", nil, parent, "Vendor_Markdown_Quote")
     frame.content:SetWordWrap(true)
     frame.content:SetText(Addon.StringTrim(text))
     
@@ -98,11 +98,11 @@ local function header(parent, line, nextLine)
         level = level + 1
     end
 
-    local template = "Markdown_Header"
+    local template = "Vendor_Markdown_Header"
     if (level == 1) then
-        template = "Markdown_Header_One"
+        template = "Vendor_Markdown_Header_One"
     elseif (level == 2) then
-        template = "Markdown_Header_Two"
+        template = "Vendor_Markdown_Header_Two"
     end
 
     local frame = CreateFrame("Frame", nil, parent, template)
@@ -118,10 +118,10 @@ end
 
 --[[ Process a list markdown ]]
 local function list(parent, line, nextLine)
-    local frame = CreateFrame("Frame", nil, parent, "Markdown_List")
+    local frame = CreateFrame("Frame", nil, parent, "Vendor_Markdown_List")
 
     local makeItem = function(text)
-        local item = CreateFrame("Frame", nil, frame, "Markdown_ListItem")
+        local item = CreateFrame("Frame", nil, frame, "Vendor_Markdown_ListItem")
         item.content:SetText(text)
         item:SetPoint("TOPLEFT")
         item:SetPoint("TOPRIGHT")
