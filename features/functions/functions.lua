@@ -11,8 +11,7 @@ local DEBUG_CHANNEL = "functions"
 local function debugp(...) Addon:Debug(DEBUG_CHANNEL, ...) end
 
 local INITIAL_EQUIPMENT_SET_RETRY_DELAY = 1
-local MAX_EQUIPMENT_SET_RETRY_DELAY = 30
-local MAX_EQUIPMENT_SET_RETRY_DURATION = 120
+local MAX_EQUIPMENT_SET_ATTEMPTS = 1
 
 -- Feature Def
 local Functions = {}
@@ -111,22 +110,23 @@ function Functions:GetEquipmentSetsForGUID(itemGUID)
     return equipmentSetGUIDs[itemGUID]
 end
 
--- Bag update is called on login when the bags are ready.
+-- Delayed bag update is called on login after bag updates settle.
 -- If we call GetItemLocations before this happens, we will get empty results
 local firstScanCompleted = false
 local firstBagUpdateSeen = false
 local equipmentSetRetryActive = false
 local equipmentSetRetryToken = 0
+local firstScanDebugMappings
+local firstScanDebugMappingCount = 0
 
 -- Get all item guids and to which equipment set they belong.
 -- TODO: add bank check, this hsould be safe to update more frequently, as long as it isn't constant.
 -- if soemthing goes into inventory from bank, we need to update this list
 local function updateEquipmentSetGUIDs(finalAttempt)
-    debugp("Updating EquipmentSet GUIDs")
     local itemSets = C_EquipmentSet.GetEquipmentSetIDs()
     local updatedGUIDs = {}
     local hasEquipmentSets = #itemSets > 0
-    local pending = not hasEquipmentSets
+    local pending = not hasEquipmentSets and not finalAttempt
 
     for _, setId in ipairs(itemSets) do
 
@@ -135,17 +135,19 @@ local function updateEquipmentSetGUIDs(finalAttempt)
             -- Let them fix the bad data which will prevent other addons from crashing them.
             equipmentSetGUIDs = {}
             firstScanCompleted = true
+            debugp("Equipment set %s: stopping scan because of invalid Mac item data", tostring(setId))
             Addon:ClearItemResultCache()
             return true, hasEquipmentSets
         end
 
-        local locations = C_EquipmentSet.GetItemLocations(setId)
-        if not locations or not next(locations) then
-            pending = true
-            locations = locations or {}
-        end
+        local allLocationsMissing = true
+        local locations = C_EquipmentSet.GetItemLocations(setId) or {}
 
         for _, eLocation in pairs(locations) do
+            if eLocation ~= -1 then
+                allLocationsMissing = false
+            end
+
             if eLocation > 1 then
                 -- Blizzard has changed this API signature three times. This should work if/when Blizzard back-ports GetLocationData.
                 -- Midnight uses EquipmentManager_GetLocationData
@@ -183,16 +185,49 @@ local function updateEquipmentSetGUIDs(finalAttempt)
                 end
             end
         end
-    end
 
-    if Addon.IsDebug then
-        for k, v in pairs(updatedGUIDs) do
-            debugp("GUID = "..tostring(k).."  in "..tostring(#v).." sets")
+        if allLocationsMissing and not finalAttempt then
+            pending = true
         end
     end
 
+    if Addon.IsDebug then
+        local mappedGUIDCount = 0
+        local mappingCount = 0
+        local changedSinceFirstAttempt = false
+        local firstAttempt = not firstScanDebugMappings
+        if firstAttempt then
+            firstScanDebugMappings = {}
+        end
+
+        for guid, sets in pairs(updatedGUIDs) do
+            mappedGUIDCount = mappedGUIDCount + 1
+            local firstSets = firstScanDebugMappings[guid]
+            if firstAttempt then
+                firstSets = {}
+                firstScanDebugMappings[guid] = firstSets
+            end
+
+            for _, setId in ipairs(sets) do
+                mappingCount = mappingCount + 1
+                if firstAttempt then
+                    firstSets[setId] = true
+                elseif not firstSets or not firstSets[setId] then
+                    changedSinceFirstAttempt = true
+                end
+            end
+        end
+
+        if firstAttempt then
+            firstScanDebugMappingCount = mappingCount
+        else
+            changedSinceFirstAttempt = changedSinceFirstAttempt or mappingCount ~= firstScanDebugMappingCount
+        end
+
+        debugp("Equipment set scan: sets=%d, mappedGUIDs=%d, changedSinceFirstAttempt=%s, pending=%s, finalAttempt=%s", #itemSets, mappedGUIDCount, tostring(changedSinceFirstAttempt), tostring(pending), tostring(finalAttempt))
+    end
+
     if pending and not finalAttempt then
-        debugp("Equipment set data is still loading")
         return false
     end
 
@@ -214,7 +249,7 @@ local function stopEquipmentSetRetry()
     equipmentSetRetryToken = equipmentSetRetryToken + 1
 end
 
-delayLoadEquipmentSetInfo = function(delay, elapsed, retryToken)
+delayLoadEquipmentSetInfo = function(delay, attempt, retryToken)
     C_Timer.After(delay, function()
         if retryToken ~= equipmentSetRetryToken then return end
         if firstScanCompleted then
@@ -222,9 +257,8 @@ delayLoadEquipmentSetInfo = function(delay, elapsed, retryToken)
             return
         end
 
-        elapsed = elapsed + delay
-        local finalAttempt = elapsed >= MAX_EQUIPMENT_SET_RETRY_DURATION
-        debugp("Equipment set data is not ready; retrying after %d seconds", elapsed)
+        local finalAttempt = attempt >= MAX_EQUIPMENT_SET_ATTEMPTS
+        debugp("Equipment set scan attempt %d of %d", attempt, MAX_EQUIPMENT_SET_ATTEMPTS)
         local complete, hasEquipmentSets = updateEquipmentSetGUIDs(finalAttempt)
 
         if complete then
@@ -239,8 +273,8 @@ delayLoadEquipmentSetInfo = function(delay, elapsed, retryToken)
             end
         else
             delayLoadEquipmentSetInfo(
-                math.min(delay * 2, MAX_EQUIPMENT_SET_RETRY_DELAY, MAX_EQUIPMENT_SET_RETRY_DURATION - elapsed),
-                elapsed,
+                delay * 2,
+                attempt + 1,
                 retryToken)
         end
     end)
@@ -250,13 +284,29 @@ startEquipmentSetRetry = function()
     if equipmentSetRetryActive then return end
     equipmentSetRetryActive = true
     equipmentSetRetryToken = equipmentSetRetryToken + 1
-    delayLoadEquipmentSetInfo(INITIAL_EQUIPMENT_SET_RETRY_DELAY, 0, equipmentSetRetryToken)
+    delayLoadEquipmentSetInfo(INITIAL_EQUIPMENT_SET_RETRY_DELAY, 2, equipmentSetRetryToken)
 end
 
 local function refreshEquipmentSetGUIDs()
+    if not firstBagUpdateSeen or equipmentSetRetryActive then return end
     firstScanCompleted = false
-    if updateEquipmentSetGUIDs() then
+    if Addon.IsDebug then
+        firstScanDebugMappings = nil
+    end
+
+    debugp("Equipment set scan attempt 1 of %d", MAX_EQUIPMENT_SET_ATTEMPTS)
+    local finalAttempt = MAX_EQUIPMENT_SET_ATTEMPTS == 1
+    local complete, hasEquipmentSets = updateEquipmentSetGUIDs(finalAttempt)
+    if complete then
         stopEquipmentSetRetry()
+    elseif finalAttempt then
+        stopEquipmentSetRetry()
+        debugp("Equipment set data did not finish loading before the retry limit")
+        if hasEquipmentSets then
+            Addon:Output(
+                Addon.Systems.Chat.MessageType.Console,
+                L["EQUIPMENT_SET_DATA_WARNING"])
+        end
     else
         startEquipmentSetRetry()
     end
@@ -265,6 +315,7 @@ end
 local function firstEquipmentSetUpdate()
     if firstScanCompleted or firstBagUpdateSeen then return end
     firstBagUpdateSeen = true
+    debugp("BAG_UPDATE_DELAYED triggered the initial equipment set scan")
     refreshEquipmentSetGUIDs()
 end
 
@@ -338,12 +389,8 @@ function Functions:OnInitialize()
         -- bank we need to regenerate the equipment set mappings.
         Addon:RegisterEvent("BANKFRAME_CLOSED", refreshEquipmentSetGUIDs)
 
-        -- Initial population of the equipment set data must happen on bag update
-        Addon:RegisterEvent("BAG_UPDATE", firstEquipmentSetUpdate)
-
-
-        -- Try to do an initial update and retry while the saved data is unavailable.
-        refreshEquipmentSetGUIDs()
+        -- Wait for bag updates to settle before the initial scan.
+        Addon:RegisterEvent("BAG_UPDATE_DELAYED", firstEquipmentSetUpdate)
     end
 end
 

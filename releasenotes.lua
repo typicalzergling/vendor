@@ -2,6 +2,13 @@ local _, Addon = ...
 
 Addon.ReleaseNotes = {
 {
+Release = "6.14.1 (Nov 4, 2026)",
+Notes = [[
+# Equipment set loading
+Fixed equipment set items not being detected on first login by waiting for bag updates to settle before loading equipment set data.
+]]
+},
+{
 Release = "6.14.0 (Nov 1, 2026)",
 Notes = [[
 Rule tweaks for Forever.
